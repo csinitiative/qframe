@@ -1,0 +1,45 @@
+-#
+  This file is part of the CSI RegQ.
+  
+  The CSI RegQ is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+  
+  The CSI RegQ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  
+  @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
+  @license    http://www.gnu.org/licenses/   GNU General Public License v3
+
+- $localStylesheets = array('users')
+- $localJavascript = array('users')
+
+%h1
+  Roles for user
+  %em= "{$this->user->dbUserFullName} ({$this->user->dbUserName})"
+
+#roles
+  - if(count($this->user->roles) <= 0)
+    %h2 <em>No roles assigned</em>
+  -else
+    %ul
+      - foreach($this->user->roles as $role)
+        %li
+          = $role['roleDescription']
+          != $this->linkTo(array('action' => 'removeRole', 'id' => $this->user->dbUserID, 'role' => $role['roleID']), $this->imageTag('icons/dddddd/group_delete.png', array('class' => 'inline')))
+
+#addRole
+  != $this->form(array('action' => 'addRole', 'id' => $this->user->dbUserID), false, 'post')
+  != $this->formHidden('indexUrl', $this->url(array('action' => 'index', 'id' => null)))
+  != $this->formSelect('role', null, null, $this->formOptions('roleID', 'roleDescription', $this->roles))
+  != $this->formSubmit('submitButton', 'add role')
+  != $this->form(null, true)
+
+#options
+  != $this->formButton('cancelButton', 'done')

@@ -1,0 +1,29 @@
+# All passwords are set to 'password'
+table: dbUser
+
+data:
+  sample1:
+    dbUserID: 1
+    dbUserName: sample1
+    dbUserPW: 123456789040066a5617acb5d31bdd57e43031ac344d70acb8
+    dbUserFullName: Sample Person 1
+  sample2:
+    dbUserID: 2
+    dbUserName: sample2
+    dbUserPW: 123456789040066a5617acb5d31bdd57e43031ac344d70acb8
+    dbUserFullName: Sample Person 2
+  sample3:
+    dbUserID: 3
+    dbUserName: sample3
+    dbUserPW: 123456789040066a5617acb5d31bdd57e43031ac344d70acb8
+    dbUserFullName: Sample Person 3
+  sample4:
+    dbUserID: 4
+    dbUserName: sample4
+    dbUserPW: 123456789040066a5617acb5d31bdd57e43031ac344d70acb8
+    dbUserFullName: Sample Person 4
+  sample5:
+    dbUserID: 5
+    dbUserName: sample5
+    dbUserPW: 123456789040066a5617acb5d31bdd57e43031ac344d70acb8
+    dbUserFullName: Sample Person 5

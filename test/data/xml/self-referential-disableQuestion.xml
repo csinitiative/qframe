@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csi:instrument xmlns:csi="http://www.csinitiative.com/ns/csi-regq" instrumentName="Dummy Instrument" instrumentVersion="1" revision="1" targetRegQVersion="1.0">
+  <csi:tabs>
+    <csi:tab>
+      <csi:tabHeader>Dummy Tab</csi:tabHeader>
+      <csi:tabGUID>1</csi:tabGUID>
+      <csi:seqNumber>1</csi:seqNumber>
+      <csi:description></csi:description>
+      <csi:headerText></csi:headerText>
+      <csi:footerText></csi:footerText>
+      <csi:cloneable>0</csi:cloneable>
+      <csi:sections>
+        <csi:section>
+          <csi:sectionHeader>Dummy Section</csi:sectionHeader>
+          <csi:sectionGUID>1</csi:sectionGUID>
+          <csi:seqNumber>1</csi:seqNumber>
+          <csi:description></csi:description>
+          <csi:cloneable>0</csi:cloneable>
+          <csi:questions>
+            <csi:question>
+              <csi:qText>Dummy Question</csi:qText>
+              <csi:questionGUID>1</csi:questionGUID>
+              <csi:seqNumber>1</csi:seqNumber>
+              <csi:cloneable>0</csi:cloneable>
+              <csi:questionType>S</csi:questionType>
+              <csi:questionPrompt>
+                <csi:promptText>Yes</csi:promptText>
+                <csi:requireAdditionalInfo>0</csi:requireAdditionalInfo>
+                <csi:disableQuestion>1</csi:disableQuestion>
+              </csi:questionPrompt>
+              <csi:questionPrompt>
+                <csi:promptText>No</csi:promptText>
+                <csi:requireAdditionalInfo>0</csi:requireAdditionalInfo>
+              </csi:questionPrompt>
+              <csi:questionPrompt>
+                <csi:promptText>N/A</csi:promptText>
+                <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
+              </csi:questionPrompt>
+            </csi:question>
+          </csi:questions>
+        </csi:section>
+      </csi:sections>
+    </csi:tab>
+  </csi:tabs>
+</csi:instrument>

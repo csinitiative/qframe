@@ -1,0 +1,5 @@
+- Items that are not supported
+  - Attribute namespaces
+  - Directives (including imports)
+  - Comments
+  - Output styles

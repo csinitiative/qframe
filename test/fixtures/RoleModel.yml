@@ -1,0 +1,15 @@
+table: role
+
+data:
+  sample1:
+    roleID: 1
+    roleDescription: sample1
+  sample2:
+    roleID: 2
+    roleDescription: sample2or3
+  sample3:
+    roleID: 3
+    roleDescription: sample2or3
+  admin:
+    roleID: 4
+    roleDescription: admin

@@ -1,0 +1,194 @@
+!page_bg = #fff
+!header_border = #00653a
+!menu_link_fg = #00653a
+!menu_link_bg = #ddd
+!menu_current_border = #fe0
+!footer_bg = #001922
+!menu_width = 250
+
+body, img, div
+  :margin 0
+  :padding 0
+  :border 0
+  
+html, body
+  :height 100%
+  :width 100%
+  
+img
+  :display block
+  &.inline
+    :display inline
+  
+h1
+  :margin 0 0 15px 0
+  :font-size 24px
+h2
+  :margin 0 0 5px 0
+  :font-size 18px
+h3
+  :margin 0
+  :font-size 12px
+  :font-weight bold
+  
+p
+  :margin 0 0 15px 0
+  
+ol.pagination
+  :margin 0
+  :padding 4px
+  li
+    :list-style none
+    :padding 0 1px
+    :margin 0
+    :display inline
+  
+body
+  :background = !page_bg "url('../images/background.gif')" 'repeat-y' top left
+  :font-family verdana,arial,sans-serif
+  :font-size 12px
+  #page
+    :position relative
+    :width 100%
+    :min-height 100%
+    &.menuless
+      :background-color = !page_bg
+      #content
+        :padding 15px
+    #header
+      :position relative
+      :border-bottom = 1px solid !header_border
+      :background = !page_bg
+      #loginMessage
+        :position absolute
+        :right 25px
+        :top 5px
+        em
+          :font-weight bold
+          :font-style normal
+        a
+          :text-decoration none
+          :font-weight bold
+          :color = !menu_link_fg
+          &:hover
+            :color = !page_bg
+            :background-color = !menu_link_fg
+      ol
+        :display block
+        :position absolute
+        :right 25px
+        :top 33px
+        :list-style none
+        :margin 0
+        :padding 0
+        li
+          :display block
+          :float left
+          :margin 0 2px
+          :padding 3px 15px
+          :border-width 1px 1px 0 1px
+          :border-style solid
+          :border-color = !header_border
+          :background-color = !menu_link_bg
+          &.current
+            :background-color = !header_border
+            :color = !page_bg
+          a
+            :color = !header_border
+            :text-decoration none
+            &:hover
+              :text-decoration underline
+    #menu
+      :padding 15px 0
+      :position absolute
+      .header, h1
+        :margin 0 15px 10px 15px
+      .header
+        :background-color = !page_bg
+        :padding 5px
+        :border = 1px solid !header_border
+        .text
+          :width 200px
+          a
+            :text-decoration none
+            :color = !menu_link_fg
+            :font-weight bold
+            &:hover
+              :color = !page_bg
+              :background-color = !menu_link_fg
+      h1
+        :color = !footer_bg
+        :border-bottom = 1px solid !footer_bg
+        :font-size 18px
+        :font-weight bold
+        :width 220px
+      ol
+        :padding 0
+        :margin 10px 0 0 0
+        li
+          :margin 0
+          :padding 0
+          :width 250px
+          :list-style none
+          :color = !menu_link_fg
+          div
+            :margin 0
+            :padding 2px 15px
+            &.over
+              :background-color = !menu_link_fg
+            &.current
+              :background-color = !page_bg
+              :border-right 3px solid #fe0
+            &.disabled
+              :color = !menu_link_bg - #777
+            a
+              :color = !menu_link_fg
+              :text-decoration none
+              &:hover
+                :color = !menu_link_bg
+    #content
+      :padding 15px 15px 25px 270px
+      #error, #notice
+        :position relative
+        :padding 7px
+        :background-color = !menu_link_bg
+        :margin-bottom 15px
+        :color #f00
+        :border = 1px solid (!menu_link_bg - #555)
+      #notice
+        :color = !header_border
+      #topLinks
+        :text-align center
+      #navButtons
+        :padding-bottom 30px
+        :text-align center
+        a
+          :text-decoration none
+          :color = !footer_bg
+          &:hover
+            :color = !page_bg
+            :background-color = !footer_bg
+      .attach-view
+        :float left
+        :background-color = !page_bg
+        :border = 1px solid !footer_bg
+        :padding 5px
+        :margin 5px 0
+      .attach-clear
+        :clear both
+        :font-size 1px
+    #footer
+      :position absolute
+      :bottom -2px
+      :width 100%
+      :padding 5px 0
+      :background-color = !footer_bg
+      :color = !page_bg
+      :font-size 10px
+      #copynotice
+        :padding-left 50px
+
+
+* html #page
+  :height 100%
+  

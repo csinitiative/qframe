@@ -1,0 +1,30 @@
+!page_bg = #fff
+!header_border = #00653a
+!menu_link_fg = #00653a
+!menu_link_bg = #ddd
+!menu_current_border = #fe0
+!footer_bg = #001922
+!menu_width = 250
+
+.error
+  :padding 5px
+  .message
+    :font-weight bold
+    :font-size 14px
+  .location a
+    :color = !menu_link_fg
+    :text-decoration none
+    &:hover
+      :text-decoration underline
+  .trace
+    :margin 5px 0
+    :border 1px solid #999
+    :background-color #eee
+    table
+      :padding 0
+      :margin 0
+      :border 0
+      tr td
+        :padding 3px
+        :margin 0
+        :vertical-align top

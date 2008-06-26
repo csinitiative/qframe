@@ -1,0 +1,9 @@
+table: questionType
+
+data:
+  sample1:
+    questionTypeID: 1
+    format: T
+  sample2:
+    questionTypeID: 2
+    format: S

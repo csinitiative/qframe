@@ -1,0 +1,39 @@
+table: tab
+
+data:
+  sample1:
+    instrumentID: 2
+    instanceID: 3
+    tabID: 1
+    seqNumber: 2
+    tabHeader: Instrument 2, Instance 3, Tab 2
+    description: This is a sample header
+  sample2:
+    instrumentID: 2
+    instanceID: 3
+    tabID: 2
+    seqNumber: 4
+    tabHeader: Instrument 2, Instance 3, Tab 4
+    description: This is a sample header
+  sample3:
+    instrumentID: 2
+    instanceID: 3
+    tabID: 3
+    seqNumber: 1
+    tabHeader: Instrument 2, Instance 3, Tab 1
+    description: This is a sample header
+  sample4:
+    instrumentID: 2
+    instanceID: 2
+    tabID: 4
+    seqNumber: 1
+    tabHeader: Instrument 2, Instance 2, Tab 1
+    description: This is a sample header
+  sample5:
+    instrumentID: 2
+    instanceID: 3
+    tabID: 5
+    seqNumber: 3
+    tabHeader: Instrument 2, Instance 3, Tab 3
+    description: This is a sample header
+  

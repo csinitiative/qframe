@@ -1,0 +1,80 @@
+SVN Revision: 7139
+
+
+Base
+====
+
+1.4.1 - Monday 14 January 2008
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed issue #11448: ezc_bootsrap.php uses relative paths. 
+- Fixed issue #12316: Numbers in own component prefix not possible.
+- Fixed issue #12329: ezcBaseFeatures::findExecutableInPath's return value
+  does not include the extension to the executable at the end on Windows.
+- Added an optional argument to the ezcBaseValueException constructor to allow
+  the exception to be used for non-property/setting type violations as well.
+
+
+
+ConsoleTools
+============
+
+1.3.2 - Monday 14 January 2008
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed issue #11435: ConsoleInput does not reset $option->value;. The newly
+  added reset() method can in addtion be used to manually reset all option and
+  argument values.
+- Fixed issue #12364: /ezc/trunk/ConsoleTools/docs/example_table.php base
+  value exception.
+
+
+
+Database
+========
+
+1.3.4 - Monday 14 January 2008
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed issue #11266: ezcQueryExpression->in( 'colname', array() ) produces a
+  strange exception message.
+- Fixed issue #11786: quoteIdentifier() incorrectly quotes unambiguous
+  identifiers.
+- Documented issue #10161: Column names are always lowercase.
+
+
+
+DatabaseSchema
+==============
+
+1.3.1 - Monday 14 January 2008
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Documented issue #10161: Column names are always lowercase.
+- Fixed issue #11442: Make the intention of the DatabaseSchema component
+  clearer in the documentation.
+
+
+
+Mail
+====
+
+1.4.1 - Monday 14 January 2008
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed issue #12318: Unsafe characters are replaces by underscores in
+  attachment file names during mail parsing.
+
+
+
+PersistentObject
+================
+
+1.3.4 - Monday 14 January 2008
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed issue #12108: ezcPersistentStateTransformer::rowToStateArray() relying
+  on definitions with reverse properties set, but it's not automatic.
+
+
+

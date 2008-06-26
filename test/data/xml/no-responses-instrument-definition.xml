@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csi:instrument xmlns:csi="http://www.csinitiative.com/ns/csi-regq" instrumentName="Test1 Instrument" instrumentVersion="3.00" revision="1" targetRegQVersion="1.0">
+  <csi:tabs>
+    <csi:tab>
+      <csi:tabHeader>Test 1.1 tabHeader</csi:tabHeader>
+      <csi:tabGUID>1</csi:tabGUID>
+      <csi:seqNumber>1</csi:seqNumber>
+      <csi:headerText>
+        Test 1.1 headerText
+      </csi:headerText>
+      <csi:footerText></csi:footerText>
+    </csi:tab>
+    <csi:tab>
+      <csi:tabHeader>Test 1.2 tabHeader</csi:tabHeader>
+      <csi:tabGUID>2</csi:tabGUID>
+      <csi:seqNumber>3</csi:seqNumber>
+      <csi:headerText>
+        Test 1.2 headerText
+      </csi:headerText>
+      <csi:footerText></csi:footerText>
+    </csi:tab>
+    <csi:tab>
+      <csi:tabHeader>Test 1.3 tabHeader</csi:tabHeader>
+      <csi:tabGUID>3</csi:tabGUID>
+      <csi:seqNumber>5</csi:seqNumber>
+      <csi:headerText></csi:headerText>
+      <csi:footerText></csi:footerText>
+      <csi:sections>
+        <csi:section>
+          <csi:sectionHeader>Test 1.3.1 sectionHeader</csi:sectionHeader>
+          <csi:sectionGUID>1</csi:sectionGUID>
+          <csi:seqNumber>1</csi:seqNumber>
+          <csi:questions>
+            <csi:question>
+              <csi:qText>Responder Name:</csi:qText>
+              <csi:questionGUID>1</csi:questionGUID>
+              <csi:seqNumber>1</csi:seqNumber>
+              <csi:questionType>T</csi:questionType>
+            </csi:question>
+            <csi:question>
+              <csi:qText>Responder Job Title:</csi:qText>
+              <csi:questionGUID>2</csi:questionGUID>
+              <csi:seqNumber>2</csi:seqNumber>
+              <csi:questionType>T</csi:questionType>
+            </csi:question>
+            <csi:question>
+              <csi:qText>Responder Contact Number:</csi:qText>
+              <csi:questionGUID>3</csi:questionGUID>
+              <csi:seqNumber>3</csi:seqNumber>
+              <csi:questionType>T</csi:questionType>
+            </csi:question>
+            <csi:question>
+              <csi:qText>Date of Response:</csi:qText>
+              <csi:questionGUID>4</csi:questionGUID>
+              <csi:seqNumber>4</csi:seqNumber>
+              <csi:questionType>D</csi:questionType>
+            </csi:question>
+          </csi:questions>
+        </csi:section>
+        <csi:section>
+          <csi:sectionHeader>Test 1.3.2 sectionHeader</csi:sectionHeader>
+          <csi:sectionGUID>2</csi:sectionGUID>
+          <csi:seqNumber>2</csi:seqNumber>
+          <csi:questions>
+            <csi:question>
+              <csi:qText>What is the name of the holding or parent company name?</csi:qText>
+              <csi:questionGUID>6</csi:questionGUID>
+              <csi:seqNumber>1</csi:seqNumber>
+              <csi:questionType>T</csi:questionType>
+            </csi:question>
+            <csi:question>
+              <csi:qText>What is the company/business name?</csi:qText>
+              <csi:questionGUID>7</csi:questionGUID>
+              <csi:seqNumber>2</csi:seqNumber>
+              <csi:questionType>T</csi:questionType>
+            </csi:question>
+            <csi:question>
+              <csi:qText>Is this a public or privately held company?</csi:qText>
+              <csi:questionGUID>8</csi:questionGUID>
+              <csi:seqNumber>3</csi:seqNumber>
+              <csi:questionType>S</csi:questionType>
+              <csi:questionPrompt>
+                <csi:promptText>Publicly held</csi:promptText>
+              </csi:questionPrompt>
+              <csi:questionPrompt>
+                <csi:promptText>Privately held</csi:promptText>
+              </csi:questionPrompt>
+            </csi:question>
+            <csi:questionGroup>
+              <csi:qText>Has the service been audited in the past year for any of the following?</csi:qText>
+              <csi:questionGUID>27</csi:questionGUID>
+              <csi:seqNumber>22</csi:seqNumber>
+              <csi:question>
+                <csi:qText>- Privacy</csi:qText>
+                <csi:questionGUID>28</csi:questionGUID>
+                <csi:seqNumber>23</csi:seqNumber>
+                <csi:questionType>S</csi:questionType>
+                <csi:questionPrompt>
+                  <csi:promptText>Yes</csi:promptText>
+                </csi:questionPrompt>
+                <csi:questionPrompt>
+                  <csi:promptText>No</csi:promptText>
+                </csi:questionPrompt>
+              </csi:question>
+              <csi:question>
+                <csi:qText>- Information Security</csi:qText>
+                <csi:questionGUID>29</csi:questionGUID>
+                <csi:seqNumber>24</csi:seqNumber>
+                <csi:questionType>S</csi:questionType>
+                <csi:questionPrompt>
+                  <csi:promptText>Yes</csi:promptText>
+                </csi:questionPrompt>
+                <csi:questionPrompt>
+                  <csi:promptText>No</csi:promptText>
+                </csi:questionPrompt>
+              </csi:question>
+              <csi:question>
+                <csi:qText>- Disaster Recovery</csi:qText>
+                <csi:questionGUID>30</csi:questionGUID>
+                <csi:seqNumber>25</csi:seqNumber>
+                <csi:questionType>S</csi:questionType>
+                <csi:questionPrompt>
+                  <csi:promptText>Yes</csi:promptText>
+                </csi:questionPrompt>
+                <csi:questionPrompt>
+                  <csi:promptText>No</csi:promptText>
+                </csi:questionPrompt>
+              </csi:question>
+               <csi:question>
+                <csi:qText>- Operations</csi:qText>
+                <csi:questionGUID>31</csi:questionGUID>
+                <csi:seqNumber>26</csi:seqNumber>
+                <csi:questionType>S</csi:questionType>
+                <csi:questionPrompt>
+                  <csi:promptText>Yes</csi:promptText>
+                </csi:questionPrompt>
+                <csi:questionPrompt>
+                  <csi:promptText>No</csi:promptText>
+                </csi:questionPrompt>
+              </csi:question>
+              <csi:question>
+                <csi:qText>- Technology</csi:qText>
+                <csi:questionGUID>32</csi:questionGUID>
+                <csi:seqNumber>27</csi:seqNumber>
+                <csi:questionType>S</csi:questionType>
+                <csi:questionPrompt>
+                  <csi:promptText>Yes</csi:promptText>
+                </csi:questionPrompt>
+                <csi:questionPrompt>
+                  <csi:promptText>No</csi:promptText>
+                </csi:questionPrompt>
+              </csi:question>
+              <csi:question>
+                <csi:qText>- Other</csi:qText>
+                <csi:questionGUID>33</csi:questionGUID>
+                <csi:seqNumber>28</csi:seqNumber>
+                <csi:questionType>T</csi:questionType>
+              </csi:question>
+            </csi:questionGroup>
+            <csi:question>
+              <csi:qText>Does the company hire an external audit firm to produce a SAS 70 report on the operations under review?</csi:qText>
+              <csi:questionGUID>34</csi:questionGUID>
+              <csi:seqNumber>29</csi:seqNumber>
+              <csi:questionType>S</csi:questionType>
+              <csi:questionPrompt>
+                <csi:promptText>Yes</csi:promptText>
+              </csi:questionPrompt>
+              <csi:questionPrompt>
+                <csi:promptText>No</csi:promptText>
+              </csi:questionPrompt>
+            </csi:question>
+            <csi:question>
+              <csi:qText>If no, has another type of assessment or audit been performed? Explain.</csi:qText>
+              <csi:questionGUID>35</csi:questionGUID>
+              <csi:seqNumber>30</csi:seqNumber>
+              <csi:questionType>T</csi:questionType>
+            </csi:question>
+            <csi:question>
+              <csi:qText>Have any of the audits addressed address above resulted in any exceptions or findings?</csi:qText>
+              <csi:questionGUID>36</csi:questionGUID>
+              <csi:seqNumber>31</csi:seqNumber>
+              <csi:questionType>S</csi:questionType>
+              <csi:questionPrompt>
+                <csi:promptText>Yes</csi:promptText>
+              </csi:questionPrompt>
+              <csi:questionPrompt>
+                <csi:promptText>No</csi:promptText>
+              </csi:questionPrompt>
+            </csi:question>
+            <csi:question>
+              <csi:qText>If yes, please provide details:</csi:qText>
+              <csi:questionGUID>37</csi:questionGUID>
+              <csi:seqNumber>32</csi:seqNumber>
+              <csi:questionType>T</csi:questionType>
+            </csi:question>
+            <csi:question>
+              <csi:qText>Provide an explanation of what you are considering target data.</csi:qText>
+              <csi:questionGUID>38</csi:questionGUID>
+              <csi:seqNumber>33</csi:seqNumber>
+              <csi:questionType>T</csi:questionType>
+            </csi:question>
+          </csi:questions>
+        </csi:section>
+        <csi:section>
+          <csi:sectionHeader>Service Profile</csi:sectionHeader>
+          <csi:sectionGUID>3</csi:sectionGUID>
+          <csi:seqNumber>3</csi:seqNumber>
+          <csi:questions>
+            <csi:question>
+              <csi:qText>What is the name and description(s) of service(s) to be reviewed under shared assessment?</csi:qText>
+              <csi:questionGUID>39</csi:questionGUID>
+              <csi:seqNumber>1</csi:seqNumber>
+              <csi:questionType>T</csi:questionType>
+            </csi:question>
+            <csi:questionGroup>
+              <csi:qText>Is this a shared service? (A shared service is provided to multiple clients vs. a dedicated service, which is provided only to one client.)</csi:qText>
+              <csi:questionGUID>40</csi:questionGUID>
+              <csi:seqNumber>2</csi:seqNumber>
+              <csi:question>
+                <csi:qText>- Shared:</csi:qText>
+                <csi:questionGUID>41</csi:questionGUID>
+                <csi:seqNumber>3</csi:seqNumber>
+                <csi:questionType>S</csi:questionType>
+                <csi:questionPrompt>
+                  <csi:promptText>Yes</csi:promptText>
+                </csi:questionPrompt>
+                <csi:questionPrompt>
+                  <csi:promptText>No</csi:promptText>
+                </csi:questionPrompt>
+              </csi:question>
+              <csi:question>
+                <csi:qText>- Dedicated:</csi:qText>
+                <csi:questionGUID>42</csi:questionGUID>
+                <csi:seqNumber>4</csi:seqNumber>
+                <csi:questionType>S</csi:questionType>
+                <csi:questionPrompt>
+                  <csi:promptText>Yes</csi:promptText>
+                </csi:questionPrompt>
+                <csi:questionPrompt>
+                  <csi:promptText>No</csi:promptText>
+                </csi:questionPrompt>
+              </csi:question>
+              <csi:question>
+                <csi:qText>- Other:  Please explain</csi:qText>
+                <csi:questionGUID>43</csi:questionGUID>
+                <csi:seqNumber>5</csi:seqNumber>
+                <csi:questionType>T</csi:questionType>
+              </csi:question>
+            </csi:questionGroup>
+            <csi:question>
+              <csi:qText>Are any aspects of the service outsourced?</csi:qText>
+              <csi:questionGUID>44</csi:questionGUID>
+              <csi:seqNumber>6</csi:seqNumber>
+              <csi:questionType>S</csi:questionType>
+              <csi:questionPrompt>
+                <csi:promptText>Yes</csi:promptText>
+              </csi:questionPrompt>
+              <csi:questionPrompt>
+                <csi:promptText>No</csi:promptText>
+              </csi:questionPrompt>
+            </csi:question>
+            <csi:question>
+              <csi:qText>If yes, describe what is outsourced, name of the contracted party, whether the outsourced service involves customer information and the country of operation.</csi:qText>
+              <csi:questionGUID>45</csi:questionGUID>
+              <csi:seqNumber>7</csi:seqNumber>
+              <csi:questionType>T</csi:questionType>
+            </csi:question>
+          </csi:questions>
+        </csi:section>
+        <csi:section>
+          <csi:sectionHeader>Computer Equipment Details (relative to scope of services provided)</csi:sectionHeader>
+          <csi:sectionGUID>4</csi:sectionGUID>
+          <csi:seqNumber>4</csi:seqNumber>
+          <csi:questions>
+            <csi:question>
+              <csi:qText>What is the production site physical address?</csi:qText>
+              <csi:questionGUID>46</csi:questionGUID>
+              <csi:seqNumber>1</csi:seqNumber>
+              <csi:questionType>T</csi:questionType>
+            </csi:question>
+            <csi:question>
+              <csi:qText>What is the backup site physical address?</csi:qText>
+              <csi:questionGUID>47</csi:questionGUID>
+              <csi:seqNumber>2</csi:seqNumber>
+              <csi:questionType>T</csi:questionType>
+            </csi:question>
+            <csi:question>
+              <csi:qText>Are there any additional location(s) of operations where target data is stored?</csi:qText>
+              <csi:questionGUID>48</csi:questionGUID>
+              <csi:seqNumber>3</csi:seqNumber>
+              <csi:questionType>S</csi:questionType>
+              <csi:questionPrompt>
+                <csi:promptText>Yes</csi:promptText>
+              </csi:questionPrompt>
+              <csi:questionPrompt>
+                <csi:promptText>No</csi:promptText>
+              </csi:questionPrompt>
+            </csi:question>
+            <csi:question>
+              <csi:qText>If so, provide locations  (address, city, state, country).</csi:qText>
+              <csi:questionGUID>49</csi:questionGUID>
+              <csi:seqNumber>4</csi:seqNumber>
+              <csi:questionType>T</csi:questionType>
+            </csi:question>
+            <csi:questionGroup>
+              <csi:qText>Please provide details in the following areas:</csi:qText>
+              <csi:questionGUID>50</csi:questionGUID>
+              <csi:seqNumber>5</csi:seqNumber>
+              <csi:question>
+                <csi:qText>- Operating system(s)</csi:qText>
+                <csi:questionGUID>51</csi:questionGUID>
+                <csi:seqNumber>6</csi:seqNumber>
+                <csi:questionType>T</csi:questionType>
+              </csi:question>
+              <csi:question>
+                <csi:qText>- Workstations # of devices</csi:qText>
+                <csi:questionGUID>52</csi:questionGUID>
+                <csi:seqNumber>7</csi:seqNumber>
+                <csi:questionType>T</csi:questionType>
+              </csi:question>
+              <csi:question>
+                <csi:qText>- Servers # of devices</csi:qText>
+                <csi:questionGUID>53</csi:questionGUID>
+                <csi:seqNumber>8</csi:seqNumber>
+                <csi:questionType>T</csi:questionType>
+              </csi:question>
+              <csi:question>
+                <csi:qText>- List Applications in scope.</csi:qText>
+                <csi:questionGUID>54</csi:questionGUID>
+                <csi:seqNumber>9</csi:seqNumber>
+                <csi:questionType>T</csi:questionType>
+              </csi:question>
+              <csi:question>
+                <csi:qText>- Number of employees by function (e.g., development, systems operations, information security)</csi:qText>
+                <csi:questionGUID>55</csi:questionGUID>
+                <csi:seqNumber>10</csi:seqNumber>
+                <csi:questionType>T</csi:questionType>
+              </csi:question>
+            </csi:questionGroup>
+          </csi:questions>
+        </csi:section>
+      </csi:sections>
+    </csi:tab>
+  </csi:tabs>
+</csi:instrument>

@@ -1,0 +1,86 @@
+!page_bg = #fff
+!header_border = #00653a
+!menu_link_fg = #00653a
+!menu_link_bg = #ddd
+!menu_current_border = #fe0
+!footer_bg = #001922
+
+body, img, div
+  :margin 0
+  :padding 0
+  :border 0
+  
+html, body
+  :height 100%
+  :width 100%
+  
+img
+  :width 0%
+  :height 0%
+  :display none
+  
+h1
+  :margin 0 0 15px 0
+  :font-size 24px
+h2
+  :margin 0 0 5px 0
+  :font-size 18px
+h3
+  :margin 0
+  :font-size 12px
+  :font-weight bold
+  
+p
+  :margin 0 0 15px 0
+  
+ol
+  :margin 0
+  :padding 0px
+  li
+    :list-style none
+    :padding 0px
+    :margin 0
+    :display inline
+
+a.options-link
+  :display none
+
+div.question
+  :padding 15px 15px 25px 25px
+  
+body
+  :font-family "Times New Roman"
+  :font-size 12px
+  #tabHeading
+    :display none
+  #page
+    :position relative
+    :min-height 100%
+    &.menuless
+      :background-color = !page_bg
+      #content
+        :padding 15px
+    #header
+      :height 0%
+      :width 0%
+      :display none
+    #menu
+      :height 0%
+      :width 0%
+      :display none
+    #content
+      :padding 15px 15px 25px 25px
+      #error, #notice
+        :display none
+      #topLinks
+        :display none
+      #navButtons
+        :display none
+      .attach-clear
+        :clear both
+        :font-size 1px
+    #footer
+      :display none
+
+* html #page
+  :height 100%

@@ -1,0 +1,9 @@
+table: crypto
+
+data:
+  sample1:
+    cryptoID: 1
+    name: test
+    type: RIJNDAEL_256
+    cryptoKey: RX19rx3+sL/kQEhkl5u3rXrDywG7m8LTWpRujNNJp5U=
+    secret:

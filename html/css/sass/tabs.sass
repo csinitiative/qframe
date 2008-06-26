@@ -1,0 +1,208 @@
+!page_bg = #fff
+!page_fg = #000
+!header_border = #00653a
+!menu_link_fg = #00653a
+!menu_link_bg = #ddd
+!menu_current_border = #fe0
+!footer_bg = #001922
+
+h1
+  :margin 20px 0
+  #tabReferences
+    :font-weight normal
+    :font-style italic
+    :font-size 12px
+  a
+    :font-size 12px
+    :font-weight normal
+    :text-decoration underline
+    &:hover
+      :background-color = !menu_link_fg
+      :color = !page_bg
+      :text-decoration none
+
+ul#tabHeading
+  :background-color = !menu_link_bg + #030
+  :padding 0
+  :margin 0
+  :list-style none
+  :vertical-align bottom
+  li
+    :float left
+    :margin 7px 0 0 5px
+    :padding 0
+    &.current
+      :font-size 20px
+      :font-weight bold
+      :margin 0 10px 0 5px
+    &.stats
+      :float right
+      :margin-right 5px
+    &.bottom
+      :margin 0
+      :border-top = 3px solid !menu_link_fg
+      :background-color = !page_bg
+      :float none
+      :clear both
+    a
+      :color = !menu_link_fg
+      :text-decoration none
+      &:hover
+        :text-decoration underline
+    
+#disableOverlay
+  :position absolute
+  :width 100%
+  :height 100%
+  :top 0
+  :left 0
+  :z-index 1000  
+  :background-color #000
+  :color #fff
+  :font-weight bold
+  :font-size 24px
+  .content
+    :position absolute
+    img
+      :margin-left 28px
+
+#tabStats
+  :text-align center
+    
+.question
+  .options-link
+    :white-space nowrap
+    :text-decoration none
+    :color = !menu_link_fg
+    &:hover
+      :text-decoration underline
+  .additionalInfo
+    :color = !menu_link_bg - #888
+    :width 100%
+  textarea.additionalInfo
+    :height 50px
+    :color = !menu_link_bg - #333
+  textarea.additionalInfoRequired
+    :color = !menu_link_bg - #088
+  textarea.hasContent
+    :color = !page_fg
+  .response
+    :font-size 13px
+    :font-weight bold
+    :padding-left 10px
+    :color = !menu_link_fg
+  .attachments .attachment 
+    :padding-top 3px
+    img
+      :display inline
+      :padding 2px 4px 0 0
+      :margin-bottom -3px
+      &.progress
+        :padding-left 4px
+  .more-options
+    :position absolute
+    :z-index 10
+    :background-color = !page_bg
+    :border = 1px solid !footer_bg
+    :padding 5px
+    .optionDescription
+      :display none
+    .description
+      :font-style italic
+      :border-top = 1px dotted !footer_bg
+      :padding-top 5px
+    .close
+      :position absolute
+      :top 5px
+      :right 5px
+    ul
+      :padding 0 0 5px 0
+      :margin 0
+      li
+        :display inline
+        :list-style none
+        :padding 0
+        :margin 0
+  .calendarButton
+    :display inline
+    :padding 0px 10px 0px 10px
+  .calendarText
+    :background-color #eeeeee
+  .subordinates
+    :padding-left 25px
+    ul
+      :padding 0
+      :margin 0
+      li
+        :list-style none
+        :padding 4px 0
+        :margin 0
+
+#formControlsDirections
+  :position absolute
+  :right 18px
+  :top 55px
+#formControls
+  :position absolute
+  :right 0
+  :top 200px
+  :width 26px
+  :height 47px
+  :background-color = !menu_link_bg
+  :border = 1px solid (!menu_link_bg - #333)
+  :border-right 0
+  img
+    :padding 5px 5px 0 5px
+
+.fieldset
+  :position relative
+  :background-color = !menu_link_bg
+  :border = 1px solid !footer_bg
+  :margin 30px 40px 30px 0
+  &.login
+    :margin 0
+    :padding 5px
+    label
+      :display block
+      :padding-left 2px
+      :margin-bottom -2px
+    ol li
+      :padding 5px 10px
+  .legend
+    :position absolute
+    :top -17px
+    :width 100%
+    :text-align right
+    :font-weight bold
+    em
+      :font-weight normal
+      :font-style italic
+  a
+    :white-space nowrap
+    :text-decoration none
+    :color = !menu_link_fg
+    &:hover
+      :text-decoration underline
+  ol
+    :list-style none
+    :margin 0
+    :padding 0
+    li
+      :padding 20px 5px
+      :position relative
+      img.attach-control
+        :position relative
+        :top 4px
+        :padding-right 5px
+      label.outer
+        :padding-left 2px
+      div.additionalInfo
+        :padding 4px 0
+        :font-size 11px
+        :font-style italic
+        
+.disabled
+  :border-color = !page_bg
+  .legend
+    :color = !page_fg + #666
+

@@ -1,0 +1,76 @@
+-#
+  This file is part of the CSI RegQ.
+  
+  The CSI RegQ is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+  
+  The CSI RegQ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  
+  @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
+  @license    http://www.gnu.org/licenses/   GNU General Public License v3
+
+- $localStylesheets = array('instancedata')
+- $localJavascript = array('instancedata')
+
+%h2 Import Instance
+A Questionnaire Definition or Responses Full XML document is required to create new instances in
+RegQ.  If you are using the latter document, you may optionally import the responses.  If you 
+exported an instance that contains attachments, you must import the instance with a Zip Archive.
+%br/
+%br/
+!= $this->form(null, false, 'post', array('class' => 'ImportInstance', 'enctype' => 'multipart/form-data'))
+%table
+  %tr
+    %td
+      Decryption:
+      != $this->cryptoSelect($this->cryptoID)
+      &nbsp;&nbsp;
+    %td
+      != $this->formFile('instanceFile')
+  %tr
+    %td Instance Name:
+    %td
+      != $this->formText('instanceName', '', array('size' => 50))
+  %tr
+    %td Import Responses:
+  %tr
+    - if ($this->importResponsesRadioButton === 'doNotImportAnyResponses' || !$this->importResponsesRadioButton)
+      %td
+        <input type="radio" name="importResponsesRadioButton" value="doNotImportAnyResponses" class="importResponsesRadioButton" checked="1" />Do not import any responses
+    - else
+      %td
+        <input type="radio" name="importResponsesRadioButton" value="doNotImportAnyResponses" class="importResponsesRadioButton"/>Do not import any responses
+  %tr
+    - if ($this->importResponsesRadioButton === 'importXMLResponses')
+      %td
+        <input type="radio" name="importResponsesRadioButton" value="importXMLResponses" class="importResponsesRadioButton" checked="1"/>Import XML Responses
+    - else
+      %td
+        <input type="radio" name="importResponsesRadioButton" value="importXMLResponses" class="importResponsesRadioButton" />Import XML Responses
+  %tr
+    - if ($this->importResponsesRadioButton === 'importInstanceResponses')
+      %td
+        <input type="radio" name="importResponsesRadioButton" value="importInstanceResponses" class="importResponsesRadioButton" checked="1"/>Import Instance Responses
+    - else
+      %td
+        <input type="radio" name="importResponsesRadioButton" value="importInstanceResponses" class="importResponsesRadioButton" />Import Instance Responses
+  %tr
+    %td
+      #disableImportResponses{ 'style' => 'display: none;' }
+        .option
+          != $this->formLabel('instrument', 'Questionnaire:')
+          != $this->instrumentSelect($this->importResponsesInstrumentID, 'importResponsesInstrumentSelect')
+        .option
+          != $this->formLabel('instance', 'Instance:')
+          != $this->instanceSelect($this->dataInstances, $this->importResponsesInstrumentID, 'importResponsesInstanceSelect', $this->importResponsesInstanceID)
+%br/
+!= $this->linkTo('#ImportInstance', $this->formButton('ImportInstance', 'Submit'), array('class' => 'dataButton'))
+!= $this->form(null, true)

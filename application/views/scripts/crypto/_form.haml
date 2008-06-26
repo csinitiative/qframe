@@ -1,0 +1,39 @@
+-#
+  This file is part of the CSI RegQ.
+  
+  The CSI RegQ is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+  
+  The CSI RegQ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  
+  @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
+  @license    http://www.gnu.org/licenses/   GNU General Public License v3
+
+- $label = ((isset($this->label)) ? $this->label : 'create') . ' key'
+
+.cryptoForm
+  != $this->form(array('action' => (isset($this->action)) ? $this->action : 'create'), false, 'post')
+  - if($this->form !== null)
+    != $this->formHidden('cryptoID', $this->form->cryptoID)
+  != $this->formHidden('indexUrl', $this->url(array('action' => 'index', 'id' => null)))
+  %h2= $label
+  %ul
+    %li
+      != $this->formLabel('name', 'Profile Name')
+      != $this->formText('name', ($this->form !== null) ? $this->h($this->form->name) : null, array('size' => 50))
+    %li
+      != $this->formLabel('secret', 'Secret (optional)**')
+      != $this->formText('secret', ($this->form !== null) ? $this->h($this->form->secret) : null, array('size' => 50))
+    %li
+      != $this->formSubmit('submitButton', $label)
+      - if(isset($this->action) && $this->action === 'modify')
+        != $this->formButton('cancelButton', 'cancel')
+  != $this->form(null, true)

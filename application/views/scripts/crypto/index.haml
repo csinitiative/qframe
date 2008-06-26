@@ -1,0 +1,62 @@
+-#
+  This file is part of the CSI RegQ.
+  
+  The CSI RegQ is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+  
+  The CSI RegQ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  
+  @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
+  @license    http://www.gnu.org/licenses/   GNU General Public License v3
+
+- $localStylesheets = array('search', 'crypto')
+- $localJavascript = array('search', 'pagination', 'crypto')
+
+%form{ 'method' => 'get', 'id' => 'cryptoSearch', 'class' => 'searchForm' }  
+  != $this->formText('q', $this->q, array('size' => 25, 'original' => $this->q))
+  != $this->linkTo('#', $this->imageTag('x.gif'), array('class' => 'closeButton', 'style' => 'display: none;'))
+  != $this->formHidden('baseUrl', $this->url(array('action' => 'index')))
+%h2.padded
+  encryption keys
+  - if (CryptoModel::count())
+    - if ($this->pager->last())
+      %em= "({$this->pager->first()} - {$this->pager->last()} of " . CryptoModel::count() . ")"
+    - else
+      %em= "(0 of " . CryptoModel::count() . ")"
+  - else 
+    %em= "(none exist)"
+
+%table#cryptoTable.pageContainer
+  %tr.header
+    %th Profile Name
+    %th Key
+    %th Secret
+  != $this->renderPartial('crypto', $this->pager->current(), true)
+
+!= $this->pagination($this->pager, 'index', 'page', array('q' => $this->q))
+
+!= $this->renderPartial('form', null, false)
+!= $this->renderPartial('import', null, false)
+%p
+  * You must send your key to the intended recipient(s).  The recipient will then import the key
+  into their RegQ application.  For maximum security, it is recommended that you do not specify a
+  secret and send the entire key through a secure transmission.  Secure delivery may be an existing
+  trusted electronic transmission (e.g., sftp, scp, ssl) or physical delivery on an external storage
+  device (e.g., flash drive, cd, dvd, etc).
+%p
+  ** If secure delivery of the key is not possible, you can still achieve moderate security by
+  specifying a secret.  When a secret is specified, the key is generated based on the secret.  This
+  allows you to tell the recipient via telephone.  Specifying more words and uncommon phrases
+  increases security.
+%p
+  *** It is not recommended that you send your key insecurely.  For example, email is normally
+  insecure.  You may, however, send subsequent data encrypted with the key through insecure
+  transmissions since only those that have the key can decrypt it. 

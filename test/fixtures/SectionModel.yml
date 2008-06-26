@@ -1,0 +1,31 @@
+table: section
+
+data:
+  sample1:
+    instanceID: 3
+    tabID: 3
+    sectionID: 1
+    seqNumber: 1
+    sectionHeader: Tab 3, Section 1
+    description: Sample section description
+  sample2:
+    instanceID: 3
+    tabID: 1
+    sectionID: 2
+    seqNumber: 1
+    sectionHeader: Tab 1, Section 1
+    description: Sample section description
+  sample3:
+    instanceID: 3
+    tabID: 1
+    sectionID: 3
+    seqNumber: 3
+    sectionHeader: Tab 1, Section 3
+    description: Sample section description
+  sample4:
+    instanceID: 3
+    tabID: 1
+    sectionID: 4
+    seqNumber: 2
+    sectionHeader: Tab 1, Section 2
+    description: Sample section description

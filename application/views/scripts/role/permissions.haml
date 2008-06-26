@@ -1,0 +1,71 @@
+-#
+  This file is part of the CSI RegQ.
+  
+  The CSI RegQ is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+  
+  The CSI RegQ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  
+  @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
+  @license    http://www.gnu.org/licenses/   GNU General Public License v3
+
+- $localStylesheets = array('roles')
+- $localJavascript = array('roles')
+
+%h1
+  Permissions for role
+  %em= $this->role->roleDescription
+!= $this->form(array(), false, 'post')
+!= $this->formHidden('indexUrl', $this->url(array('action' => 'index', 'id' => null)))
+#permissions
+  #global
+    %h2 global permissions
+    %ul
+      - foreach(array('view', 'edit', 'approve', 'administer') as $permission)
+        %li
+          = $permission
+          != $this->formCheckbox("global[{$permission}]", $this->role->hasAccess($permission))
+  #tab
+    - if(isset($this->currentInstance))
+      %table
+        %tr
+          %th
+            %h2 tab permissions
+          %th.image
+            != $this->imageTag('icons/ffffff/magnifier.png', array('class' => 'inline'))
+          %th.image
+            != $this->imageTag('icons/ffffff/pencil.png', array('class' => 'inline'))
+          %th.image
+            != $this->imageTag('icons/ffffff/accept.png', array('class' => 'inline'))
+        - while($tab = $this->currentInstance->nextTab())
+          %tr
+            %td.label= $tab->tabHeader
+            %td
+              != $this->formCheckbox("tab[{$tab->tabID}][view]", $this->role->hasAccess('view', $tab))
+            %td
+              != $this->formCheckbox("tab[{$tab->tabID}][edit]", $this->role->hasAccess('edit', $tab))
+            %td
+              != $this->formCheckbox("tab[{$tab->tabID}][approve]", $this->role->hasAccess('approve', $tab))
+    - else
+      %h3
+        Select a questionnaire and instance to set per-tab permissions.
+      %br/
+      != $this->formHidden('selectURL', $this->url(array()))
+      .option
+        != $this->formLabel('instrumentName', 'Questionnaire:')
+        != $this->instrumentSelect($this->instances, $this->instrument)
+      .option
+        != $this->formLabel('instanceName', 'Instance:')
+        != $this->instanceSelect($this->instances, $this->instrument)
+  #options
+    != $this->formSubmit('submitButton', 'save')
+    != $this->formButton('cancelButton', 'cancel')
+!= $this->form(null, true)
