@@ -1,0 +1,37 @@
+table: response
+
+data:
+  sample1:
+    questionID: 1
+    responseID: 1
+    responseDate: 2007-10-21 00:21:43
+    responseText: Sample Response 1
+    additionalInfo: This is some additional information
+  sample2:
+    questionID: 1
+    responseID: 2
+    responseDate: 2007-10-25 00:21:43
+    responseText: Sample Response 2
+    additionalInfo: This is some more information
+    state: Assigned
+  sample4:
+    questionID: 1
+    responseID: 4
+    responseDate: 2007-10-26 00:21:43
+    responseText: Sample Response 4
+    additionalInfo: This is some more information
+    state: Approved
+  sample5:
+    questionID: 1
+    responseID: 5
+    responseDate: 2007-10-27 00:21:43
+    responseText: Sample Response 5
+    additionalInfo: This is some more information
+    state: Unassigned
+  sample3:
+    questionID: 1
+    responseID: 3
+    responseDate: 2007-10-28 00:21:43
+    responseText: Sample Response 3
+    additionalInfo: This is some more information
+    state: Completed

@@ -1,0 +1,1 @@
+csi-regq-idx-v1.sql

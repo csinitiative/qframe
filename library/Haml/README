@@ -1,0 +1,36 @@
+- Items that are not supported
+  - IE conditional comments
+  - Multi-line strings
+  - Filters
+  
+- There is currently also an issue with constructs such as:
+
+  - if(foo == bar)
+    ...
+  - else
+    ...
+    
+  related to the fact that the rendered code looks something like:
+  
+  <?php if(foo == bar) { ?>
+    ...
+  <?php } ?>
+  <?php else { ?>
+    ...
+  <?php } ?>
+  
+  instead of:
+  
+  <?php if(foo == bar) { ?>
+    ...
+  <?php } else { ?>
+    ...
+  <?php } ?>
+  
+  This will clearly need to be fixed at some point as this is a somewhat problematic issue.  Now
+  is not the time however.  In the meantime this construct will have to be used instead:
+  
+  - if(foo == bar)
+    ...
+  - if(foo != bar)
+    ...

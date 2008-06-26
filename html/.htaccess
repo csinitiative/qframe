@@ -1,0 +1,5 @@
+SetEnv          REGQ_ENV development
+
+RewriteEngine   on
+RewriteRule     \.css$ sass.php [L]
+RewriteRule     !\.(js|ico|gif|jpg|png|css|php|html)$ route.php

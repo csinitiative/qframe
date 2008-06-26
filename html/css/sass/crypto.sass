@@ -1,0 +1,65 @@
+!page_bg = #fff
+!header_border = #00653a
+!menu_link_fg = #00653a
+!menu_link_bg = #ddd
+!menu_current_border = #fe0
+!footer_bg = #001922
+
+.hidden
+  :display none
+  
+table#cryptoTable
+  :border-collapse collapse
+
+  th, td
+    :padding 10px 15px
+    :text-align left
+    :vertical-align middle
+    :height 40px
+  
+  th
+    :padding-bottom 0px
+    :color = !menu_link_fg
+    :font-weight bold
+
+  td
+    :background-color = !menu_link_bg
+    :color #000
+    :font-weight normal
+
+  .controlBox
+    :width 37px
+    :white-space nowrap
+
+  tr
+    :border = 1px solid (!menu_link_bg - #333)
+    &.header
+      :border 0
+      
+  tr.hover td
+    :background-color = !menu_link_bg + #030
+
+table, .cryptoForm
+  :margin-bottom 20px
+
+.fixed
+  :font-family "Lucida Console",Monaco,monospace
+
+.cryptoForm
+  label
+    :display block
+  ul
+    :background-color #dfd
+    :margin 0
+    :padding 10px 0 0 0
+    :border = 1px solid !page_bg
+    li
+      :list-style none
+      :margin 0
+      :padding 0 10px 10px 10px
+      
+  #options
+    :clear both
+    :background-color = !menu_link_bg + #030
+    :padding 10px
+    :margin 2px

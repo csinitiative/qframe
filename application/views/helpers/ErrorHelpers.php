@@ -1,0 +1,89 @@
+<?php
+/**
+ * This file is part of the CSI RegQ.
+ *
+ * The CSI RegQ is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * The CSI RegQ is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @category   RegQ_View
+ * @package    RegQ_View_Helper
+ * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
+ * @license    http://www.gnu.org/licenses/   GNU General Public License v3
+ */
+
+
+/**
+ * @category   RegQ_View
+ * @package    RegQ_View_Helper
+ * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
+ * @license    http://www.gnu.org/licenses/   GNU General Public License v3
+ */
+class RegQ_View_Helper_ErrorHelpers {
+  
+  /**
+   * Stores the associated view for persistence
+   * @var Zend_View_Interface
+   */
+  private $view = null;
+  
+  /**
+   * Sets the associated view (should be called automatically by the view)
+   *
+   * @param Zend_View_Interface
+   */
+  public function setView($view) {
+    $this->view = $view;
+  }
+  
+  /**
+   * Makes a path relative to the root of the application (as opposed to an absolute path)
+   *
+   * @param  string absolute path
+   * @return string
+   */
+  public function relativizePath($path) {
+    if(substr($path, 0, strlen(PROJECT_PATH)) === PROJECT_PATH) {
+      return substr($path, strlen(PROJECT_PATH) + 1);
+    }
+    return $path;
+  }
+  
+  /**
+   * Returns a readable version of a call in a stack trace (returned by Exception->getTrace())
+   *
+   * @param  Array single call in the call stack
+   * @return string
+   */
+  public function stringifyCall($call) {
+    $string = "{$this->relativizePath($call['file'])}({$call['line']}): ";
+    if(isset($call['class'])) $string .= "{$call['class']}{$call['type']}";
+    $string .= "{$call['function']}({$this->stringifyParameters($call)})";
+    
+    return $string;
+  }
+  
+  /**
+   * Returns a readable version of a parameter list from a stack trace call
+   *
+   * @param  Array single call in the call stack
+   * @return string
+   */
+  public function stringifyParameters($call) {
+    foreach($call['args'] as $arg) {
+      if(is_object($arg)) $args[] = 'Object(' . get_class($arg) . ')';
+      elseif(is_string($arg)) $args[] = "'{$arg}'";
+      else $args[] = $arg;
+    }
+    return (isset($args)) ? implode(', ', $args) : '';
+  }
+}

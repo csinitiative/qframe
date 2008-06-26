@@ -1,0 +1,51 @@
+!page_bg = #fff
+!header_border = #00653a
+!menu_link_fg = #00653a
+!menu_link_bg = #ddd
+!menu_current_border = #fe0
+!footer_bg = #001922
+
+h2
+  em
+    :font-size 14px
+    :font-weight normal
+    :font-style italic
+  img
+    :margin-bottom -3px
+
+.pageContainer
+  :border = 1px solid (!menu_link_bg - #333)
+  :border-width 1px 0 0 0
+  :width 250px
+  :margin-bottom 25px
+  .paged
+    :position relative
+    :background-color = !menu_link_bg
+    :font-size 11px
+    :padding 5px
+    :border = 1px solid (!menu_link_bg - #333)
+    :border-top 0
+    .hidden
+      :display none
+    .title
+      :color = !menu_link_fg
+      :font-weight bold
+    .inactive
+      :color = !menu_link_bg - #666
+    .subtitle
+      :font-style italic
+      :font-size 10px
+    img.progress
+      :position absolute
+      :right 10px
+      :top 10px
+    .controls
+      :position absolute
+      :right 30px
+      :top 4px
+    .tall
+      :top 10px
+    &.hover
+      :background-color = !menu_link_bg + #030
+  .pagination
+    :text-align center

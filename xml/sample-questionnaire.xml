@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<csi:instrument xmlns:csi="http://www.csinitiative.com/ns/csi-regq"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+instrumentName="Demo Questionnaire" instrumentVersion="1" revision="1" targetRegQVersion="1.0">
+  <csi:tabs>
+   
+    <csi:tab>
+      <csi:tabHeader>this tab has 2 references</csi:tabHeader>
+      <csi:tabGUID>1</csi:tabGUID>
+      <csi:seqNumber>1</csi:seqNumber>
+      <csi:tabReferences>
+        <csi:reference>
+          <csi:shortName>ABC</csi:shortName>
+          <csi:referenceName>Alpha Bravo Charlie</csi:referenceName>
+          <csi:item>1.2.3</csi:item>
+          <csi:referenceURL>http://abc.org/123</csi:referenceURL>
+          <csi:referenceText>Lorem ipsum dolor sit amet</csi:referenceText>
+        </csi:reference>
+        <csi:reference>
+          <csi:shortName>XYZ</csi:shortName>
+          <csi:referenceName>Xray Yankee Zulu</csi:referenceName>
+          <csi:item>7.8.9</csi:item>
+          <csi:referenceURL>http://xyz.org/789</csi:referenceURL>
+          <csi:referenceText>Ut enim ad minim veniam</csi:referenceText>
+        </csi:reference>
+      </csi:tabReferences>
+      <csi:sections>
+        <csi:section>
+          <csi:sectionHeader>this section has 2 references</csi:sectionHeader>
+          <csi:sectionGUID>1</csi:sectionGUID>
+          <csi:seqNumber>1</csi:seqNumber>
+          <csi:sectionReferences>
+            <csi:reference>
+              <csi:shortName>ABC</csi:shortName>
+              <csi:referenceName>Alpha Bravo Charlie</csi:referenceName>
+              <csi:item>1.2.3</csi:item>
+              <csi:referenceURL>http://abc.org/123</csi:referenceURL>
+              <csi:referenceText>Lorem ipsum dolor sit amet</csi:referenceText>
+            </csi:reference>
+            <csi:reference>
+              <csi:shortName>XYZ</csi:shortName>
+              <csi:referenceName>Xray Yankee Zulu</csi:referenceName>
+              <csi:item>7.8.9</csi:item>
+              <csi:referenceURL>http://xyz.org/789</csi:referenceURL>
+              <csi:referenceText>Ut enim ad minim veniam</csi:referenceText>
+            </csi:reference>
+          </csi:sectionReferences>
+          <csi:questions>
+            <csi:question>
+              <csi:qText>this question has 1 reference</csi:qText>
+              <csi:questionGUID>1</csi:questionGUID>
+              <csi:seqNumber>1</csi:seqNumber>
+              <csi:questionReferences>
+                <csi:reference>
+                  <csi:shortName>ABC</csi:shortName>
+                  <csi:referenceName>Alpha Bravo Charlie</csi:referenceName>
+                  <csi:item>1.2.3</csi:item>
+                  <csi:referenceURL>http://abc.org/123</csi:referenceURL>
+                  <csi:referenceText>Lorem ipsum dolor sit amet</csi:referenceText>
+                </csi:reference>
+              </csi:questionReferences>
+              <csi:questionType>T</csi:questionType>
+            </csi:question>
+          </csi:questions>
+        </csi:section>
+      </csi:sections>
+    </csi:tab>
+    
+    <csi:tab>
+      <csi:tabHeader>rules</csi:tabHeader>
+      <csi:tabGUID>2</csi:tabGUID>
+      <csi:seqNumber>2</csi:seqNumber>
+      <csi:sections>
+        <csi:section>
+          <csi:sectionHeader>
+            this section contains questions with rules to disable things
+          </csi:sectionHeader>
+          <csi:sectionGUID>2</csi:sectionGUID>
+          <csi:seqNumber>2</csi:seqNumber>
+          <csi:questions>
+            <csi:question>
+              <csi:qText>
+                answering "disable" will disable the section called "target section" while
+                answering "enable" will enable this section.
+              </csi:qText>
+              <csi:questionGUID>2</csi:questionGUID>
+              <csi:seqNumber>2</csi:seqNumber>
+              <csi:questionType>S</csi:questionType>
+              <csi:questionPrompt>
+                <csi:promptText>disable</csi:promptText>
+                <csi:disableSection>3</csi:disableSection>
+              </csi:questionPrompt>
+              <csi:questionPrompt>
+                <csi:promptText>enable</csi:promptText>
+              </csi:questionPrompt>
+            </csi:question>
+            <csi:question>
+              <csi:qText>
+                answering "disable" will disable the question called "target question" while
+                answering "enable" will enable this question.
+              </csi:qText>
+              <csi:questionGUID>3</csi:questionGUID>
+              <csi:seqNumber>3</csi:seqNumber>
+              <csi:questionType>S</csi:questionType>
+              <csi:questionPrompt>
+                <csi:promptText>disable</csi:promptText>
+                <csi:disableQuestion>5</csi:disableQuestion>
+              </csi:questionPrompt>
+              <csi:questionPrompt>
+                <csi:promptText>enable</csi:promptText>
+              </csi:questionPrompt>
+            </csi:question>
+            <csi:question>
+              <csi:qText>
+                answering "disable" will disable the tab called "target tab" while
+                answering "enable" will enable this tab.
+              </csi:qText>
+              <csi:questionGUID>4</csi:questionGUID>
+              <csi:seqNumber>4</csi:seqNumber>
+              <csi:questionType>S</csi:questionType>
+              <csi:questionPrompt>
+                <csi:promptText>disable</csi:promptText>
+                <csi:disableTab>3</csi:disableTab>
+              </csi:questionPrompt>
+              <csi:questionPrompt>
+                <csi:promptText>enable</csi:promptText>
+              </csi:questionPrompt>
+            </csi:question>
+          </csi:questions>
+        </csi:section>
+        <csi:section>
+          <csi:sectionHeader>
+            target section
+          </csi:sectionHeader>
+          <csi:sectionGUID>3</csi:sectionGUID>
+          <csi:seqNumber>3</csi:seqNumber>
+          <csi:questions>
+            <csi:question>
+              <csi:qText>target question</csi:qText>
+              <csi:questionGUID>5</csi:questionGUID>
+              <csi:seqNumber>1</csi:seqNumber>
+              <csi:questionType>T</csi:questionType>
+            </csi:question>
+            <csi:question>
+              <csi:qText>this question is merely a placeholder</csi:qText>
+              <csi:questionGUID>6</csi:questionGUID>
+              <csi:seqNumber>2</csi:seqNumber>
+              <csi:questionType>T</csi:questionType>
+            </csi:question>
+          </csi:questions>
+        </csi:section>
+      </csi:sections>
+    </csi:tab>
+    
+    <csi:tab>
+      <csi:tabHeader>target tab</csi:tabHeader>
+      <csi:tabGUID>3</csi:tabGUID>
+      <csi:seqNumber>3</csi:seqNumber>
+      <csi:headerText>This is just a placeholder tab to act as a target for rules</csi:headerText>
+    </csi:tab>
+    
+  </csi:tabs>
+</csi:instrument>

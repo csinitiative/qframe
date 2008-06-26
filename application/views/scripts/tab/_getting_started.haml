@@ -1,0 +1,10 @@
+#gettingStarted{ 'style' => 'display: none;' }
+  != $this->imageTag('edit_instructions/info.png', array('class' => 'info'))
+  != $this->imageTag('edit_instructions/arrow.png', array('class' => 'arrow'))
+  .dontShow
+    != $this->form(array())
+    != $this->formCheckbox('dontShow', false)
+    don't show this screen again
+    != $this->form(null, true)
+  .close
+    != $this->linkTo('#', $this->imageTag('edit_instructions/close.png'), array('class' => 'closeButton'))

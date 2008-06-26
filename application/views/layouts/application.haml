@@ -1,0 +1,82 @@
+-#
+  This file is part of the CSI RegQ.
+  
+  The CSI RegQ is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+  
+  The CSI RegQ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  
+  @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
+  @license    http://www.gnu.org/licenses/   GNU General Public License v3
+
+!!!
+%html{ 'xmlns' => 'http://www.w3.org/1999/xhtml', 'xml:lang' => 'en' }
+  %head
+    %meta{ 'http-equiv' => 'Content-type', 'content' => 'text/html; charset=utf-8' }/
+    %title CSI RegQ
+    != $this->stylesheetTag(array('printmain'), array('media' => 'print'))
+    != $this->stylesheetTag(array('main'))
+    - if(isset($localStylesheets) && is_array($localStylesheets))
+      != $this->stylesheetTag($localStylesheets)
+    != $this->javascriptTag(array('lib/prototype', 'lib/scriptaculous', 'application'))
+    - if(isset($localJavascript) && is_array($localJavascript))
+      != $this->javascriptTag($localJavascript)
+
+  %body
+    != $this->formHidden('base_url', $this->baseUrl)
+    #page
+      #header
+        %a{ 'target' => '_new', 'href' => 'http://www.csinitiative.com' }
+          != $this->imageTag('logo.gif', array('alt' => '[CSI Logo]', 'class' => 'inline'))
+        %ol
+          - if(isset($this->headerTabs))
+            != $this->renderPartial('tab', $this->headerTabs, true, true)
+        - if(isset($this->loggedInUser))
+          #loginMessage
+            You are currently logged in as
+            %em= $this->loggedInUser->dbUserName
+            != $this->linkTo(array('controller' => 'auth', 'action' => 'logout'), '[log out]')
+            != $this->linkTo(array('controller' => 'auth', 'action' => 'passwd'), '[change password]')
+      #menu
+        - if(isset($this->instanceInfo))
+          .header
+            .text
+              Questionnaire:
+              %strong= $this->instanceInfo['instrument']  . ' ' . $this->instanceInfo['instrumentVersion']
+              %br/
+              Instance:
+              %strong= $this->instanceInfo['instance']
+              %br/
+              %br/
+              Complete:
+              %strong= $this->currentInstance->numComplete
+              of
+              %strong= $this->currentInstance->numQuestions
+              = "({$this->currentInstance->getPctComplete()}%)"
+              %br/
+              Approved:
+              %strong= $this->currentInstance->numApproved
+              of
+              %strong= $this->currentInstance->numQuestions
+              = "({$this->currentInstance->getPctApproved()}%)"
+              %br/
+              %br/
+              != $this->linkTo($this->changeInstancePath, '[change]')
+        %h1= (isset($this->menuTitle)) ? $this->menuTitle : 'tabs'
+        %ol
+          - if(isset($this->menuItems))
+            != $this->renderPartial('menu', $this->menuItems, true, true)
+      #content
+        - if(isset($this->flash['error']))
+          #error= $this->flash['error']
+        - if(isset($this->flash['notice']))
+          #notice= $this->flash['notice']
+        != $this->yield()

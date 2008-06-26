@@ -1,0 +1,3 @@
+cache_templates: true
+data_path: data
+base_url: ""

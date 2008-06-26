@@ -1,0 +1,71 @@
+-#
+  This file is part of the CSI RegQ.
+  
+  The CSI RegQ is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+  
+  The CSI RegQ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  
+  @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
+  @license    http://www.gnu.org/licenses/   GNU General Public License v3
+
+- $localStylesheets = array('instancedata')
+- $localJavascript = array('instancedata')
+
+!= $this->renderPartial('ImportInstance', null)
+
+%br/
+%br/
+
+%h2 New Instance
+Create a new instance from an existing questionnaire.  Pick a name for the new instance.
+%br/
+%br/
+!= $this->form(array(), false, 'post')
+.option
+  != $this->formLabel('instrument', 'Select Questionnaire:')
+  != $this->instrumentSelect($this->dataInstrumentID)
+!= $this->form(null, true)
+- if (isset($this->dataInstrumentID))
+  != $this->renderPartial('NewInstance', null)
+    
+%br/
+%br/
+
+%h2 Instance Operations
+%br/
+!= $this->form(array(), false, 'post')
+.option
+  != $this->formLabel('instrument', 'Select Instance:')
+  != $this->instrumentSelect($this->dataInstrumentID)
+  - if (isset($this->dataInstrumentID))
+    != $this->instanceSelect($this->dataInstances, $this->dataInstrumentID, 'instance', $this->dataInstanceID)
+!= $this->form(null, true)
+- if(isset($this->dataInstanceID))
+    %br/
+    %br/
+    %h3	 Export XML
+    %hr/
+    != $this->renderPartial('ResponsesXML', null)
+    %br/
+    %br/
+    != $this->renderPartial('FullXML', null)
+    %br/
+    %br/
+    != $this->renderPartial('CopyInstance', null)
+    %br/
+    %br/
+    != $this->renderPartial('DeleteInstance', null)
+
+#disableOverlay{ 'style' => 'display: none;' }
+  .content
+    Processing    
+    != $this->imageTag('progress-large-black.gif')

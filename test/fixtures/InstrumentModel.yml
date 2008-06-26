@@ -1,0 +1,23 @@
+table: instrument
+
+data:
+  sample1:
+    instrumentID: 1
+    instrumentName: Sample Instrument
+    instrumentVersion: "1.0"
+    revision: 1
+  sample2:
+    instrumentID: 2
+    instrumentName: Sample Instrument
+    instrumentVersion: "3.0"
+    revision: 1
+  sample3:
+    instrumentID: 3
+    instrumentName: Sample Instrument
+    instrumentVersion: "2.0"
+    revision: 1
+  sample4:
+    instrumentID: 4
+    instrumentName: Sample No Instances
+    instrumentVersion: "1.0"
+    revision: 1

@@ -1,0 +1,81 @@
+-#
+  This file is part of the CSI RegQ.
+  
+  The CSI RegQ is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+  
+  The CSI RegQ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  
+  @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
+  @license    http://www.gnu.org/licenses/   GNU General Public License v3
+
+- $mode = Zend_Controller_Front::getInstance()->getRequest()->getActionName()
+- $response = $this->question->getResponse()
+- $style = ($this->question->disableCount > 0) ? 'display: none;' : '';
+
+%li{ 'style' => $style }
+  .question{ 'id' => "question-{$this->question->questionID}" }
+    - if($this->question->parent instanceof SectionModel && $mode != 'approve')
+      .approvalMessage
+        - if($this->question->virtualQuestion)
+          != $this->imageTag('icons/eeeeee/arrow_right.png', array('class' => 'inline', 'alt' => ''))
+          This is a virtual question
+        - elseif($response->state == 2) 
+          != $this->imageTag('icons/eeeeee/accept.png', array('class' => 'inline', 'alt' => ''))
+          This response has been approved
+        - else
+          != $this->imageTag('icons/eeeeee/delete.png', array('class' => 'inline', 'alt' => ''))
+          This response has not been approved
+        - if($response->approverComments !== null && $response->approverComments !== '')
+          .comments= $response->approverComments
+    != $this->questionPrompt($this->question)
+    - if(!$this->question->virtualQuestion && $mode === 'edit' && $response->state != 2)
+      != $this->questionElement($this->question, $response)
+      != $this->formHidden("disableCount[{$this->question->questionID}]", $this->question->disableCount)
+      != $this->linkTo('#', 'More Options', array('class' => 'options-link'))
+      != $this->imageTag('right-arrow.gif', array('class' => 'inline', 'alt' => ''))
+      != $this->additionalInfo($response)
+      .more-options{ 'style' => 'display: none;' }
+        %ul
+          - if(!$response->hasAdditionalInfo())
+            %li
+              != $this->optionButton('showAddlInfo', 'page_white_edit.png', 'add additional information')
+          - if($this->question->parent instanceof SectionModel)
+            %li
+              != $this->optionButton('attach', 'attach.png', 'attach a file')
+        != $this->optionButton('hideOptionsHandler', 'close_button.gif', 'close options panel', 'close')
+        .description hover over an icon for a description
+    - elseif($this->question->virtualQuestion || ($mode === 'view' || $mode === 'approve') || ($mode === 'edit' && $response->state == 2))
+      != $this->questionText($response)
+      .additionalInfo= $response->additionalInfo
+  
+    .attachments
+      != $this->attachments($this->question, $mode)    
+    .subordinates
+      %ol
+        != $this->renderPartial('question', $this->question->children, true)
+  
+    - if($mode === 'approve' && $this->question->parent instanceof SectionModel)
+      .approval
+        - if($this->question->virtualQuestion)
+          This is a virtual question and cannot be approved
+        - elseif($response->requiresAdditionalInfo() && !$response->hasAdditionalInfo())
+          Approval not yet possible because additional info is required but has not been provided
+        - elseif($response->hasApprovableResponse())
+          != $this->formLabel("approvals[{$response->questionID}]", 'Approved')
+          != $this->formRadio("approvals[{$response->questionID}]", $response->state, null, array(1 => 'No', 2 => 'Yes'), '&nbsp;')
+          - if($response->approverComments === null || $response->approverComments === '')
+            != $this->linkTo('#addComment', 'Add Comment')
+            != $this->formTextarea("comments[{$response->questionID}]", null, array('style' => 'display: none;'))
+          - else
+            != $this->formTextarea("comments[{$response->questionID}]", $this->h($response->approverComments))
+        - else
+          Approval not yet possible because of insufficient response data

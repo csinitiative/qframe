@@ -1,0 +1,40 @@
+!page_bg = #fff
+!header_border = #00653a
+!menu_link_fg = #00653a
+!menu_link_bg = #ddd
+!menu_current_border = #fe0
+!footer_bg = #001922
+
+.sectionApproval
+  :position absolute
+  :top -17px
+  a
+    :text-decoration none
+    :color = !header_border
+    &:hover
+      :text-decoration underline
+      
+.approval, .approvalMessage
+  :padding 5px
+  :margin-top 8px
+  :background-color = !menu_link_bg + #111
+  :border = 1px solid (!menu_link_bg - #222)
+  :font-size 14px   
+.approvalMessage
+  :margin 0 0 10px 0
+  :width auto
+  img
+    :margin-bottom -2px
+  .comments
+    :padding-top 5px
+    :font-size 12px
+    :font-style italic
+        
+.approval
+  textarea
+    :width 100%
+    :height 50px
+    :margin-top 5px
+  a
+    :font-size 12px
+    :padding-left 10px
