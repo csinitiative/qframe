@@ -35,3 +35,10 @@ data:
     responseText: Sample Response 3
     additionalInfo: This is some more information
     state: Completed
+  sample6:
+    questionID: 2
+    responseID: 6
+    responseDate: 2007-10-28 00:21:43
+    responseText: 3
+    additionalInfo: This is some more information
+    state: Completed

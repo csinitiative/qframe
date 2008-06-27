@@ -37,7 +37,13 @@ require_once 'PHPUnit/Framework.php';
 class Test_Unit_QuestionModelTest extends RegQ_Test_Unit {
   
   public function start() {
-    $this->fixture(array('TabModel', 'SectionModel', 'QuestionTypeModel', 'QuestionPromptModel', 'ResponseModel'));
+    $this->fixture(array(
+      'TabModel',
+      'SectionModel',
+      'QuestionTypeModel',
+      'QuestionPromptModel',
+      'ResponseModel'
+    ));
   }
   
   /*
@@ -148,7 +154,7 @@ class Test_Unit_QuestionModelTest extends RegQ_Test_Unit {
     $question = $this->question();
     $this->assertEquals(count($question->prompts), 0);
     $question = $this->question(array('questionID' => 2));
-    $this->assertEquals(count($question->prompts), 2);
+    $this->assertEquals(count($question->prompts), 3);
   }
   
   /*

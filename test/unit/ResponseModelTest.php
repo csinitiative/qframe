@@ -38,7 +38,13 @@ class Test_Unit_ResponseModelTest extends RegQ_Test_Unit {
     
   // Initialization
   public function start() {
-    $this->fixture(array('TabModel', 'SectionModel', 'QuestionModel', 'QuestionTypeModel'));
+    $this->fixture(array(
+      'TabModel',
+      'SectionModel',
+      'QuestionModel',
+      'QuestionTypeModel',
+      'QuestionPromptModel'
+    ));
   }
     
   /*
@@ -118,7 +124,17 @@ class Test_Unit_ResponseModelTest extends RegQ_Test_Unit {
       $response = $this->response();
       $this->fail('Fetching a deleted response should produce an Exception');
     } catch(Exception $e) {}
-  }  
+  }
+  
+  /*
+   * test that requiresAdditionalInfo() is functioning correctly
+   */
+  public function testrequiresAdditionalInfo() {
+    $response = $this->response();
+    $this->assertFalse($response->requiresAdditionalInfo());
+    $response = $this->response(array('responseID' => 6));
+    $this->assertTrue($response->requiresAdditionalInfo());
+  }
   
   private function response($args = array()) {
     $args = array_merge(array(

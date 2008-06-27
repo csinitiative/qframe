@@ -245,6 +245,12 @@ class RegQ_View_Helper_TabHelpers {
       $style = '';
       $mod = 1;
     }
+    elseif($response->requiresAdditionalInfo()) {
+      $class .= ' additionalInfoRequired';
+      $content = 'Enter additional information here (required)';
+      $style = '';
+      $mod = 0;
+    }
     else {
       $style = 'display: none;';
       $content = 'Enter additional information here';

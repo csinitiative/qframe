@@ -187,12 +187,8 @@ class ResponseModel {
       $this->parent = new QuestionModel(array('questionID' => $this->responseRow->questionID,
                                               'depth' => 'question'));
     }
-    $question = $this->parent;
-    foreach($question->prompts as $prompt) {
-      if($prompt['promptID'] == $this->responseText) {
-        if($prompt['requireAddlInfo']) return true;
-        else break;
-      }
+    foreach($this->parent->prompts as $prompt) {
+      if($prompt['promptID'] == $this->responseText && $prompt['requireAddlInfo']) return true;
     }
     
     return false;
@@ -287,6 +283,16 @@ class ResponseModel {
     }
     
     // if we get here, FALSE
+    return false;
+  }
+  
+  /**
+   * Checks whether or not additional information is required based on the current responseText
+   * value
+   *
+   * @return boolean
+   */
+  public function addlInfoRequired() {
     return false;
   }
 }

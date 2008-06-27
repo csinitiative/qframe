@@ -55,6 +55,7 @@ var CsiRegq = {
     var e = Event.element(evt);
     if(e.value == '') {
       e.value = 'Enter additional information here';
+      if(e.hasClassName('additionalInfoRequired')) e.value += ' (required)';
       e.removeClassName('hasContent');
       $(e.name + '_mod').value = 0;
     }

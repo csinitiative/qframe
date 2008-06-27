@@ -9,3 +9,8 @@ data:
     promptID: 2
     questionTypeID: 2
     value: No
+  sample3:
+    promptID: 3
+    questionTypeID: 2
+    value: N/A
+    requireAddlInfo: 1
