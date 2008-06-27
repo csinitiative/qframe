@@ -122,19 +122,21 @@ if(file_exists('/selinux/enforce')) {
 $permissions = array(
   'log' => array(
     'own' => "{$web_server_user}:",
-    'mod' => 0775
+    'mod' => "0775"
   ),
   'application/views/cache' => array(
     'own' => "{$web_server_user}:",
-    'mod' => 0775
+    'mod' => "0775"
   ),
   'html/css' => array(
-    'own' => "{$web_server_user}:",
-    'mod' => 0775
+    'own'       => "{$web_server_user}:",
+    'mod'       => "0775",
+    'recurse'   => false,
+    'contents'  => true 
   ),
   'tmp' => array(
     'own' => "{$web_server_user}:",
-    'mod' => 0700
+    'mod' => "0700"
   )
 );
 
@@ -163,16 +165,37 @@ foreach($permissions as $directory => $settings) {
     
     // Change file mode if that change is requested by settings
     if(isset($settings['mod'])) {
-      chmod($directory, $settings['mod']);
-      $modestring = sprintf('0%o', $settings['mod']);
-      echo "  changing file mode to {$modestring}\n";
+      // Set up any necessary flags
+      $flags = '';
+      if(!isset($settings['recurse']) || $settings['recurse']) $flags .= '-R';
+
+      // Done using backticks because PHP wrapper "chmod()" does not support recursive mode
+      // changes
+      `chmod {$flags} {$settings['mod']} {$directory}`;
+      
+      // If the "contents" option is set, also set the mode on the contents
+      if(isset($settings['contents']) && $settings['contents']) {
+        `find {$directory} -depth 1 ! -type d -exec chmod {$settings['mod']} '{}' ';'`;
+      }
+
+      echo "  changing file mode to {$settings['mod']}\n";
     }
   
     // Change file permissions if that change is requested by settings
     if(isset($settings['own'])) {
+      // Set up any necessary flags
+      $flags = '';
+      if(!isset($settings['recurse']) || $settings['recurse']) $flags .= '-R';
+      
       // Done using backticks because of a peculiarity in Mac OS where the user www resolves
       // to the user _www when using the native chmod but not when using the PHP function
-      `chown {$settings['own']} {$directory}`;
+      `chown {$flags} {$settings['own']} {$directory}`;
+      
+      // If the "contents" option is set, also set the ownership on the contents
+      if(isset($settings['contents']) && $settings['contents']) {
+        `find {$directory} -depth 1 ! -type d -exec chown {$settings['own']} '{}' ';'`;
+      }
+      
       echo "  changing file ownership to {$settings['own']}\n";
     }
   }
