@@ -19,10 +19,24 @@ var Tabs = {
   requireAddlRadioClick: function(event) {
     var radio = Event.element(event);
     var addlInfo = radio.up('.question').down('.additionalInfo');
-    if(radio.checked && !addlInfo.visible()) {
+    if(radio.checked) {
       addlInfo.addClassName('additionalInfoRequired');
       addlInfo.value += ' (required)';
-      addlInfo.show();
+    }
+    if(!addlInfo.visible()) addlInfo.show();
+  },
+  
+  /**
+   * Process a click event for a radio button that does not require additional info
+   *
+   * @param Event click event
+   */
+  radioClick: function(event) {
+    var radio = Event.element(event);
+    var addlInfo = radio.up('.question').down('.additionalInfo');
+    if(!radio.hasClassName('require-addl') && radio.checked && addlInfo.visible()) {
+      addlInfo.removeClassName('additionalInfoRequired');
+      addlInfo.value = addlInfo.value.replace(/ \(required\)$/, '');
     }
   },
   
@@ -89,6 +103,9 @@ var Tabs = {
   setup: function(event) {
     $$('.question .require-addl').each(function(radio) {
       radio.observe('click', Tabs.requireAddlRadioClick);
+    });
+    $$('.question input[type=radio]').each(function(radio) {
+      radio.observe('click', Tabs.radioClick);
     });
     
     Event.observe(window, 'scroll', Tabs.windowScroll);
