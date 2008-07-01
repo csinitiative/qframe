@@ -21,7 +21,7 @@
 - $localJavascript = array('questionnairedata')
 
 %h2 Import Questionnaire
-Upload a Questionnaire Definition XML Document or Full Responses XML Document.  A Zip Archive export containing either of these documents may also be used.
+Upload a Questionnaire Definition XML Document.  A Responses XML Document may be used since it also contains question information.  A Zip Archive export containing either of these documents may also be used.
 %br/
 %br/
 != $this->renderPartial('ImportQuestionnaire', null)
@@ -44,12 +44,14 @@ Upload a Questionnaire Definition XML Document or Full Responses XML Document.  
   != $this->renderPartial('QuestionnaireDefinitionXML', null)
   %br/
   %br/
-  != $this->renderPartial('ResponsesXMLSchema', null)
-  %br/
-  %br/
-  != $this->renderPartial('CompletedResponsesXMLSchema', null)
-  %br/
-  %br/
+  -# Questionnaire XML Schemas are commented out for this version of QFrame until it is
+  -# determined whether users will benefit from such files.
+  -# != $this->renderPartial('ResponsesXMLSchema', null)
+  -# %br/
+  -# %br/
+  -# != $this->renderPartial('CompletedResponsesXMLSchema', null)
+  -# %br/
+  -# %br/
   %h3 Delete Questionnaire
   %hr/
   != $this->renderPartial('DeleteQuestionnaire', null)

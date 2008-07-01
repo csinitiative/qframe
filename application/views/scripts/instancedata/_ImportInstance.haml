@@ -21,9 +21,8 @@
 - $localJavascript = array('instancedata')
 
 %h2 Import Instance
-A Questionnaire Definition or Responses Full XML document is required to create new instances in
-RegQ.  If you are using the latter document, you may optionally import the responses.  If you 
-exported an instance that contains attachments, you must import the instance with a Zip Archive.
+An exported Responses XML document is required to import an instance into CSI QFrame.  
+If you exported an instance that contains attachments, you must import the instance with a Zip Archive.
 %br/
 %br/
 != $this->form(null, false, 'post', array('class' => 'ImportInstance', 'enctype' => 'multipart/form-data'))

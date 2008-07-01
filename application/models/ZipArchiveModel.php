@@ -144,7 +144,7 @@ class ZipArchiveModel extends ZipArchive {
    * @return string
    */
   public function getInstanceFullResponsesXMLDocument() {
-    $string = $this->getFromName('xml/full-instance-responses.xml');
+    $string = $this->getFromName('xml/instance-responses.xml');
     if ($string === FALSE) return;
     return $string;
   }
@@ -181,7 +181,7 @@ class ZipArchiveModel extends ZipArchive {
    * Adds the Instance Full Responses XML Document
    */
   public function addInstanceFullResponsesXMLDocument() {
-    $this->addFromString('xml/full-instance-responses.xml', $this->instance->toXML(1));
+    $this->addFromString('xml/instance-responses.xml', $this->instance->toXML(1));
   }
   
   /**

@@ -22,11 +22,10 @@
 
 %h3
   = $this->dataInstance->instanceName
-  Full XML
-This XML document contains the entire instance.  It is a combination of both the Questionnaire
-Definition and Responses XML documents.  This document may be used in place of the Questionnaire
-Definition to create a new instance of the questionnaire in the RegQ application. If you want to
-export any attachments associated with this instance, it must be exported as a Zip Archive.
+  Responses XML Document
+This XML document contains both question and response information.  This document is used to import an
+instance into another CSI QFrame installation or another enterprise system.  If you want to export any
+attachments associated with this instance, it must be exported as a Zip Archive.
 %br/
 %br/
 != $this->form(array('action' => 'ResponsesFullXML'), false, 'post', array('class' => 'ResponsesFullXML'))
