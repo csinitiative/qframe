@@ -31,7 +31,10 @@ class ErrorController extends RegQ_Controller_Action {
    * the login action if the user is not already logged in.
    */
   public function preDispatch() {}
-  public function postDispatch() {}
+  public function postDispatch() {
+    // This line is basically copied from the postDispatch() in RegQ_Controller_Action
+    $this->view->baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
+  }
   public function init() {}
   
   /**
