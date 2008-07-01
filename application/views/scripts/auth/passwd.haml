@@ -17,28 +17,32 @@
   @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
-%h1 change your password
+#content.wide
+  %a{ 'target' => '_new', 'href' => 'http://www.csinitiative.com' }
+    != $this->imageTag('logo.gif', array('alt' => '[CSI Logo]', 'class' => 'inline'))
 
-!= $this->form(array())
-%fieldset
-  %ol
-    %li
-      != $this->formPassword('old', null)
-      != $this->formLabel('old', 'old password:')
-    %li
-      != $this->formPassword('new1', null)
-      != $this->formLabel('new1', 'new password:')
-    %li
-      != $this->formPassword('new2', null)
-      != $this->formLabel('new2', "confirm:")
-    %li
-      != $this->formSubmit('changepassword', 'change password', array('class' => 'notext'))
-    %li.divider &nbsp;
-    %li
-      - if(isset($this->flash['error']))
-        %em= $this->flash['error']
-      - if(isset($this->flash['notice']))
-        %strong= $this->flash['notice']
-      - if(!isset($this->flash['error']) && !isset($this->flash['notice']))
-        Confirm old password and choose a new password
-!= $this->form(null, true)
+  %h1 change your password
+
+  != $this->form(array())
+  %fieldset
+    %ol
+      %li
+        != $this->formPassword('old', null)
+        != $this->formLabel('old', 'current password:')
+      %li
+        != $this->formPassword('new1', null)
+        != $this->formLabel('new1', 'new password:')
+      %li
+        != $this->formPassword('new2', null)
+        != $this->formLabel('new2', "confirm:")
+      %li
+        != $this->formSubmit('changepassword', 'change password', array('class' => 'notext'))
+      %li.divider &nbsp;
+      %li
+        - if(isset($this->flash['error']))
+          %em= $this->flash['error']
+        - if(isset($this->flash['notice']))
+          %strong= $this->flash['notice']
+        - if(!isset($this->flash['error']) && !isset($this->flash['notice']))
+          Confirm current password and choose a new password
+  != $this->form(null, true)

@@ -26,7 +26,4 @@
     != $this->javascriptTag(array('lib/prototype', 'lib/scriptaculous', 'application', 'moreoptions'))
 
   %body
-    #content
-      %a{ 'target' => '_new', 'href' => 'http://www.csinitiative.com' }
-        != $this->imageTag('logo.gif', array('alt' => '[CSI Logo]', 'class' => 'inline'))
-      != $this->yield()
+    != $this->yield()

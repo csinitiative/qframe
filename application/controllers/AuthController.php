@@ -79,13 +79,13 @@ class AuthController extends RegQ_Controller_Action {
         $this->_getParam('old')
       );
       if(!$auth->authenticate($auth_adapter)->isValid()) {
-        $this->flashNow('error', 'Old password is invalid');
+        $this->flashNow('error', 'Current password is invalid');
       }
       elseif($this->_getParam('new1') !== $this->_getParam('new2')) {
         $this->flashNow('error', 'New passwords do not match');
       }
       elseif($this->_getParam('old') === $this->_getParam('new1')) {
-        $this->flashNow('error', 'New password is the same as old password');
+        $this->flashNow('error', 'New password is the same as current password');
       }
       else {
         $user = DbUserModel::findByUsername($auth->getIdentity());
