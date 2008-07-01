@@ -30,6 +30,6 @@ class AdminController extends RegQ_Controller_Admin {
    * Action for the main administrative screen
    */
   public function indexAction() {
-    $this->_redirector->gotoRoute(array('controller' => 'instrumentdata'));
+    $this->_redirector->gotoRoute(array('controller' => 'questionnairedata'));
   }
 }

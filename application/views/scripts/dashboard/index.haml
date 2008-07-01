@@ -29,10 +29,10 @@
 != $this->form(array(), false, 'get')
 
 .option
-  != $this->formLabel('instrument', 'Questionnaire:')
-  != $this->instrumentSelect($this->instances, $this->instrument)
+  != $this->formLabel('questionnaire', 'Questionnaire:')
+  != $this->questionnaireSelect($this->instances, $this->questionnaire)
 .option
   != $this->formLabel('instance', 'Instance:')
-  != $this->instanceSelect($this->instances, $this->instrument)
+  != $this->instanceSelect($this->instances, $this->questionnaire)
 
 != $this->form(null, true)

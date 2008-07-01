@@ -2,21 +2,21 @@ table: instance
 
 data:
   sample1:
-    instrumentID: 1
+    questionnaireID: 1
     instanceID: 1
-    instanceName: Sample Instance 1 for Instrument 1
+    instanceName: Sample Instance 1 for Questionnaire 1
     instanceCurrent: 1
     instanceDate: 2007-10-31 00:00:00
   sample2:
-    instrumentID: 2
+    questionnaireID: 2
     instanceID: 2
-    instanceName: Sample Instance 1 for Instrument 2
+    instanceName: Sample Instance 1 for Questionnaire 2
     instanceCurrent: 0
     instanceDate: 2006-10-31 10:25:00
   sample3:
-    instrumentID: 2
+    questionnaireID: 2
     instanceID: 3
-    instanceName: Sample Instance 2 for Instrument 2
+    instanceName: Sample Instance 2 for Questionnaire 2
     instanceCurrent: 1
     instanceDate: 2007-10-15 01:22:13
     

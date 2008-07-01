@@ -10,21 +10,21 @@ var Data = {
   },
 
   /**
-   * Handles a click on the "InstrumentDefinitionXMLDownload" button
+   * Handles a click on the "QuestionnaireDefinitionXMLDownload" button
    *
-   * @param Event click event for the "InstrumentDefinitionXMLDownload" button
+   * @param Event click event for the "QuestionnaireDefinitionXMLDownload" button
    */
-  InstrumentDefinitionXMLDownloadHandler: function(event) {
-    _handle(event, 'InstrumentDefinitionXML', 'InstrumentDefinitionXMLDownload');
+  QuestionnaireDefinitionXMLDownloadHandler: function(event) {
+    _handle(event, 'QuestionnaireDefinitionXML', 'QuestionnaireDefinitionXMLDownload');
   },
 
   /**
-   * Handles a click on the "InstrumentDefinitionXMLView" button
+   * Handles a click on the "QuestionnaireDefinitionXMLView" button
    *
-   * @param Event click event for the "InstrumentDefinitionXMLView" button
+   * @param Event click event for the "QuestionnaireDefinitionXMLView" button
    */
-  InstrumentDefinitionXMLViewHandler: function(event) {
-    _handle(event, 'InstrumentDefinitionXML', 'InstrumentDefinitionXMLView');
+  QuestionnaireDefinitionXMLViewHandler: function(event) {
+    _handle(event, 'QuestionnaireDefinitionXML', 'QuestionnaireDefinitionXMLView');
   },
 
   /**
@@ -32,8 +32,8 @@ var Data = {
    *
    * @param Event click event for the "ImportXML" button
    */
-  ImportInstrumentHandler: function(event) {
-    _handle(event, 'ImportInstrument', 'ImportInstrument');
+  ImportQuestionnaireHandler: function(event) {
+    _handle(event, 'ImportQuestionnaire', 'ImportQuestionnaire');
   },
 
   /**
@@ -73,21 +73,21 @@ var Data = {
   },
   
   /**
-   * Handles a click on the "importInstrument" button
+   * Handles a click on the "importQuestionnaire" button
    *
-   * @param Event click event for the "importInstrument" button
+   * @param Event click event for the "importQuestionnaire" button
    */
-  importInstrumentHandler: function(event) {
-    _handle(event, 'importInstrument', 'importInstrument');
+  importQuestionnaireHandler: function(event) {
+    _handle(event, 'importQuestionnaire', 'importQuestionnaire');
   },
   
   /**
-   * Handles a click on the "deleteInstrument" button
+   * Handles a click on the "deleteQuestionnaire" button
    *
-   * @param Event click event for the "deleteInstrument" button
+   * @param Event click event for the "deleteQuestionnaire" button
    */
-  deleteInstrumentHandler: function(event) {
-    _handle(event, 'deleteInstrument', 'deleteInstrument');
+  deleteQuestionnaireHandler: function(event) {
+    _handle(event, 'deleteQuestionnaire', 'deleteQuestionnaire');
   },
 
   /**
@@ -121,7 +121,7 @@ function _handle (event, form, action) {
   content.setStyle({ top: top + 'px', left: left + 'px' });
   Effect.Appear('disableOverlay', { duration: 0.15, to: 0.90 });
   if (action) {
-    $$('form.' + form).first().action = '/instrumentdata/' + action;
+    $$('form.' + form).first().action = '/questionnairedata/' + action;
   }
   $$('form.' + form).first().submit();
 

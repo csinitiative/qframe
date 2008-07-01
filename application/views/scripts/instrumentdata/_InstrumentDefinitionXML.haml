@@ -17,19 +17,19 @@
   @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
-- $localStylesheets = array('instrumentdata')
-- $localJavascript = array('instrumentdata')
+- $localStylesheets = array('questionnairedata')
+- $localJavascript = array('questionnairedata')
 
 %h3
-  = $this->dataInstrument->instrumentName
-  = $this->dataInstrument->instrumentVersion
+  = $this->dataQuestionnaire->questionnaireName
+  = $this->dataQuestionnaire->questionnaireVersion
   Questionnaire Definition XML
 This XML document defines the tabs, sections, questions, and rules for this questionnaire.  This
 document may be used to create a new instance of the questionnaire in the RegQ application.
 %br/
 %br/
-!= $this->form(array('action' => 'InstrumentDefinitionXML'), false, 'post', array('class' => 'InstrumentDefinitionXML'))
+!= $this->form(array('action' => 'QuestionnaireDefinitionXML'), false, 'post', array('class' => 'QuestionnaireDefinitionXML'))
 Encryption:
 != $this->cryptoSelect($this->cryptoID)
-!= $this->linkTo('#InstrumentDefinitionXMLDownload', $this->formButton('InstrumentDefinitionXMLDownload', 'Download'), array('class' => 'dataButton'))
+!= $this->linkTo('#QuestionnaireDefinitionXMLDownload', $this->formButton('QuestionnaireDefinitionXMLDownload', 'Download'), array('class' => 'dataButton'))
 != $this->form(null, true)

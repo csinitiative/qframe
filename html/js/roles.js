@@ -6,7 +6,7 @@ var Roles = {
    * @param Event change event
    */
   selectChange: function(event) {
-    var url = $F('selectURL') + '?' + $('instrument').serialize() + '&' + $('instance').serialize();
+    var url = $F('selectURL') + '?' + $('questionnaire').serialize() + '&' + $('instance').serialize();
     window.location = url;
   },
   

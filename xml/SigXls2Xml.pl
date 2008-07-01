@@ -12,7 +12,7 @@ my $DEBUG = 1;
 my $excel = Spreadsheet::ParseExcel::Workbook->Parse('SIGv3 Final_v2_comp.xls');
 
 print qq[<?xml version="1.0" encoding="UTF-8"?>
-<csi:instrument xmlns:csi="http://www.csinitiative.com/ns/csi-regq" instrumentName="CSI SIG" instrumentVersion="3.00">
+<csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-regq" questionnaireName="CSI SIG" questionnaireVersion="3.00">
   <csi:tabs>
 ];
 
@@ -126,7 +126,7 @@ foreach my $sheet (@{$excel->{Worksheet}}) {
 }
 
 print qq[  </csi:tabs>\n];
-print qq[</csi:instrument>];
+print qq[</csi:questionnaire>];
 
 sub encode_entities {
   my $string = shift;

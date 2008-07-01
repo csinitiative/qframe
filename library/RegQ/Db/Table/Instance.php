@@ -38,9 +38,9 @@ class RegQ_Db_Table_Instance extends RegQ_Db_Table {
     return parent::insert($data);
   }
   
-  public function getInstanceID($instrumentID, $instanceName) {
+  public function getInstanceID($questionnaireID, $instanceName) {
 
-    $where = $this->getAdapter()->quoteInto('instrumentID = ?', intval($instrumentID));
+    $where = $this->getAdapter()->quoteInto('questionnaireID = ?', intval($questionnaireID));
     $where .= $this->getAdapter()->quoteInto(' AND instanceName = ?', $instanceName);
 
     if ($row = $this->fetchRow($where)) {

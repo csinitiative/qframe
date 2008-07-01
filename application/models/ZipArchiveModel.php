@@ -95,33 +95,33 @@ class ZipArchiveModel extends ZipArchive {
   }
 
   /**
-   * Gets the raw contents of the Instrument Definition XML Document
+   * Gets the raw contents of the Questionnaire Definition XML Document
    * 
    * @return string
    */
-  public function getInstrumentDefinitionXMLDocument() {
-    $string = $this->getFromName('xml/instrument-definition.xml');
+  public function getQuestionnaireDefinitionXMLDocument() {
+    $string = $this->getFromName('xml/questionnaire-definition.xml');
     if ($string === FALSE) return;
     return $string;
   }
   
   /**
-   * Gets the raw contents of the Instrument Responses XML Schema
+   * Gets the raw contents of the Questionnaire Responses XML Schema
    * 
    * @return string
    */
-  public function getInstrumentResponsesXMLSchema() {
+  public function getQuestionnaireResponsesXMLSchema() {
     $string = $this->getFromName('xml/response-schema.xsd');
     if ($string === FALSE) return;
     return $string;
   }
   
   /**
-   * Gets the raw contents of the Completed Instrument Responses XML Schema
+   * Gets the raw contents of the Completed Questionnaire Responses XML Schema
    * 
    * @return string
    */
-  public function getInstrumentCompletedResponsesXMLSchema() {
+  public function getQuestionnaireCompletedResponsesXMLSchema() {
     $string = $this->getFromName('xml/completed-response-schema.xsd');
     if ($string === FALSE) return;
     return $string;
@@ -150,23 +150,23 @@ class ZipArchiveModel extends ZipArchive {
   }
 
   /**
-   * Adds the Instrument Definition XML Document to the zip archive
+   * Adds the Questionnaire Definition XML Document to the zip archive
    */
-  public function addInstrumentDefinitionXMLDocument() {
-    $this->addFromString('xml/instrument-definition.xml', $this->instance->parent->fetchInstrumentDefinition());
+  public function addQuestionnaireDefinitionXMLDocument() {
+    $this->addFromString('xml/questionnaire-definition.xml', $this->instance->parent->fetchQuestionnaireDefinition());
   }
 
   /**
-   * Adds the Instrument Responses XML Schema to the zip archive
+   * Adds the Questionnaire Responses XML Schema to the zip archive
    */  
-  public function addInstrumentResponsesXMLSchema() {
+  public function addQuestionnaireResponsesXMLSchema() {
     $this->addFromString('xml/response-schema.xsd', $this->instance->parent->fetchResponseSchema());
   }
   
   /**
-   * Adds the Instrument Completed Responses XML Schema to the zip archive
+   * Adds the Questionnaire Completed Responses XML Schema to the zip archive
    */
-  public function addInstrumentCompletedResponsesXMLSchema() {
+  public function addQuestionnaireCompletedResponsesXMLSchema() {
     $this->addFromString('xml/completed-response-schema.xsd', $this->instance->parent->fetchResponseSchema());
   }
   

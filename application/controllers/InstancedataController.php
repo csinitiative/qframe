@@ -31,15 +31,15 @@ class InstancedataController extends RegQ_Controller_Admin {
    */
   public function indexAction() {
     $session = new Zend_Session_Namespace('login');
-    $instrumentID = ($this->_hasParam('instrument')) ? $this->_getParam('instrument') : $session->dataInstrumentID;
+    $questionnaireID = ($this->_hasParam('questionnaire')) ? $this->_getParam('questionnaire') : $session->dataQuestionnaireID;
     $instanceID = ($this->_hasParam('instance')) ? $this->_getParam('instance') : $session->dataInstanceID;
 
-    if (is_numeric($instrumentID) && $instrumentID > 0) {
-      $this->view->dataInstrument = new InstrumentModel(array('instrumentID' => $instrumentID,
-                                                              'depth' => 'instrument'));
+    if (is_numeric($questionnaireID) && $questionnaireID > 0) {
+      $this->view->dataQuestionnaire = new QuestionnaireModel(array('questionnaireID' => $questionnaireID,
+                                                              'depth' => 'questionnaire'));
     }
     else {
-      $instrumentID = null;
+      $questionnaireID = null;
     }
 
     if (is_numeric($instanceID) && $instanceID > 0) {
@@ -50,15 +50,15 @@ class InstancedataController extends RegQ_Controller_Admin {
       $instanceID = null;
     }
 
-    $session->dataInstrumentID = $instrumentID;
+    $session->dataQuestionnaireID = $questionnaireID;
     $session->dataInstanceID = $instanceID;
-    $this->view->dataInstrumentID = $session->dataInstrumentID;
+    $this->view->dataQuestionnaireID = $session->dataQuestionnaireID;
     $this->view->dataInstanceID = $session->dataInstanceID;
 
-    $instruments = InstrumentModel::getAllInstruments('tab');
+    $questionnaires = QuestionnaireModel::getAllQuestionnaires('tab');
     $allowedInstances = array();
-    foreach($instruments as $instrument) {
-      while($instance = $instrument->nextInstance()) {
+    foreach($questionnaires as $questionnaire) {
+      while($instance = $questionnaire->nextInstance()) {
         while($tab = $instance->nextTab()) {
           if($this->_user->hasAnyAccess($tab)) {
             $allowedInstances[] = $instance;
@@ -73,21 +73,21 @@ class InstancedataController extends RegQ_Controller_Admin {
     $radioButton = $this->_getParam('importResponsesRadioButton');
     $this->view->importResponsesRadioButton = $radioButton;
     $instanceID = ($this->_hasParam('importResponsesInstanceSelect')) ? $this->_getParam('importResponsesInstanceSelect') : $session->importResponsesInstanceID;
-    $instrumentID = ($this->_hasParam('importResponsesInstrumentSelect')) ? $this->_getParam('importResponsesInstrumentSelect') : $session->importResponsesInstrumentID;
-    $session->importResponsesInstrumentID = $instrumentID;
+    $questionnaireID = ($this->_hasParam('importResponsesQuestionnaireSelect')) ? $this->_getParam('importResponsesQuestionnaireSelect') : $session->importResponsesQuestionnaireID;
+    $session->importResponsesQuestionnaireID = $questionnaireID;
     $session->importResponsesInstanceID = $instanceID;
     $this->view->importResponsesInstanceID = $instanceID;
-    $this->view->importResponsesInstrumentID = $instrumentID;
+    $this->view->importResponsesQuestionnaireID = $questionnaireID;
     
     // new instance import responses
     $radioButton = $this->_getParam('newInstanceImportResponsesRadioButton');
     $this->view->newInstanceImportResponsesRadioButton = $radioButton;
     $instanceID = ($this->_hasParam('newInstanceResponsesInstanceSelect')) ? $this->_getParam('newInstanceResponsesInstanceSelect') : $session->newInstanceResponsesInstanceID;
-    $instrumentID = ($this->_hasParam('newInstanceResponsesInstrumentSelect')) ? $this->_getParam('newInstanceResponsesInstrumentSelect') : $session->newInstanceResponsesInstrumentID;
-    $session->newInstanceResponsesInstrumentID = $instrumentID;
+    $questionnaireID = ($this->_hasParam('newInstanceResponsesQuestionnaireSelect')) ? $this->_getParam('newInstanceResponsesQuestionnaireSelect') : $session->newInstanceResponsesQuestionnaireID;
+    $session->newInstanceResponsesQuestionnaireID = $questionnaireID;
     $session->newInstanceResponsesInstanceID = $instanceID;
     $this->view->newInstanceResponsesInstanceID = $instanceID;
-    $this->view->newInstanceResponsesInstrumentID = $instrumentID;
+    $this->view->newInstanceResponsesQuestionnaireID = $questionnaireID;
     
     $this->view->cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
     
@@ -116,7 +116,7 @@ class InstancedataController extends RegQ_Controller_Admin {
   }
   
   /**
-   * Action for creating a new instance from an existing instrument
+   * Action for creating a new instance from an existing questionnaire
    */
   public function newInstanceAction() {
     $session = new Zend_Session_Namespace('login');
@@ -132,15 +132,15 @@ class InstancedataController extends RegQ_Controller_Admin {
       $this->_redirector->gotoRouteAndExit(array('action' => 'index'));
     }
     
-    $instrument = new InstrumentModel(array('instrumentID' => $session->dataInstrumentID,
-                                            'depth' => 'instrument'));
+    $questionnaire = new QuestionnaireModel(array('questionnaireID' => $session->dataQuestionnaireID,
+                                            'depth' => 'questionnaire'));
     
     if ($importResponses === 'newInstanceImportInstanceResponses') { 
       $importResponsesInstanceID = $this->_getParam('newInstanceResponsesInstanceSelect');
-      InstanceModel::importXML($instrument->fetchInstrumentDefinition(), $instanceName, array('instanceID' => $importResponsesInstanceID));
+      InstanceModel::importXML($questionnaire->fetchQuestionnaireDefinition(), $instanceName, array('instanceID' => $importResponsesInstanceID));
     }
     else {
-      InstanceModel::importXML($instrument->fetchInstrumentDefinition(), $instanceName);
+      InstanceModel::importXML($questionnaire->fetchQuestionnaireDefinition(), $instanceName);
     }
     
     $this->flash('notice', 'New Instance Created');
@@ -232,8 +232,8 @@ class InstancedataController extends RegQ_Controller_Admin {
       throw new Exception('Unrecognized file extension [' . $filename . ']');
     }
   
-    // Import the instrument definition if it doesn't already exist    
-    InstrumentModel::importXML($import);
+    // Import the questionnaire definition if it doesn't already exist    
+    QuestionnaireModel::importXML($import);
 
     if ($importResponses === 'importInstanceResponses') { 
       $importResponsesInstanceID = $this->_getParam('importResponsesInstanceSelect');

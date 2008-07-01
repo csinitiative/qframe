@@ -34,7 +34,7 @@ require_once 'PHPUnit/Framework.php';
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class Test_Unit_InstrumentModelTest extends RegQ_Test_Unit {
+class Test_Unit_QuestionnaireModelTest extends RegQ_Test_Unit {
   
   public function start() {
     $this->fixture(array('DbUserModel', 'RoleModel', 'InstanceModel'));
@@ -60,13 +60,13 @@ class Test_Unit_InstrumentModelTest extends RegQ_Test_Unit {
   }
   
   /*
-   * test that trying to fetch an invalid instrument name will result
+   * test that trying to fetch an invalid questionnaire name will result
    * in an exception being thrown
    */
-  public function testInvalidInstrumentNameProducesException() {
+  public function testInvalidQuestionnaireNameProducesException() {
     try {
-      $instance = new InstrumentModel(array('instrumentName' => 'INVALID',
-                                            'instrumentVersion' => '1.0',
+      $instance = new QuestionnaireModel(array('questionnaireName' => 'INVALID',
+                                            'questionnaireVersion' => '1.0',
                                             'revision' => 1));
     }
     catch(Exception $e) { return; }
@@ -88,50 +88,50 @@ class Test_Unit_InstrumentModelTest extends RegQ_Test_Unit {
   }
   
   /*
-   * test that importing instrument definition XML document works
+   * test that importing questionnaire definition XML document works
    */  
-  public function testXMLImportTest1Instrument() {
+  public function testXMLImportTest1Questionnaire() {
     $this->auth();
 
-    $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/test1-instrument-definition.xml");
-    InstrumentModel::importXML($xml);
-    $instrument = new InstrumentModel(array('instrumentName' => 'Test1 Instrument',
-                                            'instrumentVersion' => '3.00',
+    $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/test1-questionnaire-definition.xml");
+    QuestionnaireModel::importXML($xml);
+    $questionnaire = new QuestionnaireModel(array('questionnaireName' => 'Test1 Questionnaire',
+                                            'questionnaireVersion' => '3.00',
                                             'revision' => 1,
-                                            'depth' => 'instrument'));
-    $this->assertEquals($instrument->instrumentName, 'Test1 Instrument');
-    $this->assertEquals($instrument->instrumentVersion, '3.00');
+                                            'depth' => 'questionnaire'));
+    $this->assertEquals($questionnaire->questionnaireName, 'Test1 Questionnaire');
+    $this->assertEquals($questionnaire->questionnaireVersion, '3.00');
   }
 
   /*
-   * test that after importing a instrument definition, its signature matches expected value
+   * test that after importing a questionnaire definition, its signature matches expected value
    */
-  public function testImportInstrumentSignatureMatchesExpected() {
+  public function testImportQuestionnaireSignatureMatchesExpected() {
     $this->auth();
 
-    $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/test1-instrument-definition.xml");
-    InstrumentModel::importXML($xml);
-    $instrument = new InstrumentModel(array('instrumentName' => 'Test1 Instrument',
-                                            'instrumentVersion' => '3.00',
+    $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/test1-questionnaire-definition.xml");
+    QuestionnaireModel::importXML($xml);
+    $questionnaire = new QuestionnaireModel(array('questionnaireName' => 'Test1 Questionnaire',
+                                            'questionnaireVersion' => '3.00',
                                             'revision' => 1,
-                                            'depth' => 'instrument'));
-    $this->assertEquals($instrument->signature, 'a6226f7dc986aca3a9ba31efb068e012');
+                                            'depth' => 'questionnaire'));
+    $this->assertEquals($questionnaire->signature, '6a1feaee76fea9226556579085e7585d');
   }
   
   /*
-   * test that importing instrument definition XML document from ZIP file works
+   * test that importing questionnaire definition XML document from ZIP file works
    */  
-  public function testXMLImportTest1InstrumentZip() {
+  public function testXMLImportTest1QuestionnaireZip() {
     $this->auth();
 
-    $import = new ZipArchiveModel(null, array('filename' => PROJECT_PATH . "/test/data/zip/instrument-definition.zip"));
-    InstrumentModel::importXML($import);
-    $instrument = new InstrumentModel(array('instrumentName' => 'Test1 Instrument',
-                                            'instrumentVersion' => '3.00',
+    $import = new ZipArchiveModel(null, array('filename' => PROJECT_PATH . "/test/data/zip/questionnaire-definition.zip"));
+    QuestionnaireModel::importXML($import);
+    $questionnaire = new QuestionnaireModel(array('questionnaireName' => 'Test1 Questionnaire',
+                                            'questionnaireVersion' => '3.00',
                                             'revision' => 1,
-                                            'depth' => 'instrument'));
-    $this->assertEquals($instrument->instrumentName, 'Test1 Instrument');
-    $this->assertEquals($instrument->instrumentVersion, '3.00');
+                                            'depth' => 'questionnaire'));
+    $this->assertEquals($questionnaire->questionnaireName, 'Test1 Questionnaire');
+    $this->assertEquals($questionnaire->questionnaireVersion, '3.00');
   }
   
   /*
@@ -143,7 +143,7 @@ class Test_Unit_InstrumentModelTest extends RegQ_Test_Unit {
     
     $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/self-referential-disableQuestion.xml");
     try {
-      InstrumentModel::importXML($xml);
+      QuestionnaireModel::importXML($xml);
     }
     catch(Exception $e) { return; }
     $this->fail('Import of a self-referential disableQuestion rule should produce an exception');
@@ -158,7 +158,7 @@ class Test_Unit_InstrumentModelTest extends RegQ_Test_Unit {
     
     $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/self-referential-disableSection.xml");
     try {
-      InstrumentModel::importXML($xml);
+      QuestionnaireModel::importXML($xml);
     }
     catch(Exception $e) { return; }
     $this->fail('Import of a self-referential disableSection rule should produce an exception');
@@ -173,7 +173,7 @@ class Test_Unit_InstrumentModelTest extends RegQ_Test_Unit {
     
     $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/self-referential-disableTab.xml");
     try {
-      InstrumentModel::importXML($xml);
+      QuestionnaireModel::importXML($xml);
     }
     catch(Exception $e) { return; }
     $this->fail('Import of a self-referential disableTab rule should produce an exception');

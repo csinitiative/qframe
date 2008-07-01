@@ -44,8 +44,8 @@ class RegQ_Controller_Admin extends RegQ_Controller_Action {
     $this->view->menuItems = array(
       array(
         'label'   => 'Questionnaire Management',
-        'url'     => $this->view->url(array('controller' => 'instrumentdata'), null, true),
-        'current' => $controller == 'instrumentdata',
+        'url'     => $this->view->url(array('controller' => 'questionnairedata'), null, true),
+        'current' => $controller == 'questionnairedata',
         'locked'  => false
       ),
       array(

@@ -17,14 +17,14 @@
   @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
-- $localStylesheets = array('instrumentdata')
-- $localJavascript = array('instrumentdata')
+- $localStylesheets = array('questionnairedata')
+- $localJavascript = array('questionnairedata')
 
 %h2 Import Questionnaire
 Upload a Questionnaire Definition XML Document or Full Responses XML Document.  A Zip Archive export containing either of these documents may also be used.
 %br/
 %br/
-!= $this->renderPartial('ImportInstrument', null)
+!= $this->renderPartial('ImportQuestionnaire', null)
 
 %br/
 %br/
@@ -33,15 +33,15 @@ Upload a Questionnaire Definition XML Document or Full Responses XML Document.  
 %br/
 != $this->form(array(), false, 'post')
 .option
-  != $this->formLabel('instrument', 'Select Questionnaire:')
-  != $this->instrumentSelect($this->dataInstrumentID)
+  != $this->formLabel('questionnaire', 'Select Questionnaire:')
+  != $this->questionnaireSelect($this->dataQuestionnaireID)
 != $this->form(null, true)
-- if(isset($this->dataInstrumentID))
+- if(isset($this->dataQuestionnaireID))
   %br/
   %br/
   %h3 Export XML
   %hr/
-  != $this->renderPartial('InstrumentDefinitionXML', null)
+  != $this->renderPartial('QuestionnaireDefinitionXML', null)
   %br/
   %br/
   != $this->renderPartial('ResponsesXMLSchema', null)
@@ -52,7 +52,7 @@ Upload a Questionnaire Definition XML Document or Full Responses XML Document.  
   %br/
   %h3 Delete Questionnaire
   %hr/
-  != $this->renderPartial('DeleteInstrument', null)
+  != $this->renderPartial('DeleteQuestionnaire', null)
 
 #disableOverlay{ 'style' => 'display: none;' }
   .content

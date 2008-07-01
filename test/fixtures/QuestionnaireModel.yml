@@ -1,0 +1,23 @@
+table: questionnaire
+
+data:
+  sample1:
+    questionnaireID: 1
+    questionnaireName: Sample Questionnaire
+    questionnaireVersion: "1.0"
+    revision: 1
+  sample2:
+    questionnaireID: 2
+    questionnaireName: Sample Questionnaire
+    questionnaireVersion: "3.0"
+    revision: 1
+  sample3:
+    questionnaireID: 3
+    questionnaireName: Sample Questionnaire
+    questionnaireVersion: "2.0"
+    revision: 1
+  sample4:
+    questionnaireID: 4
+    questionnaireName: Sample No Instances
+    questionnaireVersion: "1.0"
+    revision: 1

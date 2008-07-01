@@ -25,12 +25,12 @@
  */
 class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Storer {
 
-  private $instrumentRow;
+  private $questionnaireRow;
   private $instanceRow;
   private $tabs;
   private $tabsIndex;
   private $depth;
-  static $instrumentTable;
+  static $questionnaireTable;
   static $instanceTable;
   static $tabTable;
   static $questionTable;
@@ -48,7 +48,7 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
   /**
    * Create a new InstanceModel object
    *
-   * @param array containing instanceID or instrumentName,instrumentVersion,revision,instanceName
+   * @param array containing instanceID or questionnaireName,questionnaireVersion,revision,instanceName
    */
   function __construct ($args = array()) {
 
@@ -56,7 +56,7 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
       'depth'   => 'tab'
     ), $args);
 
-    if (!isset(self::$instrumentTable)) self::$instrumentTable = RegQ_Db_Table::getTable('instrument');
+    if (!isset(self::$questionnaireTable)) self::$questionnaireTable = RegQ_Db_Table::getTable('questionnaire');
     if (!isset(self::$instanceTable)) self::$instanceTable = RegQ_Db_Table::getTable('instance');
     if (!isset(self::$tabTable)) self::$tabTable = RegQ_Db_Table::getTable('tab');
     if (!isset(self::$questionTable)) self::$questionTable = RegQ_Db_Table::getTable('question');
@@ -78,15 +78,15 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
       if (!isset($this->instanceRow)) {
         throw new Exception('Instance not found [' . $args['instanceID'] . ']');
       }
-      $this->parent = new InstrumentModel(array('instrumentID' => $this->instanceRow->instrumentID,
-                                                'depth' => 'instrument'));
+      $this->parent = new QuestionnaireModel(array('questionnaireID' => $this->instanceRow->questionnaireID,
+                                                'depth' => 'questionnaire'));
     }
-    elseif (isset($args['instrumentName']) && isset($args['instrumentVersion']) && isset($args['revision']) && isset($args['instanceName'])) {
-      $this->parent = new InstrumentModel(array('instrumentName' => $args['instrumentName'],
-                                                'instrumentVersion' => $args['instrumentVersion'],
+    elseif (isset($args['questionnaireName']) && isset($args['questionnaireVersion']) && isset($args['revision']) && isset($args['instanceName'])) {
+      $this->parent = new QuestionnaireModel(array('questionnaireName' => $args['questionnaireName'],
+                                                'questionnaireVersion' => $args['questionnaireVersion'],
                                                 'revision' => $args['revision'],
-                                                'depth' => 'instrument'));
-      $where = self::$instanceTable->getAdapter()->quoteInto('instrumentID = ?', $this->parent->instrumentID);
+                                                'depth' => 'questionnaire'));
+      $where = self::$instanceTable->getAdapter()->quoteInto('questionnaireID = ?', $this->parent->questionnaireID);
       $where .= self::$instanceTable->getAdapter()->quoteInto(' AND instanceName = ?', $args['instanceName']);
       $this->instanceRow = self::$instanceTable->fetchRow($where);
       // instance row assertion
@@ -184,7 +184,7 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
   /**
    * Exports an Instance XML Document
    *
-   * @param  integer If true, exports the entire instrument definition (question text, etc). 
+   * @param  integer If true, exports the entire questionnaire definition (question text, etc). 
    *                 If false, only exports guid and response data.
    * @return string XML Document
    */
@@ -198,12 +198,12 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
     $instance = new InstanceModel(array('instanceID' => $instanceID,
                                         'depth' => 'section'));
     $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-    $xml .= '<csi:instrument';
+    $xml .= '<csi:questionnaire';
 
     $xml .= ' xmlns:csi="http://www.csinitiative.com/ns/csi-regq"';
 
-    $xml .= ' instrumentName="' . self::_xmlentities($instance->instrumentName) . 
-            '" instrumentVersion="' . self::_xmlentities($instance->instrumentVersion) . 
+    $xml .= ' questionnaireName="' . self::_xmlentities($instance->questionnaireName) . 
+            '" questionnaireVersion="' . self::_xmlentities($instance->questionnaireVersion) . 
             '" revision="' . self::_xmlentities($instance->revision) . 
             '" targetRegQVersion="' . REGQ_VERSION . 
             '" instanceName="' . self::_xmlentities($instance->instanceName) . '">' . "\n";
@@ -416,7 +416,7 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
       $xml .= "    </csi:tab>\n";
     }
     $xml .= "  </csi:tabs>\n";
-    $xml .= "</csi:instrument>\n";
+    $xml .= "</csi:questionnaire>\n";
 
     RegQ_Db_Table::resetAll();
 
@@ -596,7 +596,7 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
   }
   
   /**
-   * Returns the completion % of questions in this instrument
+   * Returns the completion % of questions in this questionnaire
    *
    * @return float
    */
@@ -606,7 +606,7 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
   }
   
   /**
-   * Returns the completion % of questions in this instrument
+   * Returns the completion % of questions in this questionnaire
    *
    * @return float
    */
@@ -667,8 +667,8 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
     if (is_a($import, 'ZipArchiveModel')) {
       $zip = &$import;
       $xml = $import->getInstanceFullResponsesXMLDocument();
-      if ($xml === NULL) $xml = $import->getInstrumentDefinitionXMLDocument();
-      if ($xml === NULL) throw new Exception('Instrument definition not found in zip archive');
+      if ($xml === NULL) $xml = $import->getQuestionnaireDefinitionXMLDocument();
+      if ($xml === NULL) throw new Exception('Questionnaire definition not found in zip archive');
       $dom = new DOMDocument();
       $dom->loadXML($xml);
     }
@@ -705,7 +705,7 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
     if (!isset(self::$tabTable)) self::$tabTable = RegQ_Db_Table::getTable('tab');
     if (!isset(self::$sectionTable)) self::$sectionTable = RegQ_Db_Table::getTable('section');
     if (!isset(self::$questionTable)) self::$questionTable = RegQ_Db_Table::getTable('question');
-    if (!isset(self::$instrumentTable)) self::$instrumentTable = RegQ_Db_Table::getTable('instrument');
+    if (!isset(self::$questionnaireTable)) self::$questionnaireTable = RegQ_Db_Table::getTable('questionnaire');
     if (!isset(self::$instanceTable)) self::$instanceTable = RegQ_Db_Table::getTable('instance');
 
     $transactionNumber = self::startSerializableTransaction();
@@ -724,27 +724,27 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
     $questionPromptsMap = array(); // Stores question prompts.  First key is questionTypeID, second key is
                                    // prompt value, and the value is the promptID.
 
-    $instrument = $dom->getElementsByTagName('instrument')->item(0);
-    $instrumentName = $instrument->getAttribute('instrumentName');
-    $instrumentVersion = $instrument->getAttribute('instrumentVersion');
-    $revision = $instrument->getAttribute('revision');
+    $questionnaire = $dom->getElementsByTagName('questionnaire')->item(0);
+    $questionnaireName = $questionnaire->getAttribute('questionnaireName');
+    $questionnaireVersion = $questionnaire->getAttribute('questionnaireVersion');
+    $revision = $questionnaire->getAttribute('revision');
 
-    // If instrumentID is already known and passed an argument, use it instead of looking it up
-    if (isset($options['instrumentID'])) {
-      $instrumentID = $options['instrumentID'];
+    // If questionnaireID is already known and passed an argument, use it instead of looking it up
+    if (isset($options['questionnaireID'])) {
+      $questionnaireID = $options['questionnaireID'];
     }
     else {
-      $instrumentID = self::$instrumentTable->getInstrumentID($instrumentName, $instrumentVersion, $revision);
+      $questionnaireID = self::$questionnaireTable->getQuestionnaireID($questionnaireName, $questionnaireVersion, $revision);
     }
     
-    if (isset($instrumentID)) {
-      $instanceID = self::$instanceTable->getInstanceID($instrumentID, $instanceName);
+    if (isset($questionnaireID)) {
+      $instanceID = self::$instanceTable->getInstanceID($questionnaireID, $instanceName);
       if (isset($instanceID)) {
-        throw new Exception('Instance name already exists for this instrument');
+        throw new Exception('Instance name already exists for this questionnaire');
       }
     }
     else {
-      throw new Exception('Instrument was not found');
+      throw new Exception('Questionnaire was not found');
     }
     
     if (isset($options['instanceID'])) {
@@ -770,13 +770,13 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
       }
     }
     
-    $instanceID = self::$instanceTable->insert(array('instrumentID' => $instrumentID,
+    $instanceID = self::$instanceTable->insert(array('questionnaireID' => $questionnaireID,
                                                      'instanceName' => $instanceName));
                                                      
-    $tabs = $instrument->getElementsByTagName('tab');
+    $tabs = $questionnaire->getElementsByTagName('tab');
     for ($t = 0; $t < $tabs->length; $t++) {
       $tab = $tabs->item($t);
-      $tabIDs = self::importXMLTab($tab, $instrumentID, $instanceID, $tabGuidMap);
+      $tabIDs = self::importXMLTab($tab, $questionnaireID, $instanceID, $tabGuidMap);
       $tabID = $tabIDs[0];
       $tabGUID = $tabIDs[1];
       
@@ -795,7 +795,7 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
 
         foreach($section->getElementsByTagName('questions')->item(0)->childNodes as $question) {
           if ($question->nodeName === 'csi:question') {
-            $questionIDs = self::importXMLQuestion(false, null, $question, $instrumentID, $instanceID, $tabID, $tabGUID, $sectionID, $sectionGUID, $questionGuidMap, $questionTypeIDCache, $rulesMap, $questionPromptsMap);
+            $questionIDs = self::importXMLQuestion(false, null, $question, $questionnaireID, $instanceID, $tabID, $tabGUID, $sectionID, $sectionGUID, $questionGuidMap, $questionTypeIDCache, $rulesMap, $questionPromptsMap);
             $questionID = $questionIDs[0];
             $questionGUID = $questionIDs[1];
             $questionTypeID = $questionIDs[2];
@@ -808,7 +808,7 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
             self::importXMLResponses($responses, $question, $instanceID, $tabID, $sectionID, $questionID, $questionGUID, $questionTypeID, $importInstanceResponses, $questionPrompts, $questionPromptsMap, $responseObjs, $fileAttachments, $options);
           }
           elseif ($question->nodeName === 'csi:questionGroup') {
-            $questionIDs = self::importXMLQuestion(true, null, $question, $instrumentID, $instanceID, $tabID, $tabGUID, $sectionID, $sectionGUID, $questionGuidMap, $questionTypeIDCache, $rulesMap, $questionPromptsMap);
+            $questionIDs = self::importXMLQuestion(true, null, $question, $questionnaireID, $instanceID, $tabID, $tabGUID, $sectionID, $sectionGUID, $questionGuidMap, $questionTypeIDCache, $rulesMap, $questionPromptsMap);
             $parentQuestionID = $questionIDs[0];
             
             $questionReferences = $question->getElementsByTagName('groupQuestionReferences');
@@ -821,7 +821,7 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
             $childQuestions = $question->getElementsByTagName('question');
             for ($cq = 0; $cq < $childQuestions->length; $cq++) {
               $question = $childQuestions->item($cq);
-              $questionIDs = self::importXMLQuestion(false, $parentQuestionID, $question, $instrumentID, $instanceID, $tabID, $tabGUID, $sectionID, $sectionGUID, $questionGuidMap, $questionTypeIDCache, $rulesMap, $questionPromptsMap);
+              $questionIDs = self::importXMLQuestion(false, $parentQuestionID, $question, $questionnaireID, $instanceID, $tabID, $tabGUID, $sectionID, $sectionGUID, $questionGuidMap, $questionTypeIDCache, $rulesMap, $questionPromptsMap);
               $questionID = $questionIDs[0];
               $questionGUID = $questionIDs[1];
               $questionTypeID = $questionIDs[2];
@@ -838,7 +838,7 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
       }
     }
     
-    self::importXMLRules($instrumentID, $instanceID, $rulesMap, $tabGuidMap, $sectionGuidMap, $questionGuidMap);
+    self::importXMLRules($questionnaireID, $instanceID, $rulesMap, $tabGuidMap, $sectionGuidMap, $questionGuidMap);
     self::$questionTable->processBulk();
     self::$sectionTable->processBulk();
     self::$tabTable->processBulk();
@@ -973,7 +973,7 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
    *
    * @param  See importXML.
    */
-  private static function importXMLQuestion($parent, $parentID, $question, $instrumentID, $instanceID, $tabID, $tabGUID, $sectionID, $sectionGUID, &$questionGuidMap, &$questionTypeIDCache, &$rulesMap, &$questionPromptsMap) {   
+  private static function importXMLQuestion($parent, $parentID, $question, $questionnaireID, $instanceID, $tabID, $tabGUID, $sectionID, $sectionGUID, &$questionGuidMap, &$questionTypeIDCache, &$rulesMap, &$questionPromptsMap) {   
     $qSeqNumber = $question->getElementsByTagName('seqNumber')->item(0)->nodeValue;
     $qText = isset($question->getElementsByTagName('qText')->item(0)->nodeValue) ? $question->getElementsByTagName('qText')->item(0)->nodeValue : null;
     if ($parent) {
@@ -989,7 +989,7 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
 
     $questionTypeID = self::importXMLQuestionType($question, $questionTypeIDCache, $rulesMap, $questionPromptsMap, $questionGUID, $sectionGUID, $tabGUID, $instanceID);
     
-    $questionID = self::$questionTable->insertBulk(array('instrumentID' => $instrumentID,
+    $questionID = self::$questionTable->insertBulk(array('questionnaireID' => $questionnaireID,
                                                          'instanceID' => $instanceID,
                                                          'tabID' => $tabID,
                                                          'parentID' => $parentID,
@@ -1037,7 +1037,7 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
    *
    * @param  See importXML.
    */
-  private static function importXMLTab($tab, $instrumentID, $instanceID, &$tabGuidMap) {
+  private static function importXMLTab($tab, $questionnaireID, $instanceID, &$tabGuidMap) {
     $seqNumber = $tab->getElementsByTagName('seqNumber')->item(0)->nodeValue;
     $tabHeader = $tab->getElementsByTagName('tabHeader')->item(0)->nodeValue;
     $description = isset($tab->getElementsByTagName('description')->item(0)->nodeValue) ? $tab->getElementsByTagName('description')->item(0)->nodeValue : '';
@@ -1046,7 +1046,7 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
     $cloneable = isset($tab->getElementsByTagName('cloneable')->item(0)->nodeValue) ? $tab->getElementsByTagName('cloneable')->item(0)->nodeValue : 0;
     $defaultTabHidden = isset($tab->getElementsByTagName('defaultTabHidden')->item(0)->nodeValue) ? $tab->getElementsByTagName('defaultTabHidden')->item(0)->nodeValue : 0;
     $tabGUID = $tab->getElementsByTagName('tabGUID')->item(0)->nodeValue;
-    $tabID = self::$tabTable->insertBulk(array('instrumentID' => $instrumentID,
+    $tabID = self::$tabTable->insertBulk(array('questionnaireID' => $questionnaireID,
                                                'instanceID' => $instanceID,
                                                'seqNumber' => $seqNumber,
                                                'tabGUID' => $tabGUID,
@@ -1196,16 +1196,16 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
    *
    * @param  See importXML.
    */
-  private static function importXMLRules ($instrumentID, $instanceID, &$rulesMap, &$tabGuidMap, &$sectionGuidMap, &$questionGuidMap) {
+  private static function importXMLRules ($questionnaireID, $instanceID, &$rulesMap, &$tabGuidMap, &$sectionGuidMap, &$questionGuidMap) {
     foreach ($rulesMap as $questionPromptID => $questionPromptIDArray) {
       foreach ($questionPromptIDArray as $name => $nameArray) {
         foreach ($nameArray as $targetGUID) {
           if ($name === 'enableQuestion') {
             $questionID = $questionGuidMap[$targetGUID];
             if (!isset($questionID)) {
-              throw new Exception("questionGUID referenced in XML Instrument Definition does not exist: $targetID");
+              throw new Exception("questionGUID referenced in XML Questionnaire Definition does not exist: $targetID");
             }
-            $ruleID = self::$ruleTable->insertBulk(array('instrumentID' => $instrumentID,
+            $ruleID = self::$ruleTable->insertBulk(array('questionnaireID' => $questionnaireID,
                                                          'instanceID' => $instanceID,
                                                          'sourceID' => $questionPromptID,
                                                          'targetID' => $questionID,
@@ -1216,9 +1216,9 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
           elseif ($name === 'enableSection') {
             $sectionID = $sectionGuidMap[$targetGUID];
             if (!isset($sectionID)) {
-              throw new Exception("sectionGUID referenced in XML Instrument Definition does not exist: $targetID");
+              throw new Exception("sectionGUID referenced in XML Questionnaire Definition does not exist: $targetID");
             }
-            $ruleID = self::$ruleTable->insertBulk(array('instrumentID' => $instrumentID,
+            $ruleID = self::$ruleTable->insertBulk(array('questionnaireID' => $questionnaireID,
                                                          'instanceID' => $instanceID,
                                                          'sourceID' => $questionPromptID,
                                                          'targetID' => $sectionID,
@@ -1229,9 +1229,9 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
           elseif ($name === 'enableTab') {
             $tabID = $tabGuidMap[$targetGUID];
             if (!isset($tabID)) {
-              throw new Exception("tabGUID referenced in XML Instrument Definition does not exist: $targetID");
+              throw new Exception("tabGUID referenced in XML Questionnaire Definition does not exist: $targetID");
             }
-            $ruleID = self::$ruleTable->insertBulk(array('instrumentID' => $instrumentID,
+            $ruleID = self::$ruleTable->insertBulk(array('questionnaireID' => $questionnaireID,
                                                          'instanceID' => $instanceID,
                                                          'sourceID' => $questionPromptID,
                                                          'targetID' => $tabID,
@@ -1242,9 +1242,9 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
           elseif ($name === 'disableQuestion') {
             $questionID = $questionGuidMap[$targetGUID];
             if (!isset($questionID)) {
-              throw new Exception("questionGUID referenced in XML Instrument Definition does not exist: $targetID");
+              throw new Exception("questionGUID referenced in XML Questionnaire Definition does not exist: $targetID");
             }
-            $ruleID = self::$ruleTable->insertBulk(array('instrumentID' => $instrumentID,
+            $ruleID = self::$ruleTable->insertBulk(array('questionnaireID' => $questionnaireID,
                                                          'instanceID' => $instanceID,
                                                          'sourceID' => $questionPromptID,
                                                          'targetID' => $questionID,
@@ -1255,9 +1255,9 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
           elseif ($name === 'disableSection') {
             $sectionID = $sectionGuidMap[$targetGUID];
             if (!isset($sectionID)) {
-              throw new Exception("sectionGUID referenced in XML Instrument Definition does not exist: $targetID");
+              throw new Exception("sectionGUID referenced in XML Questionnaire Definition does not exist: $targetID");
             }
-            $ruleID = self::$ruleTable->insertBulk(array('instrumentID' => $instrumentID,
+            $ruleID = self::$ruleTable->insertBulk(array('questionnaireID' => $questionnaireID,
                                                          'instanceID' => $instanceID,
                                                          'sourceID' => $questionPromptID,
                                                          'targetID' => $sectionID,
@@ -1268,9 +1268,9 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
           elseif ($name === 'disableTab') {
             $tabID = $tabGuidMap[$targetGUID];
             if (!isset($tabID)) {
-              throw new Exception("tabGUID referenced in XML Instrument Definition does not exist: $targetID");
+              throw new Exception("tabGUID referenced in XML Questionnaire Definition does not exist: $targetID");
             }
-            $ruleID = self::$ruleTable->insertBulk(array('instrumentID' => $instrumentID,
+            $ruleID = self::$ruleTable->insertBulk(array('questionnaireID' => $questionnaireID,
                                                          'instanceID' => $instanceID,
                                                          'sourceID' => $questionPromptID,
                                                          'targetID' => $tabID,
@@ -1383,7 +1383,7 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
     if($auth->hasIdentity()) $user = DbUserModel::findByUsername($auth->getIdentity());
     else throw new Exception("Hey, no loading tabs without being logged in");
     
-    $where = self::$tabTable->getAdapter()->quoteInto('instrumentID = ?', $this->instrumentID) .
+    $where = self::$tabTable->getAdapter()->quoteInto('questionnaireID = ?', $this->questionnaireID) .
              self::$tabTable->getAdapter()->quoteInto(' AND instanceID = ?', $this->instanceID);
     $tabRowset = self::$tabTable->fetchAll($where, 'seqNumber ASC');
 

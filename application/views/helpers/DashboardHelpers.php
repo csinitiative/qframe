@@ -46,46 +46,46 @@ class RegQ_View_Helper_DashboardHelpers {
   }
  
  /**
-  * Generates a drop down box listing all instruments given an array of instances to which
+  * Generates a drop down box listing all questionnaires given an array of instances to which
   * the user has rights.
   *
   * @param  Array   list of all instances to which this user has access
-  * @param  integer currently selected instrument (or null if no instrument is currently selected)
+  * @param  integer currently selected questionnaire (or null if no questionnaire is currently selected)
   * @return string
   */
-  public function instrumentSelect($instances, $instrument) {
-    if($instrument === null) $options[0] = ' ';
+  public function questionnaireSelect($instances, $questionnaire) {
+    if($questionnaire === null) $options[0] = ' ';
     foreach($instances as $instance) {
-      $instrumentName = $this->view->h($instance->instrumentName);
-      $instrumentVersion = $this->view->h($instance->instrumentVersion);
+      $questionnaireName = $this->view->h($instance->questionnaireName);
+      $questionnaireVersion = $this->view->h($instance->questionnaireVersion);
       $revision = $this->view->h($instance->revision);
-      if(!isset($options[$instance->instrumentID])) {
-        $options[$instance->instrumentID] = "{$instrumentName} {$instrumentVersion}";
+      if(!isset($options[$instance->questionnaireID])) {
+        $options[$instance->questionnaireID] = "{$questionnaireName} {$questionnaireVersion}";
         if ($revision != 1) {
-          $options[$instance->instrumentID] .= " (rev. {$revision})";
+          $options[$instance->questionnaireID] .= " (rev. {$revision})";
         }
       }
     }
-    return $this->view->formSelect('instrument', $instrument, null, $options);
+    return $this->view->formSelect('questionnaire', $questionnaire, null, $options);
   }
   
   /**
    * Generates a drop down box listing all instances that belong to the chosen instance
    *
    * @param  Array   list of all instances to which this user has access
-   * @param  integer if of instrument that has been selected
+   * @param  integer if of questionnaire that has been selected
    * @return string
    */
-  public function instanceSelect($instances, $instrument) {
-    if($instrument === null) {
+  public function instanceSelect($instances, $questionnaire) {
+    if($questionnaire === null) {
       $options[0] = 'Select a questionnaire';
     }
     else {
       $options[0] = ' ';
       foreach($instances as $instance) {
-        $instrumentName = $this->view->h($instance->instrumentName);
+        $questionnaireName = $this->view->h($instance->questionnaireName);
         $instanceName = $this->view->h($instance->instanceName);
-        if($instance->instrumentID == $instrument) {
+        if($instance->questionnaireID == $questionnaire) {
           $options[$instance->instanceID] = $instanceName;
         }
       }

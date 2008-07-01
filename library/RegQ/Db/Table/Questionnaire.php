@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the CSI RegQ.
  *
@@ -23,20 +24,20 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class RegQ_Db_Table_Instrument extends RegQ_Db_Table {
+class RegQ_Db_Table_Questionnaire extends RegQ_Db_Table {
 
-  protected $_name = 'instrument';
-  protected $_primary = 'instrumentID';
+  protected $_name = 'questionnaire';
+  protected $_primary = 'questionnaireID';
   protected $_rowClass = 'RegQ_Db_Table_Row';
 
-  public function getInstrumentID($instrumentName, $instrumentVersion, $revision) {
+  public function getQuestionnaireID($questionnaireName, $questionnaireVersion, $revision) {
 
-    $where = $this->getAdapter()->quoteInto('instrumentName = ?', $instrumentName);
-    $where .= $this->getAdapter()->quoteInto(' AND instrumentVersion = ?', $instrumentVersion);
+    $where = $this->getAdapter()->quoteInto('questionnaireName = ?', $questionnaireName);
+    $where .= $this->getAdapter()->quoteInto(' AND questionnaireVersion = ?', $questionnaireVersion);
     $where .= $this->getAdapter()->quoteInto(' AND revision = ?', $revision);
 
     if ($row = $this->fetchRow($where)) {
-      return $row->instrumentID;
+      return $row->questionnaireID;
     }
 
     return;

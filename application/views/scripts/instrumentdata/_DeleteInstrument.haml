@@ -17,15 +17,15 @@
   @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
-- $localStylesheets = array('instrumentdata')
-- $localJavascript = array('instrumentdata')
+- $localStylesheets = array('questionnairedata')
+- $localJavascript = array('questionnairedata')
 
-!= $this->form(array('action' => 'deleteInstrument'), false, 'post', array('class' => 'deleteInstrument'))
-= 'Permanently remove the ' . $this->dataInstrument->instrumentName . ' ' . $this->dataInstrument->instrumentVersion . ' questionnaire'
+!= $this->form(array('action' => 'deleteQuestionnaire'), false, 'post', array('class' => 'deleteQuestionnaire'))
+= 'Permanently remove the ' . $this->dataQuestionnaire->questionnaireName . ' ' . $this->dataQuestionnaire->questionnaireVersion . ' questionnaire'
 %br/
 %br/
 Click to confirm:
 %br/
 %br/
-!= $this->linkTo('#deleteInstrument', $this->formButton('deleteInstrument', 'Delete'), array('class' => 'dataButton'))
+!= $this->linkTo('#deleteQuestionnaire', $this->formButton('deleteQuestionnaire', 'Delete'), array('class' => 'dataButton'))
 != $this->form(null, true)

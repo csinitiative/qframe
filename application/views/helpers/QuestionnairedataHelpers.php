@@ -28,7 +28,7 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class RegQ_View_Helper_InstrumentdataHelpers {
+class RegQ_View_Helper_QuestionnairedataHelpers {
 
   /**
    * Stores the associated view for persistence
@@ -52,21 +52,21 @@ class RegQ_View_Helper_InstrumentdataHelpers {
   * @param string element name
   * @return string
   */
-  public function instrumentSelect($instrumentID, $name = 'instrument') {
-    if($instrumentID === null) $options[0] = ' ';
-    $instruments = InstrumentModel::getAllInstruments();
-    foreach($instruments as $instrument) {
-      $instrumentName = $this->view->h($instrument->instrumentName);
-      $instrumentVersion = $this->view->h($instrument->instrumentVersion);
-      $revision = $this->view->h($instrument->revision);
-      if(!isset($options[$instrument->instrumentID])) {
-        $options[$instrument->instrumentID] = "{$instrumentName} {$instrumentVersion}";
+  public function questionnaireSelect($questionnaireID, $name = 'questionnaire') {
+    if($questionnaireID === null) $options[0] = ' ';
+    $questionnaires = QuestionnaireModel::getAllQuestionnaires();
+    foreach($questionnaires as $questionnaire) {
+      $questionnaireName = $this->view->h($questionnaire->questionnaireName);
+      $questionnaireVersion = $this->view->h($questionnaire->questionnaireVersion);
+      $revision = $this->view->h($questionnaire->revision);
+      if(!isset($options[$questionnaire->questionnaireID])) {
+        $options[$questionnaire->questionnaireID] = "{$questionnaireName} {$questionnaireVersion}";
         if ($revision != 1) {
-          $options[$instrument->instrumentID] .= " r. {$revision}";
+          $options[$questionnaire->questionnaireID] .= " r. {$revision}";
         }
       }
     }
-    return $this->view->formSelect($name, $instrumentID, null, $options);
+    return $this->view->formSelect($name, $questionnaireID, null, $options);
   }
   
  /**

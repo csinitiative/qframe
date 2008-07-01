@@ -7,13 +7,13 @@ elementFormDefault="qualified">
 <xsl:strip-space elements="*"/>
 <xsl:output method="xml" indent="yes"/>
 
-<xsl:template match="csi:instrument">
+<xsl:template match="csi:questionnaire">
   <xs:schema 
   xmlns:csi="http://www.csinitiative.com/ns/csi-regq"
   targetNamespace="http://www.csinitiative.com/ns/csi-regq"
   elementFormDefault="qualified">
 
-  <xs:element name="instrument">
+  <xs:element name="questionnaire">
     <xs:complexType>
       <xs:all>
         <xs:element name="tabs">
@@ -347,14 +347,14 @@ elementFormDefault="qualified">
           </xs:complexType>
         </xs:element>
       </xs:all>
-      <xs:attribute name="instrumentName" type="xs:string" use="required">
+      <xs:attribute name="questionnaireName" type="xs:string" use="required">
         <xsl:attribute name="fixed">
-          <xsl:value-of select="@instrumentName"/>
+          <xsl:value-of select="@questionnaireName"/>
         </xsl:attribute>
       </xs:attribute>
-      <xs:attribute name="instrumentVersion" type="xs:string" use="required">
+      <xs:attribute name="questionnaireVersion" type="xs:string" use="required">
         <xsl:attribute name="fixed">
-          <xsl:value-of select="@instrumentVersion"/>
+          <xsl:value-of select="@questionnaireVersion"/>
         </xsl:attribute>
       </xs:attribute>
       <xs:attribute name="revision" type="xs:integer" use="required">

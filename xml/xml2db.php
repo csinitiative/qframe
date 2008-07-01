@@ -56,5 +56,5 @@ $auth = Zend_Auth::getInstance();
 $auth->authenticate($auth_adapter);
 
 $content = file_get_contents(_path(PROJECT_PATH, 'xml', 'sig-3-1-questionnaire-definition.xml'));
-InstrumentModel::importXML($content);
+QuestionnaireModel::importXML($content);
 InstanceModel::importXML($content, 'Acme Bank');

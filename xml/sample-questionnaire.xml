@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<csi:instrument xmlns:csi="http://www.csinitiative.com/ns/csi-regq"
+<csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-regq"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-instrumentName="Demo Questionnaire" instrumentVersion="1" revision="1" targetRegQVersion="1.0">
+questionnaireName="Demo Questionnaire" questionnaireVersion="1" revision="1" targetRegQVersion="1.0">
   <csi:tabs>
    
     <csi:tab>
@@ -160,4 +160,4 @@ instrumentName="Demo Questionnaire" instrumentVersion="1" revision="1" targetReg
     </csi:tab>
     
   </csi:tabs>
-</csi:instrument>
+</csi:questionnaire>

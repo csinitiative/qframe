@@ -24,30 +24,30 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class InstrumentDataController extends RegQ_Controller_Admin {
+class QuestionnaireDataController extends RegQ_Controller_Admin {
 
   /**
-   * Index action.  Presents the Instrument Management page to the user.
+   * Index action.  Presents the Questionnaire Management page to the user.
    */
   public function indexAction() {
     $session = new Zend_Session_Namespace('login');
-    $instrumentID = ($this->_hasParam('instrument')) ? $this->_getParam('instrument') : $session->dataInstrumentID;
+    $questionnaireID = ($this->_hasParam('questionnaire')) ? $this->_getParam('questionnaire') : $session->dataQuestionnaireID;
 
-    if (is_numeric($instrumentID) && $instrumentID > 0) {
-      $this->view->dataInstrument = new InstrumentModel(array('instrumentID' => $instrumentID,
-                                                              'depth' => 'instrument'));
+    if (is_numeric($questionnaireID) && $questionnaireID > 0) {
+      $this->view->dataQuestionnaire = new QuestionnaireModel(array('questionnaireID' => $questionnaireID,
+                                                              'depth' => 'questionnaire'));
     }
     else {
-      $instrumentID = null;
+      $questionnaireID = null;
     }
 
-    $session->dataInstrumentID = $instrumentID;
-    $this->view->dataInstrumentID = $session->dataInstrumentID;
+    $session->dataQuestionnaireID = $questionnaireID;
+    $this->view->dataQuestionnaireID = $session->dataQuestionnaireID;
 
-    $instruments = InstrumentModel::getAllInstruments('tab');
+    $questionnaires = QuestionnaireModel::getAllQuestionnaires('tab');
     $allowedInstances = array();
-    foreach($instruments as $instrument) {
-      while($instance = $instrument->nextInstance()) {
+    foreach($questionnaires as $questionnaire) {
+      while($instance = $questionnaire->nextInstance()) {
         while($tab = $instance->nextTab()) {
           if($this->_user->hasAnyAccess($tab)) {
             $allowedInstances[] = $instance;
@@ -65,27 +65,27 @@ class InstrumentDataController extends RegQ_Controller_Admin {
   /**
    * Action for deleting an instance
    */
-  public function deleteInstrumentAction() {
+  public function deleteQuestionnaireAction() {
     $session = new Zend_Session_Namespace('login');
-    $instrumentID = $session->dataInstrumentID;
+    $questionnaireID = $session->dataQuestionnaireID;
     
-    if(!isset($instrumentID)) {
+    if(!isset($questionnaireID)) {
       $this->_redirector->gotoRouteAndExit(array('action' => 'index'));
     }
     
-    $instrument = new InstrumentModel(array('instrumentID' => $instrumentID,
-                                            'depth' => 'instrument'));
+    $questionnaire = new QuestionnaireModel(array('questionnaireID' => $questionnaireID,
+                                            'depth' => 'questionnaire'));
     
-    $instrument->delete();
-    unset($session->dataInstrumentID);
+    $questionnaire->delete();
+    unset($session->dataQuestionnaireID);
     $this->flash('notice', 'Deletion Complete');
     $this->_redirector->gotoRoute(array('action' => 'index'));
   }
   
   /**
-   * Action for importing an instrument
+   * Action for importing an questionnaire
    */
-  public function importInstrumentAction() {
+  public function importQuestionnaireAction() {
 
     $uploadErrors = array(
       UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini.',
@@ -99,7 +99,7 @@ class InstrumentDataController extends RegQ_Controller_Admin {
     
     $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
 
-    $errorCode = $_FILES['instrumentFile']['error'];
+    $errorCode = $_FILES['questionnaireFile']['error'];
     if ($errorCode !== UPLOAD_ERR_OK) {
       if (isset($uploadErrors[$errorCode]))
         throw new Exception($uploadErrors[$errorCode]);
@@ -107,8 +107,8 @@ class InstrumentDataController extends RegQ_Controller_Admin {
         throw new Exception("Unknown error uploading file.");
     }
 
-    $file = $_FILES['instrumentFile']['tmp_name'];
-    $filename = $_FILES['instrumentFile']['name'];
+    $file = $_FILES['questionnaireFile']['tmp_name'];
+    $filename = $_FILES['questionnaireFile']['name'];
     
     if (preg_match('/\.enc$/i', $filename)) {
       if (!isset($cryptoID) || $cryptoID == 0) {
@@ -140,7 +140,7 @@ class InstrumentDataController extends RegQ_Controller_Admin {
       throw new Exception('Unrecognized file extension [' . $filename . ']');
     }
     
-    InstrumentModel::importXML($import);
+    QuestionnaireModel::importXML($import);
     
     $this->flash('notice', 'Import Complete');
     $this->_redirector->gotoRoute(array('action' => 'index'));
@@ -150,50 +150,50 @@ class InstrumentDataController extends RegQ_Controller_Admin {
    * Export actions
    */
    
-  public function InstrumentDefinitionXMLDownloadAction() {
+  public function QuestionnaireDefinitionXMLDownloadAction() {
     $session = new Zend_Session_Namespace('login');
-    $instrument = new InstrumentModel(array('instrumentID' => $session->dataInstrumentID,
-                                            'depth' => 'instrument'));
+    $questionnaire = new QuestionnaireModel(array('questionnaireID' => $session->dataQuestionnaireID,
+                                            'depth' => 'questionnaire'));
     $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
     if (isset($cryptoID) && $cryptoID != 0) {
       $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
-      $this->view->xml = $crypto->encrypt($instrument->fetchInstrumentDefinition());
+      $this->view->xml = $crypto->encrypt($questionnaire->fetchQuestionnaireDefinition());
       $this->view->cryptoID = $cryptoID;
     }
     else {
-      $this->view->xml = $instrument->fetchInstrumentDefinition();
+      $this->view->xml = $questionnaire->fetchQuestionnaireDefinition();
     }
     $this->view->setRenderLayout(false);      
   }
    
   public function ResponsesXMLSchemaDownloadAction() {
     $session = new Zend_Session_Namespace('login');
-    $instrument = new InstrumentModel(array('instrumentID' => $session->dataInstrumentID,
-                                            'depth' => 'instrument'));
+    $questionnaire = new QuestionnaireModel(array('questionnaireID' => $session->dataQuestionnaireID,
+                                            'depth' => 'questionnaire'));
     $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
     if (isset($cryptoID) && $cryptoID != 0) {
       $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
-      $this->view->xml = $crypto->encrypt($instrument->fetchResponseSchema());
+      $this->view->xml = $crypto->encrypt($questionnaire->fetchResponseSchema());
       $this->view->cryptoID = $cryptoID;
     }
     else {
-      $this->view->xml = $instrument->fetchResponseSchema();
+      $this->view->xml = $questionnaire->fetchResponseSchema();
     }
     $this->view->setRenderLayout(false);
   }
    
   public function CompletedResponsesXMLSchemaDownloadAction() {
     $session = new Zend_Session_Namespace('login');
-    $instrument = new InstrumentModel(array('instrumentID' => $session->dataInstrumentID,
-                                            'depth' => 'instrument'));
+    $questionnaire = new QuestionnaireModel(array('questionnaireID' => $session->dataQuestionnaireID,
+                                            'depth' => 'questionnaire'));
     $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
     if (isset($cryptoID) && $cryptoID != 0) {
       $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
-      $this->view->xml = $crypto->encrypt($instrument->fetchCompletedResponseSchema());
+      $this->view->xml = $crypto->encrypt($questionnaire->fetchCompletedResponseSchema());
       $this->view->cryptoID = $cryptoID;
     }
     else {
-      $this->view->xml = $instrument->fetchCompletedResponseSchema();
+      $this->view->xml = $questionnaire->fetchCompletedResponseSchema();
     }
     $this->view->setRenderLayout(false);
   }

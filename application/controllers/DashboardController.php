@@ -39,7 +39,7 @@ class DashboardController extends RegQ_Controller_Action {
    */
   public function indexAction() {
     $instanceID = ($this->_hasParam('instance')) ? $this->_getParam('instance') : null;
-    $instrumentID = ($this->_hasParam('instrument')) ? $this->_getParam('instrument') : null;
+    $questionnaireID = ($this->_hasParam('questionnaire')) ? $this->_getParam('questionnaire') : null;
 
     if(is_numeric($instanceID) && $instanceID != 0) {
       $session = new Zend_Session_Namespace('login');
@@ -47,10 +47,10 @@ class DashboardController extends RegQ_Controller_Action {
       $this->_redirector->gotoRouteAndExit(array('controller' => 'index'), null, true);
     }
     
-    $instruments = InstrumentModel::getAllInstruments('tab');
+    $questionnaires = QuestionnaireModel::getAllQuestionnaires('tab');
     $allowedInstances = array();
-    foreach($instruments as $instrument) {
-      while($instance = $instrument->nextInstance()) {
+    foreach($questionnaires as $questionnaire) {
+      while($instance = $questionnaire->nextInstance()) {
         while($tab = $instance->nextTab()) {
           if($this->_user->hasAnyAccess($tab)) {
             $allowedInstances[] = $instance;
@@ -60,6 +60,6 @@ class DashboardController extends RegQ_Controller_Action {
       }
     }
     $this->view->instances = $allowedInstances;
-    $this->view->instrument = $instrumentID;
+    $this->view->questionnaire = $questionnaireID;
   }
 }

@@ -6,7 +6,7 @@ targetNamespace="http://www.csinitiative.com/ns/csi-regq"
 elementFormDefault="qualified"
 >
 
-  <xs:element name="instrument">
+  <xs:element name="questionnaire">
     <xs:complexType>
       <xs:all>
         <xs:element name="tabs">
@@ -611,14 +611,14 @@ elementFormDefault="qualified"
           </xs:keyref>
         </xs:element>
       </xs:all>
-      <xs:attribute name="instrumentName" use="required">
+      <xs:attribute name="questionnaireName" use="required">
         <xs:simpleType>
           <xs:restriction base="xs:string">
             <xs:minLength value="1"/>
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>
-      <xs:attribute name="instrumentVersion" use="required">
+      <xs:attribute name="questionnaireVersion" use="required">
         <xs:simpleType>
           <xs:restriction base="xs:string">
             <xs:minLength value="1"/>

@@ -60,11 +60,11 @@
       %br/
       != $this->formHidden('selectURL', $this->url(array()))
       .option
-        != $this->formLabel('instrumentName', 'Questionnaire:')
-        != $this->instrumentSelect($this->instances, $this->instrument)
+        != $this->formLabel('questionnaire', 'Questionnaire:')
+        != $this->questionnaireSelect($this->instances, $this->questionnaire)
       .option
-        != $this->formLabel('instanceName', 'Instance:')
-        != $this->instanceSelect($this->instances, $this->instrument)
+        != $this->formLabel('instance', 'Instance:')
+        != $this->instanceSelect($this->instances, $this->questionnaire)
   #options
     != $this->formSubmit('submitButton', 'save')
     != $this->formButton('cancelButton', 'cancel')
