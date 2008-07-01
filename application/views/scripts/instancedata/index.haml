@@ -54,9 +54,11 @@ Create a new instance from an existing questionnaire.  Pick a name for the new i
     %br/
     %h3	 Export XML
     %hr/
-    != $this->renderPartial('ResponsesXML', null)
-    %br/
-    %br/
+    -# Responses-only (no question information) is commented out for this version of CSI QFrame
+    -# until it is determined if this is something that would benefit users.
+    -# != $this->renderPartial('ResponsesXML', null)
+    -# %br/
+    -# %br/
     != $this->renderPartial('FullXML', null)
     %br/
     %br/

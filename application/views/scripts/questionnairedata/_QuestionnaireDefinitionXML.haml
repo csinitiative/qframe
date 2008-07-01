@@ -23,9 +23,9 @@
 %h3
   = $this->dataQuestionnaire->questionnaireName
   = $this->dataQuestionnaire->questionnaireVersion
-  Questionnaire Definition XML
+  Questionnaire Definition XML Document
 This XML document defines the tabs, sections, questions, and rules for this questionnaire.  This
-document may be used to create a new instance of the questionnaire in the RegQ application.
+document is used to import a questionnaire (set of questions) into another CSI QFrame installation.
 %br/
 %br/
 != $this->form(array('action' => 'QuestionnaireDefinitionXML'), false, 'post', array('class' => 'QuestionnaireDefinitionXML'))
