@@ -1,0 +1,14 @@
+# This is a sample database configuration file.
+# Follow the format:
+# <environment name>:
+#   host: <hostname or ip>
+#   username: <database username>
+#   password: <database password>
+#   dbname: <database name>
+
+# example:
+production:
+  host: 127.0.0.1
+  username: qframe
+  password: chooseAGoodPassword
+  dbname: qframe_production
