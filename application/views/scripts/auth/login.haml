@@ -16,26 +16,30 @@
   
   @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
+  
+#content
+  %a{ 'target' => '_new', 'href' => 'http://www.csinitiative.com' }
+    != $this->imageTag('logo.gif', array('alt' => '[CSI Logo]', 'class' => 'inline'))
 
-%h1 please sign in
+  %h1 please sign in
 
-!= $this->form(array())
-%fieldset
-  %ol
-    %li
-      != $this->formText('username', null)
-      != $this->formLabel('username', 'username:')
-    %li
-      != $this->formPassword('password', null)
-      != $this->formLabel('password', 'password:')
-    %li
-      != $this->formSubmit('login', 'login', array('class' => 'notext'))
-    %li.divider &nbsp;
-    %li
-      - if(isset($this->flash['error']))
-        %em= $this->flash['error']
-      - if(isset($this->flash['notice']))
-        %strong= $this->flash['notice']
-      - if(!isset($this->flash['error']) && !isset($this->flash['notice']))
-        Please enter a username and password and click "login" to begin.
-!= $this->form(null, true)
+  != $this->form(array())
+  %fieldset
+    %ol
+      %li
+        != $this->formText('username', null)
+        != $this->formLabel('username', 'username:')
+      %li
+        != $this->formPassword('password', null)
+        != $this->formLabel('password', 'password:')
+      %li
+        != $this->formSubmit('login', 'login', array('class' => 'notext'))
+      %li.divider &nbsp;
+      %li
+        - if(isset($this->flash['error']))
+          %em= $this->flash['error']
+        - if(isset($this->flash['notice']))
+          %strong= $this->flash['notice']
+        - if(!isset($this->flash['error']) && !isset($this->flash['notice']))
+          Please enter a username and password and click "login" to begin.
+  != $this->form(null, true)
