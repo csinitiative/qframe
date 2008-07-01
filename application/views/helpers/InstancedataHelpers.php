@@ -52,41 +52,41 @@ class RegQ_View_Helper_InstancedataHelpers {
   * @param string element name
   * @return string
   */
-  public function instrumentSelect($instrumentID, $name = 'instrument') {
-    if($instrumentID === null) $options[0] = ' ';
-    $instruments = InstrumentModel::getAllInstruments();
-    foreach($instruments as $instrument) {
-      $instrumentName = $this->view->h($instrument->instrumentName);
-      $instrumentVersion = $this->view->h($instrument->instrumentVersion);
-      $revision = $this->view->h($instrument->revision);
-      if(!isset($options[$instrument->instrumentID])) {
-        $options[$instrument->instrumentID] = "{$instrumentName} {$instrumentVersion}";
+  public function questionnaireSelect($questionnaireID, $name = 'questionnaire') {
+    if($questionnaireID === null) $options[0] = ' ';
+    $questionnaires = QuestionnaireModel::getAllQuestionnaires();
+    foreach($questionnaires as $questionnaire) {
+      $questionnaireName = $this->view->h($questionnaire->questionnaireName);
+      $questionnaireVersion = $this->view->h($questionnaire->questionnaireVersion);
+      $revision = $this->view->h($questionnaire->revision);
+      if(!isset($options[$questionnaire->questionnaireID])) {
+        $options[$questionnaire->questionnaireID] = "{$questionnaireName} {$questionnaireVersion}";
         if ($revision != 1) {
-          $options[$instrument->instrumentID] .= " r. {$revision}";
+          $options[$questionnaire->questionnaireID] .= " r. {$revision}";
         }
       }
     }
-    return $this->view->formSelect($name, $instrumentID, null, $options);
+    return $this->view->formSelect($name, $questionnaireID, null, $options);
   }
   
   /**
    * Generates a drop down box listing all instances that belong to the chosen instance
    *
    * @param  Array   list of all instances to which this user has access
-   * @param  integer id of instrument that has been selected
+   * @param  integer id of questionnaire that has been selected
    * @return string
    */
-  public function instanceSelect($instances, $instrument, $name = 'instance', $instanceID = null) {
+  public function instanceSelect($instances, $questionnaire, $name = 'instance', $instanceID = null) {
   	
-    if($instrument === null) {
+    if($questionnaire === null) {
       $options[0] = 'Select a questionnaire';
     }
     else {
       $options[0] = ' ';
       foreach($instances as $instance) {
-        $instrumentName = $this->view->h($instance->instrumentName);
+        $questionnaireName = $this->view->h($instance->questionnaireName);
         $instanceName = $this->view->h($instance->instanceName);
-        if($instance->instrumentID == $instrument) {
+        if($instance->questionnaireID == $questionnaire) {
           $options[$instance->instanceID] = $instanceName;
         }
       }

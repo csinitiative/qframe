@@ -37,7 +37,7 @@ require_once 'PHPUnit/Framework.php';
 class Test_Unit_InstanceModelTest extends RegQ_Test_Unit {
   
   public function start() {
-    $this->fixture(array('InstrumentModel', 'TabModel', 'SectionModel', 'DbUserModel', 'RoleModel'));
+    $this->fixture(array('QuestionnaireModel', 'TabModel', 'SectionModel', 'DbUserModel', 'RoleModel'));
   }
   
   private function auth() {
@@ -137,7 +137,7 @@ class Test_Unit_InstanceModelTest extends RegQ_Test_Unit {
     $this->auth();
     $instance = $this->instance(array('depth' => 'section'));
     $tab = $instance->nextTab();
-    $this->assertNotNull($tab->parent->instrumentName);
+    $this->assertNotNull($tab->parent->questionnaireName);
   }
 
   /*
@@ -163,18 +163,18 @@ class Test_Unit_InstanceModelTest extends RegQ_Test_Unit {
   public function testInstanceExportEqualsInstanceCopyExport() {
     $this->auth();
 
-    $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/test1-instrument-definition.xml");
-    InstrumentModel::importXML($xml);
+    $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/test1-questionnaire-definition.xml");
+    QuestionnaireModel::importXML($xml);
     InstanceModel::importXML($xml, 'Test1 Company');
-    $instance = new InstanceModel(array('instrumentName' => 'Test1 Instrument',
-                                        'instrumentVersion' => '3.00',
+    $instance = new InstanceModel(array('questionnaireName' => 'Test1 Questionnaire',
+                                        'questionnaireVersion' => '3.00',
                                         'revision' => 1,
                                         'instanceName' => 'Test1 Company'));
     $xmlExport = $instance->toXML(1);
-    InstrumentModel::importXML($xmlExport);
+    QuestionnaireModel::importXML($xmlExport);
     InstanceModel::importXML($xmlExport, 'Test1 Copy Company');
-    $instanceCopy = new InstanceModel(array('instrumentName' => 'Test1 Instrument',
-                                            'instrumentVersion' => '3.00',
+    $instanceCopy = new InstanceModel(array('questionnaireName' => 'Test1 Questionnaire',
+                                            'questionnaireVersion' => '3.00',
                                             'revision' => 1,
                                             'instanceName' => 'Test1 Copy Company'));
     $xmlExportCopy = $instanceCopy->toXML(1);
@@ -190,11 +190,11 @@ class Test_Unit_InstanceModelTest extends RegQ_Test_Unit {
 
     $goodZip = new ZipArchiveModel(null, array('filename' => PROJECT_PATH . "/test/data/zip/test-archive.zip"));
 
-    $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/test1-instrument-definition.xml");
-    InstrumentModel::importXML($xml);
+    $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/test1-questionnaire-definition.xml");
+    QuestionnaireModel::importXML($xml);
     InstanceModel::importXML($xml, 'Test1 Company');
-    $instance = new InstanceModel(array('instrumentName' => 'Test1 Instrument',
-                                        'instrumentVersion' => '3.00',
+    $instance = new InstanceModel(array('questionnaireName' => 'Test1 Questionnaire',
+                                        'questionnaireVersion' => '3.00',
                                         'revision' => 1,
                                         'instanceName' => 'Test1 Company',
                                         'depth' => 'question'));
@@ -225,7 +225,7 @@ class Test_Unit_InstanceModelTest extends RegQ_Test_Unit {
 
     $zip = new ZipArchiveModel(null, array('filename' => PROJECT_PATH . "/test/data/zip/test-archive.zip"));
 
-    InstrumentModel::importXML($zip);
+    QuestionnaireModel::importXML($zip);
     $instanceID = InstanceModel::importXML($zip, 'Test1 Company', array('tabResponses' => array('all' => 1)));
     $instance = new InstanceModel(array('instanceID' => $instanceID,
                                         'depth' => 'instance'));
@@ -233,24 +233,24 @@ class Test_Unit_InstanceModelTest extends RegQ_Test_Unit {
   }
   
   /*
-   * test that an instance with no responses merged with another instance's responses of the same instrument
+   * test that an instance with no responses merged with another instance's responses of the same questionnaire
    * have equal XML exports except for the instanceName and responseDates
    */
   public function testNoResponsesInstanceWithMergedResponsesExportEqualsResponsesInstanceExport() {
     $this->auth();
 
-    $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/responses-instrument-definition.xml");
+    $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/responses-questionnaire-definition.xml");
 
-    InstrumentModel::importXML($xml);
+    QuestionnaireModel::importXML($xml);
     InstanceModel::importXML($xml, 'Test1 Resp. Company', array('tabResponses' => array('all' => 1)));
-    $instance1 = new InstanceModel(array('instrumentName' => 'Test1 Instrument',
-                                         'instrumentVersion' => '3.00',
+    $instance1 = new InstanceModel(array('questionnaireName' => 'Test1 Questionnaire',
+                                         'questionnaireVersion' => '3.00',
                                          'revision' => 1,
                                          'instanceName' => 'Test1 Resp. Company'));
-    $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/no-responses-instrument-definition.xml");
+    $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/no-responses-questionnaire-definition.xml");
     InstanceModel::importXML($xml, 'Test1 Company', array('instanceID' => $instance1->instanceID));
-    $instance2 = new InstanceModel(array('instrumentName' => 'Test1 Instrument',
-                                         'instrumentVersion' => '3.00',
+    $instance2 = new InstanceModel(array('questionnaireName' => 'Test1 Questionnaire',
+                                         'questionnaireVersion' => '3.00',
                                          'revision' => 1,
                                          'instanceName' => 'Test1 Company'));
     $xml1 = $instance1->toXML(1);
@@ -265,10 +265,10 @@ class Test_Unit_InstanceModelTest extends RegQ_Test_Unit {
    * fetch an instance with some default properties
    */
   private function instance($args = array()) {
-    $args = array_merge(array('instrumentName' => 'Sample Instrument',
-                              'instrumentVersion' => "3.0",
+    $args = array_merge(array('questionnaireName' => 'Sample Questionnaire',
+                              'questionnaireVersion' => "3.0",
                               'revision' => 1,
-                              'instanceName' => 'Sample Instance 2 for Instrument 2'),
+                              'instanceName' => 'Sample Instance 2 for Questionnaire 2'),
     $args);
     return new InstanceModel($args);
   }

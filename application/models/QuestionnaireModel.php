@@ -23,45 +23,45 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class InstrumentModel extends RegQ_Db_SerializableTransaction implements RegQ_Storer {
+class QuestionnaireModel extends RegQ_Db_SerializableTransaction implements RegQ_Storer {
 
-  private $instrumentRow;
+  private $questionnaireRow;
   private $instances;
   private $Index;
   private $depth;
-  static $instrumentTable;
+  static $questionnaireTable;
   static $instanceTable;
 
   function __construct ($args = array()) {
 
     $args = array_merge(array(
-      'depth'   => 'instrument'
+      'depth'   => 'questionnaire'
     ), $args);
 
-    if (!isset(self::$instrumentTable)) self::$instrumentTable = RegQ_Db_Table::getTable('instrument');
+    if (!isset(self::$questionnaireTable)) self::$questionnaireTable = RegQ_Db_Table::getTable('questionnaire');
     if (!isset(self::$instanceTable)) self::$instanceTable = RegQ_Db_Table::getTable('instance');
 
-    if (isset($args['instrumentID'])) {
-      $where = self::$instrumentTable->getAdapter()->quoteInto('instrumentID = ?', intVal($args['instrumentID']));
-      $this->instrumentRow = self::$instrumentTable->fetchRow($where);
+    if (isset($args['questionnaireID'])) {
+      $where = self::$questionnaireTable->getAdapter()->quoteInto('questionnaireID = ?', intVal($args['questionnaireID']));
+      $this->questionnaireRow = self::$questionnaireTable->fetchRow($where);
     }
-    elseif (isset($args['instrumentName']) && isset($args['instrumentVersion']) && isset($args['revision'])) {
-      $adapter = self::$instrumentTable->getAdapter();
-      $where = $adapter->quoteInto('instrumentName = ?', $args['instrumentName']) . ' AND ' .
-          $adapter->quoteInto('instrumentVersion = ?', $args['instrumentVersion']) . ' AND ' .
+    elseif (isset($args['questionnaireName']) && isset($args['questionnaireVersion']) && isset($args['revision'])) {
+      $adapter = self::$questionnaireTable->getAdapter();
+      $where = $adapter->quoteInto('questionnaireName = ?', $args['questionnaireName']) . ' AND ' .
+          $adapter->quoteInto('questionnaireVersion = ?', $args['questionnaireVersion']) . ' AND ' .
           $adapter->quoteInto('revision = ?', $args['revision']);
-      $this->instrumentRow = self::$instrumentTable->fetchRow($where);
+      $this->questionnaireRow = self::$questionnaireTable->fetchRow($where);
     }
     else {
-      throw new InvalidArgumentException('Missing arguments to InstrumentModel constructor');
+      throw new InvalidArgumentException('Missing arguments to QuestionnaireModel constructor');
     }
 
-    // instrument row assertion
-    if ($this->instrumentRow === NULL) {
-      throw new Exception('Instrument not found');
+    // questionnaire row assertion
+    if ($this->questionnaireRow === NULL) {
+      throw new Exception('Questionnaire not found');
     }
     
-    if ($args['depth'] !== 'instrument') {
+    if ($args['depth'] !== 'questionnaire') {
       $this->depth = $args['depth'];
       $this->_loadInstances();
     }
@@ -70,8 +70,8 @@ class InstrumentModel extends RegQ_Db_SerializableTransaction implements RegQ_St
 
   public function __get($key) {
 
-    if (isset($this->instrumentRow->$key)) {
-      return $this->instrumentRow->$key;
+    if (isset($this->questionnaireRow->$key)) {
+      return $this->questionnaireRow->$key;
     }
     else {
       throw new Exception("Attribute not found [$key]");
@@ -90,7 +90,7 @@ class InstrumentModel extends RegQ_Db_SerializableTransaction implements RegQ_St
       }
     }
     
-    if ($this->depth !== 'instrument') $this->_loadInstances();
+    if ($this->depth !== 'questionnaire') $this->_loadInstances();
   }
 
   /**
@@ -106,7 +106,7 @@ class InstrumentModel extends RegQ_Db_SerializableTransaction implements RegQ_St
   }
 
   /**
-   * Returns a specific instance associated with this instrument
+   * Returns a specific instance associated with this questionnaire
    * 
    * @param integer instanceID
    * @return InstanceModel object
@@ -119,7 +119,7 @@ class InstrumentModel extends RegQ_Db_SerializableTransaction implements RegQ_St
   }
 
   /**
-   * Return the last instance associated with this instrument
+   * Return the last instance associated with this questionnaire
    *
    * @return InstanceModel object
    */
@@ -128,7 +128,7 @@ class InstrumentModel extends RegQ_Db_SerializableTransaction implements RegQ_St
   }
 
   /**
-   * Return the first instance associated with this instrument
+   * Return the first instance associated with this questionnaire
    *
    * @return InstanceModel object
    */
@@ -142,27 +142,27 @@ class InstrumentModel extends RegQ_Db_SerializableTransaction implements RegQ_St
    * @return integer
    */
   public function getID() {
-    return $this->instrumentID;
+    return $this->questionnaireID;
   }
 
   /**
-   * Return the content of the instrument definition associated with this instrument
+   * Return the content of the questionnaire definition associated with this questionnaire
    *
    * @return string XML document
    */
-  public function fetchInstrumentDefinition() {
+  public function fetchQuestionnaireDefinition() {
     $fileModel = new FileModel($this);
     $files = $fileModel->fetchAllProperties();
     foreach ($files as $id => $properties) {
-      if ($properties['filename'] === 'instrument-definition.xml') {
+      if ($properties['filename'] === 'questionnaire-definition.xml') {
         return $fileModel->fetch($id);
       }
     }
-    throw new Exception('Instrument definition not found');
+    throw new Exception('Questionnaire definition not found');
   }
   
   /**
-   * Return the content of the Response XML Schema associated with this instrument
+   * Return the content of the Response XML Schema associated with this questionnaire
    *
    * @return string XML Schema document
    */
@@ -178,7 +178,7 @@ class InstrumentModel extends RegQ_Db_SerializableTransaction implements RegQ_St
   }
   
   /**
-   * Return the content of the Completed Response XML Schema associated with this instrument
+   * Return the content of the Completed Response XML Schema associated with this questionnaire
    *
    * @return string XML Schema document
    */
@@ -194,15 +194,15 @@ class InstrumentModel extends RegQ_Db_SerializableTransaction implements RegQ_St
   }
   
   public static function importXML(&$import, $options = array()) {
-    if (!isset(self::$instrumentTable)) self::$instrumentTable = RegQ_Db_Table::getTable('instrument');
+    if (!isset(self::$questionnaireTable)) self::$questionnaireTable = RegQ_Db_Table::getTable('questionnaire');
     
     libxml_use_internal_errors(true);
     
     if (is_a($import, 'ZipArchiveModel')) {
       $zip = &$import;
-      $xml = $import->getInstrumentDefinitionXMLDocument();
+      $xml = $import->getQuestionnaireDefinitionXMLDocument();
       if ($xml === NULL) $xml = $import->getInstanceFullResponsesXMLDocument();
-      if ($xml === NULL) throw new Exception('Instrument definition not found in zip archive');
+      if ($xml === NULL) throw new Exception('Questionnaire definition not found in zip archive');
       $dom = new DOMDocument();
       $dom->loadXML($xml);
     }
@@ -229,60 +229,60 @@ class InstrumentModel extends RegQ_Db_SerializableTransaction implements RegQ_St
     }
     if(count($errors) > 0) throw new Exception('XML Exception');
 
-    self::validateInstrumentDefinitionXML($dom);
+    self::validateQuestionnaireDefinitionXML($dom);
     
-    $instrument = $dom->getElementsByTagName('instrument')->item(0);
-    $instrumentName = $instrument->getAttribute('instrumentName');
-    $instrumentVersion = $instrument->getAttribute('instrumentVersion');
-    $revision = $instrument->getAttribute('revision');
+    $questionnaire = $dom->getElementsByTagName('questionnaire')->item(0);
+    $questionnaireName = $questionnaire->getAttribute('questionnaireName');
+    $questionnaireVersion = $questionnaire->getAttribute('questionnaireVersion');
+    $revision = $questionnaire->getAttribute('revision');
     
     $transactionNumber = self::startSerializableTransaction();
 
-    if (isset($options['SkipInstrumentExistCheck'])) {
+    if (isset($options['SkipQuestionnaireExistCheck'])) {
       $signature = 'nosignature';
     }
     else {
-      $instrumentID = self::$instrumentTable->getInstrumentID($instrumentName, $instrumentVersion, $revision);
+      $questionnaireID = self::$questionnaireTable->getQuestionnaireID($questionnaireName, $questionnaireVersion, $revision);
       $signature = self::generateSignature($dom);
-      if (isset($instrumentID)) {
-        $prevInstrument = new InstrumentModel(array('instrumentID' => $instrumentID,
-                                                    'depth' => 'instrument'));
+      if (isset($questionnaireID)) {
+        $prevQuestionnaire = new QuestionnaireModel(array('questionnaireID' => $questionnaireID,
+                                                    'depth' => 'questionnaire'));
     
-        if ($signature === $prevInstrument->signature) {
-          $message = "Skipping instrument import since {$instrumentName} {$instrumentVersion} {$revision} already exists and has the same signature";
+        if ($signature === $prevQuestionnaire->signature) {
+          $message = "Skipping questionnaire import since {$questionnaireName} {$questionnaireVersion} {$revision} already exists and has the same signature";
           if(isset($logger) && $logger) $logger->log($message, Zend_Log::ERR);
           self::dbCommit($transactionNumber);
-          return $instrumentID;
+          return $questionnaireID;
         }
         else {
-          throw new Exception('An instrument with the same name, version, and revision already exists with different content');
+          throw new Exception('An questionnaire with the same name, version, and revision already exists with different content');
         }
       }
     }
   
-    $instrumentID = self::$instrumentTable->insert(array('instrumentName' => $instrumentName,
-                                                         'instrumentVersion' => $instrumentVersion,
+    $questionnaireID = self::$questionnaireTable->insert(array('questionnaireName' => $questionnaireName,
+                                                         'questionnaireVersion' => $questionnaireVersion,
                                                          'revision' => $revision,
                                                          'signature' => $signature));
 
-    $instrument = new InstrumentModel(array('instrumentID' => $instrumentID,
-                                            'depth' => 'instrument'));                                      
-    $instrument->validateInstrumentDefinitionXML($dom);
+    $questionnaire = new QuestionnaireModel(array('questionnaireID' => $questionnaireID,
+                                            'depth' => 'questionnaire'));                                      
+    $questionnaire->validateQuestionnaireDefinitionXML($dom);
     
     // store files
     if (!isset($options['SkipFileAttachments'])) {
-      $instrument->instrumentDefinition2responseSchema($dom);
-      $instrument->instrumentDefinition2completedResponseSchema($dom);
-      $files = new FileModel($instrument);
-      $files->store($xml, array('filename' => 'instrument-definition.xml'));
+      $questionnaire->questionnaireDefinition2responseSchema($dom);
+      $questionnaire->questionnaireDefinition2completedResponseSchema($dom);
+      $files = new FileModel($questionnaire);
+      $files->store($xml, array('filename' => 'questionnaire-definition.xml'));
     }
     
     self::dbCommit($transactionNumber);
 
-    return $instrumentID;
+    return $questionnaireID;
   }
   
-  private function validateInstrumentDefinitionXML($dom) {
+  private function validateQuestionnaireDefinitionXML($dom) {
     
     if (!$dom->schemaValidate(PROJECT_PATH . '/xml/csi-regq-v1_0.xsd')) {
       $errors = libxml_get_errors();
@@ -299,7 +299,7 @@ class InstrumentModel extends RegQ_Db_SerializableTransaction implements RegQ_St
     }
   }
   
-  private function instrumentDefinition2responseSchema($dom) {
+  private function questionnaireDefinition2responseSchema($dom) {
     
     $xsl = new DOMDocument();
     if (!$xsl->load(PROJECT_PATH . DIRECTORY_SEPARATOR . 'xml' . DIRECTORY_SEPARATOR . 'csi-regq-questionnaire-definition-to-response-schema-v1_0.xsl')) {
@@ -326,7 +326,7 @@ class InstrumentModel extends RegQ_Db_SerializableTransaction implements RegQ_St
     
   }
   
-  private function instrumentDefinition2completedResponseSchema($dom) {
+  private function questionnaireDefinition2completedResponseSchema($dom) {
     
     $xsl = new DOMDocument();
     if (!$xsl->load(PROJECT_PATH . DIRECTORY_SEPARATOR . 'xml' . DIRECTORY_SEPARATOR . 'csi-regq-questionnaire-definition-to-completed-response-schema-v1_0.xsl')) {
@@ -354,36 +354,36 @@ class InstrumentModel extends RegQ_Db_SerializableTransaction implements RegQ_St
   }
   
   /**
-   * Return all available instruments
+   * Return all available questionnaires
    *
    * @return array IntrumentModel
    */
-  public static function getAllInstruments($depth = 'instrument') {
+  public static function getAllQuestionnaires($depth = 'questionnaire') {
     $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
     $select = $adapter->select()
-        ->from(array('instrument' => 'instrument'), array('instrument.instrumentID'))
-        ->order(array('instrumentName ASC', 'instrumentVersion ASC'));
+        ->from(array('questionnaire' => 'questionnaire'), array('questionnaire.questionnaireID'))
+        ->order(array('questionnaireName ASC', 'questionnaireVersion ASC'));
     $stmt = $adapter->query($select);
     $result = $stmt->fetchAll();
-    $instruments = array();
+    $questionnaires = array();
     while (list($key, $val) = each($result)) {
-      array_push($instruments, new InstrumentModel(array('instrumentID' => $val['instrumentID'],
+      array_push($questionnaires, new QuestionnaireModel(array('questionnaireID' => $val['questionnaireID'],
                                                          'depth' => $depth)));
     }
-    return $instruments;
+    return $questionnaires;
   }
   
   /**
    * Deletes this instance
    */
   public function delete() {
-    $where = self::$instrumentTable->getAdapter()->quoteInto('instrumentID = ?', intVal($this->instrumentID));
+    $where = self::$questionnaireTable->getAdapter()->quoteInto('questionnaireID = ?', intVal($this->questionnaireID));
     $transactionNumber = self::startSerializableTransaction();
     $this->_loadInstances();
     if (is_a($this->getFirstInstance(), 'InstanceModel')) {
-      throw new Exception('Cannot delete instrument while instances exist');
+      throw new Exception('Cannot delete questionnaire while instances exist');
     }
-    self::$instrumentTable->delete($where);
+    self::$questionnaireTable->delete($where);
     self::dbCommit($transactionNumber);
   
     // Delete files after transaction to ensure a healthy state such that the worst case
@@ -394,14 +394,14 @@ class InstrumentModel extends RegQ_Db_SerializableTransaction implements RegQ_St
   }
 
   /**
-   * Load instances associated with this instrument instance
+   * Load instances associated with this questionnaire instance
    */
   private function _loadInstances() {
     $auth = Zend_Auth::getInstance();
     if($auth->hasIdentity()) $user = DbUserModel::findByUsername($auth->getIdentity());
     else throw new Exception("Hey, no loading instances without being logged in");
     
-    $where = self::$instrumentTable->getAdapter()->quoteInto('instrumentID = ?', intVal($this->instrumentID));
+    $where = self::$questionnaireTable->getAdapter()->quoteInto('questionnaireID = ?', intVal($this->questionnaireID));
     $instanceRowset = self::$instanceTable->fetchAll($where, 'instanceName ASC');
 
     $this->instances = array();
@@ -417,22 +417,22 @@ class InstrumentModel extends RegQ_Db_SerializableTransaction implements RegQ_St
   }
   
   /**
-   * Generates a signature for an instrument definition
+   * Generates a signature for an questionnaire definition
    * 
-   * @param instrument definition xml dom object
+   * @param questionnaire definition xml dom object
    * @return string md5 hash
    */
   public static function generateSignature($dom) {
-    $instrumentID = InstrumentModel::importXML($dom, array('SkipInstrumentExistCheck' => 1,
+    $questionnaireID = QuestionnaireModel::importXML($dom, array('SkipQuestionnaireExistCheck' => 1,
                                                            'SkipFileAttachments' => 1));
-    $instanceID = InstanceModel::importXML($dom, '_generateSignature', array('instrumentID' => $instrumentID));
+    $instanceID = InstanceModel::importXML($dom, '_generateSignature', array('questionnaireID' => $questionnaireID));
     $instance = new InstanceModel(array('instanceID' => $instanceID,
                                         'depth' => 'instance'));
-    $instrument = new InstrumentModel(array('instrumentID' => $instrumentID,
-                                            'depth' => 'instrument'));
+    $questionnaire = new QuestionnaireModel(array('questionnaireID' => $questionnaireID,
+                                            'depth' => 'questionnaire'));
     $signature = md5($instance->toXML(1));
     $instance->delete();
-    $instrument->delete();
+    $questionnaire->delete();
     return $signature;
   }
 

@@ -40,7 +40,7 @@ class Test_Unit_CryptoModelTest extends RegQ_Test_Unit {
    * set up for each test
    */
   public function start() {
-    $this->fixture(array('InstrumentModel', 'InstanceModel', 'DbUserModel', 'RoleModel'));
+    $this->fixture(array('QuestionnaireModel', 'InstanceModel', 'DbUserModel', 'RoleModel'));
   }
 
   /*

@@ -288,7 +288,7 @@ class TabModel implements RegQ_Lockable, RegQ_Permissible {
   
   /**
    * Return an ID that is unique to this tab but common to all instances of this
-   * tab on different instruments.
+   * tab on different questionnaires.
    * 
    * @return string
    */

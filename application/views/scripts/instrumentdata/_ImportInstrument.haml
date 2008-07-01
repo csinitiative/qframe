@@ -17,14 +17,14 @@
   @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
-- $localStylesheets = array('instrumentdata')
-- $localJavascript = array('instrumentdata')
+- $localStylesheets = array('questionnairedata')
+- $localJavascript = array('questionnairedata')
 
-!= $this->form(null, false, 'post', array('class' => 'importInstrument', 'enctype' => 'multipart/form-data'))
+!= $this->form(null, false, 'post', array('class' => 'importQuestionnaire', 'enctype' => 'multipart/form-data'))
   .option
     Decryption:
     != $this->cryptoSelect($this->cryptoID)
     &nbsp;&nbsp;
-    != $this->formFile('instrumentFile')
-    != $this->linkTo('#importInstrument', $this->formButton('importInstrument', 'Upload'), array('class' => 'dataButton'))
+    != $this->formFile('questionnaireFile')
+    != $this->linkTo('#importQuestionnaire', $this->formButton('importQuestionnaire', 'Upload'), array('class' => 'dataButton'))
 != $this->form(null, true)

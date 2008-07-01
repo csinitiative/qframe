@@ -138,7 +138,7 @@ class RegQ_Controller_Action extends Zend_Controller_Action {
   }
   
   /**
-   * Loads the current instrument model if said model exists, otherwise redirects to the
+   * Loads the current questionnaire model if said model exists, otherwise redirects to the
    * dashboard
    *
    * @param  boolean (optional) redirect to the dashboard if no instance is set
@@ -154,13 +154,13 @@ class RegQ_Controller_Action extends Zend_Controller_Action {
       }
     }
     else {
-      // set up current instrument/instance stuff for the view/controller
+      // set up current questionnaire/instance stuff for the view/controller
       $this->_instance = new InstanceModel(array('instanceID' => $session->instanceID,
                                                  'depth' => 'tab'));
       $this->view->currentInstance = $this->_instance;
       $this->view->instanceInfo = array(
-        'instrument'        => $this->_instance->instrumentName,
-        'instrumentVersion' => $this->_instance->instrumentVersion,
+        'questionnaire'        => $this->_instance->questionnaireName,
+        'questionnaireVersion' => $this->_instance->questionnaireVersion,
         'instance'          => $this->_instance->instanceName
       );
       $this->view->changeInstancePath = $this->view->url(array('controller' => 'dashboard'), null, true);

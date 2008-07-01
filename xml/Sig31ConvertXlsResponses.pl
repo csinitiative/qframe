@@ -33,7 +33,7 @@ foreach my $sheet ( @{ $excel->{Worksheet} } ) {
   $name =~ s/_/ /g;
   $name =~ s/^(\w) (.+)/$1.$2/;
 
-  my $tabNodes = $xp->findnodes("/csi:instrument/csi:tabs/csi:tab[csi:tabHeader='$name']");
+  my $tabNodes = $xp->findnodes("/csi:questionnaire/csi:tabs/csi:tab[csi:tabHeader='$name']");
 
   ROW:
   foreach my $row ( $sheet->{MinRow} .. $sheet->{MaxRow} ) {
@@ -166,7 +166,7 @@ my $response;
 my @xml = split(/\n/, $sig_xml);
 foreach my $line (@xml) {
   $line .= "\n";
-  if ($line =~ /^(<csi:instrument .+)>/o) {
+  if ($line =~ /^(<csi:questionnaire .+)>/o) {
     print $1 . qq[ instanceName="] . encode_entities($instance_name) . qq[">\n];
   }
   elsif ($line =~ /<csi:questionGUID>(.+)<\/csi:questionGUID>/o) {
@@ -210,7 +210,7 @@ sub encode_entities {
 
 __DATA__
 <?xml version="1.0" encoding="UTF-8"?>
-<csi:instrument xmlns:csi="http://www.csinitiative.com/ns/csi-regq" instrumentName="CSI SIG" instrumentVersion="3.1">
+<csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-regq" questionnaireName="CSI SIG" questionnaireVersion="3.1">
   <csi:tabs>
     <csi:tab>
       <csi:tabHeader>Welcome</csi:tabHeader>
@@ -44310,7 +44310,7 @@ and perform an independent audit / review?</csi:qText>
 
 **Firewall Rule:**  Information added to the firewall configuration to define the organization's security policy through conditional statements that instruct the firewall how to react in a particular situation.
 
-**Fluid Sensor:**  A mechanical device sensitive to the presence of water or moisture that transmits a signal to a measuring or control instrument.
+**Fluid Sensor:**  A mechanical device sensitive to the presence of water or moisture that transmits a signal to a measuring or control questionnaire.
 
 **Gateway:**  A node on a network that facilitates the communication of information between two or more nodes.
 
@@ -44320,7 +44320,7 @@ and perform an independent audit / review?</csi:qText>
 
 **Hardware Systems:**  Includes servers and network devices.
 
-**Heat Detector:**  A mechanical device that is sensitive to temperature and transmits a signal to a measuring or control instrument.
+**Heat Detector:**  A mechanical device that is sensitive to temperature and transmits a signal to a measuring or control questionnaire.
 
 **Immediate Perimeter:**  A rack or cage housing the target systems.
 
@@ -44435,7 +44435,7 @@ and perform an independent audit / review?</csi:qText>
 
 **Simple Mail Transfer Protocol (SMTP):**  The de facto standard for email transmissions across the Internet.
 
-**Smoke Detector:**  A mechanical device that is sensitive to the presence of smoke or particulate material in the air that transmits a signal to a measuring or control instrument.
+**Smoke Detector:**  A mechanical device that is sensitive to the presence of smoke or particulate material in the air that transmits a signal to a measuring or control questionnaire.
 
 **Status changes:**  Changes to employment status that is recorded in HR such as promotions or demotions or departmental changes.
 
@@ -44477,7 +44477,7 @@ and perform an independent audit / review?</csi:qText>
 
 **Warm Site:**  A remote facility which replicates production data in set intervals.
 
-**Water Sensor:**  A mechanical device sensitive to the presence of water or moisture that transmits a signal to a measuring or control instrument.
+**Water Sensor:**  A mechanical device sensitive to the presence of water or moisture that transmits a signal to a measuring or control questionnaire.
 
 **Workstations:**  (1) Like personal computers, most workstations are single-user computers. However, workstations are typically linked together to form a local-area network, although they can also be used as stand-alone systems. (2) In networking, "workstation" refers to any computer connected to a local area network, and could be an actual workstation or a personal computer.</csi:headerText>
       <csi:footerText></csi:footerText>
@@ -44485,4 +44485,4 @@ and perform an independent audit / review?</csi:qText>
       </csi:sections>
     </csi:tab>
   </csi:tabs>
-</csi:instrument>
+</csi:questionnaire>

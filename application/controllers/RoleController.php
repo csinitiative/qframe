@@ -87,17 +87,17 @@ class RoleController extends RegQ_Controller_Admin {
     $session = new Zend_Session_Namespace('login');
     if(!isset($session->instanceID)) {
       $instanceID = ($this->_hasParam('instance')) ? $this->_getParam('instance') : null;
-      $instrumentID = ($this->_hasParam('instrument')) ? $this->_getParam('instrument') : null;
+      $questionnaireID = ($this->_hasParam('questionnaire')) ? $this->_getParam('questionnaire') : null;
 
       if(is_numeric($instanceID) && $instanceID != 0) {
         $session->instanceID = intVal($instanceID);
         $this->_redirector->gotoRouteAndExit(array());
       }
 
-      $instruments = InstrumentModel::getAllInstruments('tab');
+      $questionnaires = QuestionnaireModel::getAllQuestionnaires('tab');
       $allowedInstances = array();
-      foreach($instruments as $instrument) {
-        while($instance = $instrument->nextInstance()) {
+      foreach($questionnaires as $questionnaire) {
+        while($instance = $questionnaire->nextInstance()) {
           while($tab = $instance->nextTab()) {
             if($this->_user->hasAnyAccess($tab)) {
               $allowedInstances[] = $instance;
@@ -107,7 +107,7 @@ class RoleController extends RegQ_Controller_Admin {
         }
       }
       $this->view->instances = $allowedInstances;
-      $this->view->instrument = $instrumentID;
+      $this->view->questionnaire = $questionnaireID;
     }
 
     $this->view->role = RoleModel::find($this->_getParam('id'));

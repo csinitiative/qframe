@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<csi:instrument xmlns:csi="http://www.csinitiative.com/ns/csi-regq" instrumentName="Test1 Instrument" instrumentVersion="3.00" revision="1" targetRegQVersion="1.0">
+<csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-regq" questionnaireName="Test2 Questionnaire" questionnaireVersion="3.00" revision="1" targetRegQVersion="1.0">
   <csi:tabs>
     <csi:tab>
-      <csi:tabHeader>Test 1.1 tabHeader</csi:tabHeader>
+      <csi:tabHeader>Test 2.1 tabHeader</csi:tabHeader>
       <csi:tabGUID>1</csi:tabGUID>
       <csi:seqNumber>1</csi:seqNumber>
       <csi:headerText>
-        Test 1.1 headerText
+        Test 2.1 headerText
       </csi:headerText>
       <csi:footerText></csi:footerText>
     </csi:tab>
     <csi:tab>
-      <csi:tabHeader>Test 1.2 tabHeader</csi:tabHeader>
+      <csi:tabHeader>Test 2.2 tabHeader</csi:tabHeader>
       <csi:tabGUID>2</csi:tabGUID>
       <csi:seqNumber>3</csi:seqNumber>
       <csi:headerText>
-        Test 1.2 headerText
+        Test 2.2 headerText
       </csi:headerText>
       <csi:footerText></csi:footerText>
     </csi:tab>
     <csi:tab>
-      <csi:tabHeader>Test 1.3 tabHeader</csi:tabHeader>
+      <csi:tabHeader>Test 2.3 tabHeader</csi:tabHeader>
       <csi:tabGUID>3</csi:tabGUID>
       <csi:seqNumber>5</csi:seqNumber>
       <csi:headerText></csi:headerText>
       <csi:footerText></csi:footerText>
       <csi:sections>
         <csi:section>
-          <csi:sectionHeader>Test 1.3.1 sectionHeader</csi:sectionHeader>
+          <csi:sectionHeader>Test 2.3.1 sectionHeader</csi:sectionHeader>
           <csi:sectionGUID>1</csi:sectionGUID>
           <csi:seqNumber>1</csi:seqNumber>
           <csi:questions>
@@ -58,7 +58,7 @@
           </csi:questions>
         </csi:section>
         <csi:section>
-          <csi:sectionHeader>Test 1.3.2 sectionHeader</csi:sectionHeader>
+          <csi:sectionHeader>Test 2.3.2 sectionHeader</csi:sectionHeader>
           <csi:sectionGUID>2</csi:sectionGUID>
           <csi:seqNumber>2</csi:seqNumber>
           <csi:questions>
@@ -342,4 +342,4 @@
       </csi:sections>
     </csi:tab>
   </csi:tabs>
-</csi:instrument>
+</csi:questionnaire>
