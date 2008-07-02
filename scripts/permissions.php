@@ -175,7 +175,7 @@ foreach($permissions as $directory => $settings) {
       
       // If the "contents" option is set, also set the mode on the contents
       if(isset($settings['contents']) && $settings['contents']) {
-        `find {$directory} -depth 1 ! -type d -exec chmod {$settings['mod']} '{}' ';'`;
+        `find {$directory} -maxdepth 1 ! -type d -exec chmod {$settings['mod']} '{}' ';'`;
       }
 
       echo "  changing file mode to {$settings['mod']}\n";
@@ -193,7 +193,7 @@ foreach($permissions as $directory => $settings) {
       
       // If the "contents" option is set, also set the ownership on the contents
       if(isset($settings['contents']) && $settings['contents']) {
-        `find {$directory} -depth 1 ! -type d -exec chown {$settings['own']} '{}' ';'`;
+        `find {$directory} -maxdepth 1 ! -type d -exec chown {$settings['own']} '{}' ';'`;
       }
       
       echo "  changing file ownership to {$settings['own']}\n";
