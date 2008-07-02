@@ -47,26 +47,8 @@ var Tooltips = {
    */
   createTooltip: function(text) {
     var tooltip = $(document.createElement('div'));
-    var content = $(document.createElement('div'));
-    var bottom = $(document.createElement('div'));
-    var right = $(document.createElement('div'));
-    var top = $(document.createElement('div'));
-    var left = $(document.createElement('div'));
-    
     tooltip.id = 'tooltip';
-    content.id = 'content';
-    bottom.id = 'bottom';
-    right.id = 'right'
-    top.id = 'top'
-    left.id = 'left'
-    content.innerHTML = text;
-    
-    tooltip.insert({ bottom: content });
-    tooltip.insert({ bottom: bottom });
-    tooltip.insert({ bottom: right });
-    tooltip.insert({ bottom: top });
-    tooltip.insert({ bottom: left });
-
+    tooltip.innerHTML = text;
     return tooltip;
   },
   
@@ -123,6 +105,4 @@ var Tooltips = {
 }
 
 // run setup tasks on window load
-if(!(false /*@cc_on || @_jscript_version < 5.7 @*/)) {
-  Event.observe(window, 'load', Tooltips.setup);  
-}
+Event.observe(window, 'load', Tooltips.setup);  
