@@ -23,10 +23,10 @@
     %meta{ 'http-equiv' => 'Content-type', 'content' => 'text/html; charset=utf-8' }/
     %title CSI RegQ
     != $this->stylesheetTag(array('printmain'), array('media' => 'print'))
-    != $this->stylesheetTag(array('main'))
+    != $this->stylesheetTag(array('main', 'tooltips'))
     - if(isset($localStylesheets) && is_array($localStylesheets))
       != $this->stylesheetTag($localStylesheets)
-    != $this->javascriptTag(array('lib/prototype', 'lib/scriptaculous', 'application'))
+    != $this->javascriptTag(array('lib/prototype', 'lib/scriptaculous', 'application', 'tooltips'))
     - if(isset($localJavascript) && is_array($localJavascript))
       != $this->javascriptTag($localJavascript)
 

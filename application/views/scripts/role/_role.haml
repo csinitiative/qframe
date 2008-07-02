@@ -22,6 +22,6 @@
   .title.roleDescription= $this->role->roleDescription
   != $this->imageTag('ajax-loader.gif', array('class' => 'progress', 'style' => 'display: none;'))
   .controls{ 'style' => 'display: none;' }
-    != $this->linkTo((array('action' => 'edit', 'id' => $this->role->roleID)), $this->imageTag('icons/ddffdd/group_edit.png', array('class' => 'inline')))
-    != $this->linkTo((array('action' => 'delete', 'id' => $this->role->roleID)), $this->imageTag('icons/ddffdd/group_delete.png', array('class' => 'inline confirm')))
-    != $this->linkTo((array('action' => 'permissions', 'id' => $this->role->roleID)), $this->imageTag('icons/ddffdd/lock_go.png', array('class' => 'inline')))
+    != $this->linkTo((array('action' => 'edit', 'id' => $this->role->roleID)), $this->imageTag('icons/ddffdd/group_edit.png', array('class' => 'inline tooltip', 'tooltip' => 'modify role')))
+    != $this->linkTo((array('action' => 'delete', 'id' => $this->role->roleID)), $this->imageTag('icons/ddffdd/group_delete.png', array('class' => 'inline confirm tooltip', 'tooltip' => 'delete role')))
+    != $this->linkTo((array('action' => 'permissions', 'id' => $this->role->roleID)), $this->imageTag('icons/ddffdd/lock_go.png', array('class' => 'inline tooltip', 'tooltip' => 'assign permissions to role')))
