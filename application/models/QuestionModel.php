@@ -1,14 +1,14 @@
 <?php
 
 /**
- * This file is part of the CSI RegQ.
+ * This file is part of the CSI QFrame.
  *
- * The CSI RegQ is free software; you can redistribute it and/or modify
+ * The CSI QFrame is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * The CSI RegQ is distributed in the hope that it will be useful,
+ * The CSI QFrame is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -24,7 +24,7 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class QuestionModel implements RegQ_Storer {
+class QuestionModel implements QFrame_Storer {
 
   private $questionRow;
   private $questionTypeRow;
@@ -74,12 +74,12 @@ class QuestionModel implements RegQ_Storer {
       throw new InvalidArgumentException('Missing questionID as argument to QuestionModel constructor');
     }
 
-    if (!isset (self::$questionTable)) self::$questionTable = RegQ_Db_Table::getTable('question');
-    if (!isset (self::$questionReferenceTable)) self::$questionReferenceTable = RegQ_Db_Table::getTable('questionReference');
-    if (!isset (self::$referenceTable)) self::$referenceTable = RegQ_Db_Table::getTable('reference');
-    if (!isset (self::$referenceDetailTable)) self::$referenceDetailTable = RegQ_Db_Table::getTable('referenceDetail');
-    if (!isset (self::$questionTypeTable)) self::$questionTypeTable = RegQ_Db_Table::getTable('questionType');
-    if (!isset (self::$questionPromptTable)) self::$questionPromptTable = RegQ_Db_Table::getTable('questionPrompt');
+    if (!isset (self::$questionTable)) self::$questionTable = QFrame_Db_Table::getTable('question');
+    if (!isset (self::$questionReferenceTable)) self::$questionReferenceTable = QFrame_Db_Table::getTable('questionReference');
+    if (!isset (self::$referenceTable)) self::$referenceTable = QFrame_Db_Table::getTable('reference');
+    if (!isset (self::$referenceDetailTable)) self::$referenceDetailTable = QFrame_Db_Table::getTable('referenceDetail');
+    if (!isset (self::$questionTypeTable)) self::$questionTypeTable = QFrame_Db_Table::getTable('questionType');
+    if (!isset (self::$questionPromptTable)) self::$questionPromptTable = QFrame_Db_Table::getTable('questionPrompt');
 
     $questions = self::$questionTable->fetchRows('questionID', $args['questionID']);
     $this->questionRow = $questions[0];
@@ -120,7 +120,7 @@ class QuestionModel implements RegQ_Storer {
 
     $questionPromptRows = self::$questionPromptTable->fetchRows('questionTypeID', $this->questionRow->questionTypeID);
 
-    if (!isset (self::$ruleTable)) self::$ruleTable = RegQ_Db_Table::getTable('rule');
+    if (!isset (self::$ruleTable)) self::$ruleTable = QFrame_Db_Table::getTable('rule');
     foreach ($questionPromptRows as $row) {
       $array = $row->toArray();
       $array['rules'] = array ();
@@ -293,7 +293,7 @@ class QuestionModel implements RegQ_Storer {
   }
 
   private function _loadResponses() {
-    if (!isset (self::$responseTable)) self::$responseTable = RegQ_Db_Table::getTable('response');
+    if (!isset (self::$responseTable)) self::$responseTable = QFrame_Db_Table::getTable('response');
     $responses = self::$responseTable->fetchRows('questionID', $this->questionRow->questionID, 'responseID', $this->questionRow->instanceID);
     $this->responses = array();
     foreach ($responses as $r) {
@@ -318,7 +318,7 @@ class QuestionModel implements RegQ_Storer {
    */
   public function _loadChildren() {
     $this->children = array();
-    $rows = RegQ_Db_Table::getTable('question')->fetchRows('parentID', $this->questionRow->questionID, 'seqNumber', $this->questionRow->instanceID);
+    $rows = QFrame_Db_Table::getTable('question')->fetchRows('parentID', $this->questionRow->questionID, 'seqNumber', $this->questionRow->instanceID);
     foreach ($rows as $row) {
       $this->children[] = new QuestionModel(array('questionID' => $row->questionID,
                                                   'depth' => $this->depth)); 
@@ -336,7 +336,7 @@ class QuestionModel implements RegQ_Storer {
 
   /**
    * Return an ID that is guaranteed to be unique among objects of this type to
-   * satisfy RegQ_Storer interface
+   * satisfy QFrame_Storer interface
    *
    * @return mixed
    */

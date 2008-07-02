@@ -12,7 +12,7 @@ my $DEBUG = 1;
 my $excel = Spreadsheet::ParseExcel::Workbook->Parse('SIGv3 Final_v2_comp.xls');
 
 print qq[<?xml version="1.0" encoding="UTF-8"?>
-<csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-regq" questionnaireName="CSI SIG" questionnaireVersion="3.00">
+<csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-qframe" questionnaireName="CSI SIG" questionnaireVersion="3.00">
   <csi:tabs>
 ];
 

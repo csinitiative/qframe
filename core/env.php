@@ -1,13 +1,13 @@
 <?php
 /**
- * This file is part of the CSI RegQ.
+ * This file is part of the CSI QFrame.
  *
- * The CSI RegQ is free software; you can redistribute it and/or modify
+ * The CSI QFrame is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * The CSI RegQ is distributed in the hope that it will be useful,
+ * The CSI QFrame is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -20,48 +20,48 @@
  */
 
 /*
- * The version of this RegQ application
+ * The version of this QFrame application
  */
-define('REGQ_VERSION', '1.0');
+define('QFRAME_VERSION', '1.0');
 
 /*
  * Set the current environment
  */
 $env = 'development';
-if(isset($_ENV['REGQ_ENV'])) {
-  $env = $_ENV['REGQ_ENV'];
+if(isset($_ENV['QFRAME_ENV'])) {
+  $env = $_ENV['QFRAME_ENV'];
 }
-elseif(function_exists('apache_getenv') && apache_getenv('REGQ_ENV')) {
-  $env = apache_getenv('REGQ_ENV');
+elseif(function_exists('apache_getenv') && apache_getenv('QFRAME_ENV')) {
+  $env = apache_getenv('QFRAME_ENV');
 }
-define('REGQ_ENV', $env);
+define('QFRAME_ENV', $env);
 
 /*
- * If there is a file in the config/environments directory named <REGQ_ENV>.yml
- * load it and place it in $GLOBALS['regq_env']
+ * If there is a file in the config/environments directory named <QFRAME_ENV>.yml
+ * load it and place it in $GLOBALS['qframe_env']
  */
 $env_file = implode(DIRECTORY_SEPARATOR, array(
   dirname(__FILE__),
   '..',
   'config',
   'environments',
-  REGQ_ENV . '.yml'
+  QFRAME_ENV . '.yml'
 ));
 if(file_exists($env_file)) {
-  $GLOBALS['regq_env'] = Spyc::YAMLLoad($env_file);
+  $GLOBALS['qframe_env'] = Spyc::YAMLLoad($env_file);
 }
 
 /*
- * If there is a file in the config/environments directory named <REGQ_ENV>_maintenance.yml
- * load it and place it in $GLOBALS['regq_maintenance']
+ * If there is a file in the config/environments directory named <QFRAME_ENV>_maintenance.yml
+ * load it and place it in $GLOBALS['qframe_maintenance']
  */
 $env_file = implode(DIRECTORY_SEPARATOR, array(
   dirname(__FILE__),
   '..',
   'config',
   'environments',
-  REGQ_ENV . '_maintenance.yml'
+  QFRAME_ENV . '_maintenance.yml'
 ));
 if(file_exists($env_file)) {
-  $GLOBALS['regq_maintenance'] = Spyc::YAMLLoad($env_file);
+  $GLOBALS['qframe_maintenance'] = Spyc::YAMLLoad($env_file);
 }

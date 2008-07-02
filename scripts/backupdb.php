@@ -1,14 +1,14 @@
 #!/usr/bin/php -q
 <?php
 /**
- * This file is part of the CSI RegQ.
+ * This file is part of the CSI QFrame.
  *
- * The CSI RegQ is free software; you can redistribute it and/or modify
+ * The CSI QFrame is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * The CSI RegQ is distributed in the hope that it will be useful,
+ * The CSI QFrame is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -23,7 +23,7 @@
 /* 
  * Command-line arguments
  */
-$_ENV['REGQ_ENV'] = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : die('Need environment name as first argument');
+$_ENV['QFRAME_ENV'] = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : die('Need environment name as first argument');
 $backupDir = isset($_SERVER['argv'][2]) ? $_SERVER['argv'][2] : die('Need backup directory as second argument');
 
 /*
@@ -56,7 +56,7 @@ include(_path(CORE_PATH, 'env.php'));
 $profiles = Spyc::YAMLLoad(_path(CONFIG_PATH, 'database.yml'));
 $options = array_merge(array(
   'password'    => null
-), $profiles[REGQ_ENV]);
+), $profiles[QFRAME_ENV]);
 
 $backupFullPath = _path($backupDir, "{$options['dbname']}." . date("Ymd") . "." . date("His") . ".sql");
 

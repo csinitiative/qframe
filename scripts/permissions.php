@@ -1,14 +1,14 @@
 #!/usr/bin/php -q
 <?php
 /**
- * This file is part of the CSI RegQ.
+ * This file is part of the CSI QFrame.
  *
- * The CSI RegQ is free software; you can redistribute it and/or modify
+ * The CSI QFrame is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * The CSI RegQ is distributed in the hope that it will be useful,
+ * The CSI QFrame is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -81,7 +81,7 @@ if(!isset($root_group_id)) {
  * if it is
  */
 if(file_exists('/selinux/enforce')) {
-  $regq_path = realpath(dirname(__FILE__) . '/..');
+  $qframe_path = realpath(dirname(__FILE__) . '/..');
 
   $enforcing = file_get_contents('/selinux/enforce');
   $found = 1;
@@ -113,7 +113,7 @@ if(file_exists('/selinux/enforce')) {
   }
   
   if ($found) {
-    `{$chcon} -R -u system_u -r object_r -t httpd_sys_content_t {$regq_path}`;
+    `{$chcon} -R -u system_u -r object_r -t httpd_sys_content_t {$qframe_path}`;
     `{$setsebool} -P httpd_can_network_connect=1`;
   }
 }
@@ -144,7 +144,7 @@ $permissions = array(
 chdir(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..');
 
 // Establish baseline ownership and permissions
-echo "Setting baseline permissions (this may take awhile)...\n";
+echo "Setting baseline permissions (this may take a while)...\n";
 // Set ownership of all files to root:root at first
 `chown -R root:{$root_group_id} .`;
 // Set directories to 755

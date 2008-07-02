@@ -1,13 +1,13 @@
 <?php
 /**
- * This file is part of the CSI RegQ.
+ * This file is part of the CSI QFrame.
  *
- * The CSI RegQ is free software; you can redistribute it and/or modify
+ * The CSI QFrame is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * The CSI RegQ is distributed in the hope that it will be useful,
+ * The CSI QFrame is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -27,7 +27,7 @@ class SectionModel {
 
   /**
    * Stores the row object correlated to this section
-   * @var RegQ_Db_Rowset
+   * @var QFrame_Db_Rowset
    */
   private $sectionRow;
 
@@ -86,10 +86,10 @@ class SectionModel {
       throw new InvalidArgumentException('Missing sectionID as argument to SectionModel()');
     }
 
-    if (!isset(self::$sectionTable)) self::$sectionTable = RegQ_Db_Table::getTable('section');
-    if (!isset(self::$ruleTable)) self::$ruleTable = RegQ_Db_Table::getTable('rule');
-    if (!isset(self::$sectionReferenceTable)) self::$sectionReferenceTable = RegQ_Db_Table::getTable('sectionReference');
-    if (!isset(self::$referenceDetailTable)) self::$referenceDetailTable = RegQ_Db_Table::getTable('referenceDetail');
+    if (!isset(self::$sectionTable)) self::$sectionTable = QFrame_Db_Table::getTable('section');
+    if (!isset(self::$ruleTable)) self::$ruleTable = QFrame_Db_Table::getTable('rule');
+    if (!isset(self::$sectionReferenceTable)) self::$sectionReferenceTable = QFrame_Db_Table::getTable('sectionReference');
+    if (!isset(self::$referenceDetailTable)) self::$referenceDetailTable = QFrame_Db_Table::getTable('referenceDetail');
     
     $rows = self::$sectionTable->fetchRows('sectionID', $args['sectionID']);
     $this->sectionRow = $rows[0];
@@ -203,7 +203,7 @@ class SectionModel {
   }
 
   private function _loadQuestions() {  
-    $questions = RegQ_Db_Table::getTable('question')->fetchRows('sectionID', $this->sectionID, 'seqNumber');
+    $questions = QFrame_Db_Table::getTable('question')->fetchRows('sectionID', $this->sectionID, 'seqNumber');
     
     $this->questions = array();
     foreach ($questions as $question) {

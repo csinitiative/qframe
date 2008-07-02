@@ -204,7 +204,7 @@ class Haml_Engine {
   private function renderTemplate($name, $relative = true) {
     $name = ($relative) ? $name : substr($name, strlen($this->_base) + 1);
     
-    if(RegQ_Config::instance()->cache_templates) {
+    if(QFrame_Config::instance()->cache_templates) {
       $cache_path = $this->_base . DIRECTORY_SEPARATOR . 'cache';
       $cache_file = $cache_path . DIRECTORY_SEPARATOR . preg_replace('/\.haml$/', '.php', $name);
       $template_file = $this->_base . DIRECTORY_SEPARATOR . $name;
