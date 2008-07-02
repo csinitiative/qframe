@@ -241,7 +241,7 @@ class RegQ_View_Helper_TabHelpers {
     $class = 'additionalInfo';
     if($response->hasAdditionalInfo()) {
       $class .= ' hasContent';
-      $content = $this->view->h($response->additionalInfo);
+      $content = $response->additionalInfo;
       $style = '';
       $mod = 1;
     }

@@ -55,7 +55,8 @@
         .description hover over an icon for a description
     - elseif($this->question->virtualQuestion || ($mode === 'view' || $mode === 'approve') || ($mode === 'edit' && $response->state == 2))
       != $this->questionText($response)
-      .additionalInfo= $response->additionalInfo
+      .additionalInfo
+        != preg_replace('/  /', ' &nbsp;', preg_replace('/\n/', '<br />', $this->h($response->additionalInfo)))
   
     .attachments
       != $this->attachments($this->question, $mode)    
