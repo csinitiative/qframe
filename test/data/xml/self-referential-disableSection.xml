@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-regq" questionnaireName="Dummy Questionnaire" questionnaireVersion="1" revision="1" targetRegQVersion="1.0">
+<csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-qframe" questionnaireName="Dummy Questionnaire" questionnaireVersion="1" revision="1" targetQFrameVersion="1.0">
   <csi:tabs>
     <csi:tab>
       <csi:tabHeader>Dummy Tab</csi:tabHeader>

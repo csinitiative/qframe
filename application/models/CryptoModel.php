@@ -1,13 +1,13 @@
 <?php
 /**
- * This file is part of the CSI RegQ.
+ * This file is part of the CSI QFrame.
  *
- * The CSI RegQ is free software; you can redistribute it and/or modify
+ * The CSI QFrame is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * The CSI RegQ is distributed in the hope that it will be useful,
+ * The CSI QFrame is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -23,7 +23,7 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class CryptoModel extends RegQ_Db_SerializableTransaction implements RegQ_Paginable {
+class CryptoModel extends QFrame_Db_SerializableTransaction implements QFrame_Paginable {
 
   private $cryptoRow = null;
   private static $cryptoTable;
@@ -34,7 +34,7 @@ class CryptoModel extends RegQ_Db_SerializableTransaction implements RegQ_Pagina
    * @param string Name of the encryption profile
    */
   function __construct ($args = array()) {
-    if (!isset(self::$cryptoTable)) self::$cryptoTable = RegQ_Db_Table::getTable('crypto');
+    if (!isset(self::$cryptoTable)) self::$cryptoTable = QFrame_Db_Table::getTable('crypto');
     
     if (isset($args['name'])) {
       $where = self::$cryptoTable->getAdapter()->quoteInto('name = ?', $args['name']);
@@ -143,7 +143,7 @@ class CryptoModel extends RegQ_Db_SerializableTransaction implements RegQ_Pagina
    * @return Array
    */
   public static function _find($args = array()) {
-    if (!isset(self::$cryptoTable)) self::$cryptoTable = RegQ_Db_Table::getTable('crypto');
+    if (!isset(self::$cryptoTable)) self::$cryptoTable = QFrame_Db_Table::getTable('crypto');
 
     // set up default values for all of the allowed arguments
     $args = array_merge(array(
@@ -215,7 +215,7 @@ class CryptoModel extends RegQ_Db_SerializableTransaction implements RegQ_Pagina
    * @return CryptoModel Object of new key
    */
   public static function generateNewRijndael256Key($name, $secret = null) {
-    if (!isset(self::$cryptoTable)) self::$cryptoTable = RegQ_Db_Table::getTable('crypto');
+    if (!isset(self::$cryptoTable)) self::$cryptoTable = QFrame_Db_Table::getTable('crypto');
     
     $trimmedSecret = trim($secret);
     
@@ -256,7 +256,7 @@ class CryptoModel extends RegQ_Db_SerializableTransaction implements RegQ_Pagina
    * @return array CryptoModel objects
    */
   public static function getAllProfiles() {
-    if (!isset(self::$cryptoTable)) self::$cryptoTable = RegQ_Db_Table::getTable('crypto');
+    if (!isset(self::$cryptoTable)) self::$cryptoTable = QFrame_Db_Table::getTable('crypto');
     
     $profiles = array();
     $rows = self::$cryptoTable->fetchAll()->toArray();
@@ -274,7 +274,7 @@ class CryptoModel extends RegQ_Db_SerializableTransaction implements RegQ_Pagina
    * @return CryptoModel
    */
   public static function importRijnDael256Key($name, $key) {
-    if (!isset(self::$cryptoTable)) self::$cryptoTable = RegQ_Db_Table::getTable('crypto');
+    if (!isset(self::$cryptoTable)) self::$cryptoTable = QFrame_Db_Table::getTable('crypto');
     
     $transactionNumber = self::startSerializableTransaction();
     

@@ -1,13 +1,13 @@
 <?php
 /**
- * This file is part of the CSI RegQ.
+ * This file is part of the CSI QFrame.
  *
- * The CSI RegQ is free software; you can redistribute it and/or modify
+ * The CSI QFrame is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * The CSI RegQ is distributed in the hope that it will be useful,
+ * The CSI QFrame is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -23,12 +23,12 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class RoleModel implements RegQ_Paginable {
+class RoleModel implements QFrame_Paginable {
   
   /**
    * Table object that members of this class will use to perform
    * database actions
-   * @var RegQ_Db_Table_Role
+   * @var QFrame_Db_Table_Role
    */
   private static $roleTable;
   
@@ -105,10 +105,10 @@ class RoleModel implements RegQ_Paginable {
    * Return whether or not this role has access to a certain resource
    *
    * @param  string            the permission being asked about
-   * @param  RegQ_Permissible  (optional) the permissible object in question
+   * @param  QFrame_Permissible  (optional) the permissible object in question
    * @return boolean
    */
-  public function hasAccess($permission, RegQ_Permissible $permissible = null) {
+  public function hasAccess($permission, QFrame_Permissible $permissible = null) {
     $resource = ($permissible === null) ? "GLOBAL" : $permissible->getPermissionID();
     if(!$this->acl->hasRole($permission) || !$this->acl->has($resource)) return false;
     return $this->acl->isAllowed($permission, $resource);
@@ -118,9 +118,9 @@ class RoleModel implements RegQ_Paginable {
    * Grant access to this role for a particular permissible object (or globally)
    *
    * @param  string           permission to grant
-   * @param  RegQ_Permissible (optional) permissible object to grant access to
+   * @param  QFrame_Permissible (optional) permissible object to grant access to
    */
-  public function grant($permission, RegQ_Permissible $permissible = null) {
+  public function grant($permission, QFrame_Permissible $permissible = null) {
     $resource = ($permissible === null) ? "GLOBAL" : $permissible->getPermissionID();
     if(!$this->acl->hasRole($permission)) $this->acl->addRole(new Zend_Acl_Role($permission));
     if(!$this->acl->has($resource)) $this->acl->add(new Zend_Acl_Resource($resource));
@@ -131,9 +131,9 @@ class RoleModel implements RegQ_Paginable {
    * Deny access to this role for a particular permissible object (or globally)
    *
    * @param  string           permission to deny
-   * @param  RegQ_Permissible (optional) permissible object to deny access to
+   * @param  QFrame_Permissible (optional) permissible object to deny access to
    */
-  public function deny($permission, RegQ_Permissible $permissible = null) {
+  public function deny($permission, QFrame_Permissible $permissible = null) {
     $resource = ($permissible === null) ? "GLOBAL" : $permissible->getPermissionID();
     if(!$this->acl->hasRole($permission)) $this->acl->addRole(new Zend_Acl_Role($permission));
     if(!$this->acl->has($resource)) $this->acl->add(new Zend_Acl_Resource($resource));
@@ -188,7 +188,7 @@ class RoleModel implements RegQ_Paginable {
    * @return RoleModel
    */
   public static function create($attributes) {
-    if (!isset(self::$roleTable)) self::$roleTable = RegQ_Db_Table::getTable('role');
+    if (!isset(self::$roleTable)) self::$roleTable = QFrame_Db_Table::getTable('role');
     $role = new RoleModel(self::$roleTable->createRow());
     return $role->setAttributes($attributes);
   }
@@ -203,7 +203,7 @@ class RoleModel implements RegQ_Paginable {
    * @return RoleModel
    */
   public static function find($id, $args = array()) {
-    if (!isset(self::$roleTable)) self::$roleTable = RegQ_Db_Table::getTable('role');
+    if (!isset(self::$roleTable)) self::$roleTable = QFrame_Db_Table::getTable('role');
  
     // if the first argument is numeric, treat it as an ID
     if(is_numeric($id)) 
@@ -234,7 +234,7 @@ class RoleModel implements RegQ_Paginable {
    * @return RoleModel
    */
   public static function findBy($type, $attribute, $value, $args = array()) {
-     if (!isset(self::$roleTable)) self::$roleTable = RegQ_Db_Table::getTable('role');
+     if (!isset(self::$roleTable)) self::$roleTable = QFrame_Db_Table::getTable('role');
 
     // build the where clause that will confine results to the given attribute/value
     // and add it to any existing where clause
@@ -252,7 +252,7 @@ class RoleModel implements RegQ_Paginable {
    * @return Array
    */
   public static function _find($args = array()) {
-    if (!isset(self::$roleTable)) self::$roleTable = RegQ_Db_Table::getTable('role');
+    if (!isset(self::$roleTable)) self::$roleTable = QFrame_Db_Table::getTable('role');
 
     // set up default values for all of the allowed arguments
     $args = array_merge(array(
@@ -275,7 +275,7 @@ class RoleModel implements RegQ_Paginable {
    * @param integer primary key
    */
   public function _load($key) {
-    if (!isset(self::$roleTable)) self::$roleTable = RegQ_Db_Table::getTable('role');
+    if (!isset(self::$roleTable)) self::$roleTable = QFrame_Db_Table::getTable('role');
     $data = self::$roleTable->find($key)->current()->toArray();
     $this->setAttributes($data, false);
     $this->acl = unserialize($data['ACLstring']);

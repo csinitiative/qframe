@@ -210,7 +210,7 @@ sub encode_entities {
 
 __DATA__
 <?xml version="1.0" encoding="UTF-8"?>
-<csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-regq" questionnaireName="CSI SIG" questionnaireVersion="3.1">
+<csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-qframe" questionnaireName="CSI SIG" questionnaireVersion="3.1">
   <csi:tabs>
     <csi:tab>
       <csi:tabHeader>Welcome</csi:tabHeader>

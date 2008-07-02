@@ -147,8 +147,8 @@ var Rules = {
         tab.down('div').removeClassName('disabled');
         tab.down('div').innerHTML = '<a href="' + tab.readAttribute('url') + '">' +
             tab.down('div').innerHTML + '</a>';
-        tab.down('a').observe('mouseover', CsiRegq.menuMouseOver);
-        tab.down('a').observe('mouseout', CsiRegq.menuMouseOut);
+        tab.down('a').observe('mouseover', CsiQframe.menuMouseOver);
+        tab.down('a').observe('mouseout', CsiQframe.menuMouseOut);
       }
     }
   },

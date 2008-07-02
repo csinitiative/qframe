@@ -1,13 +1,13 @@
 <?php
 /**
- * This file is part of the CSI RegQ.
+ * This file is part of the CSI QFrame.
  *
- * The CSI RegQ is free software; you can redistribute it and/or modify
+ * The CSI QFrame is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * The CSI RegQ is distributed in the hope that it will be useful,
+ * The CSI QFrame is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -23,7 +23,7 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class DbUserModel implements RegQ_Paginable {
+class DbUserModel implements QFrame_Paginable {
 
   private $dbUserRow;
   private $dirty;
@@ -43,7 +43,7 @@ class DbUserModel implements RegQ_Paginable {
    * @return DbUserModel
    */
   public static function findByUsername($username) {
-    if (!isset(self::$dbUserTable)) self::$dbUserTable = RegQ_Db_Table::getTable('dbUser');
+    if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('dbUser');
     $where = self::$dbUserTable->getAdapter()->quoteInto('dbUserName = ?', $username);
     $user = self::$dbUserTable->fetchRow($where);
     if($user) return new DbUserModel(array('dbUserID' => $user->dbUserID));
@@ -83,7 +83,7 @@ class DbUserModel implements RegQ_Paginable {
     // process search terms into a where clause if any exist
     if($args['search'] !== null) $args['search'] = self::searchWhere($args['search']);
     
-    if (!isset(self::$dbUserTable)) self::$dbUserTable = RegQ_Db_Table::getTable('dbUser');
+    if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('dbUser');
     $users = array();
     $dbUsers = self::$dbUserTable->fetchAll(
       $args['search'],
@@ -143,7 +143,7 @@ class DbUserModel implements RegQ_Paginable {
   }
 
   public function __construct ($args = array()) {
-    if (!isset(self::$dbUserTable)) self::$dbUserTable = RegQ_Db_Table::getTable('dbUser');
+    if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('dbUser');
       
     $args = array_merge(array(
       'dbUserFullName'  => null,
@@ -215,7 +215,7 @@ class DbUserModel implements RegQ_Paginable {
       return 1;
     }
     
-    if (!isset(self::$dbUserTable)) self::$dbUserTable = RegQ_Db_Table::getTable('dbUser');
+    if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('dbUser');
     self::$dbUserTable->lock();
     
     if (!$this->dbUserRow->dbUserID && !is_null(self::findByUsername($this->dbUserRow->dbUserName))) {
@@ -231,7 +231,7 @@ class DbUserModel implements RegQ_Paginable {
    * Delete a user from the database
    */
   public function delete() {
-    if (!isset(self::$dbUserTable)) self::$dbUserTable = RegQ_Db_Table::getTable('dbUser');
+    if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('dbUser');
     self::$dbUserTable->lock();
     $this->dbUserRow->delete();      
     self::$dbUserTable->unlock();
@@ -243,7 +243,7 @@ class DbUserModel implements RegQ_Paginable {
   public function loadRoles() {
     $this->roles = array();
     $rolesRowset =
-        $this->dbUserRow->findManyToManyRowset('RegQ_Db_Table_Role', 'RegQ_Db_Table_Assignment');
+        $this->dbUserRow->findManyToManyRowset('QFrame_Db_Table_Role', 'QFrame_Db_Table_Assignment');
     foreach($rolesRowset as $rolesRow) {
       $this->roles[] = $rolesRow->toArray();
     }
@@ -255,7 +255,7 @@ class DbUserModel implements RegQ_Paginable {
    * @param RoleModel role to add to this user
    */
   public function addRole(RoleModel $role) {
-    if (!isset(self::$assignmentTable)) self::$assignmentTable = RegQ_Db_Table::getTable('assignment');
+    if (!isset(self::$assignmentTable)) self::$assignmentTable = QFrame_Db_Table::getTable('assignment');
     self::$assignmentTable->insert(array(
       'dbUserID'  => $this->dbUserID,
       'roleID'    => $role->roleID
@@ -269,7 +269,7 @@ class DbUserModel implements RegQ_Paginable {
    * @param RoleModel role to remove
    */
   public function removeRole(RoleModel $role) {
-    if (!isset(self::$assignmentTable)) self::$assignmentTable = RegQ_Db_Table::getTable('assignment');
+    if (!isset(self::$assignmentTable)) self::$assignmentTable = QFrame_Db_Table::getTable('assignment');
     $adapter = self::$assignmentTable->getAdapter();
     $where = $adapter->quoteInto('dbUserID = ?', intVal($this->dbUserID)) . ' AND ';
     $where .= $adapter->quoteInto('roleID = ?', intVal($role->roleID));
@@ -283,10 +283,10 @@ class DbUserModel implements RegQ_Paginable {
    * permission
    *
    * @param  string           permission to check
-   * @param  RegQ_Permissible (optional) permissible object to check
+   * @param  QFrame_Permissible (optional) permissible object to check
    * @return boolean
    */
-  public function hasAccess($permission, RegQ_Permissible $permissible = null) {
+  public function hasAccess($permission, QFrame_Permissible $permissible = null) {
     if($this->roles === null) $this->loadRoles();
     foreach($this->roles as $role) {
       $role = RoleModel::find($role['roleID']);
@@ -299,10 +299,10 @@ class DbUserModel implements RegQ_Paginable {
   /**
    * Determine whether or not this user has *any* access to this permissible object
    *
-   * @param  RegQ_Permissible object being checked
+   * @param  QFrame_Permissible object being checked
    * @return boolean
    */
-  public function hasAnyAccess(RegQ_Permissible $permissible) {
+  public function hasAnyAccess(QFrame_Permissible $permissible) {
     foreach(array('view', 'edit', 'approve') as $permission) {
       if($this->hasAccess($permission, $permissible)) return true;
     }

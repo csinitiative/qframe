@@ -1,13 +1,13 @@
 <?php
 /**
- * This file is part of the CSI RegQ.
+ * This file is part of the CSI QFrame.
  *
- * The CSI RegQ is free software; you can redistribute it and/or modify
+ * The CSI QFrame is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * The CSI RegQ is distributed in the hope that it will be useful,
+ * The CSI QFrame is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -20,7 +20,7 @@
  */
  
 
-$_ENV['REGQ_ENV'] = 'test';
+$_ENV['QFRAME_ENV'] = 'test';
 require_once(dirname(__FILE__) . '/../core/utility.php');
 require_once(dirname(__FILE__) . '/../core/paths.php');
 require_once(CORE_PATH . '/env.php');
@@ -30,7 +30,7 @@ Zend_Session::start();
 $monitoredPaths = array('application', 'html', 'library', 'test');
 $tree = buildCodeTree(PROJECT_PATH, $monitoredPaths);
 addTestsToCodeTree($tree);
-$stat = new RegQ_Test_Stat($monitoredPaths, PROJECT_PATH);
+$stat = new QFrame_Test_Stat($monitoredPaths, PROJECT_PATH);
 $failures = runTests($tree, 'all');
 
 function relativize($path) {
@@ -143,7 +143,7 @@ function runTests($tree, $branches) {
     $suite->addTestSuite(new PHPUnit_Framework_TestSuite('Test_Unit_' . $class_name, $suite_name));
   }
   $result = new PHPUnit_Framework_TestResult;
-  $result->addListener(new RegQ_Test_Listener);
+  $result->addListener(new QFrame_Test_Listener);
   $suite->run($result);
   file_put_contents(PROJECT_PATH . '/tmp/.autotest', count($result->failures()));
   exit;

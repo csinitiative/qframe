@@ -1,13 +1,13 @@
 <?php
 /**
- * This file is part of the CSI RegQ.
+ * This file is part of the CSI QFrame.
  *
- * The CSI RegQ is free software; you can redistribute it and/or modify
+ * The CSI QFrame is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * The CSI RegQ is distributed in the hope that it will be useful,
+ * The CSI QFrame is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -28,7 +28,7 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class LockModel extends RegQ_Db_SerializableTransaction {
+class LockModel extends QFrame_Db_SerializableTransaction {
   
   /**
    * Time that it will take (in seconds) for a lock to expire
@@ -50,7 +50,7 @@ class LockModel extends RegQ_Db_SerializableTransaction {
   
   /**
    * The object that the lock applies to
-   * @var RegQ_Lockable
+   * @var QFrame_Lockable
    */
   private $lockable = null;
   
@@ -121,11 +121,11 @@ class LockModel extends RegQ_Db_SerializableTransaction {
   /**
    * Obtain a lock on the "lockable" object passed in
    *
-   * @param  RegQ_Lockable object to lock
+   * @param  QFrame_Lockable object to lock
    * @param  DbUserModel   user on whose behalf the lock is being requested
    * @return boolean
    */
-  public static function obtain(RegQ_Lockable $lockable, DbUserModel $user) {
+  public static function obtain(QFrame_Lockable $lockable, DbUserModel $user) {
     // start a transaction and get the associated adapter object
     $transactionNumber = self::startSerializableTransaction();
     $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
@@ -158,11 +158,11 @@ class LockModel extends RegQ_Db_SerializableTransaction {
   /**
    * Determine of a lockable object is currently locked
    *
-   * @param  RegQ_Lockable object to check
+   * @param  QFrame_Lockable object to check
    * @param  boolean       (optional) manage the necessary transaction
    * @return boolean
    */
-  public static function isLocked(RegQ_Lockable $lockable, $transaction = true) {
+  public static function isLocked(QFrame_Lockable $lockable, $transaction = true) {
     $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
     if ($transaction) {
       $transactionNumber = self::startSerializableTransaction();
@@ -194,11 +194,11 @@ class LockModel extends RegQ_Db_SerializableTransaction {
   }
   
   /**
-   * Forces all locks on a RegQ_Lockable object to be released regardless of owner
+   * Forces all locks on a QFrame_Lockable object to be released regardless of owner
    *
-   * @param RegQ_Lockable lockable object
+   * @param QFrame_Lockable lockable object
    */
-  public static function releaseAll(RegQ_Lockable $lockable) {
+  public static function releaseAll(QFrame_Lockable $lockable) {
     $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
     $transactionNumber = self::startSerializableTransaction();
     $adapter->delete('locks', 'className = ? AND objectID = ?', array(
@@ -256,10 +256,10 @@ class LockModel extends RegQ_Db_SerializableTransaction {
    * Return true if modification of the argument is possible with this
    * lock
    *
-   * @param  RegQ_Lockable the lockable object being inquired about
+   * @param  QFrame_Lockable the lockable object being inquired about
    * @return boolean
    */
-  public function canModify(RegQ_Lockable $lockable) {
+  public function canModify(QFrame_Lockable $lockable) {
     return get_class($lockable) === get_class($this->lockable) &&
         $lockable->objectID() === $this->lockable->objectID() &&
         $this->expiration > strftime('%Y-%m-%d %T');
@@ -269,7 +269,7 @@ class LockModel extends RegQ_Db_SerializableTransaction {
    * Fetch the specified lock
    *
    * @param  DbUserModel   user who owns the lock
-   * @param  RegQ_Lockable lockable object the locks should be for
+   * @param  QFrame_Lockable lockable object the locks should be for
    * @return LockModel
    */
   private static function fetchLock($user, $lockable) {

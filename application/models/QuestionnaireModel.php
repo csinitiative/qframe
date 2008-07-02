@@ -1,13 +1,13 @@
 <?php
 /**
- * This file is part of the CSI RegQ.
+ * This file is part of the CSI QFrame.
  *
- * The CSI RegQ is free software; you can redistribute it and/or modify
+ * The CSI QFrame is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * The CSI RegQ is distributed in the hope that it will be useful,
+ * The CSI QFrame is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -23,7 +23,7 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class QuestionnaireModel extends RegQ_Db_SerializableTransaction implements RegQ_Storer {
+class QuestionnaireModel extends QFrame_Db_SerializableTransaction implements QFrame_Storer {
 
   private $questionnaireRow;
   private $instances;
@@ -38,8 +38,8 @@ class QuestionnaireModel extends RegQ_Db_SerializableTransaction implements RegQ
       'depth'   => 'questionnaire'
     ), $args);
 
-    if (!isset(self::$questionnaireTable)) self::$questionnaireTable = RegQ_Db_Table::getTable('questionnaire');
-    if (!isset(self::$instanceTable)) self::$instanceTable = RegQ_Db_Table::getTable('instance');
+    if (!isset(self::$questionnaireTable)) self::$questionnaireTable = QFrame_Db_Table::getTable('questionnaire');
+    if (!isset(self::$instanceTable)) self::$instanceTable = QFrame_Db_Table::getTable('instance');
 
     if (isset($args['questionnaireID'])) {
       $where = self::$questionnaireTable->getAdapter()->quoteInto('questionnaireID = ?', intVal($args['questionnaireID']));
@@ -194,7 +194,7 @@ class QuestionnaireModel extends RegQ_Db_SerializableTransaction implements RegQ
   }
   
   public static function importXML(&$import, $options = array()) {
-    if (!isset(self::$questionnaireTable)) self::$questionnaireTable = RegQ_Db_Table::getTable('questionnaire');
+    if (!isset(self::$questionnaireTable)) self::$questionnaireTable = QFrame_Db_Table::getTable('questionnaire');
     
     libxml_use_internal_errors(true);
     
@@ -284,7 +284,7 @@ class QuestionnaireModel extends RegQ_Db_SerializableTransaction implements RegQ
   
   private function validateQuestionnaireDefinitionXML($dom) {
     
-    if (!$dom->schemaValidate(PROJECT_PATH . '/xml/csi-regq-v1_0.xsd')) {
+    if (!$dom->schemaValidate(PROJECT_PATH . '/xml/csi-qframe-v1_0.xsd')) {
       $errors = libxml_get_errors();
       try {
         $logger = Zend_Registry::get('logger');
@@ -302,7 +302,7 @@ class QuestionnaireModel extends RegQ_Db_SerializableTransaction implements RegQ
   private function questionnaireDefinition2responseSchema($dom) {
     
     $xsl = new DOMDocument();
-    if (!$xsl->load(PROJECT_PATH . DIRECTORY_SEPARATOR . 'xml' . DIRECTORY_SEPARATOR . 'csi-regq-questionnaire-definition-to-response-schema-v1_0.xsl')) {
+    if (!$xsl->load(PROJECT_PATH . DIRECTORY_SEPARATOR . 'xml' . DIRECTORY_SEPARATOR . 'csi-qframe-questionnaire-definition-to-response-schema-v1_0.xsl')) {
       $errors = libxml_get_errors();
       try {
         $logger = Zend_Registry::get('logger');
@@ -329,7 +329,7 @@ class QuestionnaireModel extends RegQ_Db_SerializableTransaction implements RegQ
   private function questionnaireDefinition2completedResponseSchema($dom) {
     
     $xsl = new DOMDocument();
-    if (!$xsl->load(PROJECT_PATH . DIRECTORY_SEPARATOR . 'xml' . DIRECTORY_SEPARATOR . 'csi-regq-questionnaire-definition-to-completed-response-schema-v1_0.xsl')) {
+    if (!$xsl->load(PROJECT_PATH . DIRECTORY_SEPARATOR . 'xml' . DIRECTORY_SEPARATOR . 'csi-qframe-questionnaire-definition-to-completed-response-schema-v1_0.xsl')) {
       $errors = libxml_get_errors();
       try {
         $logger = Zend_Registry::get('logger');

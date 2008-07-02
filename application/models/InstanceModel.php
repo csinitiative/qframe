@@ -1,13 +1,13 @@
 <?php
 /**
- * This file is part of the CSI RegQ.
+ * This file is part of the CSI QFrame.
  *
- * The CSI RegQ is free software; you can redistribute it and/or modify
+ * The CSI QFrame is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * The CSI RegQ is distributed in the hope that it will be useful,
+ * The CSI QFrame is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -23,7 +23,7 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Storer {
+class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_Storer {
 
   private $questionnaireRow;
   private $instanceRow;
@@ -56,20 +56,20 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
       'depth'   => 'tab'
     ), $args);
 
-    if (!isset(self::$questionnaireTable)) self::$questionnaireTable = RegQ_Db_Table::getTable('questionnaire');
-    if (!isset(self::$instanceTable)) self::$instanceTable = RegQ_Db_Table::getTable('instance');
-    if (!isset(self::$tabTable)) self::$tabTable = RegQ_Db_Table::getTable('tab');
-    if (!isset(self::$questionTable)) self::$questionTable = RegQ_Db_Table::getTable('question');
-    if (!isset(self::$ruleTable)) self::$ruleTable = RegQ_Db_Table::getTable('rule');
-    if (!isset(self::$questionTypeTable)) self::$questionTypeTable = RegQ_Db_Table::getTable('questionType');
-    if (!isset(self::$questionPromptTable)) self::$questionPromptTable = RegQ_Db_Table::getTable('questionPrompt');
-    if (!isset(self::$questionReferenceTable)) self::$questionReferenceTable = RegQ_Db_Table::getTable('questionReference');
-    if (!isset(self::$referenceTable)) self::$referenceTable = RegQ_Db_Table::getTable('reference');
-    if (!isset(self::$referenceDetailTable)) self::$referenceDetailTable = RegQ_Db_Table::getTable('referenceDetail');
-    if (!isset(self::$responseTable)) self::$responseTable = RegQ_Db_Table::getTable('response');
-    if (!isset(self::$sectionReferenceTable)) self::$sectionReferenceTable = RegQ_Db_Table::getTable('sectionReference');
-    if (!isset(self::$tabReferenceTable)) self::$tabReferenceTable = RegQ_Db_Table::getTable('tabReference');
-    if (!isset(self::$sectionTable)) self::$sectionTable = RegQ_Db_Table::getTable('section');
+    if (!isset(self::$questionnaireTable)) self::$questionnaireTable = QFrame_Db_Table::getTable('questionnaire');
+    if (!isset(self::$instanceTable)) self::$instanceTable = QFrame_Db_Table::getTable('instance');
+    if (!isset(self::$tabTable)) self::$tabTable = QFrame_Db_Table::getTable('tab');
+    if (!isset(self::$questionTable)) self::$questionTable = QFrame_Db_Table::getTable('question');
+    if (!isset(self::$ruleTable)) self::$ruleTable = QFrame_Db_Table::getTable('rule');
+    if (!isset(self::$questionTypeTable)) self::$questionTypeTable = QFrame_Db_Table::getTable('questionType');
+    if (!isset(self::$questionPromptTable)) self::$questionPromptTable = QFrame_Db_Table::getTable('questionPrompt');
+    if (!isset(self::$questionReferenceTable)) self::$questionReferenceTable = QFrame_Db_Table::getTable('questionReference');
+    if (!isset(self::$referenceTable)) self::$referenceTable = QFrame_Db_Table::getTable('reference');
+    if (!isset(self::$referenceDetailTable)) self::$referenceDetailTable = QFrame_Db_Table::getTable('referenceDetail');
+    if (!isset(self::$responseTable)) self::$responseTable = QFrame_Db_Table::getTable('response');
+    if (!isset(self::$sectionReferenceTable)) self::$sectionReferenceTable = QFrame_Db_Table::getTable('sectionReference');
+    if (!isset(self::$tabReferenceTable)) self::$tabReferenceTable = QFrame_Db_Table::getTable('tabReference');
+    if (!isset(self::$sectionTable)) self::$sectionTable = QFrame_Db_Table::getTable('section');
 
     if (isset($args['instanceID'])) {
       $where = self::$instanceTable->getAdapter()->quoteInto('instanceID = ?', $args['instanceID']);
@@ -191,21 +191,21 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
   public function toXML($complete = 0) {
     $instanceID = $this->instanceRow->instanceID;
 
-    RegQ_Db_Table::resetAll();
+    QFrame_Db_Table::resetAll();
 
-    RegQ_Db_Table::preloadAll($instanceID, null);
+    QFrame_Db_Table::preloadAll($instanceID, null);
 
     $instance = new InstanceModel(array('instanceID' => $instanceID,
                                         'depth' => 'section'));
     $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
     $xml .= '<csi:questionnaire';
 
-    $xml .= ' xmlns:csi="http://www.csinitiative.com/ns/csi-regq"';
+    $xml .= ' xmlns:csi="http://www.csinitiative.com/ns/csi-qframe"';
 
     $xml .= ' questionnaireName="' . self::_xmlentities($instance->questionnaireName) . 
             '" questionnaireVersion="' . self::_xmlentities($instance->questionnaireVersion) . 
             '" revision="' . self::_xmlentities($instance->revision) . 
-            '" targetRegQVersion="' . REGQ_VERSION . 
+            '" targetQFrameVersion="' . QFRAME_VERSION . 
             '" instanceName="' . self::_xmlentities($instance->instanceName) . '">' . "\n";
     $xml .= "  <csi:tabs>\n";
     while ($tab = $instance->nextTab()) {
@@ -418,7 +418,7 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
     $xml .= "  </csi:tabs>\n";
     $xml .= "</csi:questionnaire>\n";
 
-    RegQ_Db_Table::resetAll();
+    QFrame_Db_Table::resetAll();
 
     return $xml;
 
@@ -694,19 +694,19 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
     }
     if(count($errors) > 0) throw new Exception('XML Exception');
     
-    if (!isset(self::$questionReferenceTable)) self::$questionReferenceTable = RegQ_Db_Table::getTable('questionReference');
-    if (!isset(self::$sectionReferenceTable)) self::$sectionReferenceTable = RegQ_Db_Table::getTable('sectionReference');
-    if (!isset(self::$tabReferenceTable)) self::$tabReferenceTable = RegQ_Db_Table::getTable('tabReference');
-    if (!isset(self::$referenceTable)) self::$referenceTable = RegQ_Db_Table::getTable('reference');
-    if (!isset(self::$referenceDetailTable)) self::$referenceDetailTable = RegQ_Db_Table::getTable('referenceDetail');
-    if (!isset(self::$ruleTable)) self::$ruleTable = RegQ_Db_Table::getTable('rule');
-    if (!isset(self::$questionTypeTable)) self::$questionTypeTable = RegQ_Db_Table::getTable('questionType');
-    if (!isset(self::$questionPromptTable)) self::$questionPromptTable = RegQ_Db_Table::getTable('questionPrompt');
-    if (!isset(self::$tabTable)) self::$tabTable = RegQ_Db_Table::getTable('tab');
-    if (!isset(self::$sectionTable)) self::$sectionTable = RegQ_Db_Table::getTable('section');
-    if (!isset(self::$questionTable)) self::$questionTable = RegQ_Db_Table::getTable('question');
-    if (!isset(self::$questionnaireTable)) self::$questionnaireTable = RegQ_Db_Table::getTable('questionnaire');
-    if (!isset(self::$instanceTable)) self::$instanceTable = RegQ_Db_Table::getTable('instance');
+    if (!isset(self::$questionReferenceTable)) self::$questionReferenceTable = QFrame_Db_Table::getTable('questionReference');
+    if (!isset(self::$sectionReferenceTable)) self::$sectionReferenceTable = QFrame_Db_Table::getTable('sectionReference');
+    if (!isset(self::$tabReferenceTable)) self::$tabReferenceTable = QFrame_Db_Table::getTable('tabReference');
+    if (!isset(self::$referenceTable)) self::$referenceTable = QFrame_Db_Table::getTable('reference');
+    if (!isset(self::$referenceDetailTable)) self::$referenceDetailTable = QFrame_Db_Table::getTable('referenceDetail');
+    if (!isset(self::$ruleTable)) self::$ruleTable = QFrame_Db_Table::getTable('rule');
+    if (!isset(self::$questionTypeTable)) self::$questionTypeTable = QFrame_Db_Table::getTable('questionType');
+    if (!isset(self::$questionPromptTable)) self::$questionPromptTable = QFrame_Db_Table::getTable('questionPrompt');
+    if (!isset(self::$tabTable)) self::$tabTable = QFrame_Db_Table::getTable('tab');
+    if (!isset(self::$sectionTable)) self::$sectionTable = QFrame_Db_Table::getTable('section');
+    if (!isset(self::$questionTable)) self::$questionTable = QFrame_Db_Table::getTable('question');
+    if (!isset(self::$questionnaireTable)) self::$questionnaireTable = QFrame_Db_Table::getTable('questionnaire');
+    if (!isset(self::$instanceTable)) self::$instanceTable = QFrame_Db_Table::getTable('instance');
 
     $transactionNumber = self::startSerializableTransaction();
 
@@ -1283,7 +1283,7 @@ class InstanceModel extends RegQ_Db_SerializableTransaction implements RegQ_Stor
     }
     
     // reset table cache as there are now new rules
-    RegQ_Db_Table::reset('rules');
+    QFrame_Db_Table::reset('rules');
   }
   
   /**

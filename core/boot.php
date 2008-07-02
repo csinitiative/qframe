@@ -1,13 +1,13 @@
 <?php
 /**
- * This file is part of the CSI RegQ.
+ * This file is part of the CSI QFrame.
  *
- * The CSI RegQ is free software; you can redistribute it and/or modify
+ * The CSI QFrame is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * The CSI RegQ is distributed in the hope that it will be useful,
+ * The CSI QFrame is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -52,7 +52,7 @@ include(_path($core_path, 'dynamic.php'));
 /*
  * If in maintenance mode, tell the user and exit.
  */
-$maintenanceConfig = RegQ_Maintenance::instance();
+$maintenanceConfig = QFrame_Maintenance::instance();
 if ($maintenanceConfig->isMaintenanceModeOn() === true) {
   die("{$maintenanceConfig->comment}");
 }
@@ -85,24 +85,24 @@ $front->setControllerDirectory(CONTROLLER_PATH);
 /*
  * Register the logging and sanity checking plugins with the front controller
  */
-$front->registerPlugin(new RegQ_Controller_Plugin_Log);
+$front->registerPlugin(new QFrame_Controller_Plugin_Log);
 
 
 /*
  * Register the EzcExecution plugin with the front controller
  */
-$front->registerPlugin(new RegQ_Controller_Plugin_EzcExecution);
+$front->registerPlugin(new QFrame_Controller_Plugin_EzcExecution);
 
 /*
  * Register the base url setting controller plugin
  */
-$front->registerPlugin(new RegQ_Controller_Plugin_BaseUrl);
+$front->registerPlugin(new QFrame_Controller_Plugin_BaseUrl);
 
 /*
- * Set up a RegQ_View object, add the path to the helper directory, and set it up
+ * Set up a QFrame_View object, add the path to the helper directory, and set it up
  * as the default view object
  */
-$view = new RegQ_View();
+$view = new QFrame_View();
 $view->addHelperPath(implode(DIRECTORY_SEPARATOR, array(APPLICATION_PATH, 'views', 'helpers')));
 $view->addHelperPath(
   implode(DIRECTORY_SEPARATOR, array(LIBRARY_PATH, 'Zend', 'View', 'Helper')),

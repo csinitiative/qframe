@@ -1,12 +1,12 @@
 -#
-  This file is part of the CSI RegQ.
+  This file is part of the CSI QFrame.
   
-  The CSI RegQ is free software; you can redistribute it and/or modify
+  The CSI QFrame is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 3 of the License, or
   (at your option) any later version.
   
-  The CSI RegQ is distributed in the hope that it will be useful,
+  The CSI QFrame is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
@@ -18,7 +18,7 @@
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
 - $localStylesheets = array('roles')
-- $localJavascript = array('roles', 'checkboxes')
+- $localJavascript = array('roles')
 
 %h1
   Permissions for role
@@ -37,22 +37,14 @@
     - if(isset($this->currentInstance))
       %table
         %tr
-          %th.left
+          %th
             %h2 tab permissions
-          %th
-            != $this->imageTag('icons/ffffff/magnifier.png', array('class' => 'inline tooltip', 'tooltip' => 'view'))
-          %th
-            != $this->imageTag('icons/ffffff/pencil.png', array('class' => 'inline tooltip', 'tooltip' => 'edit'))
-          %th
-            != $this->imageTag('icons/ffffff/accept.png', array('class' => 'inline tooltip', 'tooltip' => 'approve'))
-        %tr
-          %th &nbsp;
-          %th
-            != $this->formCheckbox("checkall_][view]", false)
-          %th
-            != $this->formCheckbox("checkall_][edit]", false)
-          %th
-            != $this->formCheckbox("checkall_][approve]", false)
+          %th.image
+            != $this->imageTag('icons/ffffff/magnifier.png', array('class' => 'inline'))
+          %th.image
+            != $this->imageTag('icons/ffffff/pencil.png', array('class' => 'inline'))
+          %th.image
+            != $this->imageTag('icons/ffffff/accept.png', array('class' => 'inline'))
         - while($tab = $this->currentInstance->nextTab())
           %tr
             %td.label= $tab->tabHeader

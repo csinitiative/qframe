@@ -8,7 +8,7 @@ ORIGINAL_PATH=`pwd`
 cd `echo $0 | sed 's|tests\.sh$||'`
 cd ..
 
-# Set the REGQ_ROOT environment variable before kicking off
+# Set the QFRAME_ROOT environment variable before kicking off
 # our tests...then kick em off
-export REGQ_ROOT=`pwd`
-php $REGQ_ROOT/test/runall.php
+export QFRAME_ROOT=`pwd`
+php $QFRAME_ROOT/test/runall.php

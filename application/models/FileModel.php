@@ -1,13 +1,13 @@
 <?php
 /**
- * This file is part of the CSI RegQ.
+ * This file is part of the CSI QFrame.
  *
- * The CSI RegQ is free software; you can redistribute it and/or modify
+ * The CSI QFrame is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * The CSI RegQ is distributed in the hope that it will be useful,
+ * The CSI QFrame is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -29,7 +29,7 @@ class FileModel {
   /**
    * Object that actions on this file model will use as the
    * owner of various files
-   * @var RegQ_Storer
+   * @var QFrame_Storer
    */
   private $obj = null;
   
@@ -47,9 +47,9 @@ class FileModel {
   /**
    * Create a new FileModel with a certain object
    *
-   * @param RegQ_Storer object to use with this file model object
+   * @param QFrame_Storer object to use with this file model object
    */
-  public function __construct(RegQ_Storer $obj) {
+  public function __construct(QFrame_Storer $obj) {
     $this->obj = $obj;
   }
   
@@ -88,7 +88,7 @@ class FileModel {
       'content'     => $contents
     ), $properties);
 
-    if (!isset(self::$attachmentTable)) self::$attachmentTable = RegQ_Db_Table::getTable('attachment');
+    if (!isset(self::$attachmentTable)) self::$attachmentTable = QFrame_Db_Table::getTable('attachment');
     return self::$attachmentTable->insert($properties);
   }
   
@@ -99,7 +99,7 @@ class FileModel {
    * @return string
    */
   public function fetch($id) {
-    if (!isset(self::$attachmentTable)) self::$attachmentTable = RegQ_Db_Table::getTable('attachment');
+    if (!isset(self::$attachmentTable)) self::$attachmentTable = QFrame_Db_Table::getTable('attachment');
     
     $rows = self::$attachmentTable->fetchRows('attachmentID', intVal($id));
     
@@ -132,7 +132,7 @@ class FileModel {
    * @return Array
    */
   public function fetchProperties($id) {
-    if (!isset(self::$attachmentTable)) self::$attachmentTable = RegQ_Db_Table::getTable('attachment');
+    if (!isset(self::$attachmentTable)) self::$attachmentTable = QFrame_Db_Table::getTable('attachment');
     
     $rows = self::$attachmentTable->fetchRows('attachmentID', intVal($id));
     
@@ -156,7 +156,7 @@ class FileModel {
    * @return boolean
    */
   public function delete($id) {
-    if (!isset(self::$attachmentTable)) self::$attachmentTable = RegQ_Db_Table::getTable('attachment');
+    if (!isset(self::$attachmentTable)) self::$attachmentTable = QFrame_Db_Table::getTable('attachment');
     $where = self::$attachmentTable->getAdapter()->quoteInto('attachmentID = ?', intVal($id));
     self::$attachmentTable->delete($where);
     return true;
@@ -166,7 +166,7 @@ class FileModel {
    * Deletes all files that belong to this object
    */
   public function deleteAll() {
-    if (!isset(self::$attachmentTable)) self::$attachmentTable = RegQ_Db_Table::getTable('attachment');
+    if (!isset(self::$attachmentTable)) self::$attachmentTable = QFrame_Db_Table::getTable('attachment');
     $adapter = self::$attachmentTable->getAdapter();
     $where = $adapter->quoteInto("objectType = ?", get_class($this->obj)) . ' AND ' .
         $adapter->quoteInto("objectID = ?", $this->obj->getID());
@@ -179,7 +179,7 @@ class FileModel {
    * Deletes all files that exist in the file repository
    */
   public static function clear($path = null) {
-    if (!isset(self::$attachmentTable)) self::$attachmentTable = RegQ_Db_Table::getTable('attachment');
+    if (!isset(self::$attachmentTable)) self::$attachmentTable = QFrame_Db_Table::getTable('attachment');
     self::$attachmentTable->delete("1");
   }
   
@@ -189,7 +189,7 @@ class FileModel {
    * @return Array list of IDs owned by this object
    */
   public function fetchAll() {
-    if (!isset(self::$attachmentTable)) self::$attachmentTable = RegQ_Db_Table::getTable('attachment');
+    if (!isset(self::$attachmentTable)) self::$attachmentTable = QFrame_Db_Table::getTable('attachment');
     $adapter = self::$attachmentTable->getAdapter();
     $rows = self::$attachmentTable->fetchRows('objectID', $this->obj->getID());
     $class = get_class($this->obj);
@@ -213,7 +213,7 @@ class FileModel {
    * @return Array list of properties arrays for files owned by this object
    */
   public function fetchAllProperties() {
-    if (!isset(self::$attachmentTable)) self::$attachmentTable = RegQ_Db_Table::getTable('attachment');
+    if (!isset(self::$attachmentTable)) self::$attachmentTable = QFrame_Db_Table::getTable('attachment');
     $class = get_class($this->obj);
     $rows = self::$attachmentTable->fetchRows('objectID', $this->obj->getID());
     foreach($rows as $row) {
@@ -252,7 +252,7 @@ class FileModel {
    * @param mixed instanceID
    */
   public static function deleteByInstance($instanceID) {
-    if (!isset(self::$attachmentTable)) self::$attachmentTable = RegQ_Db_Table::getTable('attachment');
+    if (!isset(self::$attachmentTable)) self::$attachmentTable = QFrame_Db_Table::getTable('attachment');
     $where = self::$attachmentTable->getAdapter()->quoteInto('instanceID = ?', intVal($instanceID));    
     self::$attachmentTable->delete($where);
   }
@@ -272,7 +272,7 @@ class FileModel {
    * @return Array
    */
   public static function fetchObjectIdsByInstance($instanceID) {
-    if (!isset(self::$attachmentTable)) self::$attachmentTable = RegQ_Db_Table::getTable('attachment');
+    if (!isset(self::$attachmentTable)) self::$attachmentTable = QFrame_Db_Table::getTable('attachment');
     
     $objects = array();
 

@@ -1,4 +1,4 @@
-var CsiRegq = {
+var CsiQframe = {
   /**
    * Adds the necessary class name to menu items on mouse over
    *
@@ -68,8 +68,8 @@ var CsiRegq = {
    * @param Element element to add listeners to
    */
   setupAddlInfoListeners: function(e) {
-    e.observe('focus', CsiRegq.addlInfoFocus);
-    e.observe('blur', CsiRegq.addlInfoBlur);
+    e.observe('focus', CsiQframe.addlInfoFocus);
+    e.observe('blur', CsiQframe.addlInfoBlur);
   },
   
   /**
@@ -116,24 +116,24 @@ var CsiRegq = {
  */
 Event.observe(window, 'load', function () {
   $$('#page #menu ol li a').each(function(e) {
-    e.observe('mouseover', CsiRegq.menuMouseOver);
-    e.observe('mouseout', CsiRegq.menuMouseOut);
+    e.observe('mouseover', CsiQframe.menuMouseOver);
+    e.observe('mouseout', CsiQframe.menuMouseOut);
   });
   
   $$('.additionalInfo').each(function(e) {
-    CsiRegq.setupAddlInfoListeners(e);
+    CsiQframe.setupAddlInfoListeners(e);
   });
   
   $$('form.questions').each(function(frm) {
-    frm.observe('submit', CsiRegq.questionsSubmit);
+    frm.observe('submit', CsiQframe.questionsSubmit);
   });
   
   $$('img.hover').each(function(img) {
-    img.observe('mouseover', CsiRegq.imgMouseOver);
-    img.observe('mouseout', CsiRegq.imgMouseOut);
+    img.observe('mouseover', CsiQframe.imgMouseOver);
+    img.observe('mouseout', CsiQframe.imgMouseOut);
   });
   
   $$('a img.lock').each(function(image) {
-    image.up('a').observe('click', CsiRegq.unlockTab);
+    image.up('a').observe('click', CsiQframe.unlockTab);
   });
 });
