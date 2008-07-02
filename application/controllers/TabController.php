@@ -48,10 +48,10 @@ class TabController extends RegQ_Controller_Action {
     $user = DbUserModel::findByUsername($auth->getIdentity());
     $lock = LockModel::obtain($this->view->tab, $user);
     if(is_null($lock)) {
+      $lockUser = new DbUserModel(array('dbUserID' => LockModel::isLocked($this->view->tab)));
       $this->flash(
         'error',
-        'A lock could not be obtained for the requested tab.  Please ensure you have access and try
-         again later.'
+        'A lock could not be obtained because the page is currently lock by ' . $lockUser->dbUserFullName
       );
       // redirect to the view action
       $this->_redirector->gotoRoute(array('action' => 'view', 'id' => $this->view->currentTabID));
