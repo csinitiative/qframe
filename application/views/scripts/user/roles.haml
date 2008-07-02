@@ -32,7 +32,7 @@
       - foreach($this->user->roles as $role)
         %li
           = $role['roleDescription']
-          != $this->linkTo(array('action' => 'removeRole', 'id' => $this->user->dbUserID, 'role' => $role['roleID']), $this->imageTag('icons/dddddd/group_delete.png', array('class' => 'inline')))
+          != $this->linkTo(array('action' => 'removeRole', 'id' => $this->user->dbUserID, 'role' => $role['roleID']), $this->imageTag('icons/dddddd/group_delete.png', array('class' => 'inline tooltip', 'tooltip' => 'remove role')))
 
 #addRole
   != $this->form(array('action' => 'addRole', 'id' => $this->user->dbUserID), false, 'post')

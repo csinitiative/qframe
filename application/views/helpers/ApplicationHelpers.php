@@ -141,8 +141,8 @@ class RegQ_View_Helper_ApplicationHelpers {
         $title .= ' Click to unlock.';
         $html = $this->view->linkTo('#', $this->view->imageTag('icons/ffffff/lock_small.png', array(
           'id'    => $this->view->url(array('action' => 'unlock', 'id' => $menu['tab']->tabID)),
-          'class' => 'inline lock',
-          'title' => $title
+          'class' => 'inline lock tooltip',
+          'tooltip' => $title
         )));
       }
       else {

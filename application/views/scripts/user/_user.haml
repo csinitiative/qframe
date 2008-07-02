@@ -26,6 +26,6 @@
   .subtitle.dbUserName= $this->user->dbUserName
   != $this->imageTag('ajax-loader.gif', array('class' => 'progress', 'style' => 'display: none;'))
   .controls.tall{ 'style' => 'display: none;' }
-    != $this->linkTo((array('action' => 'edit', 'id' => $this->user->dbUserID)), $this->imageTag('icons/ddffdd/user_edit.png', array('class' => 'inline')))
-    != $this->linkTo((array('action' => 'delete', 'id' => $this->user->dbUserID)), $this->imageTag('icons/ddffdd/user_delete.png', array('class' => 'inline confirm')))
-    != $this->linkTo((array('action' => 'roles', 'id' => $this->user->dbUserID)), $this->imageTag('icons/ddffdd/group_go.png', array('class' => 'inline')))
+    != $this->linkTo((array('action' => 'edit', 'id' => $this->user->dbUserID)), $this->imageTag('icons/ddffdd/user_edit.png', array('class' => 'inline tooltip', 'tooltip' => 'edit this user')))
+    != $this->linkTo((array('action' => 'delete', 'id' => $this->user->dbUserID)), $this->imageTag('icons/ddffdd/user_delete.png', array('class' => 'inline confirm tooltip', 'tooltip' => 'delete this user')))
+    != $this->linkTo((array('action' => 'roles', 'id' => $this->user->dbUserID)), $this->imageTag('icons/ddffdd/group_go.png', array('class' => 'inline tooltip', 'tooltip' => 'manage this user\'s roles')))
