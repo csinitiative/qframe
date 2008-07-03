@@ -69,7 +69,7 @@ class QFrame_View_Helper_ErrorHelpers {
     if(isset($call['class'])) $string .= "{$call['class']}{$call['type']}";
     $string .= "{$call['function']}({$this->stringifyParameters($call)})";
     
-    return $string;
+    return $this->view->h($string);
   }
   
   /**
