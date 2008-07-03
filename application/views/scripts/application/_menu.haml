@@ -17,16 +17,16 @@
   @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
-- $id = (isset($this->menu['tab'])) ? "tab-{$this->menu['tab']->tabID}" : ''
+- $id = (isset($this->menu['page'])) ? "page-{$this->menu['page']->pageID}" : ''
 
 %li{ 'id' => $id, 'url' => $this->menu['url'] }
-  - if(isset($this->menu['tab']))
-    != $this->formHidden('disableCount', $this->menu['tab']->disableCount)
+  - if(isset($this->menu['page']))
+    != $this->formHidden('disableCount', $this->menu['page']->disableCount)
   - if($this->menu['current'])
     .current
       = $this->menu['label']
       != $this->lockIcon($this->menu, $this->loggedInUser)
-  - elseif(isset($this->menu['tab']) && $this->menu['tab']->disableCount > 0)
+  - elseif(isset($this->menu['page']) && $this->menu['page']->disableCount > 0)
     .disabled
       = $this->menu['label']
       != $this->lockIcon($this->menu, $this->loggedInUser)

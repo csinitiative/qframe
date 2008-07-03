@@ -24,58 +24,58 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class TabController extends QFrame_Controller_Action {
+class PageController extends QFrame_Controller_Action {
   
   /**
    * Method to execute before dispatching takes place
    */
   public function preDispatch() {
-    $this->view->currentTabID = $this->_getParam('id');
+    $this->view->currentPageID = $this->_getParam('id');
     parent::preDispatch();
   }
   
   /**
-   * Action for editing a particular tab
+   * Action for editing a particular page
    */
   public function editAction() {
-    // get a TabModel object for the current tab
-    $this->view->tab = new TabModel(array('tabID' => $this->view->currentTabID));
+    // get a PageModel object for the current page
+    $this->view->page = new PageModel(array('pageID' => $this->view->currentPageID));
     
-    if(!$this->_user->hasAccess('edit', $this->view->tab)) $this->denyAccess();
+    if(!$this->_user->hasAccess('edit', $this->view->page)) $this->denyAccess();
     
-    // get a lock on this tab (if possible)
+    // get a lock on this page (if possible)
     $auth = Zend_Auth::getInstance();
     $user = DbUserModel::findByUsername($auth->getIdentity());
-    $lock = LockModel::obtain($this->view->tab, $user);
+    $lock = LockModel::obtain($this->view->page, $user);
     if(is_null($lock)) {
-      $lockUser = new DbUserModel(array('dbUserID' => LockModel::isLocked($this->view->tab)));
+      $lockUser = new DbUserModel(array('dbUserID' => LockModel::isLocked($this->view->page)));
       $this->flash(
         'error',
         'A lock could not be obtained because the page is currently lock by ' . $lockUser->dbUserFullName
       );
       // redirect to the view action
-      $this->_redirector->gotoRoute(array('action' => 'view', 'id' => $this->view->currentTabID));
+      $this->_redirector->gotoRoute(array('action' => 'view', 'id' => $this->view->currentPageID));
     }
   }
   
   /**
-   * Action for viewing a particular tab
+   * Action for viewing a particular page
    */
   public function viewAction() {
-    $tabId = $this->_getParam('id');
-    $this->view->tab = new TabModel(array('tabID' => $tabId));
-    if(!$this->_user->hasAccess('view', $this->view->tab)) $this->denyAccess();
-    $this->view->currentTabID = $tabId;
+    $pageId = $this->_getParam('id');
+    $this->view->page = new PageModel(array('pageID' => $pageId));
+    if(!$this->_user->hasAccess('view', $this->view->page)) $this->denyAccess();
+    $this->view->currentPageID = $pageId;
   }
   
   /**
-   * Show action.  Determines what a user is able to do with a tab and redirects to the
+   * Show action.  Determines what a user is able to do with a page and redirects to the
    * action that is allowed.
    */
   public function showAction() {
-    $tab = new TabModel(array('tabID' => $this->_getParam('id')));
+    $page = new PageModel(array('pageID' => $this->_getParam('id')));
     foreach(array('view', 'edit', 'approve') as $a) {
-      if($this->_user->hasAccess($a, $tab)) {
+      if($this->_user->hasAccess($a, $page)) {
         $action = $a;
         break;
       }
@@ -86,11 +86,11 @@ class TabController extends QFrame_Controller_Action {
   }
   
   /**
-   * Saves the tab currently being edited
+   * Saves the page currently being edited
    */
   public function saveAction() {
-    $tab = new TabModel(array('tabID' => $this->_getParam('id'), 'depth' => 'tab'));
-    $lock = $this->lockTab($tab, 'edit');
+    $page = new PageModel(array('pageID' => $this->_getParam('id'), 'depth' => 'page'));
+    $lock = $this->lockPage($page, 'edit');
     $attachments = array();
     
     $responses = array();
@@ -107,7 +107,7 @@ class TabController extends QFrame_Controller_Action {
           $response = $q->getResponse();
           if($response->state == 2) {
             $this->flash('error', 'You cannot modify a response that has been approved');
-            $this->_redirector->gotoRouteAndExit(array('action' => 'view', 'id' => $tab->tabID));
+            $this->_redirector->gotoRouteAndExit(array('action' => 'view', 'id' => $page->pageID));
           }
           if (strlen($value) > 0) {
             $responses[$questionID]['value'][] = $value;
@@ -158,36 +158,36 @@ class TabController extends QFrame_Controller_Action {
       }
     }
 
-    $tab = new TabModel(array('tabID' => $this->_getParam('id'),
+    $page = new PageModel(array('pageID' => $this->_getParam('id'),
                               'depth' => 'response'));
-    $tab->save();
+    $page->save();
         
-    $instance = new InstanceModel(array('instanceID' => $tab->instanceID,
-                                        'depth' => 'tab'));
+    $instance = new InstanceModel(array('instanceID' => $page->instanceID,
+                                        'depth' => 'page'));
     $instance->save();
       
     $lock->release();
     
     // redirect to the view action
     $this->flash('notice', 'Edits successfully saved');
-    $this->_redirector->gotoRoute(array('action' => 'edit', 'id' => $tab->tabID));
+    $this->_redirector->gotoRoute(array('action' => 'edit', 'id' => $page->pageID));
   }
   
   /**
-   * Approve action.  Sets up a tab for approval and saves approval info (on post).
+   * Approve action.  Sets up a page for approval and saves approval info (on post).
    */
   public function approveAction() {
-    $tab = new TabModel(array('tabID' => $this->_getParam('id'), 'depth' => 'response'));
-    $lock = $this->lockTab($tab);
+    $page = new PageModel(array('pageID' => $this->_getParam('id'), 'depth' => 'response'));
+    $lock = $this->lockPage($page);
     
     // if this request is a post, go ahead and do approvals
     if($this->getRequest()->isPost()) {
       $comments = $this->_getParam('comments');
       foreach($this->_getParam('approvals') as $questionID => $state) {
-        $question = $tab->getQuestion(intval($questionID));
+        $question = $page->getQuestion(intval($questionID));
         if($question === null) {
           throw new Exception(
-            'Invalid attempt to approve a non-existent question or question on another tab'
+            'Invalid attempt to approve a non-existent question or question on another page'
           );
         }
         $response = $question->getResponse();
@@ -210,19 +210,19 @@ class TabController extends QFrame_Controller_Action {
           $response->save();
         }
       }
-      $tab->save();
+      $page->save();
       
-      $instance = new InstanceModel(array('instanceID' => $tab->instanceID,
-                                          'depth' => 'tab'));
+      $instance = new InstanceModel(array('instanceID' => $page->instanceID,
+                                          'depth' => 'page'));
       $instance->save();
       
       $lock->release();
       $this->flash('notice', 'Approvals successfully saved');
-      $this->_redirector->gotoRouteAndExit(array('action' => 'approve', 'id' => $tab->tabID));
+      $this->_redirector->gotoRouteAndExit(array('action' => 'approve', 'id' => $page->pageID));
     }
 
     // set variables for the view
-    $this->view->tab = $tab;
+    $this->view->page = $page;
   }
   
   /**
@@ -253,38 +253,38 @@ class TabController extends QFrame_Controller_Action {
   }
 
   /**
-   * Unlock the requested tab provided that the current user has edit or approve access to this
-   * tab
+   * Unlock the requested page provided that the current user has edit or approve access to this
+   * page
    */
   public function unlockAction() {
-    $tab = new TabModel(array('tabID' => $this->_getParam('id'), 'depth' => 'tab'));
-    if($this->_user->hasAccess('edit', $tab) || $this->_user->hasAccess('approve', $tab)) {
-      LockModel::releaseAll($tab);
+    $page = new PageModel(array('pageID' => $this->_getParam('id'), 'depth' => 'page'));
+    if($this->_user->hasAccess('edit', $page) || $this->_user->hasAccess('approve', $page)) {
+      LockModel::releaseAll($page);
     }
     else {
-      $this->flash('error', 'You do not have the access necessary to unlock a tab');
+      $this->flash('error', 'You do not have the access necessary to unlock a page');
     }
-    $this->_redirector->gotoRoute(array('action' => 'show', 'id' => $tab->tabID));
+    $this->_redirector->gotoRoute(array('action' => 'show', 'id' => $page->pageID));
   }
   
   /**
-   * Attempt to lock a tab, check for access and return the lock on success, redirect to the view
+   * Attempt to lock a page, check for access and return the lock on success, redirect to the view
    * page with an error on failure
    *
-   * @param  mixed  TabModel or id of tab being locked
+   * @param  mixed  PageModel or id of page being locked
    * @param  string the action we are checking for access to
    * @return mixed
    */
-  private function lockTab($tab, $action = 'approve') {
-    if(!($tab instanceof TabModel))
-      $tab = new TabModel(array('tabID' => $this->_getParam('id'), 'depth' => 'response'));
-    $lock = LockModel::obtain($tab, $this->_user);
+  private function lockPage($page, $action = 'approve') {
+    if(!($page instanceof PageModel))
+      $page = new PageModel(array('pageID' => $this->_getParam('id'), 'depth' => 'response'));
+    $lock = LockModel::obtain($page, $this->_user);
     if($lock === null) {
-      $this->flash('error', 'A lock could not be obtained for the requested tab. Please ' .
+      $this->flash('error', 'A lock could not be obtained for the requested page. Please ' .
           'ensure you have access and try again later.');
-      $this->_redirector->gotoRouteAndExit(array('action' => 'view', 'id' => $tab->tabID));
+      $this->_redirector->gotoRouteAndExit(array('action' => 'view', 'id' => $page->pageID));
     }
-    elseif(!$this->_user->hasAccess($action, $tab)) $this->denyAccess();
+    elseif(!$this->_user->hasAccess($action, $page)) $this->denyAccess();
     return $lock;
   }
 }

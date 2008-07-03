@@ -37,7 +37,7 @@ require_once 'PHPUnit/Framework.php';
 class Test_Unit_DbUserModelTest extends QFrame_Test_Unit {
   
   public function start() {
-    $this->fixture(array('RoleModel', 'TabModel'));
+    $this->fixture(array('RoleModel', 'PageModel'));
   }
   
   /*
@@ -321,31 +321,31 @@ class Test_Unit_DbUserModelTest extends QFrame_Test_Unit {
    */
   public function testHasAccessWithGlobal() {
     $user = new DbUserModel(array('dbUserID' => 1));
-    $tab = new TabModel(array('tabID' => 1, 'depth' => 'tab'));
-    $this->assertFalse($user->hasAccess('view', $tab));
+    $page = new PageModel(array('pageID' => 1, 'depth' => 'page'));
+    $this->assertFalse($user->hasAccess('view', $page));
     
     $role = RoleModel::find('first');
     $role->grant('view');
     $role->save();
     $user->addRole($role);
     $this->assertTrue($user->hasAccess('view'));
-    $this->assertTrue($user->hasAccess('view', $tab));
+    $this->assertTrue($user->hasAccess('view', $page));
   }
   
   /*
-   * test hasAccess method with tab permissions
+   * test hasAccess method with page permissions
    */
-  public function testHasAccessWithTab() {
+  public function testHasAccessWithPage() {
     $user = new DbUserModel(array('dbUserID' => 1));
-    $tab = new TabModel(array('tabID' => 1, 'depth' => 'tab'));
-    $this->assertFalse($user->hasAccess('view', $tab));
+    $page = new PageModel(array('pageID' => 1, 'depth' => 'page'));
+    $this->assertFalse($user->hasAccess('view', $page));
     
     $role = RoleModel::find('first');
-    $role->grant('view', $tab);
+    $role->grant('view', $page);
     $role->save();
     $user->addRole($role);
     $this->assertFalse($user->hasAccess('view'));
-    $this->assertTrue($user->hasAccess('view', $tab));
+    $this->assertTrue($user->hasAccess('view', $page));
   }
   
   /*
@@ -353,14 +353,14 @@ class Test_Unit_DbUserModelTest extends QFrame_Test_Unit {
    */
   public function testAnyAccess() {
     $user = new DbUserModel(array('dbUserID' => 1));
-    $tab = new TabModel(array('tabID' => 1, 'depth' => 'tab'));
-    $this->assertFalse($user->hasAnyAccess($tab));
+    $page = new PageModel(array('pageID' => 1, 'depth' => 'page'));
+    $this->assertFalse($user->hasAnyAccess($page));
     
     $role = RoleModel::find('first');
-    $role->grant('view', $tab);
+    $role->grant('view', $page);
     $role->save();
     $user->addRole($role);
-    $this->assertTrue($user->hasAnyAccess($tab));
+    $this->assertTrue($user->hasAnyAccess($page));
   }
   
   

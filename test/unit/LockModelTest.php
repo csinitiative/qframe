@@ -37,18 +37,18 @@ require_once 'PHPUnit/Framework.php';
 class Test_Unit_LockModelTest extends QFrame_Test_Unit {
   
   public function start() {
-    $this->fixture(array('TabModel', 'DbUserModel'));
+    $this->fixture(array('PageModel', 'DbUserModel'));
   }
     
   /*
    * test that two locks can not be obtained on the same object by two different users
    */
   public function testNoTwoLocks() {
-    $tab = new TabModel(array('tabID' => 1, 'depth' => 'tab'));
+    $page = new PageModel(array('pageID' => 1, 'depth' => 'page'));
     $user1 = new DbUserModel(array('dbUserID' => 1));
     $user2 = new DbUserModel(array('dbUserID' => 2));
-    $this->assertTrue(LockModel::obtain($tab, $user1) instanceof LockModel);
-    $this->assertNull(LockModel::obtain($tab, $user2));
+    $this->assertTrue(LockModel::obtain($page, $user1) instanceof LockModel);
+    $this->assertNull(LockModel::obtain($page, $user2));
   }
   
   /*
@@ -56,14 +56,14 @@ class Test_Unit_LockModelTest extends QFrame_Test_Unit {
    * updated (in terms of expiration) lock
    */
   public function testReobtainingLockUpdatesExpiration() {
-    $tab = new TabModel(array('tabID' => 1, 'depth' => 'tab'));
+    $page = new PageModel(array('pageID' => 1, 'depth' => 'page'));
     $user = new DbUserModel(array('dbUserID' => 1));
     LockModel::setExpiration(900);
-    $lock1 = LockModel::obtain($tab, $user);
+    $lock1 = LockModel::obtain($page, $user);
     $this->assertTrue($lock1 instanceof LockModel);
     usleep(1000001); // sleep for one micro-second more than one second...make sure new lock
                      // has later expiration
-    $lock2 = LockModel::obtain($tab, $user);   
+    $lock2 = LockModel::obtain($page, $user);   
     $this->assertTrue($lock2 instanceof LockModel);
     $this->assertTrue($lock2->expiration > $lock1->expiration);
   }
@@ -73,53 +73,53 @@ class Test_Unit_LockModelTest extends QFrame_Test_Unit {
    */
   public function testLocksExpireCorrectly() {
     $expiration = LockModel::getExpiration() + 1;
-    $tab = new TabModel(array('tabID' => 1, 'depth' => 'tab'));
+    $page = new PageModel(array('pageID' => 1, 'depth' => 'page'));
     $user1 = new DbUserModel(array('dbUserID' => 1));
     $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
     $adapter->insert('locks', array(
       'dbUserID'    => 1,
-      'className'   => 'TabModel',
+      'className'   => 'PageModel',
       'objectID'    => '1',
       'expiration'  => strftime('%Y-%m-%d %T', (time() + $expiration))
     ));
-    $this->assertTrue(LockModel::obtain($tab, $user1) instanceof LockModel);
+    $this->assertTrue(LockModel::obtain($page, $user1) instanceof LockModel);
   }
   
   /*
    * ensure that isLocked return false when not locked, true otherwise
    */
   public function testIsLocked() {
-    $tab = new TabModel(array('tabID' => 1, 'depth' => 'tab'));
+    $page = new PageModel(array('pageID' => 1, 'depth' => 'page'));
     $user = new DbUserModel(array('dbUserID' => 1));
-    $this->assertFalse(LockModel::isLocked($tab));
-    $this->assertTrue(LockModel::obtain($tab, $user) instanceof LockModel);
-    $this->assertEquals(LockModel::isLocked($tab), 1);
+    $this->assertFalse(LockModel::isLocked($page));
+    $this->assertTrue(LockModel::obtain($page, $user) instanceof LockModel);
+    $this->assertEquals(LockModel::isLocked($page), 1);
   }
   
   /*
    * test that releasing a lock allows it to be obtained again
    */
   public function testReleasingLock() {
-    $tab = new TabModel(array('tabID' => 1, 'depth' => 'tab'));
+    $page = new PageModel(array('pageID' => 1, 'depth' => 'page'));
     $user1 = new DbUserModel(array('dbUserID' => 1));
     $user2 = new DbUserModel(array('dbUserID' => 2));
-    $lock = LockModel::obtain($tab, $user1);
+    $lock = LockModel::obtain($page, $user1);
     $this->assertTrue($lock instanceof LockModel);
     $lock->release();
-    $this->assertTrue(LockModel::obtain($tab, $user2) instanceof LockModel);
+    $this->assertTrue(LockModel::obtain($page, $user2) instanceof LockModel);
   }
   
   /*
-   * test that lock will give user permission to modify the locked tab but
-   * not any other tab
+   * test that lock will give user permission to modify the locked page but
+   * not any other page
    */
   public function testCanModifyAllowsAppropriateModification() {
-    $tab1 = new TabModel(array('tabID' => 1, 'depth' => 'tab'));
-    $tab2 = new TabModel(array('tabID' => 2, 'depth' => 'tab'));
+    $page1 = new PageModel(array('pageID' => 1, 'depth' => 'page'));
+    $page2 = new PageModel(array('pageID' => 2, 'depth' => 'page'));
     $user = new DbUserModel(array('dbUserID' => 1));
-    $lock = LockModel::obtain($tab1, $user);
+    $lock = LockModel::obtain($page1, $user);
     $this->assertTrue($lock instanceof LockModel);
-    $this->assertTrue($lock->canModify($tab1));
-    $this->assertFalse($lock->canModify($tab2));
+    $this->assertTrue($lock->canModify($page1));
+    $this->assertFalse($lock->canModify($page2));
   }
 }

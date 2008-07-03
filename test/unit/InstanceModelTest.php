@@ -37,7 +37,7 @@ require_once 'PHPUnit/Framework.php';
 class Test_Unit_InstanceModelTest extends QFrame_Test_Unit {
   
   public function start() {
-    $this->fixture(array('QuestionnaireModel', 'TabModel', 'SectionModel', 'DbUserModel', 'RoleModel'));
+    $this->fixture(array('QuestionnaireModel', 'PageModel', 'SectionModel', 'DbUserModel', 'RoleModel'));
   }
   
   private function auth() {
@@ -73,58 +73,58 @@ class Test_Unit_InstanceModelTest extends QFrame_Test_Unit {
   }
   
   /*
-   * test that by default, instance loads to a depth of 'tab'
+   * test that by default, instance loads to a depth of 'page'
    */
-  public function testDepthDefaultsToTab() {
+  public function testDepthDefaultsToPage() {
     $this->auth();
     $instance = $this->instance();
-    $this->assertNotNull($instance->nextTab());
-    $this->assertNull($instance->getFirstTab()->nextSection());
+    $this->assertNotNull($instance->nextPage());
+    $this->assertNull($instance->getFirstPage()->nextSection());
   }
   
   /*
    * test that it is possible to set the load depth to something
-   * other than the default of 'tab'
+   * other than the default of 'page'
    */
   public function testDepthIsConfigurable() {
     $this->auth();
     $instance = $this->instance(array('depth' => 'section'));
-    $this->assertNotNull($instance->getFirstTab()->nextSection());
+    $this->assertNotNull($instance->getFirstPage()->nextSection());
   }
   
   /*
-   * test that tabs are given in the proper order when using the nextTab
-   * method of fetching one tab at a time
+   * test that pages are given in the proper order when using the nextPage
+   * method of fetching one page at a time
    */
-  public function testProperOrderingOfTabs() {
+  public function testProperOrderingOfPages() {
     $this->auth();
     $instance = $this->instance();
-    $lastTab = 0;
-    while($tab = $instance->nextTab()) {
-      $this->assertTrue($tab->seqNumber > $lastTab);
-      $lastTab = $tab->seqNumber;
+    $lastPage = 0;
+    while($page = $instance->nextPage()) {
+      $this->assertTrue($page->seqNumber > $lastPage);
+      $lastPage = $page->seqNumber;
     }
   }
   
   /*
-   * test that calling getTab() on an instance returns a tab when the
-   * instance contains a tab with that ID
+   * test that calling getPage() on an instance returns a page when the
+   * instance contains a page with that ID
    */
-  public function testGetTabPositive() {
+  public function testGetPagePositive() {
     $this->auth();
     $instance = $this->instance();
-    $this->assertNotNull($instance->getTab(1));
+    $this->assertNotNull($instance->getPage(1));
   }
   
   /*
-   * test that calling getTab() on a tab that does not exist
+   * test that calling getPage() on a page that does not exist
    * results in an exception
    */
-  public function testGetTabNegative() {
+  public function testGetPageNegative() {
     $this->auth();
     $instance = $this->instance();
     try {
-      $instance->getTab(4);
+      $instance->getPage(4);
     }
     catch(Exception $e) { return; }
     $this->fail('Expected exception but Exception not thrown');
@@ -136,8 +136,8 @@ class Test_Unit_InstanceModelTest extends QFrame_Test_Unit {
   public function testInstanceChildParent() {
     $this->auth();
     $instance = $this->instance(array('depth' => 'section'));
-    $tab = $instance->nextTab();
-    $this->assertNotNull($tab->parent->questionnaireName);
+    $page = $instance->nextPage();
+    $this->assertNotNull($page->parent->questionnaireName);
   }
 
   /*
@@ -198,8 +198,8 @@ class Test_Unit_InstanceModelTest extends QFrame_Test_Unit {
                                         'revision' => 1,
                                         'instanceName' => 'Test1 Company',
                                         'depth' => 'question'));
-    while($tab = $instance->nextTab()) {
-      while ($section = $tab->nextSection()) {
+    while($page = $instance->nextPage()) {
+      while ($section = $page->nextSection()) {
         while ($question = $section->nextQuestion()) {
           $fileObj = new FileModel($question);
           $fileObj->store(file_get_contents(PROJECT_PATH . '/test/data/zip/test-archive-attachment.txt'), array('filename' => 'test-archive-attachment.txt'));
@@ -226,7 +226,7 @@ class Test_Unit_InstanceModelTest extends QFrame_Test_Unit {
     $zip = new ZipArchiveModel(null, array('filename' => PROJECT_PATH . "/test/data/zip/test-archive.zip"));
 
     QuestionnaireModel::importXML($zip);
-    $instanceID = InstanceModel::importXML($zip, 'Test1 Company', array('tabResponses' => array('all' => 1)));
+    $instanceID = InstanceModel::importXML($zip, 'Test1 Company', array('pageResponses' => array('all' => 1)));
     $instance = new InstanceModel(array('instanceID' => $instanceID,
                                         'depth' => 'instance'));
     $this->assertEquals($zip->getInstanceFullResponsesXMLDocument(), $instance->toXML(1));
@@ -242,7 +242,7 @@ class Test_Unit_InstanceModelTest extends QFrame_Test_Unit {
     $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/responses-questionnaire-definition.xml");
 
     QuestionnaireModel::importXML($xml);
-    InstanceModel::importXML($xml, 'Test1 Resp. Company', array('tabResponses' => array('all' => 1)));
+    InstanceModel::importXML($xml, 'Test1 Resp. Company', array('pageResponses' => array('all' => 1)));
     $instance1 = new InstanceModel(array('questionnaireName' => 'Test1 Questionnaire',
                                          'questionnaireVersion' => '3.00',
                                          'revision' => 1,

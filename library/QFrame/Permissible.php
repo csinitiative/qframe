@@ -31,7 +31,7 @@
 interface QFrame_Permissible {
   /**
    * This is the only required method.  Permissible objects must return
-   * an identifier that will be unique to each tab but common across different
+   * an identifier that will be unique to each page but common across different
    * versions of the same questionnaire.
    */
   public function getPermissionID();

@@ -28,7 +28,7 @@ class AuthController extends QFrame_Controller_Action {
   
   /**
    * It is necessary to override the default preDispatch and postDispatch methods to prevent
-   * an attempt to load tabs
+   * an attempt to load pages
    */
   public function preDispatch() {
     $this->sanityChecks();

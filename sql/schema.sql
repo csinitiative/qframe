@@ -41,15 +41,15 @@
 --     Question text (qtext) field in question table changed from varchar(200)
 --       to text -- allowing for some very long question fields (up to 64k 
 --       characters.
---     Added tabReference to support external reference docs at the tab level 
+--     Added pageReference to support external reference docs at the page level 
 --     Added attachment table to support attachments at the response level
 --   v1.5q updated 27-June-2008
 --     Project name changed from QFrameme to QFrame.
 --     questionnaire replace instrument as the database table name for a
---      complete set of tabs, sections, and questions requiring a response.
+--      complete set of pages, sections, and questions requiring a response.
 
 
--- References are supplemental documents used to explain or illuminate tabs
+-- References are supplemental documents used to explain or illuminate pages
 -- sections, questionGroups, and questions. The reference table describes
 -- the source document, the referenceDetail table the specific document element
 -- (section, paragraph, item.) Shortname is the prmary key for reference and
@@ -77,7 +77,7 @@ create table referenceDetail (
 -- reporting questionnaire and response to the web application:
 --   questionnaire
 --      version
---         tab
+--         page
 --           section
 --             questionGroup
 --               question
@@ -126,60 +126,60 @@ create table instance (
   PRIMARY KEY (instanceID)
   ) ENGINE InnoDB DEFAULT CHARSET='utf8';
 
--- A tab is a repeatable set of questions in an questionnaire -- a grouping of 
+-- A page is a repeatable set of questions in an questionnaire -- a grouping of 
 -- questions (some of whom may be organized in sections.) It serves as
 -- a demarcation of responsibility as well as an organizing element for the
 -- formatted questionnaire response. Note that some responses will include 
--- multiple instances of a tab, for example one per facility for the physical
--- security tab in the SIG. This corresponds to a single tab in the SIG
--- spreadsheet. The tabMasterID field is used in the case of a repeated
--- instance of a tab to indicate the original master tab from which the 
+-- multiple instances of a page, for example one per facility for the physical
+-- security page in the SIG. This corresponds to a single page in the SIG
+-- spreadsheet. The pageMasterID field is used in the case of a repeated
+-- instance of a page to indicate the original master page from which the 
 -- question definitions are copied. In the first, or unique instance of a
--- tab, the tabMasterID equals the tabID. The tabRepeatSeq column defines
--- the order of repetition for tabs with a common tabMasterID. 
+-- page, the pageMasterID equals the pageID. The pageRepeatSeq column defines
+-- the order of repetition for pages with a common pageMasterID. 
 -- The header and footer text columns should contain formatting html (no 
 -- scripts) to rovide for instructions and footnotes.
-drop table if exists tab;
-create table tab (
+drop table if exists page;
+create table page (
   questionnaireID int NOT NULL,
   instanceID int NOT NULL,
-  tabID bigint NOT NULL AUTO_INCREMENT,
-  tabMasterID bigint DEFAULT "0",
-  tabGUID int NOT NULL,
+  pageID bigint NOT NULL AUTO_INCREMENT,
+  pageMasterID bigint DEFAULT "0",
+  pageGUID int NOT NULL,
   seqNumber int NOT NULL,
-  tabHeader char(30),
+  pageHeader char(30),
   description varchar(80),
   headerText text,
   footerText text,
   required boolean NOT NULL DEFAULT "1",
   cloneable boolean NOT NULL DEFAULT "0",
-  defaultTabHidden boolean NOT NULL DEFAULT "0",
+  defaultPageHidden boolean NOT NULL DEFAULT "0",
   numQuestions int NOT NULL DEFAULT "0",
   numComplete int NOT NULL DEFAULT "0",
   numApproved int NOT NULL DEFAULT "0",
   disableCount int NOT NULL DEFAULT "0",
-  PRIMARY KEY (tabID)
+  PRIMARY KEY (pageID)
   ) ENGINE InnoDB DEFAULT CHARSET='utf8';
 
--- tabReference links a tab to the documentation detail in
+-- pageReference links a page to the documentation detail in
 -- referenceDetail
-drop table if exists tabReference;
-create table tabReference (
-  tabID int NOT NULL,
+drop table if exists pageReference;
+create table pageReference (
+  pageID int NOT NULL,
   referenceDetailID int NOT NULL,
   instanceID int NOT NULL,
-  primary key (tabID, referenceDetailID)
+  primary key (pageID, referenceDetailID)
   ) ENGINE InnoDB DEFAULT CHARSET='utf8';
 
 
--- A section is a subset of questions wihin an instance of a tab used for 
+-- A section is a subset of questions wihin an instance of a page used for 
 -- conceptual subsetting of the response. In this instance, each occurs once.
 -- In future releases of the application it is possible to use this as a 
--- collection device for repeating groups of questions within a tab.
+-- collection device for repeating groups of questions within a page.
 drop table if exists section;
 create table section (
   instanceID int NOT NULL,
-  tabID int NOT NULL,
+  pageID int NOT NULL,
   sectionID int NOT NULL AUTO_INCREMENT,
   sectionGUID int,
   seqNumber int NOT NULL,
@@ -246,7 +246,7 @@ create table question (
   questionID bigint NOT NULL AUTO_INCREMENT,
   questionnaireID int NOT NULL,
   instanceID int NOT NULL,
-  tabID bigint NOT NULL,
+  pageID bigint NOT NULL,
   sectionID bigint NOT NULL,
   questionGUID int NOT NULL,
   questionNumber char(50),
@@ -269,7 +269,7 @@ create table questionReference (
   questionID bigint NOT NULL,
   referenceDetailID bigint NOT NULL,
   instanceID int NOT NULL,
-  tabID bigint NOT NULL,
+  pageID bigint NOT NULL,
   sectionID bigint NOT NULL,
   primary key (questionID, referenceDetailID)
   ) ENGINE InnoDB DEFAULT CHARSET='utf8';
@@ -286,7 +286,7 @@ drop table if exists response;
 create table response (
   responseID bigint NOT NULL AUTO_INCREMENT,
   instanceID int NOT NULL,
-  tabID int NOT NULL,
+  pageID int NOT NULL,
   sectionID int NOT NULL,
   questionID bigint NOT NULL,
   responseDate timestamp,

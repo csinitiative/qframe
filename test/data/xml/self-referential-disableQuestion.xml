@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-qframe" questionnaireName="Dummy Questionnaire" questionnaireVersion="1" revision="1" targetQFrameVersion="1.0">
-  <csi:tabs>
-    <csi:tab>
-      <csi:tabHeader>Dummy Tab</csi:tabHeader>
-      <csi:tabGUID>1</csi:tabGUID>
+  <csi:pages>
+    <csi:page>
+      <csi:pageHeader>Dummy Page</csi:pageHeader>
+      <csi:pageGUID>1</csi:pageGUID>
       <csi:seqNumber>1</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText></csi:headerText>
@@ -40,6 +40,6 @@
           </csi:questions>
         </csi:section>
       </csi:sections>
-    </csi:tab>
-  </csi:tabs>
+    </csi:page>
+  </csi:pages>
 </csi:questionnaire>

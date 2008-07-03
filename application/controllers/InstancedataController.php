@@ -55,12 +55,12 @@ class InstancedataController extends QFrame_Controller_Admin {
     $this->view->dataQuestionnaireID = $session->dataQuestionnaireID;
     $this->view->dataInstanceID = $session->dataInstanceID;
 
-    $questionnaires = QuestionnaireModel::getAllQuestionnaires('tab');
+    $questionnaires = QuestionnaireModel::getAllQuestionnaires('page');
     $allowedInstances = array();
     foreach($questionnaires as $questionnaire) {
       while($instance = $questionnaire->nextInstance()) {
-        while($tab = $instance->nextTab()) {
-          if($this->_user->hasAnyAccess($tab)) {
+        while($page = $instance->nextPage()) {
+          if($this->_user->hasAnyAccess($page)) {
             $allowedInstances[] = $instance;
             break;
           }
@@ -108,7 +108,7 @@ class InstancedataController extends QFrame_Controller_Admin {
     $zip->close();
     $filename = $zip->getZipFileName();
     $zip = new ZipArchiveModel(null, array('filename' => $filename));
-    InstanceModel::importXML($zip, $instanceName, array('tabResponses' => array('all' => 1)));
+    InstanceModel::importXML($zip, $instanceName, array('pageResponses' => array('all' => 1)));
     $zip->deleteZipFile();
     
     $this->flash('notice', 'Copy Complete');
@@ -240,7 +240,7 @@ class InstancedataController extends QFrame_Controller_Admin {
       InstanceModel::importXML($import, $instanceName, array('instanceID' => $importResponsesInstanceID));
     }
     elseif ($importResponses === 'importXMLResponses') {
-      InstanceModel::importXML($import, $instanceName, array('tabResponses' => array('all' => 1)));
+      InstanceModel::importXML($import, $instanceName, array('pageResponses' => array('all' => 1)));
     }
     else {
       InstanceModel::importXML($import, $instanceName);

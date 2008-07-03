@@ -94,12 +94,12 @@ class RoleController extends QFrame_Controller_Admin {
         $this->_redirector->gotoRouteAndExit(array());
       }
 
-      $questionnaires = QuestionnaireModel::getAllQuestionnaires('tab');
+      $questionnaires = QuestionnaireModel::getAllQuestionnaires('page');
       $allowedInstances = array();
       foreach($questionnaires as $questionnaire) {
         while($instance = $questionnaire->nextInstance()) {
-          while($tab = $instance->nextTab()) {
-            if($this->_user->hasAnyAccess($tab)) {
+          while($page = $instance->nextPage()) {
+            if($this->_user->hasAnyAccess($page)) {
               $allowedInstances[] = $instance;
               break;
             }
@@ -132,18 +132,18 @@ class RoleController extends QFrame_Controller_Admin {
    */
   private function updatePermissions() {
     $globals = $this->_getParam('global');
-    $tabs = $this->_getParam('tab');
+    $pages = $this->_getParam('page');
     $role = RoleModel::find($this->_getParam('id'));
     
     foreach($globals as $permission => $value) {
       if($value) $role->grant($permission);
       else $role->deny($permission);
     }
-    foreach($tabs as $id => $permissions) {
-      $tab = $this->_instance->getTab($id);
+    foreach($pages as $id => $permissions) {
+      $page = $this->_instance->getPage($id);
       foreach($permissions as $permission => $value) {
-        if($value) $role->grant($permission, $tab);
-        else $role->deny($permission, $tab);
+        if($value) $role->grant($permission, $page);
+        else $role->deny($permission, $page);
       }
     }
     $role->save();

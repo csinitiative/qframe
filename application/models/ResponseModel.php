@@ -63,7 +63,7 @@ class ResponseModel {
       $this->responseRow = self::$responseTable->createRow();
       $this->responseRow->questionID = intval($args['questionID']);
       $this->responseRow->instanceID = intval($args['instanceID']);
-      $this->responseRow->tabID = intval($args['tabID']);
+      $this->responseRow->pageID = intval($args['pageID']);
       $this->responseRow->sectionID = intval($args['sectionID']);
       $this->responseRow->responseText = $args['responseText'];
       $this->responseRow->additionalInfo = $args['additionalInfo'];
@@ -209,10 +209,10 @@ class ResponseModel {
           if ($rule->enabled != 'Y') {
             $rule->enabled = 'Y';
             $rule->save();
-            if (preg_match('/.+Tab$/', $rule->type)) {
-              $tab = new TabModel(array('tabID' => $rule->targetID,
+            if (preg_match('/.+Page$/', $rule->type)) {
+              $page = new PageModel(array('pageID' => $rule->targetID,
                                         'depth' => 'question'));
-              $tab->save();
+              $page->save();
             }
             elseif (preg_match('/.+Section$/', $rule->type)) {
               $section = new SectionModel(array('sectionID' => $rule->targetID,
@@ -230,10 +230,10 @@ class ResponseModel {
           if ($rule->enabled != 'N') {
             $rule->enabled = 'N';
             $rule->save();
-            if (preg_match('/.+Tab$/', $rule->type)) {
-              $tab = new TabModel(array('tabID' => $rule->targetID,
+            if (preg_match('/.+Page$/', $rule->type)) {
+              $page = new PageModel(array('pageID' => $rule->targetID,
                                         'depth' => 'question'));
-              $tab->save();
+              $page->save();
             }
             elseif (preg_match('/.+Section$/', $rule->type)) {
               $section = new SectionModel(array('sectionID' => $rule->targetID,

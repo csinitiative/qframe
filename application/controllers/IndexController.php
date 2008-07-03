@@ -27,9 +27,9 @@
 class IndexController extends QFrame_Controller_Action {
   
   public function indexAction() {
-    $first_tab = $this->_instance->getFirstTab();
+    $first_page = $this->_instance->getFirstPage();
     $this->_redirector->gotoRoute(
-      array('controller' => 'tab', 'action' => 'show', 'id' => $first_tab->tabID)
+      array('controller' => 'page', 'action' => 'show', 'id' => $first_page->pageID)
     );
   }
 }

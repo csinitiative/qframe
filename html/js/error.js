@@ -25,5 +25,5 @@ var Error = {
   }
 }
 
-// Call the tab setup method onload
+// Call the page setup method onload
 Event.observe(window, 'load', Error.setup);

@@ -93,7 +93,7 @@ var CsiQframe = {
   },
   
   /**
-   * Handle the click of a lock icon (will allow a user to force unlock a tab)
+   * Handle the click of a lock icon (will allow a user to force unlock a page)
    *
    * @param Event the click event that triggered this handler
    */
@@ -103,7 +103,7 @@ var CsiQframe = {
     var image = Event.element(event);
     if(image.down('img')) image = image.down('img');
     
-    if(confirm('Unlocking this tab will cause the user who currently has the tab locked to lose ' +
+    if(confirm('Unlocking this page will cause the user who currently has the page locked to lose ' +
         'any unsaved work.  Are you sure?')) {
       window.location = image.id;    
     }

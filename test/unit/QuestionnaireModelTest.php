@@ -115,7 +115,7 @@ class Test_Unit_QuestionnaireModelTest extends QFrame_Test_Unit {
                                             'questionnaireVersion' => '3.00',
                                             'revision' => 1,
                                             'depth' => 'questionnaire'));
-    $this->assertEquals($questionnaire->signature, 'cf5a00917b4971f0db16bffacf1cfd70');
+    $this->assertEquals($questionnaire->signature, '7dbb3cb5d6fa3cc33b316dbdfc523f23');
   }
   
   /*
@@ -165,18 +165,18 @@ class Test_Unit_QuestionnaireModelTest extends QFrame_Test_Unit {
   }
 
   /*
-   * Test that a rule associated with a prompt that belongs to a question targeting the tab
+   * Test that a rule associated with a prompt that belongs to a question targeting the page
    * to which that question belongs produces an exception
    */
-  public function testSelfReferentialDisableTabRuleProducesException() {
+  public function testSelfReferentialDisablePageRuleProducesException() {
     $this->auth();
     
-    $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/self-referential-disableTab.xml");
+    $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/self-referential-disablePage.xml");
     try {
       QuestionnaireModel::importXML($xml);
     }
     catch(Exception $e) { return; }
-    $this->fail('Import of a self-referential disableTab rule should produce an exception');
+    $this->fail('Import of a self-referential disablePage rule should produce an exception');
   }
   
 }

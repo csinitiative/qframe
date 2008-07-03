@@ -126,7 +126,7 @@ class QFrame_View_Helper_ApplicationHelpers {
   }
   
   /**
-   * Output a lock icon which also serves as a link to unlock a tab (if the user has permission
+   * Output a lock icon which also serves as a link to unlock a page (if the user has permission
    * to do this)
    *
    * @param  Array       menu item array for this lock
@@ -137,10 +137,10 @@ class QFrame_View_Helper_ApplicationHelpers {
     if($menu['locked']) {
       $user = new DbUserModel(array('dbUserID' => $menu['locked'], 'depth' => 'dbUser'));
       $title = "Currently locked by '{$this->h($user->dbUserFullName)}'.";
-      if($user->hasAccess('edit', $menu['tab']) || $user->hasAccess('approve', $menu['tab'])) {
+      if($user->hasAccess('edit', $menu['page']) || $user->hasAccess('approve', $menu['page'])) {
         $title .= ' Click to unlock.';
         $html = $this->view->linkTo('#', $this->view->imageTag('icons/ffffff/lock_small.png', array(
-          'id'    => $this->view->url(array('action' => 'unlock', 'id' => $menu['tab']->tabID)),
+          'id'    => $this->view->url(array('action' => 'unlock', 'id' => $menu['page']->pageID)),
           'class' => 'inline lock tooltip',
           'tooltip' => $title
         )));

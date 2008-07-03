@@ -23,20 +23,20 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class TabModel implements QFrame_Lockable, QFrame_Permissible {
+class PageModel implements QFrame_Lockable, QFrame_Permissible {
 
-  private $tabRow;
+  private $pageRow;
   private $sections;
   private $sectionsIndex;
   private $depth;
   private $parent;
   private $referenceDetailRows;
-  static $tabTable;
+  static $pageTable;
   static $sectionTable;
   static $questionTable;
   static $ruleTable;
   static $questionTypeTable;
-  static $tabReferenceTable;
+  static $pageReferenceTable;
   static $referenceDetailTable;
   
   /**
@@ -54,52 +54,52 @@ class TabModel implements QFrame_Lockable, QFrame_Permissible {
     ), $args);
 
     // argument assertions
-    if (!isset($args['tabID'])) {
-      throw new InvalidArgumentException('Missing tabID as argument to TabModel constructor');
+    if (!isset($args['pageID'])) {
+      throw new InvalidArgumentException('Missing pageID as argument to PageModel constructor');
     }
 
-    if (!isset(self::$tabTable)) self::$tabTable = QFrame_Db_Table::getTable('tab');
+    if (!isset(self::$pageTable)) self::$pageTable = QFrame_Db_Table::getTable('page');
     if (!isset(self::$sectionTable)) self::$sectionTable = QFrame_Db_Table::getTable('section');
     if (!isset(self::$questionTable)) self::$questionTable = QFrame_Db_Table::getTable('question');
     if (!isset(self::$ruleTable)) self::$ruleTable = QFrame_Db_Table::getTable('rule');
     if (!isset(self::$questionTypeTable)) self::$questionTypeTable = QFrame_Db_Table::getTable('questionType');
-    if (!isset(self::$tabReferenceTable)) self::$tabReferenceTable = QFrame_Db_Table::getTable('tabReference');
+    if (!isset(self::$pageReferenceTable)) self::$pageReferenceTable = QFrame_Db_Table::getTable('pageReference');
     if (!isset(self::$referenceDetailTable)) self::$referenceDetailTable = QFrame_Db_Table::getTable('referenceDetail');
     
-    $rows = self::$tabTable->fetchRows('tabID', $args['tabID']);
-    $this->tabRow = $rows[0];
+    $rows = self::$pageTable->fetchRows('pageID', $args['pageID']);
+    $this->pageRow = $rows[0];
     
     // Load up table data in bulk to limit sql queries
-    QFrame_Db_Table::preloadAll($this->tabRow->instanceID, $this->tabRow->tabID);
+    QFrame_Db_Table::preloadAll($this->pageRow->instanceID, $this->pageRow->pageID);
 
-    // tab row assertion
-    if ($this->tabRow === NULL) {
-      throw new Exception('Tab not found [' . $args['tabID'] . ']');
+    // page row assertion
+    if ($this->pageRow === NULL) {
+      throw new Exception('Page not found [' . $args['pageID'] . ']');
     }
 
     $this->depth = $args['depth'];
     
-    $ruleRows = self::$ruleTable->fetchRows('targetID', $this->tabRow->tabID, null, $this->tabRow->instanceID);
+    $ruleRows = self::$ruleTable->fetchRows('targetID', $this->pageRow->pageID, null, $this->pageRow->instanceID);
     $disableCount = 0;
     foreach ($ruleRows as $row) {
-      if ($row->enabled === 'Y' && $row->type === 'disableTab') {
+      if ($row->enabled === 'Y' && $row->type === 'disablePage') {
         $disableCount++;
       }
-      elseif ($row->enabled === 'Y' && $row->type === 'enableTab') {
+      elseif ($row->enabled === 'Y' && $row->type === 'enablePage') {
         $disableCount--;
       }
     }
-    if ($this->tabRow->defaultTabHidden) $disableCount++;
-    if ($disableCount != $this->tabRow->disableCount) {
-      $this->tabRow->disableCount = $disableCount;
-      $this->tabRow->save();
+    if ($this->pageRow->defaultPageHidden) $disableCount++;
+    if ($disableCount != $this->pageRow->disableCount) {
+      $this->pageRow->disableCount = $disableCount;
+      $this->pageRow->save();
     }
     
-    if ($this->depth !== 'tab') $this->_loadSections();
+    if ($this->depth !== 'page') $this->_loadSections();
     
-    $tabReferenceRows = self::$tabReferenceTable->fetchRows('tabID', $this->tabRow->tabID, null, $this->tabRow->instanceID);
-    foreach ($tabReferenceRows as $row) {
-      $rows = self::$referenceDetailTable->fetchRows('referenceDetailID', $row->referenceDetailID, null, $this->tabRow->instanceID);
+    $pageReferenceRows = self::$pageReferenceTable->fetchRows('pageID', $this->pageRow->pageID, null, $this->pageRow->instanceID);
+    foreach ($pageReferenceRows as $row) {
+      $rows = self::$referenceDetailTable->fetchRows('referenceDetailID', $row->referenceDetailID, null, $this->pageRow->instanceID);
       $this->referenceDetailRows[] = $rows[0]->toArray();
     }
         
@@ -113,14 +113,14 @@ class TabModel implements QFrame_Lockable, QFrame_Permissible {
    */
   public function __get($key) {
     if($key === 'parent' && !isset($this->parent)) {
-      $this->parent = new InstanceModel(array('instanceID' => $this->tabRow->instanceID,
+      $this->parent = new InstanceModel(array('instanceID' => $this->pageRow->instanceID,
                                               'depth' => 'instance'));
     }
 
     // If we have a valid key or a key that is a column in question or questionType, return a value
     if(array_key_exists($key, self::$validProperties)) return $this->{self::$validProperties[$key]};
-    elseif(isset($this->tabRow->$key)) {
-      return $this->tabRow->$key;
+    elseif(isset($this->pageRow->$key)) {
+      return $this->pageRow->$key;
     }
     
     // Otherwise, throw an exception
@@ -134,7 +134,7 @@ class TabModel implements QFrame_Lockable, QFrame_Permissible {
    * @return boolean
    */
   public function __isset($key) {
-    return array_key_exists($key, self::$validProperties) || isset($this->tabRow->$key);
+    return array_key_exists($key, self::$validProperties) || isset($this->pageRow->$key);
   }
 
   public function save() {
@@ -143,11 +143,11 @@ class TabModel implements QFrame_Lockable, QFrame_Permissible {
         $section->save();
       }
     }
-    $this->tabRow->numQuestions = $this->getNumQuestions();
-    $this->tabRow->numComplete = $this->getNumQuestionsComplete();
-    $this->tabRow->numApproved = $this->getNumQuestionsApproved();
-    $this->tabRow->save();
-    if ($this->depth !== 'tab') $this->_loadSections();
+    $this->pageRow->numQuestions = $this->getNumQuestions();
+    $this->pageRow->numComplete = $this->getNumQuestionsComplete();
+    $this->pageRow->numApproved = $this->getNumQuestionsApproved();
+    $this->pageRow->save();
+    if ($this->depth !== 'page') $this->_loadSections();
   }
 
   public function nextSection() {
@@ -157,19 +157,19 @@ class TabModel implements QFrame_Lockable, QFrame_Permissible {
   }
   
   /**
-   * Returns the number of sections that this tab contains (or throws
-   * an Exception if depth is set to 'tab')
+   * Returns the number of sections that this page contains (or throws
+   * an Exception if depth is set to 'page')
    *
    * @return integer
    */
   public function numSections() {
-    if($this->depth == 'tab') throw new Exception('Attempt to return section count when depth is tab');
+    if($this->depth == 'page') throw new Exception('Attempt to return section count when depth is page');
     return count($this->sections);
   }
 
   private function _loadSections() {
     
-    $where = self::$sectionTable->getAdapter()->quoteInto('tabID = ?', $this->tabID);
+    $where = self::$sectionTable->getAdapter()->quoteInto('pageID = ?', $this->pageID);
     
     $sections = self::$sectionTable->fetchAll($where, 'seqNumber ASC');
     $this->sections = array();
@@ -183,86 +183,86 @@ class TabModel implements QFrame_Lockable, QFrame_Permissible {
   }
   
   /**
-   * Return the number of questions for this tab
+   * Return the number of questions for this page
    *
    * @return integer
    */
   public function getNumQuestions() {
-    $questionGroupTypeID = self::$questionTypeTable->getQuestionTypeID($this->tabRow->instanceID, '_questionGroup');
-    $virtualQuestionTypeID = self::$questionTypeTable->getQuestionTypeID($this->tabRow->instanceID, 'V');
+    $questionGroupTypeID = self::$questionTypeTable->getQuestionTypeID($this->pageRow->instanceID, '_questionGroup');
+    $virtualQuestionTypeID = self::$questionTypeTable->getQuestionTypeID($this->pageRow->instanceID, 'V');
     if (!isset($virtualQuestionTypeID)) $virtualQuestionTypeID = -1;
     if (!isset($questionGroupTypeID)) $questionGroupTypeID = -1;
-    $select = self::$tabTable->getAdapter()->select()
+    $select = self::$pageTable->getAdapter()->select()
             ->from(array('q' => 'question'), array('COUNT(*) as tally'))
-            ->where('q.tabID = ?', $this->tabRow->tabID)
+            ->where('q.pageID = ?', $this->pageRow->pageID)
             ->where('q.questionTypeID != ?', $questionGroupTypeID)
             ->where('q.questionTypeID != ?', $virtualQuestionTypeID);
-    $stmt = self::$tabTable->getAdapter()->query($select);
+    $stmt = self::$pageTable->getAdapter()->query($select);
     $result = $stmt->fetchAll();
     return $result[0]['tally'];
   }
 
   /**
-   * Return the number of approved questions for this tab
+   * Return the number of approved questions for this page
    *
    * @return integer
    */
   public function getNumQuestionsApproved() {
-    $questionGroupTypeID = self::$questionTypeTable->getQuestionTypeID($this->tabRow->instanceID, '_questionGroup');
-    $virtualQuestionTypeID = self::$questionTypeTable->getQuestionTypeID($this->tabRow->instanceID, 'V');
+    $questionGroupTypeID = self::$questionTypeTable->getQuestionTypeID($this->pageRow->instanceID, '_questionGroup');
+    $virtualQuestionTypeID = self::$questionTypeTable->getQuestionTypeID($this->pageRow->instanceID, 'V');
     if (!isset($virtualQuestionTypeID)) $virtualQuestionTypeID = -1;
     if (!isset($questionGroupTypeID)) $questionGroupTypeID = -1;
     $select = 'SELECT COUNT(q.questionID) AS tally FROM question AS q INNER JOIN ' .
         '(SELECT DISTINCT questionID FROM response WHERE state = 2 AND ISNULL(responseEndDate)) ' .
-        'AS r WHERE q.tabID = ? AND q.questionTypeID != ? AND q.questionTypeID != ? AND ' .
+        'AS r WHERE q.pageID = ? AND q.questionTypeID != ? AND q.questionTypeID != ? AND ' .
         'q.questionID = r.questionID AND q.questionTypeID != ? AND q.questionTypeID != ?';
     $bindVars = array(
-      $this->tabRow->tabID,
+      $this->pageRow->pageID,
       $questionGroupTypeID,
       $virtualQuestionTypeID,
       $questionGroupTypeID,
       $virtualQuestionTypeID
     );
-    $stmt = self::$tabTable->getAdapter()->query($select, $bindVars);
+    $stmt = self::$pageTable->getAdapter()->query($select, $bindVars);
     $result = $stmt->fetchAll();
     return $result[0]['tally'];
   }
   
   /**
-   * Return the number of questions for this tab that are complete (answered)
+   * Return the number of questions for this page that are complete (answered)
    *
    * @return integer
    */
   public function getNumQuestionsComplete() {
-    $questionGroupTypeID = self::$questionTypeTable->getQuestionTypeID($this->tabRow->instanceID, '_questionGroup');
-    $virtualQuestionTypeID = self::$questionTypeTable->getQuestionTypeID($this->tabRow->instanceID, 'V');
+    $questionGroupTypeID = self::$questionTypeTable->getQuestionTypeID($this->pageRow->instanceID, '_questionGroup');
+    $virtualQuestionTypeID = self::$questionTypeTable->getQuestionTypeID($this->pageRow->instanceID, 'V');
     if (!isset($virtualQuestionTypeID)) $virtualQuestionTypeID = -1;
     if (!isset($questionGroupTypeID)) $questionGroupTypeID = -1;
     $count = 0;    
     
-    $stmt = self::$tabTable->getAdapter()->query('SELECT COUNT(*) as tally FROM question as q ' .
-        'WHERE q.disableCount > 0 AND q.tabID = ? AND q.questionTypeID != ? AND ' . 
+    $stmt = self::$pageTable->getAdapter()->query('SELECT COUNT(*) as tally FROM question as q ' .
+        'WHERE q.disableCount > 0 AND q.pageID = ? AND q.questionTypeID != ? AND ' . 
         'q.questionTypeID != ?',
-      array($this->tabRow->tabID, $questionGroupTypeID, $virtualQuestionTypeID)
+      array($this->pageRow->pageID, $questionGroupTypeID, $virtualQuestionTypeID)
     );
     $result = $stmt->fetchAll();
     $count += $result[0]['tally'];
 
-    $stmt = self::$tabTable->getAdapter()->query('SELECT q.questionID FROM question AS q, ' .
+    $stmt = self::$pageTable->getAdapter()->query('SELECT q.questionID FROM question AS q, ' .
         'questionType AS qt, questionPrompt as qp, response as r WHERE ' .
         'q.questionTypeID = qt.questionTypeID AND qt.questionTypeID = qp.questionTypeID AND ' .
         'q.questionID = r.questionID AND requireAddlInfo = 1 AND ISNULL(r.additionalInfo) AND ' .
-        'ISNULL(r.responseEndDate) AND r.responseText = qp.promptID AND q.tabID = ?',
-      array($this->tabRow->tabID)
+        'ISNULL(r.responseEndDate) AND r.responseText = qp.promptID AND q.pageID = ?',
+      array($this->pageRow->pageID)
     );
     $missingAddlInfoRows = $stmt->fetchAll();
 
     $select = 'SELECT COUNT(q.questionID) as tally FROM question AS q INNER JOIN ' .
         "(SELECT DISTINCT questionID FROM response WHERE responseText != '' AND " .
-        'ISNULL(responseEndDate)) AS r WHERE q.tabID = ? AND q.questionTypeID != ? AND ' . 
+        'ISNULL(responseEndDate)) AS r WHERE q.pageID = ? AND q.questionTypeID != ? AND ' . 
         'q.questionTypeID != ? AND q.questionID = r.questionID AND q.disableCount = 0';
     $bindVars = array(
-      $this->tabRow->tabID,
+      $this->pageRow->pageID,
       $questionGroupTypeID,
       $virtualQuestionTypeID
     );
@@ -270,7 +270,7 @@ class TabModel implements QFrame_Lockable, QFrame_Permissible {
       $select .= ' AND q.questionID != ?';
       $bindVars[] = $r['questionID'];
     }
-    $stmt = self::$tabTable->getAdapter()->query($select, $bindVars);
+    $stmt = self::$pageTable->getAdapter()->query($select, $bindVars);
     $result = $stmt->fetchAll();
     $count += $result[0]['tally'];
 
@@ -278,30 +278,30 @@ class TabModel implements QFrame_Lockable, QFrame_Permissible {
   }
   
   /**
-   * Return an ID that is guaranteed to be unique among objects of type TabModel
+   * Return an ID that is guaranteed to be unique among objects of type PageModel
    *
    * @return string
    */
   public function objectID() {
-    return "{$this->tabID}";
+    return "{$this->pageID}";
   }
   
   /**
-   * Return an ID that is unique to this tab but common to all instances of this
-   * tab on different questionnaires.
+   * Return an ID that is unique to this page but common to all instances of this
+   * page on different questionnaires.
    * 
    * @return string
    */
   public function getPermissionID() {
     $id = get_class($this) . '_';
-    if($this->tabGUID) $id .= "GUID{$this->tabGUID}";
-    else $id .= "ID{$this->tabID}";
+    if($this->pageGUID) $id .= "GUID{$this->pageGUID}";
+    else $id .= "ID{$this->pageID}";
     
     return $id;
   }
   
   /**
-   * Returns a QuestionModel object if that question is on this tab, null if it is not, and
+   * Returns a QuestionModel object if that question is on this page, null if it is not, and
    * throws an exception if depth is not sufficient.
    *
    * @param  integer QuestionModel id
@@ -309,7 +309,7 @@ class TabModel implements QFrame_Lockable, QFrame_Permissible {
    */
   public function getQuestion($id) {
     // sanity check, make sure depth is enough to support a query for a question
-    if($this->depth === 'tab' || $this->depth === 'section')
+    if($this->depth === 'page' || $this->depth === 'section')
       throw new Exception('Cannot fetch questions with a depth < question');
       
     $question = null;

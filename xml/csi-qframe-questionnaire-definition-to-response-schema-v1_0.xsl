@@ -16,17 +16,17 @@ elementFormDefault="qualified">
   <xs:element name="questionnaire">
     <xs:complexType>
       <xs:all>
-        <xs:element name="tabs">
+        <xs:element name="pages">
           <xs:complexType>
             <xs:sequence>
-<xsl:for-each select="csi:tabs/csi:tab">
-              <xs:element name="tab">
+<xsl:for-each select="csi:pages/csi:page">
+              <xs:element name="page">
                 <xs:complexType>
                   <xs:all>
-                    <xs:element name="tabHeader" type="xs:string" minOccurs="0"/>
-                    <xs:element name="tabGUID" type="xs:integer">
+                    <xs:element name="pageHeader" type="xs:string" minOccurs="0"/>
+                    <xs:element name="pageGUID" type="xs:integer">
                       <xsl:attribute name="fixed">
-                        <xsl:value-of select="csi:tabGUID"/>
+                        <xsl:value-of select="csi:pageGUID"/>
                       </xsl:attribute>
                     </xs:element>
                     <xs:element name="seqNumber" type="xs:integer">
@@ -38,8 +38,8 @@ elementFormDefault="qualified">
                     <xs:element name="headerText" type="xs:string" minOccurs="0"/>
                     <xs:element name="footerText" type="xs:string" minOccurs="0"/>
                     <xs:element name="cloneable" type="xs:integer" minOccurs="0"/>
-                    <xs:element name="defaultTabHidden" type="xs:integer" minOccurs="0"/>
-                    <xs:element name="tabReferences" minOccurs="0">
+                    <xs:element name="defaultPageHidden" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="pageReferences" minOccurs="0">
                       <xs:complexType>
                         <xs:sequence>
                           <xs:element name="reference" minOccurs="0" maxOccurs="unbounded">
@@ -191,10 +191,10 @@ elementFormDefault="qualified">
                                                               <xs:sequence>
                                                                 <xs:element name="promptText" type="xs:string" minOccurs="0"/>
                                                                 <xs:element name="requireAdditionalInfo" type="xs:integer" minOccurs="0"/>
-                                                                <xs:element name="enableTab" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
+                                                                <xs:element name="enablePage" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
                                                                 <xs:element name="enableSection" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
                                                                 <xs:element name="enableQuestion" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
-                                                                <xs:element name="disableTab" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
+                                                                <xs:element name="disablePage" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
                                                                 <xs:element name="disableSection" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
                                                                 <xs:element name="disableQuestion" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
                                                               </xs:sequence>
@@ -265,10 +265,10 @@ elementFormDefault="qualified">
                                                         <xs:sequence>
                                                           <xs:element name="promptText" type="xs:string" minOccurs="0"/>
                                                           <xs:element name="requireAdditionalInfo" type="xs:integer" minOccurs="0"/>
-                                                          <xs:element name="enableTab" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
+                                                          <xs:element name="enablePage" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
                                                           <xs:element name="enableSection" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
                                                           <xs:element name="enableQuestion" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
-                                                          <xs:element name="disableTab" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
+                                                          <xs:element name="disablePage" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
                                                           <xs:element name="disableSection" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
                                                           <xs:element name="disableQuestion" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
                                                         </xs:sequence>

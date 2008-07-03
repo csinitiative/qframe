@@ -51,7 +51,7 @@ class SectionModel {
 
   /**
    * Holds a reference to the parent object
-   * @var TabModel
+   * @var PageModel
    */
   private $parent;
   
@@ -115,9 +115,9 @@ class SectionModel {
       }
     }
     if ($this->sectionRow->defaultSectionHidden) $disableCount++;
-    $tab = new TabModel(array('tabID' => $this->sectionRow->tabID,
-                              'depth' => 'tab'));
-    $disableCount += $tab->disableCount;
+    $page = new PageModel(array('pageID' => $this->sectionRow->pageID,
+                                'depth' => 'page'));
+    $disableCount += $page->disableCount;
     if ($disableCount != $this->sectionRow->disableCount) {
       $this->sectionRow->disableCount = $disableCount;
       $this->sectionRow->save();
@@ -139,7 +139,7 @@ class SectionModel {
    */
   public function __get($key) {
     if ($key === 'parent' && !isset($this->parent)) {
-      $this->parent = new TabModel(array('tabID' => $this->sectionRow->tabID, 'depth' => 'tab'));
+      $this->parent = new PageModel(array('pageID' => $this->sectionRow->pageID, 'depth' => 'page'));
     }
     
     // If we have a valid key or a key that is a column in question or questionType, return a value

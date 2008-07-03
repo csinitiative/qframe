@@ -28,7 +28,7 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class QFrame_View_Helper_TabHelpers {
+class QFrame_View_Helper_PageHelpers {
 
   /**
    * Stores the associated view for persistence
@@ -297,7 +297,7 @@ class QFrame_View_Helper_TabHelpers {
         'filename'    => $properties['filename'],
         'elementName' => "q{$question->questionID}_file{$id}_delete",
         'url'         => $this->view->url(array(
-          'controller' => 'tab',
+          'controller' => 'page',
           'action'     => 'download',
           'id'         => $question->questionID
         )) . "?fileID={$id}"
@@ -331,41 +331,41 @@ class QFrame_View_Helper_TabHelpers {
   }
   
   /**
-   * Returns a link for the header bar of a tab
+   * Returns a link for the header bar of a page
    *
-   * @param  TabModel    current tab
+   * @param  PageModel    current page
    * @param  DbUserModel currently logged in user
    * @return string
    */
-  public function topLinks($tab, $user) {
-    if($tab->numQuestions <= 0) return;
+  public function topLinks($page, $user) {
+    if($page->numQuestions <= 0) return;
     
     $current = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
     $actions = "<li class=\"current\">{$current}</li>";
     //TODO need to relocate this list of available actions somewhere more appropriate
     foreach(array('view', 'edit', 'approve') as $action) {
-      if($action !== $current && $user->hasAccess($action, $tab)) {
-        $links[] = $this->view->linkTo(array('action' => $action, 'id' => $tab->tabID), $action);
+      if($action !== $current && $user->hasAccess($action, $page)) {
+        $links[] = $this->view->linkTo(array('action' => $action, 'id' => $page->pageID), $action);
       }
     }
-    $actions = '<ul id="tabHeading">' . $actions . '<li>';
+    $actions = '<ul id="pageHeading">' . $actions . '<li>';
     if(isset($links)) $actions .= implode($links, ' | </li><li>') . '</li>';
-    return "{$actions}<li class=\"stats\">{$this->stats($tab)}</li><li class=\"bottom\"></li></ul>";
+    return "{$actions}<li class=\"stats\">{$this->stats($page)}</li><li class=\"bottom\"></li></ul>";
   }
   
   /**
-   * Returns an <li> with tab statistics inside
+   * Returns an <li> with page statistics inside
    *
-   * @param  TabModel the tab we are looking at statistics for
+   * @param  PageModel the page we are looking at statistics for
    * @return string
    */
-  public function stats($tab) {
-    $completePcnt = round(($tab->numComplete / $tab->numQuestions) * 100, 2) . '%';
-    $approvedPcnt = round(($tab->numApproved / $tab->numQuestions) * 100, 2) . '%';
-    $complete = "complete: <strong>{$tab->numComplete}</strong> of " .
-        "<strong>{$tab->numQuestions}</strong> ({$completePcnt})";
-    $approved = "approved: <strong>{$tab->numApproved}</strong> of " .
-        "<strong>{$tab->numQuestions}</strong> ({$approvedPcnt})";
+  public function stats($page) {
+    $completePcnt = round(($page->numComplete / $page->numQuestions) * 100, 2) . '%';
+    $approvedPcnt = round(($page->numApproved / $page->numQuestions) * 100, 2) . '%';
+    $complete = "complete: <strong>{$page->numComplete}</strong> of " .
+        "<strong>{$page->numQuestions}</strong> ({$completePcnt})";
+    $approved = "approved: <strong>{$page->numApproved}</strong> of " .
+        "<strong>{$page->numQuestions}</strong> ({$approvedPcnt})";
     
         
     return "{$complete} | {$approved}";

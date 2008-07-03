@@ -47,12 +47,12 @@ class DashboardController extends QFrame_Controller_Action {
       $this->_redirector->gotoRouteAndExit(array('controller' => 'index'), null, true);
     }
     
-    $questionnaires = QuestionnaireModel::getAllQuestionnaires('tab');
+    $questionnaires = QuestionnaireModel::getAllQuestionnaires('page');
     $allowedInstances = array();
     foreach($questionnaires as $questionnaire) {
       while($instance = $questionnaire->nextInstance()) {
-        while($tab = $instance->nextTab()) {
-          if($this->_user->hasAnyAccess($tab)) {
+        while($page = $instance->nextPage()) {
+          if($this->_user->hasAnyAccess($page)) {
             $allowedInstances[] = $instance;
             break;
           }
