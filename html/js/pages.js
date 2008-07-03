@@ -1,4 +1,4 @@
-var Tabs = {
+var Pages = {
   
   /**
    * Handle a scroll event on the window object (re-position floating elements)
@@ -84,15 +84,15 @@ var Tabs = {
   },
   
   /**
-   * Handles clicks of the link to toggle tab references
+   * Handles clicks of the link to toggle page references
    *
    * @param Event event object for the click
    */
-  toggleTabReferences: function(event) {
+  togglePageReferences: function(event) {
     var element = Event.element(event);
     if(element.innerHTML.match(/^hide/)) element.innerHTML = 'show references';
     else element.innerHTML = 'hide references';
-    $('tabReferences').toggle();
+    $('pageReferences').toggle();
   },
   
   /**
@@ -102,23 +102,23 @@ var Tabs = {
    */
   setup: function(event) {
     $$('.question .require-addl').each(function(radio) {
-      radio.observe('click', Tabs.requireAddlRadioClick);
+      radio.observe('click', Pages.requireAddlRadioClick);
     });
     $$('.question input[type=radio]').each(function(radio) {
-      radio.observe('click', Tabs.radioClick);
+      radio.observe('click', Pages.radioClick);
     });
     
-    Event.observe(window, 'scroll', Tabs.windowScroll);
+    Event.observe(window, 'scroll', Pages.windowScroll);
     
     $$('.controlButton').each(function(button) {
       var action = button.href.replace(/^.*#(\w+)$/, '$1');
-      if(Tabs[action + 'Handler']) button.observe('click', Tabs[action + 'Handler']);
+      if(Pages[action + 'Handler']) button.observe('click', Pages[action + 'Handler']);
     });
     
-    if($('toggleTabReferences'))
-      $('toggleTabReferences').observe('click', Tabs.toggleTabReferences);
+    if($('togglePageReferences'))
+      $('togglePageReferences').observe('click', Pages.togglePageReferences);
   }
 };
 
-// Call the tab setup method onload
-Event.observe(window, 'load', Tabs.setup);
+// Call the page setup method onload
+Event.observe(window, 'load', Pages.setup);

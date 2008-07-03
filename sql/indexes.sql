@@ -39,13 +39,13 @@ create index instanceQuestionnaireIDx
   using hash
   on instance (questionnaireID);
 
-create index tabInstanceIDx
+create index pageInstanceIDx
   using hash
-  on tab (instanceID);
+  on page (instanceID);
 
-create index sectionTabIDx
+create index sectionPageIDx
   using hash
-  on section (tabID);
+  on section (pageID);
 
 create index sectionInstanceIDx
   using hash
@@ -55,17 +55,17 @@ create index sectionReferenceInstanceIDx
   using hash
   on sectionReference (instanceID);
 
-create index tabReferenceInstanceIDx
+create index pageReferenceInstanceIDx
   using hash
-  on tabReference (instanceID);
+  on pageReference (instanceID);
 
 create index questionSectionIDx
   using hash
   on question (sectionID);
 
-create index questionTabIDx
+create index questionPageIDx
   using hash
-  on question (tabID);
+  on question (pageID);
 
 create index questionInstanceIDx
   using hash

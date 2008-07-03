@@ -27,12 +27,12 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
 
   private $questionnaireRow;
   private $instanceRow;
-  private $tabs;
-  private $tabsIndex;
+  private $pages;
+  private $pagesIndex;
   private $depth;
   static $questionnaireTable;
   static $instanceTable;
-  static $tabTable;
+  static $pageTable;
   static $questionTable;
   static $ruleTable;
   static $questionTypeTable;
@@ -42,7 +42,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
   static $referenceDetailTable;
   static $responseTable;
   static $sectionReferenceTable;
-  static $tabReferenceTable;
+  static $pageReferenceTable;
   static $sectionTable;
 
   /**
@@ -53,12 +53,12 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
   function __construct ($args = array()) {
 
     $args = array_merge(array(
-      'depth'   => 'tab'
+      'depth'   => 'page'
     ), $args);
 
     if (!isset(self::$questionnaireTable)) self::$questionnaireTable = QFrame_Db_Table::getTable('questionnaire');
     if (!isset(self::$instanceTable)) self::$instanceTable = QFrame_Db_Table::getTable('instance');
-    if (!isset(self::$tabTable)) self::$tabTable = QFrame_Db_Table::getTable('tab');
+    if (!isset(self::$pageTable)) self::$pageTable = QFrame_Db_Table::getTable('page');
     if (!isset(self::$questionTable)) self::$questionTable = QFrame_Db_Table::getTable('question');
     if (!isset(self::$ruleTable)) self::$ruleTable = QFrame_Db_Table::getTable('rule');
     if (!isset(self::$questionTypeTable)) self::$questionTypeTable = QFrame_Db_Table::getTable('questionType');
@@ -68,7 +68,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     if (!isset(self::$referenceDetailTable)) self::$referenceDetailTable = QFrame_Db_Table::getTable('referenceDetail');
     if (!isset(self::$responseTable)) self::$responseTable = QFrame_Db_Table::getTable('response');
     if (!isset(self::$sectionReferenceTable)) self::$sectionReferenceTable = QFrame_Db_Table::getTable('sectionReference');
-    if (!isset(self::$tabReferenceTable)) self::$tabReferenceTable = QFrame_Db_Table::getTable('tabReference');
+    if (!isset(self::$pageReferenceTable)) self::$pageReferenceTable = QFrame_Db_Table::getTable('pageReference');
     if (!isset(self::$sectionTable)) self::$sectionTable = QFrame_Db_Table::getTable('section');
 
     if (isset($args['instanceID'])) {
@@ -100,7 +100,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
         
     if ($args['depth'] !== 'instance') {
       $this->depth = $args['depth'];
-      $this->_loadTabs();
+      $this->_loadPages();
     }
     
   }
@@ -124,9 +124,9 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    */
   public function save() {
 
-    if (count($this->tabs)) {
-      foreach ($this->tabs as $tab) {
-        $tab->save();
+    if (count($this->pages)) {
+      foreach ($this->pages as $page) {
+        $page->save();
       }
     }
 
@@ -135,50 +135,50 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     $this->instanceRow->numApproved = $this->getNumQuestionsApproved();
     $this->instanceRow->save();
     
-    if ($this->depth !== 'instance') $this->_loadTabs();
+    if ($this->depth !== 'instance') $this->_loadPages();
   }
 
   /**
-   * Returns the next TabModel associated with this InstanceModel
+   * Returns the next PageModel associated with this InstanceModel
    *
-   * @return TabModel Returns null if there are no further tabs
+   * @return PageModel Returns null if there are no further pages
    */
-  public function nextTab() {
-    $nextTab = each($this->tabs);
-    if(!$nextTab) return;
+  public function nextPage() {
+    $nextPage = each($this->pages);
+    if(!$nextPage) return;
 
-    return $nextTab['value'];
+    return $nextPage['value'];
   }
 
   /**
-   * Returns a TabModel with a specific id
+   * Returns a PageModel with a specific id
    *
-   * @param  integer tabID of the wanted TabModel
-   * @return TabModel
+   * @param  integer pageID of the wanted PageModel
+   * @return PageModel
    */
-  public function getTab($id) {
-    foreach($this->tabs as $tab) {
-      if($tab->tabID == $id) return $tab;
+  public function getPage($id) {
+    foreach($this->pages as $page) {
+      if($page->pageID == $id) return $page;
     }
-    throw new Exception('No tab was found with the specified tabID [' . $id . ']');
+    throw new Exception('No page was found with the specified pageID [' . $id . ']');
   }
 
   /**
-   * Returns the first TabModel associated with this InstanceModel
+   * Returns the first PageModel associated with this InstanceModel
    *
-   * @return TabModel
+   * @return PageModel
    */
-  public function getFirstTab() {
-    return current(array_slice($this->tabs, 0, 1));
+  public function getFirstPage() {
+    return current(array_slice($this->pages, 0, 1));
   }
   
   /**
-   * Returns the last TabModel associated with this InstanceModel
+   * Returns the last PageModel associated with this InstanceModel
    *
-   * @return TabModel
+   * @return PageModel
    */
-  public function getLastTab() {
-    return current(array_slice($this->tabs, -1, 1));
+  public function getLastPage() {
+    return current(array_slice($this->pages, -1, 1));
   }
   
   /**
@@ -207,23 +207,23 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
             '" revision="' . self::_xmlentities($instance->revision) . 
             '" targetQFrameVersion="' . QFRAME_VERSION . 
             '" instanceName="' . self::_xmlentities($instance->instanceName) . '">' . "\n";
-    $xml .= "  <csi:tabs>\n";
-    while ($tab = $instance->nextTab()) {
-      $xml .= "    <csi:tab>\n";
+    $xml .= "  <csi:pages>\n";
+    while ($page = $instance->nextPage()) {
+      $xml .= "    <csi:page>\n";
       if ($complete) {
-        $xml .= "      <csi:tabHeader>" . self::_xmlentities($tab->tabHeader) . "</csi:tabHeader>\n";
+        $xml .= "      <csi:pageHeader>" . self::_xmlentities($page->pageHeader) . "</csi:pageHeader>\n";
       }
-      $xml .= "      <csi:tabGUID>" . self::_xmlentities($tab->tabGUID) . "</csi:tabGUID>\n";
-      $xml .= "      <csi:seqNumber>" . self::_xmlentities($tab->seqNumber) . "</csi:seqNumber>\n";
+      $xml .= "      <csi:pageGUID>" . self::_xmlentities($page->pageGUID) . "</csi:pageGUID>\n";
+      $xml .= "      <csi:seqNumber>" . self::_xmlentities($page->seqNumber) . "</csi:seqNumber>\n";
       if ($complete) {
-        $xml .= "      <csi:description>" . self::_xmlentities($tab->description) . "</csi:description>\n";
-        $xml .= "      <csi:headerText>" . self::_xmlentities($tab->headerText) . "</csi:headerText>\n";
-        $xml .= "      <csi:footerText>" . self::_xmlentities($tab->footerText) . "</csi:footerText>\n";
-        $xml .= "      <csi:cloneable>" . self::_xmlentities($tab->cloneable) . "</csi:cloneable>\n";
-        $xml .= "      <csi:defaultTabHidden>" . self::_xmlentities($tab->defaultTabHidden) . "</csi:defaultTabHidden>\n";
+        $xml .= "      <csi:description>" . self::_xmlentities($page->description) . "</csi:description>\n";
+        $xml .= "      <csi:headerText>" . self::_xmlentities($page->headerText) . "</csi:headerText>\n";
+        $xml .= "      <csi:footerText>" . self::_xmlentities($page->footerText) . "</csi:footerText>\n";
+        $xml .= "      <csi:cloneable>" . self::_xmlentities($page->cloneable) . "</csi:cloneable>\n";
+        $xml .= "      <csi:defaultPageHidden>" . self::_xmlentities($page->defaultPageHidden) . "</csi:defaultPageHidden>\n";
       }
       $xml .= "      <csi:sections>\n";
-      while ($s = $tab->nextSection()) {
+      while ($s = $page->nextSection()) {
         $section = new SectionModel(array('sectionID' => $s->sectionID, 'depth' => 'response'));
         $xml .= "        <csi:section>\n";
         if ($complete) {
@@ -340,7 +340,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
                   $xml .= "$padding              <csi:questionPrompt>\n";
                   $xml .= "$padding                <csi:promptText>" . self::_xmlentities($prompt['value']) . "</csi:promptText>\n";
                   $xml .= "$padding                <csi:requireAdditionalInfo>" . self::_xmlentities($prompt['requireAddlInfo']) . "</csi:requireAdditionalInfo>\n";
-                  foreach (array('enableTab', 'enableSection', 'enableQuestion', 'disableTab', 'disableSection', 'disableQuestion') as $t) {
+                  foreach (array('enablePage', 'enableSection', 'enableQuestion', 'disablePage', 'disableSection', 'disableQuestion') as $t) {
                     foreach ($prompt['rules'] as $rule) {
                       $type = $rule->type;
                       if ($type === $t) {
@@ -413,9 +413,9 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
         $xml .= "        </csi:section>\n";
       }
       $xml .= "      </csi:sections>\n";
-      $xml .= "    </csi:tab>\n";
+      $xml .= "    </csi:page>\n";
     }
-    $xml .= "  </csi:tabs>\n";
+    $xml .= "  </csi:pages>\n";
     $xml .= "</csi:questionnaire>\n";
 
     QFrame_Db_Table::resetAll();
@@ -502,7 +502,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
   }
 
   /**
-   * Returns the number of questions for this tab
+   * Returns the number of questions for this page
    *
    * @return integer
    */
@@ -522,7 +522,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
   }
 
   /**
-   * Returns the number of approved questions for this tab
+   * Returns the number of approved questions for this page
    *
    * @return integer
    */
@@ -546,7 +546,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
   }
 
   /**
-   * Returns the number of questions for this tab that are complete (answered)
+   * Returns the number of questions for this page that are complete (answered)
    *
    * @return integer
    */
@@ -622,7 +622,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     $where = self::$instanceTable->getAdapter()->quoteInto('instanceID = ?', $this->instanceID);
     $transactionNumber = self::startSerializableTransaction();
     self::$instanceTable->delete($where);
-    self::$tabTable->delete($where);
+    self::$pageTable->delete($where);
     self::$questionTable->delete($where);
     self::$ruleTable->delete($where);
     self::$questionTypeTable->delete($where);
@@ -632,7 +632,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     self::$referenceDetailTable->delete($where);
     self::$responseTable->delete($where);
     self::$sectionReferenceTable->delete($where);
-    self::$tabReferenceTable->delete($where);
+    self::$pageReferenceTable->delete($where);
     self::$sectionTable->delete($where);
     self::dbCommit($transactionNumber);
     
@@ -652,10 +652,10 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    */
   public static function importXML(&$import, $instanceName, $options = array()) {
     $options = array_merge(array(
-      'tabClones'   => 0,
+      'pageClones'   => 0,
       'sectionClones' => 0,
       'questionClones' => 0,
-      'tabResponses' => array('all' => 0)
+      'pageResponses' => array('all' => 0)
     ), $options);
 
     if (!isset($instanceName) || strlen($instanceName) == 0) {
@@ -696,13 +696,13 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     
     if (!isset(self::$questionReferenceTable)) self::$questionReferenceTable = QFrame_Db_Table::getTable('questionReference');
     if (!isset(self::$sectionReferenceTable)) self::$sectionReferenceTable = QFrame_Db_Table::getTable('sectionReference');
-    if (!isset(self::$tabReferenceTable)) self::$tabReferenceTable = QFrame_Db_Table::getTable('tabReference');
+    if (!isset(self::$pageReferenceTable)) self::$pageReferenceTable = QFrame_Db_Table::getTable('pageReference');
     if (!isset(self::$referenceTable)) self::$referenceTable = QFrame_Db_Table::getTable('reference');
     if (!isset(self::$referenceDetailTable)) self::$referenceDetailTable = QFrame_Db_Table::getTable('referenceDetail');
     if (!isset(self::$ruleTable)) self::$ruleTable = QFrame_Db_Table::getTable('rule');
     if (!isset(self::$questionTypeTable)) self::$questionTypeTable = QFrame_Db_Table::getTable('questionType');
     if (!isset(self::$questionPromptTable)) self::$questionPromptTable = QFrame_Db_Table::getTable('questionPrompt');
-    if (!isset(self::$tabTable)) self::$tabTable = QFrame_Db_Table::getTable('tab');
+    if (!isset(self::$pageTable)) self::$pageTable = QFrame_Db_Table::getTable('page');
     if (!isset(self::$sectionTable)) self::$sectionTable = QFrame_Db_Table::getTable('section');
     if (!isset(self::$questionTable)) self::$questionTable = QFrame_Db_Table::getTable('question');
     if (!isset(self::$questionnaireTable)) self::$questionnaireTable = QFrame_Db_Table::getTable('questionnaire');
@@ -712,7 +712,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
 
     $questionTypeIDCache = array();  // Stores questionTypes that have already been inserted
     $rulesMap = array(); // Stores sourceID to questionGUID
-    $tabGuidMap = array(); // Stores tabGUID to tabID
+    $pageGuidMap = array(); // Stores pageGUID to pageID
     $sectionGuidMap = array(); // Stores sectionGUID to sectionID
     $questionGuidMap = array(); // Stores questionGUID to questionID
     $responseObjs = array(); // Stores response objects so that they may be saved at the end
@@ -773,75 +773,75 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     $instanceID = self::$instanceTable->insert(array('questionnaireID' => $questionnaireID,
                                                      'instanceName' => $instanceName));
                                                      
-    $tabs = $questionnaire->getElementsByTagName('tab');
-    for ($t = 0; $t < $tabs->length; $t++) {
-      $tab = $tabs->item($t);
-      $tabIDs = self::importXMLTab($tab, $questionnaireID, $instanceID, $tabGuidMap);
-      $tabID = $tabIDs[0];
-      $tabGUID = $tabIDs[1];
+    $pages = $questionnaire->getElementsByTagName('page');
+    for ($t = 0; $t < $pages->length; $t++) {
+      $page = $pages->item($t);
+      $pageIDs = self::importXMLPage($page, $questionnaireID, $instanceID, $pageGuidMap);
+      $pageID = $pageIDs[0];
+      $pageGUID = $pageIDs[1];
       
-      $tabReferences = $tab->getElementsByTagName('tabReferences');
-      self::importXMLReferences('tab', $tabReferences, $instanceID, $tabID, null, null, $processedReferences);
+      $pageReferences = $page->getElementsByTagName('pageReferences');
+      self::importXMLReferences('page', $pageReferences, $instanceID, $pageID, null, null, $processedReferences);
  
-      $sections = $tab->getElementsByTagName('section');
+      $sections = $page->getElementsByTagName('section');
       for ($s = 0; $s < $sections->length; $s++) {
         $section = $sections->item($s);
-        $sectionIDs = self::importXMLSection($section, $instanceID, $tabID, $sectionGuidMap);
+        $sectionIDs = self::importXMLSection($section, $instanceID, $pageID, $sectionGuidMap);
         $sectionID = $sectionIDs[0];
         $sectionGUID = $sectionIDs[1];
       
         $sectionReferences = $section->getElementsByTagName('sectionReferences');
-        self::importXMLReferences('section', $sectionReferences, $instanceID, $tabID, $sectionID, null, $processedReferences);
+        self::importXMLReferences('section', $sectionReferences, $instanceID, $pageID, $sectionID, null, $processedReferences);
 
         foreach($section->getElementsByTagName('questions')->item(0)->childNodes as $question) {
           if ($question->nodeName === 'csi:question') {
-            $questionIDs = self::importXMLQuestion(false, null, $question, $questionnaireID, $instanceID, $tabID, $tabGUID, $sectionID, $sectionGUID, $questionGuidMap, $questionTypeIDCache, $rulesMap, $questionPromptsMap);
+            $questionIDs = self::importXMLQuestion(false, null, $question, $questionnaireID, $instanceID, $pageID, $pageGUID, $sectionID, $sectionGUID, $questionGuidMap, $questionTypeIDCache, $rulesMap, $questionPromptsMap);
             $questionID = $questionIDs[0];
             $questionGUID = $questionIDs[1];
             $questionTypeID = $questionIDs[2];
             $questionPrompts = $question->getElementsByTagName('questionPrompt');
             
             $questionReferences = $question->getElementsByTagName('questionReferences');
-            self::importXMLReferences('question', $questionReferences, $instanceID, $tabID, $sectionID, $questionID, $processedReferences);
+            self::importXMLReferences('question', $questionReferences, $instanceID, $pageID, $sectionID, $questionID, $processedReferences);
             
             $responses = $question->getElementsByTagName('responses');
-            self::importXMLResponses($responses, $question, $instanceID, $tabID, $sectionID, $questionID, $questionGUID, $questionTypeID, $importInstanceResponses, $questionPrompts, $questionPromptsMap, $responseObjs, $fileAttachments, $options);
+            self::importXMLResponses($responses, $question, $instanceID, $pageID, $sectionID, $questionID, $questionGUID, $questionTypeID, $importInstanceResponses, $questionPrompts, $questionPromptsMap, $responseObjs, $fileAttachments, $options);
           }
           elseif ($question->nodeName === 'csi:questionGroup') {
-            $questionIDs = self::importXMLQuestion(true, null, $question, $questionnaireID, $instanceID, $tabID, $tabGUID, $sectionID, $sectionGUID, $questionGuidMap, $questionTypeIDCache, $rulesMap, $questionPromptsMap);
+            $questionIDs = self::importXMLQuestion(true, null, $question, $questionnaireID, $instanceID, $pageID, $pageGUID, $sectionID, $sectionGUID, $questionGuidMap, $questionTypeIDCache, $rulesMap, $questionPromptsMap);
             $parentQuestionID = $questionIDs[0];
             
             $questionReferences = $question->getElementsByTagName('groupQuestionReferences');
-            self::importXMLReferences('question', $questionReferences, $instanceID, $tabID, $sectionID, $parentQuestionID, $processedReferences);
+            self::importXMLReferences('question', $questionReferences, $instanceID, $pageID, $sectionID, $parentQuestionID, $processedReferences);
             
-            if ($options['tabResponses']['all'] || (isset($options['tabResponses'][$tabID]) && $options['tabResponses'][$tabID])) {
+            if ($options['pageResponses']['all'] || (isset($options['pageResponses'][$pageID]) && $options['pageResponses'][$pageID])) {
               $attachments = $question->getElementsByTagName('attachment');
               $fileAttachments[$parentQuestionID] = $attachments;
             }
             $childQuestions = $question->getElementsByTagName('question');
             for ($cq = 0; $cq < $childQuestions->length; $cq++) {
               $question = $childQuestions->item($cq);
-              $questionIDs = self::importXMLQuestion(false, $parentQuestionID, $question, $questionnaireID, $instanceID, $tabID, $tabGUID, $sectionID, $sectionGUID, $questionGuidMap, $questionTypeIDCache, $rulesMap, $questionPromptsMap);
+              $questionIDs = self::importXMLQuestion(false, $parentQuestionID, $question, $questionnaireID, $instanceID, $pageID, $pageGUID, $sectionID, $sectionGUID, $questionGuidMap, $questionTypeIDCache, $rulesMap, $questionPromptsMap);
               $questionID = $questionIDs[0];
               $questionGUID = $questionIDs[1];
               $questionTypeID = $questionIDs[2];
               $questionPrompts = $question->getElementsByTagName('questionPrompt');
 
               $questionReferences = $question->getElementsByTagName('questionReferences');
-              self::importXMLReferences('question', $questionReferences, $instanceID, $tabID, $sectionID, $questionID, $processedReferences);
+              self::importXMLReferences('question', $questionReferences, $instanceID, $pageID, $sectionID, $questionID, $processedReferences);
               
               $responses = $question->getElementsByTagName('responses');
-              self::importXMLResponses($responses, $question, $instanceID, $tabID, $sectionID, $questionID, $questionGUID, $questionTypeID, $importInstanceResponses, $questionPrompts, $questionPromptsMap, $responseObjs, $fileAttachments, $options);
+              self::importXMLResponses($responses, $question, $instanceID, $pageID, $sectionID, $questionID, $questionGUID, $questionTypeID, $importInstanceResponses, $questionPrompts, $questionPromptsMap, $responseObjs, $fileAttachments, $options);
             }
           }
         }
       }
     }
     
-    self::importXMLRules($questionnaireID, $instanceID, $rulesMap, $tabGuidMap, $sectionGuidMap, $questionGuidMap);
+    self::importXMLRules($questionnaireID, $instanceID, $rulesMap, $pageGuidMap, $sectionGuidMap, $questionGuidMap);
     self::$questionTable->processBulk();
     self::$sectionTable->processBulk();
-    self::$tabTable->processBulk();
+    self::$pageTable->processBulk();
     self::$questionPromptTable->processBulk();
     self::$questionTypeTable->processBulk();
     self::$ruleTable->processBulk();
@@ -849,7 +849,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     self::$referenceDetailTable->processBulk();
     self::$questionReferenceTable->processBulk();
     self::$sectionReferenceTable->processBulk();
-    self::$tabReferenceTable->processBulk();
+    self::$pageReferenceTable->processBulk();
    
     foreach ($responseObjs as $response) {
       $response->save();
@@ -862,7 +862,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     }
     
     $instance = new InstanceModel(array('instanceID' => $instanceID,
-                                        'depth' => 'tab'));
+                                        'depth' => 'page'));
     $instance->save();
     
     self::dbCommit($transactionNumber);
@@ -876,7 +876,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    *
    * @param  See importXML.
    */
-  private static function importXMLResponses($responses, $question, $instanceID, $tabID, $sectionID, $questionID, $questionGUID, $questionTypeID, &$importInstanceResponses, $questionPrompts, &$questionPromptsMap, &$responseObjs, &$fileAttachments, $options) {
+  private static function importXMLResponses($responses, $question, $instanceID, $pageID, $sectionID, $questionID, $questionGUID, $questionTypeID, &$importInstanceResponses, $questionPrompts, &$questionPromptsMap, &$responseObjs, &$fileAttachments, $options) {
     $attachments = $question->getElementsByTagName('attachment');
     if (isset($importInstanceResponses[$questionGUID])) {
       $importResponses = $importInstanceResponses[$questionGUID];
@@ -892,7 +892,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
         }    
         $newResponse = new ResponseModel(array('questionID' => $questionID,
                                                'instanceID' => $instanceID,
-                                               'tabID' => $tabID,
+                                               'pageID' => $pageID,
                                                'sectionID' => $sectionID,
                                                'responseText' => join(",", $rt),
                                                'additionalInfo' => $additionalInfo,
@@ -907,7 +907,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
         $approverComments = $importResponse['approverComments'];
         $newResponse = new ResponseModel(array('questionID' => $questionID,
                                                'instanceID' => $instanceID,
-                                               'tabID' => $tabID,
+                                               'pageID' => $pageID,
                                                'sectionID' => $sectionID,
                                                'responseText' => $responseText,
                                                'additionalInfo' => $additionalInfo,
@@ -916,7 +916,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
         $responseObjs[] = $newResponse;
       }
     }
-    elseif (($responses->length || $attachments->length) && ($options['tabResponses']['all'] || isset($options['tabResponses'][$tabID]))) {
+    elseif (($responses->length || $attachments->length) && ($options['pageResponses']['all'] || isset($options['pageResponses'][$pageID]))) {
       if ($responses->length) {
         $resps = $responses->item(0)->getElementsByTagName('response'); // individual response elements
         if ($resps->length) {
@@ -935,7 +935,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
             }
             $newResponse = new ResponseModel(array('questionID' => $questionID,
                                                    'instanceID' => $instanceID,
-                                                   'tabID' => $tabID,
+                                                   'pageID' => $pageID,
                                                    'sectionID' => $sectionID,
                                                    'responseText' => join(",", $rt),
                                                    'additionalInfo' => $additionalInfo,
@@ -950,7 +950,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
               $responseText = $response->getElementsByTagName('responseText')->item(0)->nodeValue;
               $newResponse = new ResponseModel(array('questionID' => $questionID,
                                                      'instanceID' => $instanceID,
-                                                     'tabID' => $tabID,
+                                                     'pageID' => $pageID,
                                                      'sectionID' => $sectionID,
                                                      'responseText' => $responseText,
                                                      'additionalInfo' => $additionalInfo,
@@ -973,7 +973,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    *
    * @param  See importXML.
    */
-  private static function importXMLQuestion($parent, $parentID, $question, $questionnaireID, $instanceID, $tabID, $tabGUID, $sectionID, $sectionGUID, &$questionGuidMap, &$questionTypeIDCache, &$rulesMap, &$questionPromptsMap) {   
+  private static function importXMLQuestion($parent, $parentID, $question, $questionnaireID, $instanceID, $pageID, $pageGUID, $sectionID, $sectionGUID, &$questionGuidMap, &$questionTypeIDCache, &$rulesMap, &$questionPromptsMap) {   
     $qSeqNumber = $question->getElementsByTagName('seqNumber')->item(0)->nodeValue;
     $qText = isset($question->getElementsByTagName('qText')->item(0)->nodeValue) ? $question->getElementsByTagName('qText')->item(0)->nodeValue : null;
     if ($parent) {
@@ -987,11 +987,11 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     $cloneable = isset($question->getElementsByTagName('cloneable')->item(0)->nodeValue) ? $question->getElementsByTagName('cloneable')->item(0)->nodeValue : 0;
     $questionGUID = $question->getElementsByTagName('questionGUID')->item(0)->nodeValue;
 
-    $questionTypeID = self::importXMLQuestionType($question, $questionTypeIDCache, $rulesMap, $questionPromptsMap, $questionGUID, $sectionGUID, $tabGUID, $instanceID);
+    $questionTypeID = self::importXMLQuestionType($question, $questionTypeIDCache, $rulesMap, $questionPromptsMap, $questionGUID, $sectionGUID, $pageGUID, $instanceID);
     
     $questionID = self::$questionTable->insertBulk(array('questionnaireID' => $questionnaireID,
                                                          'instanceID' => $instanceID,
-                                                         'tabID' => $tabID,
+                                                         'pageID' => $pageID,
                                                          'parentID' => $parentID,
                                                          'sectionID' => $sectionID,
                                                          'questionGUID' => $questionGUID,
@@ -1013,7 +1013,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    *
    * @param  See importXML.
    */
-  private static function importXMLSection($section, $instanceID, $tabID, &$sectionGuidMap) {
+  private static function importXMLSection($section, $instanceID, $pageID, &$sectionGuidMap) {
     $seqNumber = $section->getElementsByTagName('seqNumber')->item(0)->nodeValue;
     $sectionHeader = $section->getElementsByTagName('sectionHeader')->item(0)->nodeValue;
     $description = isset($section->getElementsByTagName('description')->item(0)->nodeValue) ? $section->getElementsByTagName('description')->item(0)->nodeValue : '';
@@ -1021,7 +1021,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     $defaultSectionHidden = isset($section->getElementsByTagName('defaultSectionHidden')->item(0)->nodeValue) ? $section->getElementsByTagName('defaultSectionHidden')->item(0)->nodeValue : 0;
     $sectionGUID = $section->getElementsByTagName('sectionGUID')->item(0)->nodeValue;
     $sectionID = self::$sectionTable->insertBulk(array('instanceID' => $instanceID,
-                                                       'tabID' => $tabID,
+                                                       'pageID' => $pageID,
                                                        'seqNumber' => $seqNumber,
                                                        'sectionGUID' => $sectionGUID,
                                                        'sectionHeader' => $sectionHeader,
@@ -1033,32 +1033,32 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
   }
   
   /**
-   * Helper function for importXML.  Logic specifically for tabs.
+   * Helper function for importXML.  Logic specifically for pages.
    *
    * @param  See importXML.
    */
-  private static function importXMLTab($tab, $questionnaireID, $instanceID, &$tabGuidMap) {
-    $seqNumber = $tab->getElementsByTagName('seqNumber')->item(0)->nodeValue;
-    $tabHeader = $tab->getElementsByTagName('tabHeader')->item(0)->nodeValue;
-    $description = isset($tab->getElementsByTagName('description')->item(0)->nodeValue) ? $tab->getElementsByTagName('description')->item(0)->nodeValue : '';
-    $headerText = $tab->getElementsByTagName('headerText')->item(0)->nodeValue;
-    $footerText = $tab->getElementsByTagName('footerText')->item(0)->nodeValue;
-    $cloneable = isset($tab->getElementsByTagName('cloneable')->item(0)->nodeValue) ? $tab->getElementsByTagName('cloneable')->item(0)->nodeValue : 0;
-    $defaultTabHidden = isset($tab->getElementsByTagName('defaultTabHidden')->item(0)->nodeValue) ? $tab->getElementsByTagName('defaultTabHidden')->item(0)->nodeValue : 0;
-    $tabGUID = $tab->getElementsByTagName('tabGUID')->item(0)->nodeValue;
-    $tabID = self::$tabTable->insertBulk(array('questionnaireID' => $questionnaireID,
+  private static function importXMLPage($page, $questionnaireID, $instanceID, &$pageGuidMap) {
+    $seqNumber = $page->getElementsByTagName('seqNumber')->item(0)->nodeValue;
+    $pageHeader = $page->getElementsByTagName('pageHeader')->item(0)->nodeValue;
+    $description = isset($page->getElementsByTagName('description')->item(0)->nodeValue) ? $page->getElementsByTagName('description')->item(0)->nodeValue : '';
+    $headerText = $page->getElementsByTagName('headerText')->item(0)->nodeValue;
+    $footerText = $page->getElementsByTagName('footerText')->item(0)->nodeValue;
+    $cloneable = isset($page->getElementsByTagName('cloneable')->item(0)->nodeValue) ? $page->getElementsByTagName('cloneable')->item(0)->nodeValue : 0;
+    $defaultPageHidden = isset($page->getElementsByTagName('defaultPageHidden')->item(0)->nodeValue) ? $page->getElementsByTagName('defaultPageHidden')->item(0)->nodeValue : 0;
+    $pageGUID = $page->getElementsByTagName('pageGUID')->item(0)->nodeValue;
+    $pageID = self::$pageTable->insertBulk(array('questionnaireID' => $questionnaireID,
                                                'instanceID' => $instanceID,
                                                'seqNumber' => $seqNumber,
-                                               'tabGUID' => $tabGUID,
-                                               'tabHeader' => $tabHeader,
+                                               'pageGUID' => $pageGUID,
+                                               'pageHeader' => $pageHeader,
                                                'description' => $description,
                                                'headerText' => $headerText,
                                                'footerText' => $footerText,
                                                'cloneable' => $cloneable,
-                                               'defaultTabHidden' => $defaultTabHidden,
+                                               'defaultPageHidden' => $defaultPageHidden,
                                                'numQuestions' => 0));
-    $tabGuidMap[$tabGUID] = $tabID;
-    return array($tabID, $tabGUID);
+    $pageGuidMap[$pageGUID] = $pageID;
+    return array($pageID, $pageGUID);
   }
   
   /**
@@ -1066,7 +1066,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    *
    * @param  See importXML.
    */      
-  private static function importXMLQuestionType($question, &$questionTypeIDCache, &$rulesMap, &$questionPromptsMap, $questionGUID, $sectionGUID, $tabGUID, $instanceID) {
+  private static function importXMLQuestionType($question, &$questionTypeIDCache, &$rulesMap, &$questionPromptsMap, $questionGUID, $sectionGUID, $pageGUID, $instanceID) {
     // Question groups do not have a question type specified in the xml
     if ($question->nodeName === 'csi:questionGroup') {
       $questionType = '_questionGroup';
@@ -1083,7 +1083,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
         $requireAddlInfo = 0;
         $requireAddlInfo = isset($questionPrompt->getElementsByTagName('requireAdditionalInfo')->item(0)->nodeValue) ? $questionPrompt->getElementsByTagName('requireAdditionalInfo')->item(0)->nodeValue : 0;
         $questionTypeIDCacheKey .= "|$promptText|$requireAddlInfo";
-        foreach (array('enableTab', 'enableSection', 'enableQuestion', 'disableTab', 'disableSection', 'disableQuestion') as $name) {
+        foreach (array('enablePage', 'enableSection', 'enableQuestion', 'disablePage', 'disableSection', 'disableQuestion') as $name) {
           $rules = $questionPrompt->getElementsByTagName($name);
           for ($r = 0; $r < $rules->length; $r++) {
             $rule = $rules->item($r);
@@ -1099,9 +1099,9 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
                   throw new Exception('An enableSection rule cannot target the section to which it belongs');
                 }
                 break;
-              case 'enableTab':
-                if($targetID == $tabGUID) {
-                  throw new Exception('An enableTab rule cannot target the tab to which it belongs');
+              case 'enablePage':
+                if($targetID == $pageGUID) {
+                  throw new Exception('An enablePage rule cannot target the page to which it belongs');
                 }
                 break;
               case 'disableQuestion':
@@ -1114,9 +1114,9 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
                   throw new Exception('A disableSection rule cannot target the section to which it belongs');
                 }
                 break;
-              case 'disableTab':
-                if($targetID == $tabGUID) {
-                  throw new Exception('A disableTab rule cannot target the tab to which it belongs');
+              case 'disablePage':
+                if($targetID == $pageGUID) {
+                  throw new Exception('A disablePage rule cannot target the page to which it belongs');
                 }
                 break;
             }
@@ -1150,7 +1150,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
                                                                            'value' => $promptText,
                                                                            'requireAddlInfo' => $requireAddlInfo));
           $questionPromptsMap[$questionTypeID][$promptText] = $questionPromptID;
-          foreach (array('enableTab', 'enableSection', 'enableQuestion', 'disableTab', 'disableSection', 'disableQuestion') as $name) {
+          foreach (array('enablePage', 'enableSection', 'enableQuestion', 'disablePage', 'disableSection', 'disableQuestion') as $name) {
             $rules = $questionPrompt->getElementsByTagName($name);
             for ($r = 0; $r < $rules->length; $r++) {
               $rule = $rules->item($r);
@@ -1196,7 +1196,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    *
    * @param  See importXML.
    */
-  private static function importXMLRules ($questionnaireID, $instanceID, &$rulesMap, &$tabGuidMap, &$sectionGuidMap, &$questionGuidMap) {
+  private static function importXMLRules ($questionnaireID, $instanceID, &$rulesMap, &$pageGuidMap, &$sectionGuidMap, &$questionGuidMap) {
     foreach ($rulesMap as $questionPromptID => $questionPromptIDArray) {
       foreach ($questionPromptIDArray as $name => $nameArray) {
         foreach ($nameArray as $targetGUID) {
@@ -1226,15 +1226,15 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
                                                          'type' => $name,
                                                          'enabled' => 'N'));
           }
-          elseif ($name === 'enableTab') {
-            $tabID = $tabGuidMap[$targetGUID];
-            if (!isset($tabID)) {
-              throw new Exception("tabGUID referenced in XML Questionnaire Definition does not exist: $targetID");
+          elseif ($name === 'enablePage') {
+            $pageID = $pageGuidMap[$targetGUID];
+            if (!isset($pageID)) {
+              throw new Exception("pageGUID referenced in XML Questionnaire Definition does not exist: $targetID");
             }
             $ruleID = self::$ruleTable->insertBulk(array('questionnaireID' => $questionnaireID,
                                                          'instanceID' => $instanceID,
                                                          'sourceID' => $questionPromptID,
-                                                         'targetID' => $tabID,
+                                                         'targetID' => $pageID,
                                                          'targetGUID' => $targetGUID,
                                                          'type' => $name,
                                                          'enabled' => 'N'));
@@ -1265,15 +1265,15 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
                                                          'type' => $name,
                                                          'enabled' => 'N'));
           }
-          elseif ($name === 'disableTab') {
-            $tabID = $tabGuidMap[$targetGUID];
-            if (!isset($tabID)) {
-              throw new Exception("tabGUID referenced in XML Questionnaire Definition does not exist: $targetID");
+          elseif ($name === 'disablePage') {
+            $pageID = $pageGuidMap[$targetGUID];
+            if (!isset($pageID)) {
+              throw new Exception("pageGUID referenced in XML Questionnaire Definition does not exist: $targetID");
             }
             $ruleID = self::$ruleTable->insertBulk(array('questionnaireID' => $questionnaireID,
                                                          'instanceID' => $instanceID,
                                                          'sourceID' => $questionPromptID,
-                                                         'targetID' => $tabID,
+                                                         'targetID' => $pageID,
                                                          'targetGUID' => $targetGUID,
                                                          'type' => $name,
                                                          'enabled' => 'N'));
@@ -1291,7 +1291,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    *
    * @param  See importXML.
    */
-  private static function importXMLReferences($type, $references, $instanceID, $tabID, $sectionID, $questionID, &$processedReferences) {
+  private static function importXMLReferences($type, $references, $instanceID, $pageID, $sectionID, $questionID, &$processedReferences) {
     if ($references->length) {
       $references = $references->item(0)->getElementsByTagName('reference');
       for ($r = 0; $r < $references->length; $r++) {
@@ -1314,13 +1314,13 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
                                                                            'referenceURL' => $referenceURL));
         switch($type) {
           case 'question':
-            self::importXMLQuestionReferences($instanceID, $questionID, $referenceDetailID, $tabID, $sectionID);
+            self::importXMLQuestionReferences($instanceID, $questionID, $referenceDetailID, $pageID, $sectionID);
             break;
           case 'section':
-            self::importXMLSectionReferences($instanceID, $sectionID, $referenceDetailID, $tabID);
+            self::importXMLSectionReferences($instanceID, $sectionID, $referenceDetailID, $pageID);
             break;
-          case 'tab':
-            self::importXMLTabReferences($instanceID, $tabID, $referenceDetailID);
+          case 'page':
+            self::importXMLPageReferences($instanceID, $pageID, $referenceDetailID);
             break;
         }
       }
@@ -1328,16 +1328,16 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
   }
   
   /**
-   * Helper function for importXML.  Logic specifically for tab references.
+   * Helper function for importXML.  Logic specifically for page references.
    *
    * @param  See importXML.
    */
-  private static function importXMLTabReferences($instanceID, $tabID, $referenceDetailID) {
-    $rows = self::$tabReferenceTable->fetchRows('tabID', $tabID, null, $instanceID);
+  private static function importXMLPageReferences($instanceID, $pageID, $referenceDetailID) {
+    $rows = self::$pageReferenceTable->fetchRows('pageID', $pageID, null, $instanceID);
     foreach ($rows as $row) {
       if ($referenceDetailID == $row->referenceDetailID) return;
     }
-    self::$tabReferenceTable->insertBulk(array('tabID' => $tabID,
+    self::$pageReferenceTable->insertBulk(array('pageID' => $pageID,
                                                'referenceDetailID' => $referenceDetailID,
                                                'instanceID' => $instanceID));
   }
@@ -1347,7 +1347,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    *
    * @param  See importXML.
    */
-  private static function importXMLSectionReferences($instanceID, $sectionID, $referenceDetailID, $tabID) {
+  private static function importXMLSectionReferences($instanceID, $sectionID, $referenceDetailID, $pageID) {
     $rows = self::$sectionReferenceTable->fetchRows('sectionID', $sectionID, null, $instanceID);
     foreach ($rows as $row) {
       if ($referenceDetailID == $row->referenceDetailID) return;
@@ -1355,7 +1355,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     self::$sectionReferenceTable->insertBulk(array('sectionID' => $sectionID,
                                                    'referenceDetailID' => $referenceDetailID,
                                                    'instanceID' => $instanceID,
-                                                   'tabID' => $tabID));
+                                                   'pageID' => $pageID));
   }
   
   /**
@@ -1363,7 +1363,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    *
    * @param  See importXML.
    */
-  private static function importXMLQuestionReferences($instanceID, $questionID, $referenceDetailID, $tabID, $sectionID) {
+  private static function importXMLQuestionReferences($instanceID, $questionID, $referenceDetailID, $pageID, $sectionID) {
     $rows = self::$questionReferenceTable->fetchRows('questionID', $questionID, null, $instanceID);
     foreach ($rows as $row) {
       if ($referenceDetailID == $row->referenceDetailID) return;
@@ -1371,32 +1371,32 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     self::$questionReferenceTable->insertBulk(array('questionID' => $questionID,
                                                     'referenceDetailID' => $referenceDetailID,
                                                     'instanceID' => $instanceID,
-                                                    'tabID' => $tabID,
+                                                    'pageID' => $pageID,
                                                     'sectionID' => $sectionID));
   }
 
   /**
-   * Load tabs associated with this InstanceModel
+   * Load pages associated with this InstanceModel
    */
-  private function _loadTabs() {
+  private function _loadPages() {
     $auth = Zend_Auth::getInstance();
     if($auth->hasIdentity()) $user = DbUserModel::findByUsername($auth->getIdentity());
-    else throw new Exception("Hey, no loading tabs without being logged in");
+    else throw new Exception("Hey, no loading pages without being logged in");
     
-    $where = self::$tabTable->getAdapter()->quoteInto('questionnaireID = ?', $this->questionnaireID) .
-             self::$tabTable->getAdapter()->quoteInto(' AND instanceID = ?', $this->instanceID);
-    $tabRowset = self::$tabTable->fetchAll($where, 'seqNumber ASC');
+    $where = self::$pageTable->getAdapter()->quoteInto('questionnaireID = ?', $this->questionnaireID) .
+             self::$pageTable->getAdapter()->quoteInto(' AND instanceID = ?', $this->instanceID);
+    $pageRowset = self::$pageTable->fetchAll($where, 'seqNumber ASC');
 
-    $this->tabs = array();
-    foreach ($tabRowset as $tRow) {
-      $tab = new TabModel(array(
-        'tabID' => $tRow->tabID,
+    $this->pages = array();
+    foreach ($pageRowset as $tRow) {
+      $page = new PageModel(array(
+        'pageID' => $tRow->pageID,
         'depth' => $this->depth
       ));
-      if($user->hasAnyAccess($tab)) $this->tabs[] = $tab;
+      if($user->hasAnyAccess($page)) $this->pages[] = $page;
     }
     
-    $this->tabsIndex = 0;
+    $this->pagesIndex = 0;
   }
   
   /**

@@ -38,7 +38,7 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
   static $foreignKeysTableField = array();
   static $forceForeignKeys = array('sourceID' => true,
                                    'targetID' => true,
-                                   'tabGUID' => true,
+                                   'pageGUID' => true,
                                    'sectionGUID' => true,
                                    'questionGUID' => true,
                                    'objectID' => true,
@@ -190,14 +190,14 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
     }
   }
   
-  public static function preloadAll($instanceID, $tabID) {
+  public static function preloadAll($instanceID, $pageID) {
     if (self::$preload) return;
     $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
     $tableNames = $adapter->listTables();
     foreach ($tableNames as $tableName) {
       if ($tableName === 'question') {
         $table = QFrame_Db_Table::getTable($tableName);
-        $table->fetchRows('tabID', $tabID);
+        $table->fetchRows('pageID', $pageID);
       }
       else {
         $table = QFrame_Db_Table::getTable($tableName);

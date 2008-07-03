@@ -1,39 +1,39 @@
-table: tab
+table: page
 
 data:
   sample1:
     questionnaireID: 2
     instanceID: 3
-    tabID: 1
+    pageID: 1
     seqNumber: 2
-    tabHeader: Questionnaire 2, Instance 3, Tab 2
+    pageHeader: Questionnaire 2, Instance 3, Page 2
     description: This is a sample header
   sample2:
     questionnaireID: 2
     instanceID: 3
-    tabID: 2
+    pageID: 2
     seqNumber: 4
-    tabHeader: Questionnaire 2, Instance 3, Tab 4
+    pageHeader: Questionnaire 2, Instance 3, Page 4
     description: This is a sample header
   sample3:
     questionnaireID: 2
     instanceID: 3
-    tabID: 3
+    pageID: 3
     seqNumber: 1
-    tabHeader: Questionnaire 2, Instance 3, Tab 1
+    pageHeader: Questionnaire 2, Instance 3, Page 1
     description: This is a sample header
   sample4:
     questionnaireID: 2
     instanceID: 2
-    tabID: 4
+    pageID: 4
     seqNumber: 1
-    tabHeader: Questionnaire 2, Instance 2, Tab 1
+    pageHeader: Questionnaire 2, Instance 2, Page 1
     description: This is a sample header
   sample5:
     questionnaireID: 2
     instanceID: 3
-    tabID: 5
+    pageID: 5
     seqNumber: 3
-    tabHeader: Questionnaire 2, Instance 3, Tab 3
+    pageHeader: Questionnaire 2, Instance 3, Page 3
     description: This is a sample header
   

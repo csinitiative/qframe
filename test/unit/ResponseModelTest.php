@@ -39,7 +39,7 @@ class Test_Unit_ResponseModelTest extends QFrame_Test_Unit {
   // Initialization
   public function start() {
     $this->fixture(array(
-      'TabModel',
+      'PageModel',
       'SectionModel',
       'QuestionModel',
       'QuestionTypeModel',
@@ -54,7 +54,7 @@ class Test_Unit_ResponseModelTest extends QFrame_Test_Unit {
     $response = new ResponseModel(array(
       'questionID'    => 1,
       'instanceID'    => 1,
-      'tabID'         => 1,
+      'pageID'         => 1,
       'sectionID'     => 1,
       'responseText'  => 'Sample Response'
     ));

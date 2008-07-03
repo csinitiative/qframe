@@ -44,12 +44,12 @@ class QuestionnaireDataController extends QFrame_Controller_Admin {
     $session->dataQuestionnaireID = $questionnaireID;
     $this->view->dataQuestionnaireID = $session->dataQuestionnaireID;
 
-    $questionnaires = QuestionnaireModel::getAllQuestionnaires('tab');
+    $questionnaires = QuestionnaireModel::getAllQuestionnaires('page');
     $allowedInstances = array();
     foreach($questionnaires as $questionnaire) {
       while($instance = $questionnaire->nextInstance()) {
-        while($tab = $instance->nextTab()) {
-          if($this->_user->hasAnyAccess($tab)) {
+        while($page = $instance->nextPage()) {
+          if($this->_user->hasAnyAccess($page)) {
             $allowedInstances[] = $instance;
             break;
           }

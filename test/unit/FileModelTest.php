@@ -40,7 +40,7 @@ class Test_Unit_FileModelTest extends QFrame_Test_Unit {
    * set up for each test
    */
   public function start() {
-    $this->fixture(array('TabModel', 'SectionModel', 'QuestionModel', 'QuestionTypeModel', 'QuestionPromptModel', 'ResponseModel'));
+    $this->fixture(array('PageModel', 'SectionModel', 'QuestionModel', 'QuestionTypeModel', 'QuestionPromptModel', 'ResponseModel'));
   }
   
   public function end() {

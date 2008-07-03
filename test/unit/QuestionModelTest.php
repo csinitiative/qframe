@@ -38,7 +38,7 @@ class Test_Unit_QuestionModelTest extends QFrame_Test_Unit {
   
   public function start() {
     $this->fixture(array(
-      'TabModel',
+      'PageModel',
       'SectionModel',
       'QuestionTypeModel',
       'QuestionPromptModel',
@@ -76,7 +76,7 @@ class Test_Unit_QuestionModelTest extends QFrame_Test_Unit {
   public function testInvalidQuestionTypeProducesError() {
     $conn = Zend_Db_Table_Abstract::getDefaultAdapter()->getConnection();
     $conn->exec(
-      "INSERT question(tabID,sectionID,questionID,questionGUID,seqNumber,questionTypeID)" .
+      "INSERT question(pageID,sectionID,questionID,questionGUID,seqNumber,questionTypeID)" .
       "VALUES(1,2,15000,15000,15000,15000)"
     );
     try {

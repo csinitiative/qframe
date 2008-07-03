@@ -16,24 +16,12 @@
   
   @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
-  
-- $localStylesheets = array('tabs', 'approve')
-- $localJavascript = array('tabs')
 
-!= $this->topLinks($this->tab, $this->loggedInUser)
-
-%h1
-  = $this->tab->tabHeader
-  - if(count($this->tab->references) > 0)
-    %a#toggleTabReferences{ 'href' => '#' } show references
-    #tabReferences{ 'style' => 'display: none;' }
-      != $this->referenceString($this->tab)
-
-- if(!$this->isBlank($this->tab->headerText))
-  != $this->markdown($this->h($this->tab->headerText))
-      
-- while(($section = $this->tab->nextSection()))
-  != $this->renderPartial('section', $section)
-  
-- if(!$this->isBlank($this->tab->footerText))
-  != $this->markdown($this->h($this->tab->footerText))
+- if($this->page['current'])
+  %li.current= $this->page['label']
+- elseif ($this->page['external'])
+  %li
+    != $this->linkTo($this->page['url'], $this->h($this->page['label']), array('target' => '_new'))
+- else
+  %li
+    != $this->linkTo($this->page['url'], $this->h($this->page['label']))

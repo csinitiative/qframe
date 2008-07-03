@@ -190,8 +190,8 @@ class ZipArchiveModel extends ZipArchive {
   public function addAttachments() {
     $instance = new InstanceModel(array('instanceID' => $this->instance->instanceID,
                                         'depth' => 'question'));
-    while($tab = $instance->nextTab()) {
-      while ($section = $tab->nextSection()) {
+    while($page = $instance->nextPage()) {
+      while ($section = $page->nextSection()) {
         while ($question = $section->nextQuestion()) {
           $fileObj = new FileModel($question);
           $ids = $fileObj->fetchAll();

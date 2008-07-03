@@ -37,8 +37,8 @@
         %a{ 'target' => '_new', 'href' => 'http://www.csinitiative.com' }
           != $this->imageTag('logo.gif', array('alt' => '[CSI Logo]', 'class' => 'inline'))
         %ol
-          - if(isset($this->headerTabs))
-            != $this->renderPartial('tab', $this->headerTabs, true, true)
+          - if(isset($this->headerPages))
+            != $this->renderPartial('page', $this->headerPages, true, true)
         - if(isset($this->loggedInUser))
           #loginMessage
             You are currently logged in as
@@ -70,7 +70,7 @@
               %br/
               %br/
               != $this->linkTo($this->changeInstancePath, '[change]')
-        %h1= (isset($this->menuTitle)) ? $this->menuTitle : 'tabs'
+        %h1= (isset($this->menuTitle)) ? $this->menuTitle : 'pages'
         %ol
           - if(isset($this->menuItems))
             != $this->renderPartial('menu', $this->menuItems, true, true)

@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-qframe" questionnaireName="Test2 Questionnaire" questionnaireVersion="3.00" revision="1" targetQFrameVersion="1.0">
-  <csi:tabs>
-    <csi:tab>
-      <csi:tabHeader>Test 2.1 tabHeader</csi:tabHeader>
-      <csi:tabGUID>1</csi:tabGUID>
+  <csi:pages>
+    <csi:page>
+      <csi:pageHeader>Test 2.1 pageHeader</csi:pageHeader>
+      <csi:pageGUID>1</csi:pageGUID>
       <csi:seqNumber>1</csi:seqNumber>
       <csi:headerText>
         Test 2.1 headerText
       </csi:headerText>
       <csi:footerText></csi:footerText>
-    </csi:tab>
-    <csi:tab>
-      <csi:tabHeader>Test 2.2 tabHeader</csi:tabHeader>
-      <csi:tabGUID>2</csi:tabGUID>
+    </csi:page>
+    <csi:page>
+      <csi:pageHeader>Test 2.2 pageHeader</csi:pageHeader>
+      <csi:pageGUID>2</csi:pageGUID>
       <csi:seqNumber>3</csi:seqNumber>
       <csi:headerText>
         Test 2.2 headerText
       </csi:headerText>
       <csi:footerText></csi:footerText>
-    </csi:tab>
-    <csi:tab>
-      <csi:tabHeader>Test 2.3 tabHeader</csi:tabHeader>
-      <csi:tabGUID>3</csi:tabGUID>
+    </csi:page>
+    <csi:page>
+      <csi:pageHeader>Test 2.3 pageHeader</csi:pageHeader>
+      <csi:pageGUID>3</csi:pageGUID>
       <csi:seqNumber>5</csi:seqNumber>
       <csi:headerText></csi:headerText>
       <csi:footerText></csi:footerText>
@@ -340,6 +340,6 @@
           </csi:questions>
         </csi:section>
       </csi:sections>
-    </csi:tab>
-  </csi:tabs>
+    </csi:page>
+  </csi:pages>
 </csi:questionnaire>

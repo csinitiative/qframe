@@ -40,7 +40,7 @@ class Test_Unit_SectionModelTest extends QFrame_Test_Unit {
    * set up for each test
    */
   public function start() {
-    $this->fixture(array('TabModel', 'QuestionModel', 'QuestionTypeModel', 'ResponseModel'));
+    $this->fixture(array('PageModel', 'QuestionModel', 'QuestionTypeModel', 'ResponseModel'));
   }
     
   /*

@@ -236,7 +236,7 @@ class QuestionModel implements QFrame_Storer {
     return new ResponseModel(array (
       'instanceID' => $this->questionRow->instanceID,
       'questionID' => $this->questionRow->questionID,
-      'tabID' => $this->questionRow->tabID,
+      'pageID' => $this->questionRow->pageID,
       'sectionID' => $this->questionRow->sectionID,
       'responseText' => $args['responseText'],
       'additionalInfo' => $args['additionalInfo'],

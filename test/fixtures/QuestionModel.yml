@@ -2,7 +2,7 @@ table: question
 
 data:
   sample1:
-    tabID: 1
+    pageID: 1
     sectionID: 2
     questionID: 1
     questionGUID: 1
@@ -11,7 +11,7 @@ data:
     questionTypeID: 1
     qText: Sample Question 1.1
   sample2:
-    tabID: 1
+    pageID: 1
     sectionID: 2
     questionID: 2
     questionGUID: 2
@@ -20,7 +20,7 @@ data:
     questionTypeID: 2
     qText: Sample Question 1.2
   sample3:
-    tabID: 1
+    pageID: 1
     sectionID: 2
     questionID: 3
     questionGUID: 3
@@ -29,7 +29,7 @@ data:
     questionTypeID: 1
     qText: Sample Question 1.4
   sample4:
-    tabID: 1
+    pageID: 1
     sectionID: 2
     questionID: 4
     questionGUID: 4
@@ -38,7 +38,7 @@ data:
     questionTypeID: 1
     qText: Sample Question 1.3
   sample5:
-    tabID: 1
+    pageID: 1
     sectionID: 2
     questionID: 5
     questionGUID: 5
@@ -48,7 +48,7 @@ data:
     qText: Sample Question 1.4
     parentID: 4
   sample6:
-    tabID: 3
+    pageID: 3
     sectionID: 1
     questionID: 6
     questionGUID: 6

@@ -89,7 +89,7 @@ class QFrame_Controller_Action extends Zend_Controller_Action {
       );
     }
     
-    $this->view->headerTabs = $this->buildTabs();
+    $this->view->headerPages = $this->buildPages();
   }
   
   /**
@@ -156,7 +156,7 @@ class QFrame_Controller_Action extends Zend_Controller_Action {
     else {
       // set up current questionnaire/instance stuff for the view/controller
       $this->_instance = new InstanceModel(array('instanceID' => $session->instanceID,
-                                                 'depth' => 'tab'));
+                                                 'depth' => 'page'));
       $this->view->currentInstance = $this->_instance;
       $this->view->instanceInfo = array(
         'questionnaire'        => $this->_instance->questionnaireName,
@@ -168,20 +168,20 @@ class QFrame_Controller_Action extends Zend_Controller_Action {
   }
     
   /**
-   * Build the normal menu (list of tabs) and return an array of menu elements
+   * Build the normal menu (list of pages) and return an array of menu elements
    *
    * @return string
    */
   protected function buildMenu() {
     $menus = array();
     if($this->_instance !== null) {
-      while($tab = $this->_instance->nextTab()) {
+      while($page = $this->_instance->nextPage()) {
         $menus[] = array(
-          'label'   => $tab->tabHeader,
-          'url'     => Zend_Controller_Front::getInstance()->getBaseUrl() . "/tab/show/{$tab->tabID}",
-          'current' => (isset($this->view->currentTabID) && $this->view->currentTabID == $tab->tabID),
-          'locked'  => LockModel::isLocked($tab),
-          'tab'     => $tab
+          'label'   => $page->pageHeader,
+          'url'     => Zend_Controller_Front::getInstance()->getBaseUrl() . "/page/show/{$page->pageID}",
+          'current' => (isset($this->view->currentPageID) && $this->view->currentPageID == $page->pageID),
+          'locked'  => LockModel::isLocked($page),
+          'page'     => $page
         );
       }
     }  
@@ -193,9 +193,9 @@ class QFrame_Controller_Action extends Zend_Controller_Action {
    *
    * @return string
    */
-  protected function buildTabs() {
+  protected function buildPages() {
     $controller = Zend_Controller_Front::getInstance()->getRequest()->getControllerName();
-    $tabs = array(
+    $pages = array(
       array(
         'label'   => 'Questions',
         'url'     => $this->view->url(array('controller' => 'index'), null, true),
@@ -215,18 +215,18 @@ class QFrame_Controller_Action extends Zend_Controller_Action {
         'external' => true,
       ),
     );
-    return $tabs;
+    return $pages;
   }
   
   /**
    * Render the lock icon next to a menu item where appropriate
    *
-   * @param  TabModel the tab for which we are rendering a lock icon
+   * @param  PageModel the page for which we are rendering a lock icon
    * @return string
    */
-  protected function renderMenuLockIcon(TabModel $tab) {
+  protected function renderMenuLockIcon(PageModel $page) {
     $builder = new Tag_Builder;
-    if(LockModel::isLocked($tab)) {
+    if(LockModel::isLocked($page)) {
       return '&nbsp;' . $builder->image('lock.png', array('class' => 'inline'));
     }
     return '';

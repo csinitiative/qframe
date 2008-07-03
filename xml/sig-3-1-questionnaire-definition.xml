@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-qframe" questionnaireName="CSI SIG" questionnaireVersion="3.1" revision="1" targetQFrameVersion="1.0">
-  <csi:tabs>
-    <csi:tab>
-      <csi:tabHeader>Welcome</csi:tabHeader>
-      <csi:tabGUID>1</csi:tabGUID>
+  <csi:pages>
+    <csi:page>
+      <csi:pageHeader>Welcome</csi:pageHeader>
+      <csi:pageGUID>1</csi:pageGUID>
       <csi:seqNumber>1</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText>
@@ -66,9 +66,9 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
       </csi:headerText>
       <csi:footerText></csi:footerText>
       <csi:cloneable>0</csi:cloneable>
-      <csi:sections></csi:sections></csi:tab>    <csi:tab>
-      <csi:tabHeader>Business Information</csi:tabHeader>
-      <csi:tabGUID>3</csi:tabGUID>
+      <csi:sections></csi:sections></csi:page>    <csi:page>
+      <csi:pageHeader>Business Information</csi:pageHeader>
+      <csi:pageGUID>3</csi:pageGUID>
       <csi:seqNumber>5</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText></csi:headerText>
@@ -653,9 +653,9 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
                 <csi:questionType>T</csi:questionType>
               </csi:question>
             </csi:questionGroup>
-</csi:questions></csi:section></csi:sections></csi:tab>    <csi:tab>
-      <csi:tabHeader>Documentation</csi:tabHeader>
-      <csi:tabGUID>4</csi:tabGUID>
+</csi:questions></csi:section></csi:sections></csi:page>    <csi:page>
+      <csi:pageHeader>Documentation</csi:pageHeader>
+      <csi:pageGUID>4</csi:pageGUID>
       <csi:seqNumber>6</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText></csi:headerText>
@@ -828,9 +828,9 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
               <csi:cloneable>0</csi:cloneable>
               <csi:questionType>T</csi:questionType>
             </csi:question>
-</csi:questions></csi:section></csi:sections></csi:tab>    <csi:tab>
-      <csi:tabHeader>High Level Questions</csi:tabHeader>
-      <csi:tabGUID>5</csi:tabGUID>
+</csi:questions></csi:section></csi:sections></csi:page>    <csi:page>
+      <csi:pageHeader>High Level Questions</csi:pageHeader>
+      <csi:pageGUID>5</csi:pageGUID>
       <csi:seqNumber>7</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText></csi:headerText>
@@ -856,7 +856,7 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
               <csi:questionPrompt>
                 <csi:promptText>No</csi:promptText>
                 <csi:requireAdditionalInfo>0</csi:requireAdditionalInfo>
-                <csi:disableTab>6</csi:disableTab>
+                <csi:disablePage>6</csi:disablePage>
               </csi:questionPrompt>
               <csi:questionPrompt>
                 <csi:promptText>N/A</csi:promptText>
@@ -883,7 +883,7 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
               <csi:questionPrompt>
                 <csi:promptText>No</csi:promptText>
                 <csi:requireAdditionalInfo>0</csi:requireAdditionalInfo>
-                <csi:disableTab>7</csi:disableTab>
+                <csi:disablePage>7</csi:disablePage>
               </csi:questionPrompt>
               <csi:questionPrompt>
                 <csi:promptText>N/A</csi:promptText>
@@ -4353,7 +4353,7 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
               <csi:questionPrompt>
                 <csi:promptText>No</csi:promptText>
                 <csi:requireAdditionalInfo>0</csi:requireAdditionalInfo>
-                <csi:disableTab>16</csi:disableTab>
+                <csi:disablePage>16</csi:disablePage>
                 <csi:disableSection>69</csi:disableSection>
               </csi:questionPrompt>
               <csi:questionPrompt>
@@ -4501,9 +4501,9 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
                 <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
               </csi:questionPrompt>
             </csi:question>
-</csi:questions></csi:section></csi:sections></csi:tab>    <csi:tab>
-      <csi:tabHeader>A. Risk Management</csi:tabHeader>
-      <csi:tabGUID>6</csi:tabGUID>
+</csi:questions></csi:section></csi:sections></csi:page>    <csi:page>
+      <csi:pageHeader>A. Risk Management</csi:pageHeader>
+      <csi:pageGUID>6</csi:pageGUID>
       <csi:seqNumber>8</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText></csi:headerText>
@@ -4642,9 +4642,9 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
                 <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
               </csi:questionPrompt>
             </csi:question>
-</csi:questions></csi:section></csi:sections></csi:tab>    <csi:tab>
-      <csi:tabHeader>B. Security Policy</csi:tabHeader>
-      <csi:tabGUID>7</csi:tabGUID>
+</csi:questions></csi:section></csi:sections></csi:page>    <csi:page>
+      <csi:pageHeader>B. Security Policy</csi:pageHeader>
+      <csi:pageGUID>7</csi:pageGUID>
       <csi:seqNumber>9</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText></csi:headerText>
@@ -5648,9 +5648,9 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
                 <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
               </csi:questionPrompt>
             </csi:question>
-</csi:questions></csi:section></csi:sections></csi:tab>    <csi:tab>
-      <csi:tabHeader>C. Organizational Security</csi:tabHeader>
-      <csi:tabGUID>8</csi:tabGUID>
+</csi:questions></csi:section></csi:sections></csi:page>    <csi:page>
+      <csi:pageHeader>C. Organizational Security</csi:pageHeader>
+      <csi:pageGUID>8</csi:pageGUID>
       <csi:seqNumber>10</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText></csi:headerText>
@@ -6393,9 +6393,9 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
                 <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
               </csi:questionPrompt>
             </csi:question>
-</csi:questions></csi:section></csi:sections></csi:tab>    <csi:tab>
-      <csi:tabHeader>D. Asset Management</csi:tabHeader>
-      <csi:tabGUID>9</csi:tabGUID>
+</csi:questions></csi:section></csi:sections></csi:page>    <csi:page>
+      <csi:pageHeader>D. Asset Management</csi:pageHeader>
+      <csi:pageGUID>9</csi:pageGUID>
       <csi:seqNumber>11</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText></csi:headerText>
@@ -7058,9 +7058,9 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
               <csi:seqNumber>19</csi:seqNumber>
               <csi:questionType>V</csi:questionType>
             </csi:question>
-</csi:questions></csi:section></csi:sections></csi:tab>    <csi:tab>
-      <csi:tabHeader>E. Human Resource Security</csi:tabHeader>
-      <csi:tabGUID>10</csi:tabGUID>
+</csi:questions></csi:section></csi:sections></csi:page>    <csi:page>
+      <csi:pageHeader>E. Human Resource Security</csi:pageHeader>
+      <csi:pageGUID>10</csi:pageGUID>
       <csi:seqNumber>12</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText></csi:headerText>
@@ -9920,9 +9920,9 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
                 <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
               </csi:questionPrompt>
             </csi:question>
-</csi:questions></csi:section></csi:sections></csi:tab>    <csi:tab>
-      <csi:tabHeader>F. Physical and Environmental</csi:tabHeader>
-      <csi:tabGUID>11</csi:tabGUID>
+</csi:questions></csi:section></csi:sections></csi:page>    <csi:page>
+      <csi:pageHeader>F. Physical and Environmental</csi:pageHeader>
+      <csi:pageGUID>11</csi:pageGUID>
       <csi:seqNumber>13</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText></csi:headerText>
@@ -18959,9 +18959,9 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
                 </csi:questionPrompt>
               </csi:question>
             </csi:questionGroup>
-</csi:questions></csi:section></csi:sections></csi:tab>    <csi:tab>
-      <csi:tabHeader>G. Communications and Ops Mgmt</csi:tabHeader>
-      <csi:tabGUID>12</csi:tabGUID>
+</csi:questions></csi:section></csi:sections></csi:page>    <csi:page>
+      <csi:pageHeader>G. Communications and Ops Mgmt</csi:pageHeader>
+      <csi:pageGUID>12</csi:pageGUID>
       <csi:seqNumber>14</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText></csi:headerText>
@@ -38696,9 +38696,9 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
                 <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
               </csi:questionPrompt>
             </csi:question>
-</csi:questions></csi:section></csi:sections></csi:tab>    <csi:tab>
-      <csi:tabHeader>H. Access Control</csi:tabHeader>
-      <csi:tabGUID>13</csi:tabGUID>
+</csi:questions></csi:section></csi:sections></csi:page>    <csi:page>
+      <csi:pageHeader>H. Access Control</csi:pageHeader>
+      <csi:pageGUID>13</csi:pageGUID>
       <csi:seqNumber>15</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText></csi:headerText>
@@ -41400,9 +41400,9 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
                 </csi:questionPrompt>
               </csi:question>
             </csi:questionGroup>
-</csi:questions></csi:section></csi:sections></csi:tab>    <csi:tab>
-      <csi:tabHeader>I. Info Sys AD&amp;M</csi:tabHeader>
-      <csi:tabGUID>14</csi:tabGUID>
+</csi:questions></csi:section></csi:sections></csi:page>    <csi:page>
+      <csi:pageHeader>I. Info Sys AD&amp;M</csi:pageHeader>
+      <csi:pageGUID>14</csi:pageGUID>
       <csi:seqNumber>16</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText></csi:headerText>
@@ -44573,9 +44573,9 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
                 <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
               </csi:questionPrompt>
             </csi:question>
-</csi:questions></csi:section></csi:sections></csi:tab>    <csi:tab>
-      <csi:tabHeader>J. Info Security Incident Mgmt</csi:tabHeader>
-      <csi:tabGUID>15</csi:tabGUID>
+</csi:questions></csi:section></csi:sections></csi:page>    <csi:page>
+      <csi:pageHeader>J. Info Security Incident Mgmt</csi:pageHeader>
+      <csi:pageGUID>15</csi:pageGUID>
       <csi:seqNumber>17</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText></csi:headerText>
@@ -45275,9 +45275,9 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
               <csi:seqNumber>40</csi:seqNumber>
               <csi:questionType>V</csi:questionType>
             </csi:question>
-</csi:questions></csi:section></csi:sections></csi:tab>    <csi:tab>
-      <csi:tabHeader>K. Business Continuity</csi:tabHeader>
-      <csi:tabGUID>16</csi:tabGUID>
+</csi:questions></csi:section></csi:sections></csi:page>    <csi:page>
+      <csi:pageHeader>K. Business Continuity</csi:pageHeader>
+      <csi:pageGUID>16</csi:pageGUID>
       <csi:seqNumber>18</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText></csi:headerText>
@@ -46765,9 +46765,9 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
                 <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
               </csi:questionPrompt>
             </csi:question>
-</csi:questions></csi:section></csi:sections></csi:tab>    <csi:tab>
-      <csi:tabHeader>L. Compliance</csi:tabHeader>
-      <csi:tabGUID>17</csi:tabGUID>
+</csi:questions></csi:section></csi:sections></csi:page>    <csi:page>
+      <csi:pageHeader>L. Compliance</csi:pageHeader>
+      <csi:pageGUID>17</csi:pageGUID>
       <csi:seqNumber>19</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText></csi:headerText>
@@ -47382,9 +47382,9 @@ Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP
                 <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
               </csi:questionPrompt>
             </csi:question>
-</csi:questions></csi:section></csi:sections></csi:tab>    <csi:tab>
-      <csi:tabHeader>M. SIG Lite</csi:tabHeader>
-      <csi:tabGUID>19</csi:tabGUID>
+</csi:questions></csi:section></csi:sections></csi:page>    <csi:page>
+      <csi:pageHeader>M. SIG Lite</csi:pageHeader>
+      <csi:pageGUID>19</csi:pageGUID>
       <csi:seqNumber>20</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText></csi:headerText>
@@ -48601,9 +48601,9 @@ and perform an independent audit / review?</csi:qText>
                 <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
               </csi:questionPrompt>
             </csi:question>
-</csi:questions></csi:section></csi:sections></csi:tab>    <csi:tab>
-      <csi:tabHeader>Glossary</csi:tabHeader>
-      <csi:tabGUID>18</csi:tabGUID>
+</csi:questions></csi:section></csi:sections></csi:page>    <csi:page>
+      <csi:pageHeader>Glossary</csi:pageHeader>
+      <csi:pageGUID>18</csi:pageGUID>
       <csi:seqNumber>21</csi:seqNumber>
       <csi:description></csi:description>
       <csi:headerText>**Acceptable Use Policy:**  An acceptable use policy is part of the information security framework, defining what users are and are not allowed to do with the IT systems of the organization. An acceptable use policy should contain a subset of the information security policy, and refer users to the full security policy when relevant. It should also clearly define the sanctions applied if a user violates the policy.
@@ -48840,5 +48840,5 @@ and perform an independent audit / review?</csi:qText>
 **Workstations:**  (1) Like personal computers, most workstations are single-user computers. However, workstations are typically linked together to form a local-area network, although they can also be used as stand-alone systems. (2) In networking, &quot;workstation&quot; refers to any computer connected to a local area network, and could be an actual workstation or a personal computer.</csi:headerText>
       <csi:footerText></csi:footerText>
       <csi:cloneable>0</csi:cloneable>
-      <csi:sections></csi:sections></csi:tab></csi:tabs></csi:questionnaire>
+      <csi:sections></csi:sections></csi:page></csi:pages></csi:questionnaire>
 

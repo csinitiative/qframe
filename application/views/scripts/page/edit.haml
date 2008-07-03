@@ -17,32 +17,32 @@
   @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
-- $localStylesheets = array('tabs', 'approve', 'getting_started', 'calendar')
-- $localJavascript = array('moreoptions', 'tabs', 'rules', 'getting_started', 'cookies', 'jscalendar-1.0/calendar', 'jscalendar-1.0/lang/calendar-en', 'calendar')
+- $localStylesheets = array('pages', 'approve', 'getting_started', 'calendar')
+- $localJavascript = array('moreoptions', 'pages', 'rules', 'getting_started', 'cookies', 'jscalendar-1.0/calendar', 'jscalendar-1.0/lang/calendar-en', 'calendar')
 
-!= $this->topLinks($this->tab, $this->loggedInUser)
+!= $this->topLinks($this->page, $this->loggedInUser)
 
 %h1
-  = $this->tab->tabHeader
-  - if(count($this->tab->references) > 0)
-    %a#toggleTabReferences{ 'href' => '#' } show references
-    #tabReferences{ 'style' => 'display: none;' }
-      != $this->referenceString($this->tab)
+  = $this->page->pageHeader
+  - if(count($this->page->references) > 0)
+    %a#togglePageReferences{ 'href' => '#' } show references
+    #pageReferences{ 'style' => 'display: none;' }
+      != $this->referenceString($this->page)
 
-- if(!$this->isBlank($this->tab->headerText))
-  != $this->markdown($this->h($this->tab->headerText))
+- if(!$this->isBlank($this->page->headerText))
+  != $this->markdown($this->h($this->page->headerText))
   
-!= $this->form(array('action' => 'save', 'id' => $this->tab->tabID), false, 'post', array('class' => 'questions', 'enctype' => 'multipart/form-data'))
-!= $this->formHidden('tabID', $this->currentTabID)
+!= $this->form(array('action' => 'save', 'id' => $this->page->pageID), false, 'post', array('class' => 'questions', 'enctype' => 'multipart/form-data'))
+!= $this->formHidden('pageID', $this->currentPageID)
 != $this->formHidden('cancelPath', $this->url(array('action' => 'view')))
 
-- while(($section = $this->tab->nextSection()))
+- while(($section = $this->page->nextSection()))
   != $this->renderPartial('section', $section)
 
 != $this->form(null, true)
 
-- if(!$this->isBlank($this->tab->footerText))
-  != $this->markdown($this->h($this->tab->footerText))
+- if(!$this->isBlank($this->page->footerText))
+  != $this->markdown($this->h($this->page->footerText))
 
 != $this->uploadForm()
 

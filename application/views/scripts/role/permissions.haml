@@ -33,12 +33,12 @@
         %li
           = $permission
           != $this->formCheckbox("global[{$permission}]", $this->role->hasAccess($permission))
-  #tab
+  #page
     - if(isset($this->currentInstance))
       %table
         %tr
           %th.left
-            %h2 tab permissions
+            %h2 page permissions
           %th
             != $this->imageTag('icons/ffffff/magnifier.png', array('class' => 'inline tooltip', 'tooltip' => 'view'))
           %th
@@ -53,18 +53,18 @@
             != $this->formCheckbox("checkall_][edit]", false)
           %th
             != $this->formCheckbox("checkall_][approve]", false)
-        - while($tab = $this->currentInstance->nextTab())
+        - while($page = $this->currentInstance->nextPage())
           %tr
-            %td.label= $tab->tabHeader
+            %td.label= $page->pageHeader
             %td
-              != $this->formCheckbox("tab[{$tab->tabID}][view]", $this->role->hasAccess('view', $tab))
+              != $this->formCheckbox("page[{$page->pageID}][view]", $this->role->hasAccess('view', $page))
             %td
-              != $this->formCheckbox("tab[{$tab->tabID}][edit]", $this->role->hasAccess('edit', $tab))
+              != $this->formCheckbox("page[{$page->pageID}][edit]", $this->role->hasAccess('edit', $page))
             %td
-              != $this->formCheckbox("tab[{$tab->tabID}][approve]", $this->role->hasAccess('approve', $tab))
+              != $this->formCheckbox("page[{$page->pageID}][approve]", $this->role->hasAccess('approve', $page))
     - else
       %h3
-        Select a questionnaire and instance to set per-tab permissions.
+        Select a questionnaire and instance to set per-page permissions.
       %br/
       != $this->formHidden('selectURL', $this->url(array()))
       .option

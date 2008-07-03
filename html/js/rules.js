@@ -97,7 +97,7 @@ var Rules = {
     var legend = section.down('.legend');
     var disableText = section.down('.disableText');
     
-    // fetch the hidden disableCount element for this tab
+    // fetch the hidden disableCount element for this page 
     var disableCount = Rules.getDisableCount(section);
     if(!disableCount) return;
     
@@ -120,35 +120,35 @@ var Rules = {
   },
   
   /**
-   * Process a single "tab" rule (rule with a tab as its target)
+   * Process a single "page" rule (rule with a page as its target)
    *
    * @param string target ID
    * @param string rule type (enable/disable)
    */
   processTabRule: function(target, rule) {    
-    // fetch the target tab's element (if it exists on this page)
-    var tab = $('tab-' + target);
-    if(!tab) return;
+    // fetch the target page's element (if it exists on this page)
+    var page = $('page-' + target);
+    if(!page) return;
     
-    // fetch the hidden disableCount element for this tab
-    var disableCount = Rules.getDisableCount(tab);
+    // fetch the hidden disableCount element for this page
+    var disableCount = Rules.getDisableCount(page);
     if(!disableCount) return;
     
     if(rule == 'disable') {
       disableCount.value++;
       if(disableCount.value > 0) {
-        tab.down('div').addClassName('disabled');
-        tab.down('div').innerHTML = tab.down('a').innerHTML;
+        page.down('div').addClassName('disabled');
+        page.down('div').innerHTML = page.down('a').innerHTML;
       }
     }
     else if(rule == 'enable') {
       disableCount.value--;
       if(disableCount.value <= 0) {
-        tab.down('div').removeClassName('disabled');
-        tab.down('div').innerHTML = '<a href="' + tab.readAttribute('url') + '">' +
-            tab.down('div').innerHTML + '</a>';
-        tab.down('a').observe('mouseover', CsiQframe.menuMouseOver);
-        tab.down('a').observe('mouseout', CsiQframe.menuMouseOut);
+        page.down('div').removeClassName('disabled');
+        page.down('div').innerHTML = '<a href="' + page.readAttribute('url') + '">' +
+            page.down('div').innerHTML + '</a>';
+        page.down('a').observe('mouseover', CsiQframe.menuMouseOver);
+        page.down('a').observe('mouseout', CsiQframe.menuMouseOut);
       }
     }
   },
@@ -221,5 +221,5 @@ var Rules = {
   }
 };
 
-// Call the tab setup method onload
+// Call the page setup method onload
 Event.observe(window, 'load', Rules.setup);

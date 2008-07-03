@@ -2,13 +2,13 @@
 <csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-qframe"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 questionnaireName="Demo Questionnaire" questionnaireVersion="1" revision="1" targetQFrameVersion="1.0">
-  <csi:tabs>
+  <csi:pages>
    
-    <csi:tab>
-      <csi:tabHeader>this tab has 2 references</csi:tabHeader>
-      <csi:tabGUID>1</csi:tabGUID>
+    <csi:page>
+      <csi:pageHeader>this page has 2 references</csi:pageHeader>
+      <csi:pageGUID>1</csi:pageGUID>
       <csi:seqNumber>1</csi:seqNumber>
-      <csi:tabReferences>
+      <csi:pageReferences>
         <csi:reference>
           <csi:shortName>ABC</csi:shortName>
           <csi:referenceName>Alpha Bravo Charlie</csi:referenceName>
@@ -23,7 +23,7 @@ questionnaireName="Demo Questionnaire" questionnaireVersion="1" revision="1" tar
           <csi:referenceURL>http://xyz.org/789</csi:referenceURL>
           <csi:referenceText>Ut enim ad minim veniam</csi:referenceText>
         </csi:reference>
-      </csi:tabReferences>
+      </csi:pageReferences>
       <csi:sections>
         <csi:section>
           <csi:sectionHeader>this section has 2 references</csi:sectionHeader>
@@ -64,11 +64,11 @@ questionnaireName="Demo Questionnaire" questionnaireVersion="1" revision="1" tar
           </csi:questions>
         </csi:section>
       </csi:sections>
-    </csi:tab>
+    </csi:page>
     
-    <csi:tab>
-      <csi:tabHeader>rules</csi:tabHeader>
-      <csi:tabGUID>2</csi:tabGUID>
+    <csi:page>
+      <csi:pageHeader>rules</csi:pageHeader>
+      <csi:pageGUID>2</csi:pageGUID>
       <csi:seqNumber>2</csi:seqNumber>
       <csi:sections>
         <csi:section>
@@ -112,8 +112,8 @@ questionnaireName="Demo Questionnaire" questionnaireVersion="1" revision="1" tar
             </csi:question>
             <csi:question>
               <csi:qText>
-                answering "disable" will disable the tab called "target tab" while
-                answering "enable" will enable this tab.
+                answering "disable" will disable the page called "target page" while
+                answering "enable" will enable this page.
               </csi:qText>
               <csi:questionGUID>4</csi:questionGUID>
               <csi:seqNumber>4</csi:seqNumber>
@@ -150,14 +150,14 @@ questionnaireName="Demo Questionnaire" questionnaireVersion="1" revision="1" tar
           </csi:questions>
         </csi:section>
       </csi:sections>
-    </csi:tab>
+    </csi:page>
     
-    <csi:tab>
-      <csi:tabHeader>target tab</csi:tabHeader>
-      <csi:tabGUID>3</csi:tabGUID>
+    <csi:page>
+      <csi:pageHeader>target page</csi:pageHeader>
+      <csi:pageGUID>3</csi:pageGUID>
       <csi:seqNumber>3</csi:seqNumber>
-      <csi:headerText>This is just a placeholder tab to act as a target for rules</csi:headerText>
-    </csi:tab>
+      <csi:headerText>This is just a placeholder page to act as a target for rules</csi:headerText>
+    </csi:page>
     
-  </csi:tabs>
+  </csi:pages>
 </csi:questionnaire>
