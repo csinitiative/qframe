@@ -1,3 +1,4 @@
+#!/usr/bin/php -q
 <?php
 /**
  * This file is part of the CSI QFrame.
@@ -19,19 +20,32 @@
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
 
-
-/**
- * @category   QFrame
- * @package    QFrame
- * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
- * @license    http://www.gnu.org/licenses/   GNU General Public License v3
+/*
+ * Command-line arguments
  */
-class QFrame_Controller_Plugin_BaseUrl extends Zend_Controller_Plugin_Abstract {
+if($_SERVER['argc'] < 3)
+  die("Usage: maintenance.php <on | off> <environment> [<message>]\n\n");
 
-  /**
-   * Log preDispatch information
-   */
-  public function preDispatch() {
-    Zend_Controller_Front::getInstance()->setBaseUrl(QFrame_Config::instance()->base_url);
-  }
+$state = $_SERVER['argv'][1];
+define('QFRAME_ENV', $_SERVER['argv'][2]);
+$comment = isset($_SERVER['argv'][3]) ? $_SERVER['argv'][3] : null;
+
+if($state !== 'on' && $state !== 'off')
+  die("You must specify 'on' or 'off' as the first argument\n\n");
+  
+
+/*
+ * Include a few very basic utility functions
+ */
+include(dirname(__FILE__) . '/../core/load.php');
+
+
+/*
+ * Modify maintenance configuration
+ */
+$config = QFrame_Maintenance::instance();
+$config->maintenance = ($state === 'on');
+if(isset($comment)) {
+  $config->comment = $comment;
 }
+$config->save();
