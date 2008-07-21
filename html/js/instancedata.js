@@ -195,7 +195,7 @@ function _handle (event, form, action) {
   content.setStyle({ top: top + 'px', left: left + 'px' });
   Effect.Appear('disableOverlay', { duration: 0.15, to: 0.90 });
   if (action) {
-    $$('form.' + form).first().action = '/instancedata/' + action;
+    $$('form.' + form).first().action = $F('base_url') + '/instancedata/' + action;
   }
   $$('form.' + form).first().submit();
 

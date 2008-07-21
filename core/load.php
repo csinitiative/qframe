@@ -18,14 +18,8 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-
-/*
- * Command-line arguments
- */
-$_ENV['QFRAME_ENV'] = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : die('Need environment name as first argument');
-$comment = isset($_SERVER['argv'][2]) ? $_SERVER['argv'][2] : null;
-
-$core_path = dirname(__FILE__) . '/../core';
+ 
+$core_path = dirname(__FILE__);
 
 /*
  * Include a few very basic utility functions
@@ -56,11 +50,8 @@ include(_path($core_path, 'env.php'));
 include(_path($core_path, 'dynamic.php'));
 
 /*
- * Modify maintenance configuration
+ * Require file that contains pure configuration (used for testing)
+ * as well as routing.  Also include the file that sets up database
+ * "stuff".
  */
-$maintenanceConfig = QFrame_Maintenance::instance();
-$maintenanceConfig->maintenance = true;
-if (isset($comment)) {
-  $maintenanceConfig->comment = $comment;
-}
-$maintenanceConfig->save();
+require(_path($core_path, 'database.php'));

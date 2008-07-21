@@ -27,14 +27,16 @@ define('QFRAME_VERSION', '1.0');
 /*
  * Set the current environment
  */
-$env = 'development';
-if(isset($_ENV['QFRAME_ENV'])) {
-  $env = $_ENV['QFRAME_ENV'];
+if(!defined('QFRAME_ENV')) {
+  $env = 'development';
+  if(isset($_ENV['QFRAME_ENV'])) {
+    $env = $_ENV['QFRAME_ENV'];
+  }
+  elseif(function_exists('apache_getenv') && apache_getenv('QFRAME_ENV')) {
+    $env = apache_getenv('QFRAME_ENV');
+  }
+  define('QFRAME_ENV', $env);
 }
-elseif(function_exists('apache_getenv') && apache_getenv('QFRAME_ENV')) {
-  $env = apache_getenv('QFRAME_ENV');
-}
-define('QFRAME_ENV', $env);
 
 /*
  * If there is a file in the config/environments directory named <QFRAME_ENV>.yml
