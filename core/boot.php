@@ -25,6 +25,13 @@
 include(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'load.php');
 
 /*
+ * Require file that contains pure configuration (used for testing)
+ * as well as routing.  Also include the file that sets up database
+ * "stuff".
+ */
+require(_path($core_path, 'database.php'));
+
+/*
  * If in maintenance mode, tell the user and exit.
  */
 $maintenanceConfig = QFrame_Maintenance::instance();

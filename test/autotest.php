@@ -20,11 +20,8 @@
  */
  
 
-$_ENV['QFRAME_ENV'] = 'test';
-require_once(dirname(__FILE__) . '/../core/utility.php');
-require_once(dirname(__FILE__) . '/../core/paths.php');
-require_once(CORE_PATH . '/env.php');
-require_once(CORE_PATH . '/dynamic.php');
+define('QFRAME_ENV', 'test');
+require_once(dirname(__FILE__) . '/../core/load.php');
 Zend_Session::start();
 
 $monitoredPaths = array('application', 'html', 'library', 'test');
@@ -116,7 +113,7 @@ function runTests($tree, $branches) {
   /*
    * Prepare the database...
    */
-  require(CORE_PATH . '/database.php');
+  require(_path(CORE_PATH, 'database.php'));
   $db = Zend_Db_Table_Abstract::getDefaultAdapter();
   foreach($db->listTables() as $table)
     $db->getConnection()->exec("TRUNCATE TABLE {$table}");
