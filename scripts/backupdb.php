@@ -68,9 +68,11 @@ $command = "mysqldump --complete-insert --flush-logs --single-transaction " .
            "--host={$options['host']} ";
 $user = isset($_SERVER['argv'][3]) ? $_SERVER['argv'][3] : $options['username'];
 $password =  isset($_SERVER['argv'][4]) ? $_SERVER['argv'][4] : $options['password'];
+$base =  isset($_SERVER['argv'][5]) ? $_SERVER['argv'][5] : '';
 $command .= "--user={$user} ";
 $command .= "--password={$password} ";
 if(isset($options['port'])) $command .= "--port={$options['port']} ";
+if(isset($options['unix_socket'])) $command .= "--socket=" . $base . "/{$options['unix_socket']} ";
 $command .= $options['dbname'];
 
 /*
