@@ -48,10 +48,3 @@ include(_path($core_path, 'env.php'));
  * Set up any dynamic properties (properties that rely on current environment configuration)
  */
 include(_path($core_path, 'dynamic.php'));
-
-/*
- * Require file that contains pure configuration (used for testing)
- * as well as routing.  Also include the file that sets up database
- * "stuff".
- */
-require(_path($core_path, 'database.php'));
