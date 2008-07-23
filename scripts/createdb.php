@@ -20,22 +20,10 @@
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
 
- /*
-  * Include very basic utility functions
-  */
-include(implode(DIRECTORY_SEPARATOR, array(dirname(__FILE__), '..', 'core', 'utility.php')));
-
 /*
- * Set up a bunch of path constants that the application will use to refer
- * to various application directories
+ * Load the core of the QFrame application
  */
-include(_path(dirname(__FILE__), '..', 'core', 'paths.php'));
-
-/*
- * Deal with environment stuff including determining the current environment
- * and loading the configuration stuff for that environment
- */
-include(_path(CORE_PATH, 'env.php'));
+include(dirname(__FILE__) . '/../core/load.php');
 
 /*
  * Get database connection information for the current environment
