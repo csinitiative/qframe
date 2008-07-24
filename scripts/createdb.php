@@ -43,6 +43,6 @@ $command .= "{$options['dbname']}";
 /*
  * Run the schema.sql and indexes.sql files against the appropriate database
  */
-chdir(_path(PROJECT_PATH, 'sql'));
+chdir(_path(PROJECT_PATH, 'db'));
 echo `{$command} < schema.sql`;
 echo `{$command} < indexes.sql`;
