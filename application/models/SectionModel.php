@@ -88,8 +88,8 @@ class SectionModel {
 
     if (!isset(self::$sectionTable)) self::$sectionTable = QFrame_Db_Table::getTable('section');
     if (!isset(self::$ruleTable)) self::$ruleTable = QFrame_Db_Table::getTable('rule');
-    if (!isset(self::$sectionReferenceTable)) self::$sectionReferenceTable = QFrame_Db_Table::getTable('sectionReference');
-    if (!isset(self::$referenceDetailTable)) self::$referenceDetailTable = QFrame_Db_Table::getTable('referenceDetail');
+    if (!isset(self::$sectionReferenceTable)) self::$sectionReferenceTable = QFrame_Db_Table::getTable('sectionreference');
+    if (!isset(self::$referenceDetailTable)) self::$referenceDetailTable = QFrame_Db_Table::getTable('referencedetail');
     
     $rows = self::$sectionTable->fetchRows('sectionID', $args['sectionID']);
     $this->sectionRow = $rows[0];

@@ -62,8 +62,8 @@ create table reference (
   primary key (instanceID, shortName)
   ) ENGINE InnoDB DEFAULT CHARSET='utf8';
 
-drop table if exists referenceDetail;
-create table referenceDetail (
+drop table if exists referencedetail;
+create table referencedetail (
   referenceDetailID int NOT NULL AUTO_INCREMENT,
   instanceID int NOT NULL,
   shortName char(8) NOT NULL,
@@ -161,10 +161,10 @@ create table page (
   PRIMARY KEY (pageID)
   ) ENGINE InnoDB DEFAULT CHARSET='utf8';
 
--- pageReference links a page to the documentation detail in
--- referenceDetail
-drop table if exists pageReference;
-create table pageReference (
+-- page_reference links a page to the documentation detail in
+-- reference_detail
+drop table if exists pagereference;
+create table pagereference (
   pageID int NOT NULL,
   referenceDetailID int NOT NULL,
   instanceID int NOT NULL,
@@ -192,20 +192,20 @@ create table section (
   PRIMARY KEY (sectionID)
   ) ENGINE InnoDB DEFAULT CHARSET='utf8';
 
--- sectionReference links a section to the documentation detail in
--- referenceDetail
-drop table if exists sectionReference;
-create table sectionReference (
+-- sectionreference links a section to the documentation detail in
+-- referencedetail
+drop table if exists sectionreference;
+create table sectionreference (
   sectionID int NOT NULL,
   referenceDetailID int NOT NULL,
   instanceID int NOT NULL,
   primary key (sectionID, referenceDetailID)
   ) ENGINE InnoDB DEFAULT CHARSET='utf8';
 
--- The questionType table is used to provide generic instructions to both users
+-- The questiontype table is used to provide generic instructions to both users
 -- and the questionnaire form generator on how a question is to be answered.
-drop table if exists questionType;
-create table questionType (
+drop table if exists questiontype;
+create table questiontype (
   questionTypeID bigint NOT NULL AUTO_INCREMENT,
   instanceID int NOT NULL,
   format char (20) NOT NULL DEFAULT "T:A-Z0-9",
@@ -213,10 +213,10 @@ create table questionType (
   PRIMARY KEY (questionTypeID)
   ) ENGINE InnoDB DEFAULT CHARSET='utf8';
 
--- The questionPrompt table provides the allowed values for a multiple
+-- The questionprompt table provides the allowed values for a multiple
 -- question.
-drop table if exists questionPrompt;
-create table questionPrompt (
+drop table if exists questionprompt;
+create table questionprompt (
   promptID bigint NOT NULL AUTO_INCREMENT,
   instanceID int NOT NULL,
   questionTypeID bigint NOT NULL,
@@ -262,10 +262,10 @@ create table question (
   ) ENGINE InnoDB DEFAULT CHARSET='utf8';
 
 
--- questionReference links a question to the documentation detail in
--- referenceDetail
-drop table if exists questionReference;
-create table questionReference (
+-- questionreference links a question to the documentation detail in
+-- referencedetail
+drop table if exists questionreference;
+create table questionreference (
   questionID bigint NOT NULL,
   referenceDetailID bigint NOT NULL,
   instanceID int NOT NULL,
@@ -320,12 +320,12 @@ create table attachment (
 -- requirements and actions to define a simple workflow facility for assigning
 -- and tracking completion of the full response document.
 
--- A dbUser is a user of the application who can answer or approve a response.
+-- A dbuser is a user of the application who can answer or approve a response.
 -- dbUserPW is sized to hold a SHA1 hash plus salt. Note that with the addition
 -- of dbUserFullName, dbUserName has been shrunk to char (20). dbUserActive
 -- indicates whether the user account is enabled in the system.
-drop table if exists dbUser;
-create table dbUser (
+drop table if exists dbuser;
+create table dbuser (
   dbUserID int NOT NULL AUTO_INCREMENT,
   dbUserName char(20) NOT NULL,
   dbUserPW char(50) NOT NULL,
@@ -335,7 +335,7 @@ create table dbUser (
   PRIMARY KEY (dbUserID)
   ) ENGINE InnoDB DEFAULT CHARSET='utf8';
 -- insert default admin user (admin/admin)
-insert into dbUser(dbUserName, dbUserPW, dbUserFullName) values
+insert into dbuser(dbUserName, dbUserPW, dbUserFullName) values
   ('admin', 'n4wjt4zqsx45f53b790c9e83342c46e35c585d1e822c5030c5', 'Administrator'),
   ('user', 'eup4qebrim3c331f4c8752d6b97c8672ea68f0fffb4ffdcf0f', 'User');
 
