@@ -23,9 +23,9 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class QFrame_Db_Table_SectionReference extends QFrame_Db_Table {
+class QFrame_Db_Table_Sectionreference extends QFrame_Db_Table {
 
-  protected $_name = 'sectionReference';
+  protected $_name = 'sectionreference';
   protected $_primary = array('sectionID','referenceDetailID');
   protected $_rowClass = 'QFrame_Db_Table_Row';
   

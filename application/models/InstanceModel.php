@@ -61,14 +61,14 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     if (!isset(self::$pageTable)) self::$pageTable = QFrame_Db_Table::getTable('page');
     if (!isset(self::$questionTable)) self::$questionTable = QFrame_Db_Table::getTable('question');
     if (!isset(self::$ruleTable)) self::$ruleTable = QFrame_Db_Table::getTable('rule');
-    if (!isset(self::$questionTypeTable)) self::$questionTypeTable = QFrame_Db_Table::getTable('questionType');
-    if (!isset(self::$questionPromptTable)) self::$questionPromptTable = QFrame_Db_Table::getTable('questionPrompt');
-    if (!isset(self::$questionReferenceTable)) self::$questionReferenceTable = QFrame_Db_Table::getTable('questionReference');
+    if (!isset(self::$questionTypeTable)) self::$questionTypeTable = QFrame_Db_Table::getTable('questiontype');
+    if (!isset(self::$questionPromptTable)) self::$questionPromptTable = QFrame_Db_Table::getTable('questionprompt');
+    if (!isset(self::$questionReferenceTable)) self::$questionReferenceTable = QFrame_Db_Table::getTable('questionreference');
     if (!isset(self::$referenceTable)) self::$referenceTable = QFrame_Db_Table::getTable('reference');
-    if (!isset(self::$referenceDetailTable)) self::$referenceDetailTable = QFrame_Db_Table::getTable('referenceDetail');
+    if (!isset(self::$referenceDetailTable)) self::$referenceDetailTable = QFrame_Db_Table::getTable('referencedetail');
     if (!isset(self::$responseTable)) self::$responseTable = QFrame_Db_Table::getTable('response');
-    if (!isset(self::$sectionReferenceTable)) self::$sectionReferenceTable = QFrame_Db_Table::getTable('sectionReference');
-    if (!isset(self::$pageReferenceTable)) self::$pageReferenceTable = QFrame_Db_Table::getTable('pageReference');
+    if (!isset(self::$sectionReferenceTable)) self::$sectionReferenceTable = QFrame_Db_Table::getTable('sectionreference');
+    if (!isset(self::$pageReferenceTable)) self::$pageReferenceTable = QFrame_Db_Table::getTable('pagereference');
     if (!isset(self::$sectionTable)) self::$sectionTable = QFrame_Db_Table::getTable('section');
 
     if (isset($args['instanceID'])) {
@@ -567,7 +567,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     $count += $result[0]['tally'];
 
     $stmt = self::$instanceTable->getAdapter()->query('SELECT q.questionID FROM question AS q, ' .
-        'questionType AS qt, questionPrompt as qp, response as r WHERE ' .
+        'questiontype AS qt, questionprompt AS qp, response as r WHERE ' .
         'q.questionTypeID = qt.questionTypeID AND qt.questionTypeID = qp.questionTypeID AND ' .
         'q.questionID = r.questionID AND requireAddlInfo = 1 AND ISNULL(r.additionalInfo) AND ' .
         'ISNULL(r.responseEndDate) AND r.responseText = qp.promptID AND q.instanceID = ?',
@@ -694,14 +694,14 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     }
     if(count($errors) > 0) throw new Exception('XML Exception');
     
-    if (!isset(self::$questionReferenceTable)) self::$questionReferenceTable = QFrame_Db_Table::getTable('questionReference');
-    if (!isset(self::$sectionReferenceTable)) self::$sectionReferenceTable = QFrame_Db_Table::getTable('sectionReference');
-    if (!isset(self::$pageReferenceTable)) self::$pageReferenceTable = QFrame_Db_Table::getTable('pageReference');
+    if (!isset(self::$questionReferenceTable)) self::$questionReferenceTable = QFrame_Db_Table::getTable('questionreference');
+    if (!isset(self::$sectionReferenceTable)) self::$sectionReferenceTable = QFrame_Db_Table::getTable('sectionreference');
+    if (!isset(self::$pageReferenceTable)) self::$pageReferenceTable = QFrame_Db_Table::getTable('pagereference');
     if (!isset(self::$referenceTable)) self::$referenceTable = QFrame_Db_Table::getTable('reference');
-    if (!isset(self::$referenceDetailTable)) self::$referenceDetailTable = QFrame_Db_Table::getTable('referenceDetail');
+    if (!isset(self::$referenceDetailTable)) self::$referenceDetailTable = QFrame_Db_Table::getTable('referencedetail');
     if (!isset(self::$ruleTable)) self::$ruleTable = QFrame_Db_Table::getTable('rule');
-    if (!isset(self::$questionTypeTable)) self::$questionTypeTable = QFrame_Db_Table::getTable('questionType');
-    if (!isset(self::$questionPromptTable)) self::$questionPromptTable = QFrame_Db_Table::getTable('questionPrompt');
+    if (!isset(self::$questionTypeTable)) self::$questionTypeTable = QFrame_Db_Table::getTable('questiontype');
+    if (!isset(self::$questionPromptTable)) self::$questionPromptTable = QFrame_Db_Table::getTable('questionprompt');
     if (!isset(self::$pageTable)) self::$pageTable = QFrame_Db_Table::getTable('page');
     if (!isset(self::$sectionTable)) self::$sectionTable = QFrame_Db_Table::getTable('section');
     if (!isset(self::$questionTable)) self::$questionTable = QFrame_Db_Table::getTable('question');

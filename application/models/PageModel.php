@@ -62,9 +62,9 @@ class PageModel implements QFrame_Lockable, QFrame_Permissible {
     if (!isset(self::$sectionTable)) self::$sectionTable = QFrame_Db_Table::getTable('section');
     if (!isset(self::$questionTable)) self::$questionTable = QFrame_Db_Table::getTable('question');
     if (!isset(self::$ruleTable)) self::$ruleTable = QFrame_Db_Table::getTable('rule');
-    if (!isset(self::$questionTypeTable)) self::$questionTypeTable = QFrame_Db_Table::getTable('questionType');
-    if (!isset(self::$pageReferenceTable)) self::$pageReferenceTable = QFrame_Db_Table::getTable('pageReference');
-    if (!isset(self::$referenceDetailTable)) self::$referenceDetailTable = QFrame_Db_Table::getTable('referenceDetail');
+    if (!isset(self::$questionTypeTable)) self::$questionTypeTable = QFrame_Db_Table::getTable('questiontype');
+    if (!isset(self::$pageReferenceTable)) self::$pageReferenceTable = QFrame_Db_Table::getTable('pagereference');
+    if (!isset(self::$referenceDetailTable)) self::$referenceDetailTable = QFrame_Db_Table::getTable('referencedetail');
     
     $rows = self::$pageTable->fetchRows('pageID', $args['pageID']);
     $this->pageRow = $rows[0];
@@ -249,7 +249,7 @@ class PageModel implements QFrame_Lockable, QFrame_Permissible {
     $count += $result[0]['tally'];
 
     $stmt = self::$pageTable->getAdapter()->query('SELECT q.questionID FROM question AS q, ' .
-        'questionType AS qt, questionPrompt as qp, response as r WHERE ' .
+        'questiontype AS qt, questionprompt AS qp, response as r WHERE ' .
         'q.questionTypeID = qt.questionTypeID AND qt.questionTypeID = qp.questionTypeID AND ' .
         'q.questionID = r.questionID AND requireAddlInfo = 1 AND ISNULL(r.additionalInfo) AND ' .
         'ISNULL(r.responseEndDate) AND r.responseText = qp.promptID AND q.pageID = ?',

@@ -19,14 +19,28 @@
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
 
+
 /**
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class QFrame_Db_Table_QuestionPrompt extends QFrame_Db_Table {
+class QFrame_Db_Table_Questiontype extends QFrame_Db_Table {
 
-  protected $_name = 'questionPrompt';
-  protected $_primary = 'promptID';
+  protected $_name = 'questiontype';
+  protected $_primary = 'questionTypeID';
   protected $_rowClass = 'QFrame_Db_Table_Row';
+  
+  public function getQuestionTypeID($instanceID, $questionType) {
+
+    $where = $this->getAdapter()->quoteInto('instanceID = ?', $instanceID);
+    $where .= $this->getAdapter()->quoteInto(' AND format = ?', $questionType);
+
+    if ($row = $this->fetchRow($where)) {
+      return $row->questionTypeID;
+    }
+
+    return;
+
+  }  
   
 }

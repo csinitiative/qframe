@@ -23,10 +23,10 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class QFrame_Db_Table_ReferenceDetail extends QFrame_Db_Table {
+class QFrame_Db_Table_Pagereference extends QFrame_Db_Table {
 
-  protected $_name = 'referenceDetail';
-  protected $_primary = 'referenceDetailID';
+  protected $_name = 'pagereference';
+  protected $_primary = array('pageID','referenceDetailID');
   protected $_rowClass = 'QFrame_Db_Table_Row';
-
+  
 }

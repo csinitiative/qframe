@@ -23,10 +23,10 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class QFrame_Db_Table_ZendAcl extends QFrame_Db_Table {
+class QFrame_Db_Table_Referencedetail extends QFrame_Db_Table {
 
-  protected $_name = 'zendACL';
-  protected $_primary = 'zendACLID';
+  protected $_name = 'referencedetail';
+  protected $_primary = 'referenceDetailID';
   protected $_rowClass = 'QFrame_Db_Table_Row';
 
 }
