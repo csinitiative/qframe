@@ -68,21 +68,33 @@ abstract class Migration_Adapter_Mysql extends Migration_Adapter {
    * @return string
    */
   public function generateColumn($column, array $options) {
+    // check column array count to make sure there is enough data
     if(count($column) < 2)
       throw new Exception("Invalid column specifier " . '[ "' . implode('","', $column) . '" ]');
       
-    $name = $column[0];
-    $type = $column[1];
-    $limit = (isset($column[2])) ? $column[2] : null;
-    $default = (isset($column[3])) ? $this->dbAdapter->quote($column[3]) : null;
-    $null = (isset($column[4]) && !$column[4]) ? false : true;
+    // merge default column values with some sensible defaults
+    if(count($column) == 2) $column[2] = array();
+    $colOpts = array_merge(array(
+      'limit'   => null,
+      'default' => null,
+      'null'    => false
+    ), $column[2]);
     
-    $column = "  {$this->dbAdapter->quoteIdentifier($name)} {$this->mapType($type, $limit)}";
+    // set up some variables so that the column string we build will make more sense  
+    $name = $this->dbAdapter->quoteIdentifier($column[0]);
+    $type = $this->mapType($column[1], $colOpts['limit']);
+    $default = (isset($colOpts['default'])) ? $this->dbAdapter->quote($colOpts['default']) : null;
+    $null = (isset($colOpts['null']) && !$colOpts['null']) ? false : true;
+    
+    // build the column string
+    $column = "{$name} {$type}";
     if($default) $column .= " DEFAULT {$default}";
     if(!$null) $column .= ' NOT NULL';
     if($options['primary'] === $name && (!isset($options['auto']) || $options['auto'])) {
       $column .= ' AUTO_INCREMENT';
     }
+    
+    // return the built column
     return $column;
   }
   
@@ -97,19 +109,19 @@ abstract class Migration_Adapter_Mysql extends Migration_Adapter {
   public function createTable($name, array $options, array $columns) {
     // check for a 'primary' option and act appropriately based on what its value is
     if(!isset($options['primary'])) {
-      array_unshift($columns, array('id', 'integer', null, 0, false));
+      array_unshift($columns, array('id', 'integer', array('null' => false)));
       $options['primary'] = 'id';
     }
     
     // check for a valid primary key
-    if(!$this->validPrimaryKey($options['primary'], $columns)) {
+    if($options['primary'] && !$this->validPrimaryKey($options['primary'], $columns)) {
       die("Specified primary key column does not exist [{$options['primary']}]\n\n");
     }
     
     // build up the column definitions 
     $query = "CREATE TABLE {$this->dbAdapter->quoteIdentifier($name)} (\n";
     foreach($columns as $column) {
-      $columnStrings[] = $this->generateColumn($column, $options);
+      $columnStrings[] = '  ' . $this->generateColumn($column, $options);
     }
     
     // add a "column definition" for a primary key if necessary
@@ -185,5 +197,31 @@ abstract class Migration_Adapter_Mysql extends Migration_Adapter {
     $name = $this->dbAdapter->quoteIdentifier($columns);
     $table = $this->dbAdapter->quoteIdentifier($table);
     return $this->dbAdapter->query("DROP INDEX {$name} ON {$table}");
+  }
+  
+  /**
+   * Add a column to an existing table
+   *
+   * @param  string table name
+   * @param  array  column definition
+   * @return boolean
+   */
+  public function addColumn($table, $name, $type, array $options = array()) {
+    $column = $this->generateColumn(array($name, $type, $options), array('primary' => false));
+    $table = $this->dbAdapter->quoteIdentifier($table);
+    return $this->dbAdapter->query("ALTER TABLE {$table} ADD COLUMN {$column}");
+  }
+  
+  /**
+   * Remove a column from an existing table
+   *
+   * @param  string table name
+   * @param  string column name
+   * @return boolean
+   */
+  public function removeColumn($table, $name) {
+    $table = $this->dbAdapter->quoteIdentifier($table);
+    $column = $this->dbAdapter->quoteIdentifier($name);
+    return $this->dbAdapter->query("ALTER TABLE {$table} DROP COLUMN {$column}");
   }
 }

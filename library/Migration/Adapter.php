@@ -63,22 +63,16 @@ abstract class Migration_Adapter {
    * @return string
    */
   public final function getSchemaVersion() {
-    $version = '00000000000000';
     if(!in_array('schemaInfo', $this->dbAdapter->listTables())) {
-      $this->createTable('schemaInfo', array(), array(
+      $this->createTable('schemaInfo', array('primary' => false), array(
         array('version', 'string')
       ));
-      $this->dbAdapter->insert('schemaInfo', array('version' => $version));
+      $this->dbAdapter->insert('schemaInfo', array('version' => '00000000000000'));
+      return '00000000000000';
     }
-    else {
-      $version = $this->dbAdapter->fetchOne(
-        $this->dbAdapter->select()
-                        ->from('schemaInfo', 'version')
-                        ->limit(1)
-      );
-    }
-    
-    return $version;
+    return $this->dbAdapter->fetchOne(
+      $this->dbAdapter->select()->from('schemaInfo', 'version')->limit(1)
+    );
   }
   
   /**
@@ -218,7 +212,7 @@ abstract class Migration_Adapter {
    * @param  array  column definition
    * @return boolean
    */
-  //abstract public function addColumn($table, array $column);
+  abstract public function addColumn($table, $name, $type, array $options = array());
   
   /**
    * Remove a column from an existing table
@@ -227,5 +221,5 @@ abstract class Migration_Adapter {
    * @param  string column name
    * @return boolean
    */
-  //abstract public function removeColumn($table, $column);  
+  abstract public function removeColumn($table, $name);
 }

@@ -79,6 +79,19 @@ abstract class Migration {
       'parenthesize' => $parenthesize
     ));
   }
+  
+  /**
+   * Wrap a method call in pushTime/popTime calls
+   *
+   * @param string method name
+   * @param string string that identifies this call (comes in () after the call name in output)
+   * @param array  array of arguments
+   */
+  private function wrapCall($name, $ident, array $args) {
+    self::pushTime('', "-- {$name}({$ident})", '   -> ');
+    call_user_func_array(array(Migration_Adapter::getAdapter(), $name), $args);
+    self::popTime();
+  }
     
   /**
    * Create a new table
@@ -89,9 +102,7 @@ abstract class Migration {
    * @return boolean
    */
   public final function createTable($name, $options, $columns) {
-    self::pushTime('', "-- createTable({$name})", '   -> ');
-    Migration_Adapter::getAdapter()->createTable($name, $options, $columns);
-    self::popTime();
+    $this->wrapCall('createTable', "{$name}", array($name, $options, $columns));
   }
   
   /**
@@ -101,9 +112,7 @@ abstract class Migration {
    * @return boolean
    */
   public final function dropTable($name) {
-    self::pushTime('', "-- dropTable({$name})", '   -> ');
-    Migration_Adapter::getAdapter()->dropTable($name);
-    self::popTime();
+    $this->wrapCall('dropTable', "{$name}", array($name));
   }
   
   /**
@@ -116,9 +125,7 @@ abstract class Migration {
    */
   public final function createIndex($table, array $columns, array $options = array()) {
     $columnString = implode(',', $columns);
-    self::pushTime('', "-- createIndex({$table}[{$columnString}])", '   -> ');
-    Migration_Adapter::getAdapter()->createIndex($table, $columns, $options);
-    self::popTime();
+    $this->wrapCall('createIndex', "{$table}[{$columnString}]", array($table, $columns, $options));
   }
   
   /**
@@ -130,9 +137,31 @@ abstract class Migration {
    */
   public function dropIndex($table, $columns) {
     $columnString = (is_array($columns)) ? implode(',', $columns) : $columns;
-    self::pushTime('', "-- dropIndex({$table}[{$columnString}])", '   -> ');
-    Migration_Adapter::getAdapter()->dropIndex($table, $columns);
-    self::popTime();
+    $this->wrapCall('dropIndex', "{$table}[{$columnString}]", array($table, $columns));
+  }
+  
+  /**
+   * Add a new column to an existing table
+   *
+   * @param  string name of the table
+   * @param  string name of the new column
+   * @param  string type of the new column
+   * @param  array  options for the new column
+   * @return boolean
+   */
+  public final function addColumn($table, $name, $type, array $options = array()) {
+    $this->wrapCall('addColumn', "{$table}[{$name}]", array($table, $name, $type, $options));
+  }
+  
+  /**
+   * Remove a column from a table
+   *
+   * @param  string name of the table that contains the column to remove
+   * @param  string name of the column to remove
+   * @return boolean
+   */
+  public final function removeColumn($table, $name) {
+    $this->wrapCall('removeColumn', "{$table}[{$name}]", array($table, $name));
   }
   
   /**
