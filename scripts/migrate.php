@@ -101,7 +101,7 @@ foreach($migrations as $version => $migration) {
   
   // print a message indicating that we are starting a migration
   Migration::pushTime("== {$version} {$migration}: migrat", 'ing ', 'ed ', true, '=', 80);
-  
+    
   // create an instance of the migration class and call it's up (or down) method
   $class = new ReflectionClass($migration);
   $instance = $class->newInstance();
