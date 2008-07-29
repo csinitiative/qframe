@@ -39,17 +39,36 @@ class Migration_Generator {
   public static function generate($path, $name) {
     $version = strftime('%Y%m%d%H%M%S');
     $fileName = _path($path, "{$version}_{$name}.php");
-    if(!file_put_contents($fileName, self::template($name)))
+    if(!file_put_contents($fileName, self::templatize($name)))
       die("Unable to create migration\n\n");
     exit;
   }
   
   /**
+   * Pick the correct template, then templatize (tm)
+   *
+   * @param  string name of the class we are creating
+   * @return string
+   */
+  public function templatize($className) {
+    if(preg_match('/^CreateTable(\w+)$/', $className, $matches)) {
+      $tableName = ltrim(strtolower(preg_replace('/[A-Z]/', '_$0', $matches[1])), '_');
+      $content = self::templateWithCreateTable($className, $tableName);
+    }
+    else {
+      $content = self::template($className);
+    }
+    
+    return $content;
+  }
+  
+  /**
    * Returns a string with the class name interpolated
    *
-   * @param string class name
+   * @param  string class name
+   * @return string
    */
-  public static function template($className) {
+  private static function template($className) {
     return <<<END
 <?php
 class {$className} extends Migration {
@@ -60,6 +79,32 @@ class {$className} extends Migration {
   
   public function down() {
     
+  }
+}
+
+END;
+  }
+  
+  /**
+   * Returns a string with the class name interpolated
+   *
+   * @param  string class name
+   * @param  string table name
+   * @return string
+   */
+  private static function templateWithCreateTable($className, $tableName) {
+    return <<<END
+<?php
+class {$className} extends Migration {
+
+  public function up() {
+    \$this->createTable('{$tableName}', array(), array(
+      array('<name>', '<type>', array())
+    ));
+  }
+
+  public function down() {
+    \$this->dropTable('{$tableName}');
   }
 }
 
