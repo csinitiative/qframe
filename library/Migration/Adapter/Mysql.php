@@ -145,4 +145,45 @@ abstract class Migration_Adapter_Mysql extends Migration_Adapter {
     $query = "DROP TABLE {$this->dbAdapter->quoteIdentifier($table)}";
     return $this->dbAdapter->query($query);
   }
+  
+  /**
+   * Add an index to an existing table
+   *
+   * @param  string table we are adding the index to
+   * @param  array  list of columns being indexed
+   * @param  array  (optional) list of options to use when generating the index
+   * @return boolean
+   */
+  public function createIndex($table, array $columns, array $options = array()) {
+    // merge the options we got with a default set of options
+    $options = array_merge(array(
+      'name'  => strtolower(implode('_', $columns)) . '_index',
+    ), $options);
+    
+    // quote columns as identifiers
+    foreach($columns as $column) $quotedColumns[] = $this->dbAdapter->quoteIdentifier($column);
+    $quotedColumns = implode(',', $quotedColumns);
+    
+    // build the query
+    $query = "CREATE INDEX {$this->dbAdapter->quoteIdentifier($options['name'])}\n";
+    if(isset($options['type'])) $query .= "  USING {$options['type']}\n";
+    $query .= "  ON {$this->dbAdapter->quoteIdentifier($table)}({$quotedColumns})";
+    
+    // run the query and return
+    return $this->dbAdapter->query($query);
+  }
+  
+  /**
+   * Drop an existing index
+   *
+   * @param  string        table we are dropping the index from
+   * @param  array|string  list of columns being indexed OR explicit name of the index
+   * @return boolean
+   */
+  public function dropIndex($table, $columns) {
+    if(is_array($columns)) $columns = strtolower(implode('_', $columns)) . '_index';
+    $name = $this->dbAdapter->quoteIdentifier($columns);
+    $table = $this->dbAdapter->quoteIdentifier($table);
+    return $this->dbAdapter->query("DROP INDEX {$name} ON {$table}");
+  }
 }

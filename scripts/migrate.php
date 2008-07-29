@@ -33,13 +33,14 @@ include(dirname(__FILE__) . '/../core/load.php');
  */
 require(_path(CORE_PATH, 'database.php'));
 
-// Print a message indicating that we are starting migration
-echo "(starting migration)\n";
+// set the migration path
+$migrationPath = _path(PROJECT_PATH, 'db', 'migrations');
 
-if($_SERVER['argc'] <= 1) {}
+// parse command line arguments
+if($_SERVER['argc'] < 2) {}
 elseif(strtolower($_SERVER['argv'][1]) === 'new') {
-  //TODO: need to generate a new migration file here
-  die("Creation of new migrations not yet implemented.\n\n");
+  if($_SERVER['argc'] < 3) die("You must specify a name for the new migration\n\n");
+  Migration_Generator::generate($migrationPath, $_SERVER['argv'][2]);
 }
 elseif(!preg_match('/^\d+$/', $_SERVER['argv'][1])) {
   die("First argument to this script must be either 'new' or numeric.\n\n");
@@ -48,11 +49,13 @@ else {
   $target = $_SERVER['argv'][1];
 }
 
+// print a message indicating that we are starting migration
+echo "(starting migration)\n";
+
 /*
  * Get all of the files in the db/migrations directory and run the ones
  * that need to be run
  */
-$migrationPath = _path(PROJECT_PATH, 'db', 'migrations');
 $migrations = array();
 $migrateUp = (!isset($target) || Migration_Adapter::getAdapter()->getSchemaVersion() <= $target);
 foreach(scandir($migrationPath) as $file) {

@@ -43,6 +43,12 @@ abstract class Migration_Adapter {
   protected $dbAdapter;
   
   /**
+   * Store the last error message encountered by this adapter
+   * @var string
+   */
+  protected $error = '';
+  
+  /**
    * Protected constructor (prevent instantiation of more than one class)
    *
    * @param Zend_Db_Adapter_Abstract database adapter that will be used for db operations
@@ -132,11 +138,30 @@ abstract class Migration_Adapter {
       throw new Exception('Could not begin a transaction for migration ' . get_class($migration));
       
     $migration->down();
-    // NEEDS TO BE SET TO THE NEXT VERSION DOWN
     $this->setSchemaVersion($version);
     
     if(!$this->dbAdapter->commit())
       throw new Exception('Could not commit transaction for migration ' . get_class($migration));
+  }
+  
+  /**
+   * Set the error message associated with a failure and return false
+   *
+   * @param  string failure message
+   * @return boolean
+   */
+  protected final function setError($message) {
+    $this->error = $message;
+    return false;
+  }
+  
+  /**
+   * Gets the last error message encountered by this adapter
+   *
+   * @return string
+   */
+  public final function getError() {
+    return $this->error;
   }
     
   /**
@@ -165,6 +190,26 @@ abstract class Migration_Adapter {
    * @return boolean
    */
   abstract public function dropTable($table);
+  
+  /**
+   * Add an index to an existing table
+   *
+   * @param  string table we are adding the index to
+   * @param  array  list of columns being indexed
+   * @param  array  (optional) list of options to use when generating the index
+   * @return boolean
+   */
+  abstract public function createIndex($table, array $columns, array $options = array());
+  
+  /**
+   * Drop an existing index
+   *
+   * @param  string        table we are dropping the index from
+   * @param  array|string  list of columns being indexed OR explicit name of the index
+   * @return boolean
+   */
+  abstract public function dropIndex($table, $columns);
+  
   
   /**
    * Add a column to an existing table
