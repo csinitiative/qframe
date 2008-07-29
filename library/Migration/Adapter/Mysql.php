@@ -80,7 +80,8 @@ abstract class Migration_Adapter_Mysql extends Migration_Adapter {
       'null'    => false
     ), $column[2]);
     
-    // set up some variables so that the column string we build will make more sense  
+    // set up some variables so that the column string we build will make more sense
+    $unquotedName = $column[0];
     $name = $this->dbAdapter->quoteIdentifier($column[0]);
     $type = $this->mapType($column[1], $colOpts['limit']);
     $default = (isset($colOpts['default'])) ? $this->dbAdapter->quote($colOpts['default']) : null;
@@ -90,7 +91,7 @@ abstract class Migration_Adapter_Mysql extends Migration_Adapter {
     $column = "{$name} {$type}";
     if($default) $column .= " DEFAULT {$default}";
     if(!$null) $column .= ' NOT NULL';
-    if($options['primary'] === $name && (!isset($options['auto']) || $options['auto'])) {
+    if($options['primary'] === $unquotedName && (!isset($options['auto']) || $options['auto'])) {
       $column .= ' AUTO_INCREMENT';
     }
     
