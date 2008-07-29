@@ -107,6 +107,35 @@ abstract class Migration {
   }
   
   /**
+   * Add an index to an existing table
+   *
+   * @param  string table we are adding the index to
+   * @param  array  list of columns being indexed
+   * @param  array  (optional) list of options to use when generating the index
+   * @return boolean
+   */
+  public final function createIndex($table, array $columns, array $options = array()) {
+    $columnString = implode(',', $columns);
+    self::pushTime('', "-- createIndex({$table}[{$columnString}])", '   -> ');
+    Migration_Adapter::getAdapter()->createIndex($table, $columns, $options);
+    self::popTime();
+  }
+  
+  /**
+   * Drop an existing index
+   *
+   * @param  string        table we are dropping the index from
+   * @param  array|string  list of columns being indexed OR explicit name of the index
+   * @return boolean
+   */
+  public function dropIndex($table, $columns) {
+    $columnString = (is_array($columns)) ? implode(',', $columns) : $columns;
+    self::pushTime('', "-- dropIndex({$table}[{$columnString}])", '   -> ');
+    Migration_Adapter::getAdapter()->dropIndex($table, $columns);
+    self::popTime();
+  }
+  
+  /**
    * Required method that will be called when migrating UP past this migration
    */
   abstract public function up();
