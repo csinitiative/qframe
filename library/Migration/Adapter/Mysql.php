@@ -80,7 +80,6 @@ abstract class Migration_Adapter_Mysql extends Migration_Adapter {
       'null'    => false
     ), $column[2]);
     
-    
     // set up some variables so that the column string we build will make more sense
     $unquotedName = $column[0];
     $name = $this->dbAdapter->quoteIdentifier($column[0]);
@@ -120,6 +119,16 @@ abstract class Migration_Adapter_Mysql extends Migration_Adapter {
       die("Specified primary key column does not exist [{$options['primary']}]\n\n");
     }
     
+    // if $options['primary'] is an array, join it all up, otherwise just quote it
+    if(is_array($options['primary'])) {
+      $adapter = $this->dbAdapter;
+      $quotedKeys = array_map(array($adapter, 'quoteIdentifier'), $options['primary']);
+      $primary = implode(',', $quotedKeys);
+    }
+    elseif($options['primary']) {
+      $primary = $this->dbAdapter->quoteIdentifier($options['primary']);
+    }
+    
     // build up the column definitions 
     $query = "CREATE TABLE {$this->dbAdapter->quoteIdentifier($name)} (\n";
     foreach($columns as $column) {
@@ -128,7 +137,7 @@ abstract class Migration_Adapter_Mysql extends Migration_Adapter {
     
     // add a "column definition" for a primary key if necessary
     if($options['primary']) {
-      $columnStrings[] = "  PRIMARY KEY({$this->dbAdapter->quoteIdentifier($options['primary'])})";
+      $columnStrings[] = "  PRIMARY KEY({$primary})";
     }
     
     // explode column definitions into SQL, tack on the last little bit, and run the query
@@ -140,13 +149,21 @@ abstract class Migration_Adapter_Mysql extends Migration_Adapter {
   /**
    * Check to make sure that the passed in primary key is a valid column
    *
-   * @param  string primary key name
-   * @param  array  column list
+   * @param  array|string primary key name
+   * @param  array        column list
    * @return boolean
    */
   protected final function validPrimaryKey($key, $columns) {
-    foreach($columns as $column) if($column[0] === $key) return true;
-    return false;
+    foreach($columns as $column) $columnNames[] = $column[0];
+    if(is_array($key)) {
+      foreach($key as $k) {
+        if(!in_array($k, $columnNames)) return false;
+      }
+    }
+    else {
+      if(!in_array($key, $columnNames)) return false;      
+    }
+    return true;
   }
   
   /**

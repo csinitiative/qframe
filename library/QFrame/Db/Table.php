@@ -43,6 +43,16 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
                                    'questionGUID' => true,
                                    'objectID' => true,
                                    'parentID' => true);
+                                   
+  /**
+   * Convert a table name to a QFrame_Db_Table_* class name
+   *
+   * @param  string table name
+   * @return string
+   */
+  private static function tableToClass($tableName) {
+    return 'QFrame_Db_Table_' . implode('', array_map('ucfirst', explode('_', $tableName)));
+  }
   
   function __construct ($config = array(), $skipReferenceMap = false) {
     parent::__construct($config);
@@ -50,7 +60,7 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
       $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
       $tableNames = $adapter->listTables();
       foreach ($tableNames as $tableName) {
-        $class = 'QFrame_Db_Table_' . ucfirst($tableName);
+        $class = self::tableToClass($tableName);
         $table = new $class(null, true);
         foreach ($table->_metadata as $field => $data) {
           if ($data['PRIMARY'] === true) {
@@ -59,7 +69,7 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
         }
       }
       foreach ($tableNames as $tableName) {
-        $class = 'QFrame_Db_Table_' . ucfirst($tableName);
+        $class = self::tableToClass($tableName);
         $table = new $class(null, true);
         foreach ($table->_metadata as $field => $data) {
           if (isset(self::$primaryKeysFieldTable[$field]) || isset(self::$forceForeignKeys[$field])) {
@@ -69,7 +79,7 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
         }
       }
       foreach ($tableNames as $tableName) {
-        $class = 'QFrame_Db_Table_' . ucfirst($tableName);
+        $class = self::tableToClass($tableName);
         $table = new $class(null, true);
         self::$tablesReferenceMap[$tableName] = array();
         foreach ($table->_metadata as $field => $data) {
@@ -77,7 +87,7 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
             foreach (self::$foreignKeysFieldTable[$field] as $foreignTableName => $data) {
               $relationshipName = "{$foreignTableName}_{$tableName}"; 
               self::$tablesReferenceMap[$tableName][$relationshipName] = array('columns'       => $field,
-                                                                               'refTableClass' => "QFrame_Db_Table_" . ucfirst($foreignTableName),
+                                                                               'refTableClass' => self::tableToClass($foreignTableName),
                                                                                'refColumns'    => $field);
             }
           }
@@ -211,7 +221,7 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
   
   public static function getTable($tableName) {
     if (!isset(self::$tables[$tableName])) {
-      $class = 'QFrame_Db_Table_' . ucfirst($tableName);
+      $class = self::tableToClass($tableName);
       self::$tables[$tableName] = new $class();
     }
     return self::$tables[$tableName];
