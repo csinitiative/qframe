@@ -1,4 +1,4 @@
-table: questiontype
+table: question_type
 
 data:
   sample1:

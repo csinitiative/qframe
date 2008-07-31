@@ -43,7 +43,7 @@ class DbUserModel implements QFrame_Paginable {
    * @return DbUserModel
    */
   public static function findByUsername($username) {
-    if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('dbuser');
+    if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('db_user');
     $where = self::$dbUserTable->getAdapter()->quoteInto('dbUserName = ?', $username);
     $user = self::$dbUserTable->fetchRow($where);
     if($user) return new DbUserModel(array('dbUserID' => $user->dbUserID));
@@ -83,7 +83,7 @@ class DbUserModel implements QFrame_Paginable {
     // process search terms into a where clause if any exist
     if($args['search'] !== null) $args['search'] = self::searchWhere($args['search']);
     
-    if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('dbuser');
+    if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('db_user');
     $users = array();
     $dbUsers = self::$dbUserTable->fetchAll(
       $args['search'],
@@ -108,7 +108,7 @@ class DbUserModel implements QFrame_Paginable {
     else $search = '1';
     
     $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
-    return(intval($adapter->fetchOne("SELECT COUNT(*) FROM `dbuser` WHERE {$search}")));
+    return(intval($adapter->fetchOne("SELECT COUNT(*) FROM `db_user` WHERE {$search}")));
   }
   
   /**
@@ -143,7 +143,7 @@ class DbUserModel implements QFrame_Paginable {
   }
 
   public function __construct ($args = array()) {
-    if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('dbuser');
+    if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('db_user');
       
     $args = array_merge(array(
       'dbUserFullName'  => null,
@@ -215,7 +215,7 @@ class DbUserModel implements QFrame_Paginable {
       return 1;
     }
     
-    if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('dbuser');
+    if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('db_user');
     self::$dbUserTable->lock();
     
     if (!$this->dbUserRow->dbUserID && !is_null(self::findByUsername($this->dbUserRow->dbUserName))) {
@@ -231,7 +231,7 @@ class DbUserModel implements QFrame_Paginable {
    * Delete a user from the database
    */
   public function delete() {
-    if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('dbuser');
+    if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('db_user');
     self::$dbUserTable->lock();
     $this->dbUserRow->delete();      
     self::$dbUserTable->unlock();

@@ -53,11 +53,11 @@ create index sectionInstanceIDx
 
 create index sectionReferenceInstanceIDx
   using hash
-  on sectionreference (instanceID);
+  on section_reference (instanceID);
 
 create index pageReferenceInstanceIDx
   using hash
-  on pagereference (instanceID);
+  on page_reference (instanceID);
 
 create index questionSectionIDx
   using hash
@@ -109,7 +109,7 @@ create index assignmentRoleDbUserIDx
 
 create index dbUserNamex
   using hash
-  on dbuser (dbUserName);
+  on db_user (dbUserName);
 
 -- The following section defines indices to support the other foreign key 
 -- relationships with sufficient table cardinality to benefit from indexed
@@ -117,24 +117,24 @@ create index dbUserNamex
 
 create index referenceDetailShortNamex
   using hash
-  on referencedetail (shortName);
+  on reference_detail (shortName);
 
 create index referenceDetailInstanceIDx
   using hash
-  on referencedetail (instanceID);
+  on reference_detail (instanceID);
 
 create index QuestionReferenceInstanceIDx
   using hash
-  on questionreference (instanceID);
+  on question_reference (instanceID);
 
 create index QuestionTypeInstanceIDx
   using hash
-  on questiontype(instanceID);
+  on question_type(instanceID);
 
 create index questionPromptQuestionTypeIDx
   using hash
-  on questionprompt (questionTypeID);
+  on question_prompt (questionTypeID);
 
 create index questionPromptInstanceIDx
   using hash
-  on questionprompt (instanceID);
+  on question_prompt (instanceID);

@@ -75,11 +75,11 @@ class QuestionModel implements QFrame_Storer {
     }
 
     if (!isset (self::$questionTable)) self::$questionTable = QFrame_Db_Table::getTable('question');
-    if (!isset (self::$questionReferenceTable)) self::$questionReferenceTable = QFrame_Db_Table::getTable('questionreference');
+    if (!isset (self::$questionReferenceTable)) self::$questionReferenceTable = QFrame_Db_Table::getTable('question_reference');
     if (!isset (self::$referenceTable)) self::$referenceTable = QFrame_Db_Table::getTable('reference');
-    if (!isset (self::$referenceDetailTable)) self::$referenceDetailTable = QFrame_Db_Table::getTable('referencedetail');
-    if (!isset (self::$questionTypeTable)) self::$questionTypeTable = QFrame_Db_Table::getTable('questiontype');
-    if (!isset (self::$questionPromptTable)) self::$questionPromptTable = QFrame_Db_Table::getTable('questionprompt');
+    if (!isset (self::$referenceDetailTable)) self::$referenceDetailTable = QFrame_Db_Table::getTable('reference_detail');
+    if (!isset (self::$questionTypeTable)) self::$questionTypeTable = QFrame_Db_Table::getTable('question_type');
+    if (!isset (self::$questionPromptTable)) self::$questionPromptTable = QFrame_Db_Table::getTable('question_prompt');
 
     $questions = self::$questionTable->fetchRows('questionID', $args['questionID']);
     $this->questionRow = $questions[0];

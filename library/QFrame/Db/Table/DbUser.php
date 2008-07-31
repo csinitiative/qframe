@@ -23,10 +23,18 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class QFrame_Db_Table_Sectionreference extends QFrame_Db_Table {
+class QFrame_Db_Table_DbUser extends QFrame_Db_Table {
 
-  protected $_name = 'sectionreference';
-  protected $_primary = array('sectionID','referenceDetailID');
+  protected $_name = 'db_user';
+  protected $_primary = 'dbUserID';
   protected $_rowClass = 'QFrame_Db_Table_Row';
-  
+
+  public function lock() {
+    $this->getAdapter()->getConnection()->exec('LOCK TABLES `' . $this->_name . '` WRITE');
+  }
+
+  public function unlock() {
+    $this->getAdapter()->getConnection()->exec('UNLOCK TABLES');
+  }
+
 }
