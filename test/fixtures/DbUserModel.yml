@@ -1,5 +1,5 @@
 # All passwords are set to 'password'
-table: dbuser
+table: db_user
 
 data:
   sample1:

@@ -1,4 +1,4 @@
-table: questionprompt
+table: question_prompt
 
 data:
   sample1:
