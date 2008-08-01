@@ -28,4 +28,4 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class Migration_Adapter_Mysql_Pdo extends Migration_Adapter_Mysql {}
+class Migration_Adapter_Pdo_Mysql extends Migration_Adapter_Mysql {}
