@@ -261,6 +261,7 @@ class DbUserModel implements QFrame_Paginable {
       'roleID'    => $role->roleID
     ));
     $this->loadRoles();
+    return $this;
   }
   
   /**

@@ -63,15 +63,15 @@ abstract class Migration_Adapter {
    * @return string
    */
   public final function getSchemaVersion() {
-    if(!in_array('schemaInfo', $this->dbAdapter->listTables())) {
-      $this->createTable('schemaInfo', array('primary' => false), array(
+    if(!in_array('schema_info', $this->dbAdapter->listTables())) {
+      $this->createTable('schema_info', array('primary' => false), array(
         array('version', 'string')
       ));
-      $this->dbAdapter->insert('schemaInfo', array('version' => '00000000000000'));
+      $this->dbAdapter->insert('schema_info', array('version' => '00000000000000'));
       return '00000000000000';
     }
     return $this->dbAdapter->fetchOne(
-      $this->dbAdapter->select()->from('schemaInfo', 'version')->limit(1)
+      $this->dbAdapter->select()->from('schema_info', 'version')->limit(1)
     );
   }
   
@@ -81,7 +81,7 @@ abstract class Migration_Adapter {
    * @param string new schema version
    */
   public final function setSchemaVersion($version) {
-    $this->dbAdapter->update('schemaInfo', array('version' => $version));
+    $this->dbAdapter->update('schema_info', array('version' => $version));
   }
   
   /**

@@ -58,7 +58,11 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
     parent::__construct($config);
     if ($skipReferenceMap === false && is_null(self::$tablesReferenceMap)) {
       $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
-      $tableNames = $adapter->listTables();
+      
+      // get a list of table names that are not 'schema_info' which is used internally by the
+      // migrations system
+      $tableNames = array_diff($adapter->listTables(), array('schema_info'));
+      
       foreach ($tableNames as $tableName) {
         $class = self::tableToClass($tableName);
         $table = new $class(null, true);

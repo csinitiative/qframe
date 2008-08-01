@@ -28,13 +28,28 @@ class QFrame_Db_Table_DbUser extends QFrame_Db_Table {
   protected $_name = 'db_user';
   protected $_primary = 'dbUserID';
   protected $_rowClass = 'QFrame_Db_Table_Row';
+  
+  /**
+   * Execute a query in as database neutral a way as possible
+   *
+   * @param string query
+   */
+  private function query($query) {
+    $connection = $this->getAdapter()->getConnection();
+    if(method_exists($connection, 'exec')) {
+      $connection->exec($query);
+    }  
+    elseif(method_exists($connection, 'query')) {
+      $connection->query($query);
+    }
+  }
 
   public function lock() {
-    $this->getAdapter()->getConnection()->exec('LOCK TABLES `' . $this->_name . '` WRITE');
+    $this->query("LOCK TABLES `{$this->_name}` WRITE");
   }
 
   public function unlock() {
-    $this->getAdapter()->getConnection()->exec('UNLOCK TABLES');
+    $this->query('UNLOCK TABLES');
   }
 
 }
