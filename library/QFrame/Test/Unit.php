@@ -77,7 +77,7 @@ class QFrame_Test_Unit extends PHPUnit_Framework_TestCase {
   
   private function resetDatabase() {
     $db = Zend_Db_Table_Abstract::getDefaultAdapter();
-    foreach($db->listTables() as $table) {
+    foreach(QFrame_Db_Table::getTables() as $table) {
       $db->getConnection()->exec("TRUNCATE TABLE " . $table);
       QFrame_Db_Table::reset($table);
     }

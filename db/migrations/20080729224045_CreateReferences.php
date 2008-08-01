@@ -46,11 +46,11 @@ class CreateReferences extends Migration {
     $this->createTable('question_reference',
       array('primary' => array('questionID', 'referenceDetailID')),
       array(
-        array('questionID', 'integer'),
-        array('referenceDetailID', 'integer'),
+        array('questionID', 'integer', array('limit' => 20)),
+        array('referenceDetailID', 'integer', array('limit' => 20)),
         array('instanceID', 'integer'),
-        array('pageID', 'integer'),
-        array('sectionID', 'integer')
+        array('pageID', 'integer', array('limit' => 20)),
+        array('sectionID', 'integer', array('limit' => 20))
       )
     );
 

@@ -8,7 +8,7 @@ class CreateTableQuestionType extends Migration {
 
   public function up() {
     $this->createTable('question_type', array('primary' => 'questionTypeID'), array(
-      array('questionTypeID', 'integer'),
+      array('questionTypeID', 'integer', array('limit' => 20)),
       array('instanceID', 'integer'),
       array('format', 'string', array('limit' => 20, 'default' => 'T:A-Z0-9')),
       array('maxLength', 'integer', array('null' => true))

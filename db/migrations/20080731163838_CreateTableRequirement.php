@@ -8,7 +8,7 @@ class CreateTableRequirement extends Migration {
       array('primary' => array('assignmentID', 'questionID')),
       array(
         array('assignmentID', 'integer'),
-        array('questionID', 'integer'),
+        array('questionID', 'integer', array('limit' => 20)),
         array('complete', 'boolean'),
         array('dueDate', 'date', array('null' => true))
       )

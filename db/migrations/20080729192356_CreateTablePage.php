@@ -21,8 +21,8 @@ class CreateTablePage extends Migration {
     $this->createTable('page', array('primary' => 'pageID'), array(
       array('questionnaireID', 'integer'),
       array('instanceID', 'integer'),
-      array('pageID', 'integer'),
-      array('pageMasterID', 'integer', array('default' => 0, 'null' => true)),
+      array('pageID', 'integer', array('limit' => 20)),
+      array('pageMasterID', 'integer', array('default' => 0, 'null' => true, 'limit' => 20)),
       array('pageGUID', 'integer'),
       array('seqNumber', 'integer'),
       array('pageHeader', 'string', array('limit' => 30, 'null' => true)),

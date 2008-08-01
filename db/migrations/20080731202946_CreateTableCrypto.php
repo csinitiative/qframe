@@ -8,8 +8,8 @@ class CreateTableCrypto extends Migration {
       array('cryptoID', 'integer'),
       array('name', 'string'),
       array('type', 'string', array('limit' => 50)),
-      array('cryptoKey', 'text'),
-      array('secret', 'text', array('null' => true))
+      array('cryptoKey', 'text', array('limit' => 255)),
+      array('secret', 'text', array('null' => true, 'limit' => 255))
     ));
   }
 
