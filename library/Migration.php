@@ -90,6 +90,11 @@ abstract class Migration {
   private function wrapCall($name, $ident, array $args) {
     self::pushTime('', "-- {$name}({$ident})", '   -> ');
     call_user_func_array(array(Migration_Adapter::getAdapter(), $name), $args);
+
+    // since this call likely made some change to the database, go ahead and rebuild
+    // cached data
+    // QFrame_Db_Table::scanDb();
+
     self::popTime();
   }
     

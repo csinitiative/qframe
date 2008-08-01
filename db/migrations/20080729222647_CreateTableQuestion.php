@@ -22,18 +22,18 @@ class CreateTableQuestion extends Migration {
 
   public function up() {
     $this->createTable('question', array('primary' => 'questionID'), array(
-      array('questionID', 'integer'),
+      array('questionID', 'integer', array('limit' => 20)),
       array('questionnaireID', 'integer'),
       array('instanceID', 'integer'),
-      array('pageID', 'integer'),
-      array('sectionID', 'integer'),
+      array('pageID', 'integer', array('limit' => 20)),
+      array('sectionID', 'integer', array('limit' => 20)),
       array('questionGUID', 'integer'),
       array('questionNumber', 'string', array('limit' => 50, 'null' => true)),
       array('seqNumber', 'integer'),
-      array('questionTypeID', 'integer'),
+      array('questionTypeID', 'integer', array('limit' => 20)),
       array('qText', 'text', array('null' => true)),
       array('required', 'boolean', array('default' => 1)),
-      array('parentID', 'integer', array('default' => 0)),
+      array('parentID', 'integer', array('default' => 0, 'limit' => 20)),
       array('cloneable', 'boolean', array('default' => 0)),
       array('defaultQuestionHidden', 'boolean', array('default' => 0)),
       array('disableCount', 'integer', array('default' => 0))

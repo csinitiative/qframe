@@ -115,7 +115,7 @@ function runTests($tree, $branches) {
    */
   require(_path(CORE_PATH, 'database.php'));
   $db = Zend_Db_Table_Abstract::getDefaultAdapter();
-  foreach($db->listTables() as $table)
+  foreach(QFrame_Db_Table::getTables() as $table)
     $db->getConnection()->exec("TRUNCATE TABLE {$table}");
     
   if(is_array($branches)) {

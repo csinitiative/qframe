@@ -32,7 +32,7 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
   static $cache;
   static $bulkID = 0;
   static $tables;
-  static $tablesReferenceMap;
+  static $tablesReferenceMap = array();
   static $primaryKeysFieldTable = array();
   static $foreignKeysFieldTable = array();
   static $foreignKeysTableField = array();
@@ -54,49 +54,68 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
     return 'QFrame_Db_Table_' . implode('', array_map('ucfirst', explode('_', $tableName)));
   }
   
+  /**
+   * Return a list of relevant table names (administrative names excluded)
+   *
+   * @return array
+   */
+  public static function getTables() {
+    $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
+    return array_diff($adapter->listTables(), array('schema_info'));
+  }
+  
+  /**
+   * Scan the database and store the structures necessary to do mappings from table to table, etc
+   */
+  public static function scanDb() {    
+    // empty out all of the cached db information
+    array_splice(self::$tablesReferenceMap, 0);
+    array_splice(self::$primaryKeysFieldTable, 0);
+    array_splice(self::$foreignKeysFieldTable, 0);
+    array_splice(self::$foreignKeysTableField, 0);
+    
+    $tableNames = self::getTables();
+    
+    foreach ($tableNames as $tableName) {
+      $class = self::tableToClass($tableName);
+      $table = new $class(null, true);
+      foreach ($table->_metadata as $field => $data) {
+        if ($data['PRIMARY'] === true) {
+          self::$primaryKeysFieldTable[$field][$tableName] = true;
+        }
+      }
+    }
+    foreach ($tableNames as $tableName) {
+      $class = self::tableToClass($tableName);
+      $table = new $class(null, true);
+      foreach ($table->_metadata as $field => $data) {
+        if (isset(self::$primaryKeysFieldTable[$field]) || isset(self::$forceForeignKeys[$field])) {
+          self::$foreignKeysFieldTable[$field][$tableName] = true;
+          self::$foreignKeysTableField[$tableName][$field] = true;
+        }
+      }
+    }
+    foreach ($tableNames as $tableName) {
+      $class = self::tableToClass($tableName);
+      $table = new $class(null, true);
+      self::$tablesReferenceMap[$tableName] = array();
+      foreach ($table->_metadata as $field => $data) {
+        if (isset(self::$foreignKeysFieldTable[$field])) {
+          foreach (self::$foreignKeysFieldTable[$field] as $foreignTableName => $data) {
+            $relationshipName = "{$foreignTableName}_{$tableName}"; 
+            self::$tablesReferenceMap[$tableName][$relationshipName] = array('columns'       => $field,
+                                                                             'refTableClass' => self::tableToClass($foreignTableName),
+                                                                             'refColumns'    => $field);
+          }
+        }
+      }
+    }
+  }
+  
   function __construct ($config = array(), $skipReferenceMap = false) {
     parent::__construct($config);
-    if ($skipReferenceMap === false && is_null(self::$tablesReferenceMap)) {
-      $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
-      
-      // get a list of table names that are not 'schema_info' which is used internally by the
-      // migrations system
-      $tableNames = array_diff($adapter->listTables(), array('schema_info'));
-      
-      foreach ($tableNames as $tableName) {
-        $class = self::tableToClass($tableName);
-        $table = new $class(null, true);
-        foreach ($table->_metadata as $field => $data) {
-          if ($data['PRIMARY'] === true) {
-            self::$primaryKeysFieldTable[$field][$tableName] = true;
-          }
-        }
-      }
-      foreach ($tableNames as $tableName) {
-        $class = self::tableToClass($tableName);
-        $table = new $class(null, true);
-        foreach ($table->_metadata as $field => $data) {
-          if (isset(self::$primaryKeysFieldTable[$field]) || isset(self::$forceForeignKeys[$field])) {
-            self::$foreignKeysFieldTable[$field][$tableName] = true;
-            self::$foreignKeysTableField[$tableName][$field] = true;
-          }
-        }
-      }
-      foreach ($tableNames as $tableName) {
-        $class = self::tableToClass($tableName);
-        $table = new $class(null, true);
-        self::$tablesReferenceMap[$tableName] = array();
-        foreach ($table->_metadata as $field => $data) {
-          if (isset(self::$foreignKeysFieldTable[$field])) {
-            foreach (self::$foreignKeysFieldTable[$field] as $foreignTableName => $data) {
-              $relationshipName = "{$foreignTableName}_{$tableName}"; 
-              self::$tablesReferenceMap[$tableName][$relationshipName] = array('columns'       => $field,
-                                                                               'refTableClass' => self::tableToClass($foreignTableName),
-                                                                               'refColumns'    => $field);
-            }
-          }
-        }
-      }
+    if ($skipReferenceMap === false && empty(self::$tablesReferenceMap)) {
+      self::scanDb();
     }
     $tableName = $this->getTableName();
     if (isset(self::$tablesReferenceMap[$tableName])) {
@@ -197,7 +216,7 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
   
   public static function resetAll() {
     $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
-    $tableNames = $adapter->listTables();
+    $tableNames = self::getTables();
     self::$preload = false;
     foreach ($tableNames as $tableName) {
       QFrame_Db_Table::reset($tableName);
@@ -207,7 +226,7 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
   public static function preloadAll($instanceID, $pageID) {
     if (self::$preload) return;
     $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
-    $tableNames = $adapter->listTables();
+    $tableNames = self::getTables();
     foreach ($tableNames as $tableName) {
       if ($tableName === 'question') {
         $table = QFrame_Db_Table::getTable($tableName);

@@ -13,11 +13,11 @@ class CreateTableResponse extends Migration {
     
   public function up() {
     $this->createTable('response', array('primary' => 'responseID'), array(
-      array('responseID', 'integer'),
+      array('responseID', 'integer', array('limit' => 20)),
       array('instanceID', 'integer'),
       array('pageID', 'integer'),
       array('sectionID', 'integer'),
-      array('questionID', 'integer'),
+      array('questionID', 'integer', array('limit' => 20)),
       array('responseDate', 'timestamp', array('null' => true)),
       array('responseEndDate', 'datetime', array('null' => true)),
       array('responseText', 'text', array('null' => true)),

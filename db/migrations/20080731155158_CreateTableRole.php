@@ -17,7 +17,7 @@ class CreateTableRole extends Migration {
     $this->createTable('role', array('primary' => 'roleID'), array(
       array('roleID', 'integer'),
       array('roleDescription', 'string', array('limit' => 128, 'null' => true)),
-      array('ACLstring', 'text', array('null' => true)),
+      array('ACLstring', 'text', array('null' => true, 'limit' => '1M')),
     ));
     
     $this->createTable('assignment', array('primary' => 'assignmentID'), array(
@@ -29,12 +29,15 @@ class CreateTableRole extends Migration {
     
     $this->createIndex('assignment', array('dbUserID', 'roleID'));
     
+    // reset db metadata cache
+    QFrame_Db_Table::scanDb();
+   
     // give the admin user full global rights
     $adminRole = RoleModel::create(array('roleDescription' => 'Administrators'));
     $adminRole->grant('view');
     $adminRole->grant('edit');
     $adminRole->grant('approve');
-    $adminRole->grant('adminiter');
+    $adminRole->grant('administer');
     $adminRole->save();
     DbUserModel::findByUsername('admin')->addRole($adminRole)->save();  
   }

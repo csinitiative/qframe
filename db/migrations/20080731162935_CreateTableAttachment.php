@@ -14,7 +14,7 @@ class CreateTableAttachment extends Migration {
       array('objectID', 'string'),
       array('filename', 'string'),
       array('mime', 'string', array('limit' => 32, 'null' => true)),
-      array('content', 'binary', array('null' => true)),
+      array('content', 'binary', array('null' => true, 'limit' => '20M')),
       array('created', 'timestamp', array('null' => true))
     ));
     $this->createIndex('attachment', array('objectID'));

@@ -10,11 +10,11 @@ class CreateTableRule extends Migration {
 
   public function up() {
     $this->createTable('rule', array('primary' => 'ruleID'), array(
-      array('ruleID', 'integer'),
+      array('ruleID', 'integer', array('limit' => 20)),
       array('questionnaireID', 'integer'),
       array('instanceID', 'integer'),
-      array('sourceID', 'integer'),
-      array('targetID', 'integer'),
+      array('sourceID', 'integer', array('limit' => 20)),
+      array('targetID', 'integer', array('limit' => 20)),
       array('targetGUID', 'integer'),
       array('enabled', 'string', array('limit' => 1, 'default' => 'N')),
       array('type', 'string', array('limit' => 50))

@@ -8,9 +8,9 @@ class CreateTableQuestionPrompt extends Migration {
 
   public function up() {
     $this->createTable('question_prompt', array('primary' => 'promptID'), array(
-      array('promptID', 'integer'),
+      array('promptID', 'integer', array('limit' => 20)),
       array('instanceID', 'integer'),
-      array('questionTypeID', 'integer'),
+      array('questionTypeID', 'integer', array('limit' => 20)),
       array('value', 'string', array('limit' => 25)),
       array('requireAddlInfo', 'boolean', array('default' => 0))
     ));

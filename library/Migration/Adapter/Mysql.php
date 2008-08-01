@@ -29,33 +29,85 @@
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
 abstract class Migration_Adapter_Mysql extends Migration_Adapter {
+  
+  /**
+   * Expands a format like 2M, 2K, 2G, etc. to actual bytes
+   *
+   * @param  string shorthand notated numeric string
+   * @return integer
+   */
+  private static function expandNumericString($string) {
+    $string = preg_replace('/K$/', '000', $string);
+    $string = preg_replace('/M$/', '000000', $string);
+    $string = preg_replace('/G$/', '000000000', $string);
+    if(!is_numeric($string)) throw new Exception("Invalid number string [{$string}]");
+    return intVal($string);
+  }
 
   /**
    * Maps abtract types to the correct MySQL type
    *
    * @param  string  type to be mapped
-   * @param  integer (optional) size
+   * @param  integer (optional) limit
    * @return string
    */
-  public function mapType($type, $size = null) {
+  public function mapType($type, $limit = null) {
     switch(strtolower($type)) {
       case 'integer':
-        return 'INT';
+        switch(true) {
+          case $limit === null:
+            return 'INT';
+          case $limit <= 4:
+            return 'TINYINT';
+          case $limit <= 6:
+            return 'SMALLINT';
+          case $limit <= 9:
+            return 'MEDIUMINT';
+          case $limit <= 11:
+            return 'INT';
+          default:
+            return 'BIGINT';
+        }
       case 'decimal':
       case 'float':
       case 'datetime':
       case 'date':
       case 'timestamp':
       case 'time':
-      case 'text':
         return strtoupper($type);
       case 'string':
-        $size = ($size) ? $size : 255;
-        return "VARCHAR({$size})";
+        $limit = ($limit) ? $limit : 255;
+        return "VARCHAR({$limit})";
+      case 'text':
+        if($limit !== null) $limit = self::expandNumericString($limit);
+        switch(true) {
+          case $limit === null:
+            return 'TEXT';
+          case $limit <= 255:
+            return 'TINYTEXT';
+          case $limit <= 65535:
+            return 'TEXT';
+          case $limit <= 16777215:
+            return 'MEDIUMTEXT';
+          default:
+            return 'LONGTEXT';
+        }
       case 'binary':
-        return 'BLOB';
+        if($limit !== null) $limit = self::expandNumericString($limit);
+        switch(true) {
+          case $limit === null:
+            return 'BLOB';
+          case $limit <= 255:
+            return 'TINYBLOB';
+          case $limit <= 65535:
+            return 'BLOB';
+          case $limit <= 16777215:
+            return 'MEDIUMBLOB';
+          default:
+            return 'LONGBLOB';
+        }
       case 'boolean':
-        return 'TINYINT';
+        return 'TINYINT(1)';
       default:
         throw new Exception("Unknown abstract type '{$type}'");
     }

@@ -20,10 +20,13 @@ class CreateTableDbUser extends Migration {
       array('dbUserPW', 'string', array('limit' => 50)),
       array('dbUserFullName', 'string', array('limit' => 50, 'null' => true)),
       array('dbUserActive', 'string', array('limit' => 1, 'default' => 'Y')),
-      array('ACLstring', 'text', array('null' => true))
+      array('ACLstring', 'text', array('null' => true, 'limit' => '1M'))
     ));
     $this->createIndex('db_user', array('dbUserName'));
     
+    // reset db metadata cache
+    QFrame_Db_Table::scanDb();
+
     // create some default data
     $admin = new DbUserModel(
       array('dbUserName' => 'admin', 'dbUserPW' => 'admin', 'dbUserFullName'  => 'Administrator')
