@@ -21,7 +21,7 @@
 %html{ 'xmlns' => 'http://www.w3.org/1999/xhtml', 'xml:lang' => 'en' }
   %head
     %meta{ 'http-equiv' => 'Content-type', 'content' => 'text/html; charset=utf-8' }/
-    %title CSI QFrame
+    %title= QFrame_Config::instance()->application_name
     != $this->stylesheetTag(array('printmain'), array('media' => 'print'))
     != $this->stylesheetTag(array('main', 'tooltips'))
     - if(isset($localStylesheets) && is_array($localStylesheets))
