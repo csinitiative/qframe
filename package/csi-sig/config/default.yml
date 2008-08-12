@@ -1,0 +1,5 @@
+cache_templates: true
+data_path: data
+base_url: ""
+application_name: CSI SIG
+help_url: https://csi-sig.csinitiative.net/wiki
