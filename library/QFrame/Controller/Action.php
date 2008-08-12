@@ -197,21 +197,21 @@ class QFrame_Controller_Action extends Zend_Controller_Action {
     $controller = Zend_Controller_Front::getInstance()->getRequest()->getControllerName();
     $pages = array(
       array(
-        'label'   => 'Questions',
-        'url'     => $this->view->url(array('controller' => 'index'), null, true),
-        'current' => !($this instanceof QFrame_Controller_Admin),
+        'label'    => 'Questions',
+        'url'      => $this->view->url(array('controller' => 'index'), null, true),
+        'current'  => !($this instanceof QFrame_Controller_Admin),
         'external' => false,
       ),
       array(
-        'label'   => 'Administration',
-        'url'     => $this->view->url(array('controller' => 'admin'), null, true),
-        'current' => ($this instanceof QFrame_Controller_Admin),
+        'label'    => 'Administration',
+        'url'      => $this->view->url(array('controller' => 'admin'), null, true),
+        'current'  => ($this instanceof QFrame_Controller_Admin),
         'external' => false,
       ),
       array(
-        'label'   => 'Online Help',
-        'url'     => 'https://qframe.csinitiative.net/wiki',
-        'current' => false,
+        'label'    => 'Online Help',
+        'url'      => QFrame_Config::instance()->help_url,
+        'current'  => false,
         'external' => true,
       ),
     );
