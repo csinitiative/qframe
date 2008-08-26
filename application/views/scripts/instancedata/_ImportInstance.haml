@@ -21,8 +21,9 @@
 - $localJavascript = array('instancedata')
 
 %h2 Import Instance
-An exported Responses XML document is required to import an instance into. If you exported an
-instance that contains attachments, you must import the instance with a Zip Archive.
+An exported Responses XML document is required to import an instance into
+= QFrame_Config::instance()->application_name
+. If you exported an instance that contains attachments, you must import the instance with a Zip Archive.
 %br/
 %br/
 != $this->form(null, false, 'post', array('class' => 'ImportInstance', 'enctype' => 'multipart/form-data'))
