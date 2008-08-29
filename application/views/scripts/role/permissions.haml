@@ -29,7 +29,7 @@
   #global
     %h2 global permissions
     %ul
-      - foreach(array('view', 'edit', 'approve', 'administer') as $permission)
+      - foreach(array('view', 'edit', 'approve', 'compare', 'administer') as $permission)
         %li
           = $permission
           != $this->formCheckbox("global[{$permission}]", $this->role->hasAccess($permission))

@@ -195,25 +195,30 @@ class QFrame_Controller_Action extends Zend_Controller_Action {
    */
   protected function buildPages() {
     $controller = Zend_Controller_Front::getInstance()->getRequest()->getControllerName();
-    $pages = array(
-      array(
-        'label'    => 'Questions',
-        'url'      => $this->view->url(array('controller' => 'index'), null, true),
-        'current'  => !($this instanceof QFrame_Controller_Admin),
-        'external' => false,
-      ),
-      array(
-        'label'    => 'Administration',
-        'url'      => $this->view->url(array('controller' => 'admin'), null, true),
-        'current'  => ($this instanceof QFrame_Controller_Admin),
-        'external' => false,
-      ),
-      array(
-        'label'    => 'Online Help',
-        'url'      => QFrame_Config::instance()->help_url,
-        'current'  => false,
-        'external' => true,
-      ),
+    $pages[] = array(
+      'label'    => 'Questions',
+      'url'      => $this->view->url(array('controller' => 'index'), null, true),
+      'current'  => !($this instanceof QFrame_Controller_Admin ||
+                      $this instanceof CompareController),
+      'external' => false,
+    );
+    if($this->_user !== null && $this->_user->hasAccess('administer')) $pages[] = array(
+      'label'    => 'Administration',
+      'url'      => $this->view->url(array('controller' => 'admin'), null, true),
+      'current'  => ($this instanceof QFrame_Controller_Admin),
+      'external' => false,
+    );
+    if($this->_user !== null && $this->_user->hasAccess('compare')) $pages[] = array(
+      'label'    => 'Compare',
+      'url'      => $this->view->url(array('controller' => 'compare'), null, true),
+      'current'  => ($this instanceof CompareController),
+      'external' => false,
+    );
+    $pages[] = array(
+      'label'    => 'Online Help',
+      'url'      => QFrame_Config::instance()->help_url,
+      'current'  => false,
+      'external' => true,
     );
     return $pages;
   }

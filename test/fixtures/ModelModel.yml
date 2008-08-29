@@ -1,0 +1,15 @@
+table: model
+
+data:
+  sample1:
+    modelID: 1
+    questionnaireID: 1
+    name: dummy model 1
+  sample2:
+    modelID: 2
+    questionnaireID: 1
+    name: dummy model 2
+  sample3:
+    modelID: 3
+    questionnaireID: 2
+    name: dummy model 3
