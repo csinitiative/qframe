@@ -194,20 +194,4 @@ class ModelModel {
   public function updateAttributes(array $attributes) {
     $this->row->setFromArray($attributes);
   }
-  
-  /**
-   * Get a list of response for this model
-   *
-   * TODO - This will need to be implemented once relationships are set up...hopefully
-   * this can be made dynamic by using __call() and inferring based on relationships
-   * (call to a method findXxxxx would be look for a relationship named xxxxx, etc)
-   *
-   * @param  string|array (optional) a conditions string or an array of conditions
-   * @param  string       (optional) order by clause
-   * @return ModelModel|array 
-   */
-  public function findResponses($conditions = null, $order = null) {
-    /* this will need to return results from a call to ModelResponseModel::find() */
-    return array();
-  }
 }
