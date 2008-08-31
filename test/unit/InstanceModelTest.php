@@ -37,7 +37,13 @@ require_once 'PHPUnit/Framework.php';
 class Test_Unit_InstanceModelTest extends QFrame_Test_Unit {
   
   public function start() {
-    $this->fixture(array('QuestionnaireModel', 'PageModel', 'SectionModel', 'DbUserModel', 'RoleModel'));
+    $this->fixture(array(
+      'QuestionnaireModel',
+      'PageModel',
+      'SectionModel',
+      'DbUserModel',
+      'RoleModel'
+    ));
   }
   
   private function auth() {
@@ -260,7 +266,7 @@ class Test_Unit_InstanceModelTest extends QFrame_Test_Unit {
     $xml2 = preg_replace("/<csi:responseDate>.+<\/csi:responseDate>/", "", $xml2);
     $this->assertEquals($xml1, $xml2);
   }
-  
+    
   /*
    * fetch an instance with some default properties
    */
