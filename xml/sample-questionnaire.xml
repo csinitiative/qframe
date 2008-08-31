@@ -120,7 +120,7 @@ questionnaireName="Demo Questionnaire" questionnaireVersion="1" revision="1" tar
               <csi:questionType>S</csi:questionType>
               <csi:questionPrompt>
                 <csi:promptText>disable</csi:promptText>
-                <csi:disableTab>3</csi:disableTab>
+                <csi:disablePage>3</csi:disablePage>
               </csi:questionPrompt>
               <csi:questionPrompt>
                 <csi:promptText>enable</csi:promptText>

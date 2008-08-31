@@ -179,4 +179,71 @@ class Test_Unit_QuestionnaireModelTest extends QFrame_Test_Unit {
     $this->fail('Import of a self-referential disablePage rule should produce an exception');
   }
   
+  /*
+   * test that fetching instances does not (by default) return hidden instances
+   */
+  public function testFetchingExcludesHiddenInstances() {
+    $this->auth();
+    
+    $q = new QuestionnaireModel(array('questionnaireID' => 1, 'depth' => 'instance'));
+    while($i = $q->nextInstance()) {
+      $hasInstances = true;
+      $this->assertTrue(!$i->hidden);
+    }
+    
+    if(!isset($hasInstances)) $this->fail('Questionnaire should have had at least one instance');
+  }
+  
+  /*
+   * test that getDefaultInstance() works properly
+   */
+  public function testGetDefaultInstanceReturnsLowestIDHiddenInstance() {
+    $this->auth();
+    
+    $q = new QuestionnaireModel(array('questionnaireID' => 1, 'depth' => 'instance'));
+    $i = $q->getDefaultInstance();
+    $this->assertEquals($i->instanceID, 4);
+  }
+  
+  /*
+   * test that importing a new questionnaire creates a default hidden instance
+   */
+  public function testImportingCreatesDefaultInstance() {
+    $this->auth();
+
+    $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/test1-questionnaire-definition.xml");
+    QuestionnaireModel::importXML($xml);
+    $q = new QuestionnaireModel(array(
+      'questionnaireName'    => 'Test1 Questionnaire',
+      'questionnaireVersion' => '3.00',
+      'revision'             => 1,
+      'depth'                => 'instance'
+    ));
+    $this->assertNotNull($q->getDefaultInstance());
+  }
+  
+  /*
+   * test that deleting a questionnaire removes hidden instances as well
+   */
+  public function testDeletingRemovesHiddenInstances() {
+    $this->auth();
+
+    $xml = file_get_contents(PROJECT_PATH . "/test/data/xml/test1-questionnaire-definition.xml");
+    QuestionnaireModel::importXML($xml);
+    $questionnaire = new QuestionnaireModel(array(
+      'questionnaireName'    => 'Test1 Questionnaire',
+      'questionnaireVersion' => '3.00',
+      'revision'             => 1,
+      'depth'                => 'instance'
+    ));
+    $instanceID = $questionnaire->getDefaultInstance()->instanceID;
+    $questionnaire->delete();
+    try {
+      new InstanceModel(array('instanceID' => $instanceID));
+    } catch(Exception $e) {
+      $this->assertTrue(preg_match('/^Instance not found/', $e->getMessage()) > 0);
+      return;
+    }
+    $this->fail('Fetching hidden instance after questionnaire deletion should throw an exception');
+  }
 }

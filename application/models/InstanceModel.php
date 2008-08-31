@@ -655,7 +655,8 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
       'pageClones'   => 0,
       'sectionClones' => 0,
       'questionClones' => 0,
-      'pageResponses' => array('all' => 0)
+      'pageResponses' => array('all' => 0),
+      'hidden' => 0
     ), $options);
 
     if (!isset($instanceName) || strlen($instanceName) == 0) {
@@ -770,8 +771,11 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
       }
     }
     
-    $instanceID = self::$instanceTable->insert(array('questionnaireID' => $questionnaireID,
-                                                     'instanceName' => $instanceName));
+    $instanceID = self::$instanceTable->insert(array(
+      'questionnaireID' => $questionnaireID,
+      'instanceName'    => $instanceName,
+      'hidden'          => $options['hidden']
+    ));
                                                      
     $pages = $questionnaire->getElementsByTagName('page');
     for ($t = 0; $t < $pages->length; $t++) {

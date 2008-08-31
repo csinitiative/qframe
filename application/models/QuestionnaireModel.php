@@ -99,8 +99,10 @@ class QuestionnaireModel extends QFrame_Db_SerializableTransaction implements QF
    * @return InstanceModel object
    */
   public function nextInstance() {
-    $nextInstance = each($this->instances);
-    if(!$nextInstance) return;
+    do {
+      $nextInstance = each($this->instances);
+      if(!$nextInstance) return null;
+    } while($nextInstance['value']->hidden);
 
     return $nextInstance['value'];
   }
@@ -119,21 +121,31 @@ class QuestionnaireModel extends QFrame_Db_SerializableTransaction implements QF
   }
 
   /**
-   * Return the last instance associated with this questionnaire
+   * Determine if this questionnaire possesses any visible instances
    *
-   * @return InstanceModel object
+   * @return boolean
    */
-  public function getFirstInstance() {
-    return current(array_slice($this->instances, 0, 1));
+  public function hasVisibleInstances() {
+    foreach($this->instances as $instance) {
+      if(!$instance->hidden) return true;
+    }
+    return false;
   }
-
+  
   /**
-   * Return the first instance associated with this questionnaire
+   * Return the default (hidden) instance
    *
-   * @return InstanceModel object
+   * @return InstanceModel
    */
-  public function getLastInstance() {
-    return current(array_slice($this->instances, -1, 1));
+  public function getDefaultInstance() {
+    if(!is_array($this->instances)) return null;
+    $lowest = null;
+    foreach($this->instances as $instance) {
+      if($instance->hidden && ($lowest === null || $instance->instanceID < $lowest->instanceID)) {
+        $lowest = $instance;
+      }
+    }
+    return $lowest;
   }
   
   /**
@@ -194,7 +206,9 @@ class QuestionnaireModel extends QFrame_Db_SerializableTransaction implements QF
   }
   
   public static function importXML(&$import, $options = array()) {
-    if (!isset(self::$questionnaireTable)) self::$questionnaireTable = QFrame_Db_Table::getTable('questionnaire');
+    if(!isset(self::$questionnaireTable)) {
+      self::$questionnaireTable = QFrame_Db_Table::getTable('questionnaire');
+    }
     
     libxml_use_internal_errors(true);
     
@@ -266,7 +280,7 @@ class QuestionnaireModel extends QFrame_Db_SerializableTransaction implements QF
                                                          'signature' => $signature));
 
     $questionnaire = new QuestionnaireModel(array('questionnaireID' => $questionnaireID,
-                                            'depth' => 'questionnaire'));                                      
+                                            'depth' => 'questionnaire'));       
     $questionnaire->validateQuestionnaireDefinitionXML($dom);
     
     // store files
@@ -278,13 +292,17 @@ class QuestionnaireModel extends QFrame_Db_SerializableTransaction implements QF
     }
     
     self::dbCommit($transactionNumber);
+    
+    if(!isset($options['SkipQuestionnaireExistCheck']) && !$questionnaire->getDefaultInstance()) {
+      InstanceModel::importXML($xml, '_default_', array('hidden' => 1));
+    }
 
     return $questionnaireID;
   }
   
   private function validateQuestionnaireDefinitionXML($dom) {
     
-    if (!$dom->schemaValidate(PROJECT_PATH . '/xml/csi-qframe-v1_0.xsd')) {
+    if (!$dom->schemaValidate(_path(PROJECT_PATH, 'xml', 'csi-qframe-v1_0.xsd'))) {
       $errors = libxml_get_errors();
       try {
         $logger = Zend_Registry::get('logger');
@@ -302,7 +320,7 @@ class QuestionnaireModel extends QFrame_Db_SerializableTransaction implements QF
   private function questionnaireDefinition2responseSchema($dom) {
     
     $xsl = new DOMDocument();
-    if (!$xsl->load(PROJECT_PATH . DIRECTORY_SEPARATOR . 'xml' . DIRECTORY_SEPARATOR . 'csi-qframe-questionnaire-definition-to-response-schema-v1_0.xsl')) {
+    if (!$xsl->load(_path(PROJECT_PATH, 'xml', 'csi-qframe-questionnaire-definition-to-response-schema-v1_0.xsl'))) {
       $errors = libxml_get_errors();
       try {
         $logger = Zend_Registry::get('logger');
@@ -329,7 +347,7 @@ class QuestionnaireModel extends QFrame_Db_SerializableTransaction implements QF
   private function questionnaireDefinition2completedResponseSchema($dom) {
     
     $xsl = new DOMDocument();
-    if (!$xsl->load(PROJECT_PATH . DIRECTORY_SEPARATOR . 'xml' . DIRECTORY_SEPARATOR . 'csi-qframe-questionnaire-definition-to-completed-response-schema-v1_0.xsl')) {
+    if (!$xsl->load(_path(PROJECT_PATH, 'xml', 'csi-qframe-questionnaire-definition-to-completed-response-schema-v1_0.xsl'))) {
       $errors = libxml_get_errors();
       try {
         $logger = Zend_Registry::get('logger');
@@ -380,9 +398,10 @@ class QuestionnaireModel extends QFrame_Db_SerializableTransaction implements QF
     $where = self::$questionnaireTable->getAdapter()->quoteInto('questionnaireID = ?', intVal($this->questionnaireID));
     $transactionNumber = self::startSerializableTransaction();
     $this->_loadInstances();
-    if (is_a($this->getFirstInstance(), 'InstanceModel')) {
+    if($this->hasVisibleInstances()) {
       throw new Exception('Cannot delete questionnaire while instances exist');
     }
+    foreach($this->instances as $instance) $instance->delete();
     self::$questionnaireTable->delete($where);
     self::dbCommit($transactionNumber);
   
@@ -406,11 +425,10 @@ class QuestionnaireModel extends QFrame_Db_SerializableTransaction implements QF
 
     $this->instances = array();
     foreach ($instanceRowset as $iRow) {
-      $instance = new InstanceModel(array(
+      $this->instances[] = new InstanceModel(array(
         'instanceID' => $iRow->instanceID,
         'depth' => $this->depth
       ));
-      $this->instances[] = $instance;
     }
     
     $this->instancesIndex = 0;
