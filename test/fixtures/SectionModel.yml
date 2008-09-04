@@ -29,3 +29,10 @@ data:
     seqNumber: 2
     sectionHeader: Page 1, Section 2
     description: Sample section description
+  sample5:
+    instanceID: 6
+    pageID: 6
+    sectionID: 5
+    seqNumber: 1
+    sectionHeader: Page 1, Section 1
+    description: Sample section description for _default_

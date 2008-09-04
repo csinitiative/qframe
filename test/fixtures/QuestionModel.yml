@@ -57,3 +57,13 @@ data:
     questionTypeID: 1
     qText: Sample Question 3.1
     parentID: 1
+  sample7:
+    instanceID: 6
+    pageID: 6
+    sectionID: 5
+    questionID: 7
+    questionGUID: 7
+    questionNumber: '1.1'
+    seqNumber: 1
+    questionTypeID: 1
+    qText: Sample Question 1.1

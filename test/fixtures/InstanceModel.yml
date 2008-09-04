@@ -33,3 +33,32 @@ data:
     instanceCurrent: 1
     instanceDate: 2007-10-31 00:00:00
     hidden: 1
+  sample6:
+    questionnaireID: 1
+    instanceID: 6
+    instanceName: _default_
+    instanceCurrent: 1
+    instanceDate: 2008-09-04 00:00:00
+    hidden: 1
+  sample7:
+    questionnaireID: 2
+    instanceID: 7
+    instanceName: _default_
+    instanceCurrent: 1
+    instanceDate: 2008-09-04 00:00:00
+    hidden: 1
+  sample8:
+    questionnaireID: 3
+    instanceID: 8
+    instanceName: _default_
+    instanceCurrent: 1
+    instanceDate: 2008-09-04 00:00:00
+    hidden: 1
+  sample9:
+    questionnaireID: 4
+    instanceID: 9
+    instanceName: _default_
+    instanceCurrent: 1
+    instanceDate: 2008-09-04 00:00:00
+    hidden: 1
+

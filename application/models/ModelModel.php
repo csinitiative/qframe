@@ -34,136 +34,119 @@ class ModelModel {
    * Stores the table object used by this class
    * @var QFrame_Db_Table_Model
    */
-  private static $table = null;
+  private static $modelTable;
+  private static $pageTable;
   
   /**
    * Stores the row object associated with this ModelModel
    * @var QFrame_Db_Table_Row
    */
-  private $row;
+  private $modelRow;
   
   /**
-   * Initialize or return (if already initialized) this class's table object
-   *
-   * @return QFrame_Db_Table_Model
+   * Stores the instance object associated with this ModelModel
+   * @var QFrame_Db_Table_Row
    */
-  public static function table() {
-    if(self::$table === null) self::$table = new QFrame_Db_Table_Model;
-    return self::$table;
-  }
+  private $instance;
   
   /**
-   * Process a conditions argument and return a where clause
-   *
-   * @param  string|array conditions being processed
-   * @return string
+   * Flag for whether the contents of modelRow has changed and should therefore be saved
    */
-  private static function buildWhere($conditions) {
-    $result = null;
-    
-    if(is_array($conditions)) {
-      $pieces = explode('?', '#' . array_shift($conditions) . '#');
-      $result = array_shift($pieces);
-      if(count($pieces) !== count($conditions)) throw new Exception('Invalid conditions');
-      foreach($conditions as $value) {
-        $result .= self::table()->getAdapter()->quote($value) . array_shift($pieces);
-      }
-      $result = substr($result, 1, -1);
-    }
-    elseif($conditions !== null) $result = $conditions;
-    
-    return $result;
-  }
+  private $dirty = 0;
   
   /**
-   * Find a set of models that matches the given criteria
-   *
-   * TODO - This will need to be enriched to deal with $what = ID or array of IDs
-   *
-   * @param  string|array the string 'all', 'first', a single ID, or an array of IDs
-   * @param  string|array (optional) a conditions string or an array of conditions
-   * @param  string       (optional) order by clause
-   * @return ModelModel|array 
+   * Determines depth of object hierarchy
    */
-  public static function find($what, $conditions = null, $order = null) {
-    $models = array();
-    
-    if($what === 'all') {
-      foreach(self::table()->fetchAll(self::buildWhere($conditions), $order) as $row) {
-        $models[] = new ModelModel($row);
-      }
-    }
-    elseif($what === 'first') {
-      $row = self::table()->fetchRow(self::buildWhere($conditions), $order);
-      return ($row) ? new ModelModel($row) : null;
-    }
-    
-    return $models;
-  }
+  private $depth;
   
   /**
-   * Find a set of models that matches the given criteria
-   *
-   * @param  string       the name of the property to limit the find
-   * @param  mixed        value that property must have
-   * @param  string|array (optional) a conditions string or an array of conditions
-   * @param  string       (optional) order by clause
-   * @return array 
+   * ModelPage objects associated with this model
    */
-  public static function findBy($property, $value, $conditions = null, $order = null) {
-    $property = self::table()->getAdapter()->quoteIdentifier($property);
-    $addlConditions = self::buildWhere($conditions);
-    $conditions = self::buildWhere(array("{$property} = ?", $value));
-    if($addlConditions !== null && $addlConditions !== '') {
-      $conditions .= " AND ({$addlConditions})";
-    }
-    
-    return self::find('all', $conditions, $order);
-  }
-
+  private $modelPages = array();
+   
   /**
-   * (PRIVATE) Construct a new ModelModel object
+   * Create a new ModelModel object
    *
    * @param QFrame_Db_Table_Row model row object (this is a new object if $row is not given)
    */
-  private function __construct(QFrame_Db_Table_Row $row) {
-    $this->row = $row;
-  }
-  
-  /**
-   * Return properties of this ModelModel object
-   *
-   * @param  string property name
-   * @return mixed
-   */
-  public function __get($property) {
-    if(isset($this->row->$property)) return $this->row->$property;
-  
-    throw new Exception("Property {$property} of ModelModel does not exist.");
-  }
-  
-  /**
-   * Set properties of this ModelModel object
-   *
-   * @param  string property name
-   * @param  mixed  property value
-   */
-  public function __set($property, $value) {
-    if(isset($this->row->$property)) {
-      $this->row->$property = $value;
+  public function __construct($args = array()) {
+    
+    $args = array_merge(array(
+      'depth'   => 'model'
+    ), $args);
+    $this->depth = $args['depth'];
+    
+    if (!isset(self::$modelTable)) self::$modelTable = QFrame_Db_Table::getTable('model');
+    if (!isset(self::$pageTable)) self::$pageTable = QFrame_Db_Table::getTable('page');
+    
+    if (isset($args['modelID'])) {
+      $where = self::$modelTable->getAdapter()->quoteInto('modelID = ?', $args['modelID']);
+      $this->modelRow = self::$modelTable->fetchRow($where);
+      // model row assertion
+      if (!isset($this->modelRow)) {
+        throw new Exception('Model not found: modelID[' . $args['modelID'] . ']');
+      }
+    }
+    elseif (isset($args['questionnaireID']) && isset($args['name'])) { 
+      $where = self::$modelTable->getAdapter()->quoteInto('questionnaireID = ?', $args['questionnaireID']) .
+               self::$modelTable->getAdapter()->quoteInto('AND name = ?', $args['name']);
+      $this->modelRow = self::$modelTable->fetchRow($where);
+      // model row assertion
+      if (!isset($this->modelRow)) {
+        throw new Exception('Model not found: questionnaireID[' . $args['questionnaireID'] . '], name[' . $args['name'] . ']');
+      }
     }
     else {
-      throw new Exception("Property {$property} of ModelModel does not exist.");
+      throw new InvalidArgumentException('Missing arguments to ModelModel constructor');
+    }
+   
+    $this->instance = new InstanceModel(array('questionnaireID' => $this->modelRow->questionnaireID,
+                                              'instanceName' => '_default_'));
+
+    if ($this->depth !== 'model') $this->_loadModelPages(); 
+  }
+  
+  /**
+   * Return attributes of this ModelModel object
+   *
+   * @param  string key
+   * @return mixed
+   */
+  public function __get($key) {
+    if(isset($this->modelRow->$key)) return $this->modelRow->$key;
+    if(isset($this->instance->$key)) return $this->instance->$key;
+    
+    // Otherwise, throw an exception
+    throw new Exception("Attribute not found [$key]");
+  }
+  
+  /**
+   * Set attributes of this ModelModel object
+   *
+   * @param  string key
+   * @param  mixed value
+   */
+  public function __set($key, $value) {
+    if (isset($this->modelRow->$key)) {
+      if ($this->modelRow->$key !== $value) {
+        $this->modelRow->$key = $value;
+        $this->dirty = 1;
+      }
+    }
+    else {
+      throw new Exception("Attribute not found [$key]");
     }
   }
   
   /**
-   * Return true if a property exists, false otherwise
+   * Return true if an attribute exists, false otherwise
    *
    * @return boolean
    */
-  public function __isset($property) {
-    return isset($this->row->$property);
+  public function __isset($key) {
+    if (isset($this->modelRow->$key)) return true;
+    if(isset($this->instance->$key)) return true;
+    return false;
   }
   
   /**
@@ -172,26 +155,85 @@ class ModelModel {
    * @return boolean
    */
   public function save() {
-    return $this->row->save();
+    
+    if ($this->dirty) {
+      $this->modelRow->save();
+      $this->dirty = 0;
+    }
+    
+    if (count($this->modelPages)) {
+      foreach ($this->modelPages as $modelPage) {
+        $modelPage->save();
+      }
+    }
+    
   }
   
   /**
-   * Create a new model
+   * Returns the next ModelPageModel associated with this ModelModel
    *
-   * @param  array (optional) parameters of this new model
+   * @return ModelPageModel Returns null if there are no further pages
+   */
+  public function nextModelPage() {
+    $nextModelPage = each($this->modelPages);
+    if(!$nextModelPage) return;
+
+    return $nextModelPage['value'];
+  }
+  
+  /**
+   * Deletes this ModelModel object
+   */
+  public function delete() {
+    $this->modelRow->delete();
+  }
+  
+  /**
+   * Create a new ModelModel
+   *
+   * @param  string name The human-readable name of the model
+   * @param  integer questionnaireID The numeric identifier of the questionnaire
    * @return ModelModel
    */
-  public static function create(array $params = array()) {
-    $row = self::table()->createRow($params);
-    return new ModelModel($row);
+  public static function create($name, $questionnaireID) {
+    if (!isset(self::$modelTable)) self::$modelTable = QFrame_Db_Table::getTable('model');
+    if (strlen($name) < 3) { 
+      throw new Exception('Model name must be at least 3 characters');
+    }
+    $questionnaire = new QuestionnaireModel(array('questionnaireID' => $questionnaireID,
+                                                  'depth' => 'questionnaire'));
+    $row = self::$modelTable->createRow();
+    $row->name = $name;
+    $row->questionnaireID = $questionnaire->questionnaireID;
+    $row->save();
+    $model = new ModelModel(array('modelID' => $row->modelID));
+    return $model;
   }
   
   /**
-   * Update a bunch of attributes at once (rather than one at a time as properties)
-   *
-   * @param array attributes being updated
+   * Loads Model Pages
    */
-  public function updateAttributes(array $attributes) {
-    $this->row->setFromArray($attributes);
+  private function _loadModelPages() {
+    $auth = Zend_Auth::getInstance();
+    if($auth->hasIdentity()) $user = DbUserModel::findByUsername($auth->getIdentity());
+    else throw new Exception("Hey, no loading pages without being logged in");
+    
+    $where = self::$pageTable->getAdapter()->quoteInto('instanceID = ?', $this->instance->instanceID);
+    $pageRowset = self::$pageTable->fetchAll($where);
+
+    $this->modelPages = array();
+    foreach ($pageRowset as $tRow) {
+      $page = new PageModel(array(
+        'pageID' => $tRow->pageID,
+        'depth' => 'page'
+      ));
+      $modelPage = new ModelPageModel(array(
+        'modelID' => $this->modelRow->modelID,
+        'pageID' => $tRow->pageID,
+        'depth' => $this->depth
+      ));
+      if($user->hasAnyAccess($page)) $this->modelPages[] = $modelPage;
+    }
   }
+  
 }

@@ -34,12 +34,11 @@ require_once 'PHPUnit/Framework.php';
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class Test_Unit_ModelModelTest extends QFrame_Test_Unit {
+class Test_Unit_ModelQuestionModelTest extends QFrame_Test_Unit {
   
   public function start() {
     $this->fixture(array(
-      'QuestionnaireModel',
-      'InstanceModel',
+      'ModelModel',
       'PageModel',
       'SectionModel',
       'QuestionModel',
@@ -68,49 +67,30 @@ class Test_Unit_ModelModelTest extends QFrame_Test_Unit {
     $user = new DbUserModel(array('dbUserID' => 1));
     $user->addRole($adminRole);
   }
-
+  
   /*
-   * test that fetching one model returns the correct thing (ModelModel object)
+   * test getting question object attributes
    */
-  public function testInstiateModelModel() {
+  public function testGetQuestionAttributes() {
     $this->auth();
-    $model = new ModelModel(array('modelID' => 1));
-    $this->assertTrue($model instanceof ModelModel);
+    $modelQuestion = new ModelQuestionModel(array('modelID' => 1,
+                                                  'questionID' => 7));
+    $this->assertNotNull($modelQuestion->qText);
   }
   
   /*
-   * test that creating a new model works properly
+   * test save() saves all model responses for this question
    */
-  public function testCreateModel() {
+  public function testModelQuestionModelSavesModelResponses() {
     $this->auth();
-    $model = ModelModel::create('new model', 1);
-    $this->assertTrue($model instanceof ModelModel);
-  }
-
-  /*
-   * test getting instance object attributes
-   */
-  public function testGetInstanceAttributes() {
-    $this->auth();
-    $model = new ModelModel(array('modelID' => 1));
-    $this->assertNotNull($model->instanceName);
-  }
-  
-  /*
-   * test save() saves all model responses
-   */
-  public function testModelModelSavesModelResponses() {
-    $this->auth();
-    $model = new ModelModel(array('modelID' => 1,
-                                  'depth' => 'response'));
-    $page = $model->nextModelPage();
-    $section = $page->nextModelSection();
-    $question = $section->nextModelQuestion();
+    $question = new ModelQuestionModel(array('modelID' => 1,
+                                             'questionID' => 7,
+                                             'depth' => 'response'));
     $response = $question->createModelResponse('match', 'test');
     $modelResponseID = $response->modelResponseID;
-    $model->save();
+    $question->save();
     $testResponse = new ModelResponseModel(array('modelResponseID' => $modelResponseID));
     $this->assertEquals($modelResponseID, $testResponse->modelResponseID);
   }
-  
+
 }
