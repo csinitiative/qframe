@@ -79,15 +79,24 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
         throw new Exception('Instance not found [' . $args['instanceID'] . ']');
       }
       $this->parent = new QuestionnaireModel(array('questionnaireID' => $this->instanceRow->questionnaireID,
-                                                'depth' => 'questionnaire'));
+                                                   'depth' => 'questionnaire'));
     }
     elseif (isset($args['questionnaireName']) && isset($args['questionnaireVersion']) && isset($args['revision']) && isset($args['instanceName'])) {
       $this->parent = new QuestionnaireModel(array('questionnaireName' => $args['questionnaireName'],
-                                                'questionnaireVersion' => $args['questionnaireVersion'],
-                                                'revision' => $args['revision'],
-                                                'depth' => 'questionnaire'));
+                                                   'questionnaireVersion' => $args['questionnaireVersion'],
+                                                   'revision' => $args['revision'],
+                                                   'depth' => 'questionnaire'));
       $where = self::$instanceTable->getAdapter()->quoteInto('questionnaireID = ?', $this->parent->questionnaireID);
       $where .= self::$instanceTable->getAdapter()->quoteInto(' AND instanceName = ?', $args['instanceName']);
+      $this->instanceRow = self::$instanceTable->fetchRow($where);
+      // instance row assertion
+      if (!isset($this->instanceRow)) {
+        throw new Exception('Instance not found');
+      }
+    }
+    elseif (isset($args['questionnaireID']) && isset($args['instanceName'])) {
+      $where = self::$instanceTable->getAdapter()->quoteInto('questionnaireID = ?', $args['questionnaireID']) . 
+               self::$instanceTable->getAdapter()->quoteInto(' AND instanceName = ?', $args['instanceName']);
       $this->instanceRow = self::$instanceTable->fetchRow($where);
       // instance row assertion
       if (!isset($this->instanceRow)) {
@@ -117,7 +126,17 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     }
  
     return $this->parent->$key;
-   }
+  }
+  
+  /**
+   * Return true if an attribute exists, false otherwise
+   *
+   * @return boolean
+   */
+  public function __isset($key) {
+    if(isset($this->instanceRow->$key)) return true;
+    return false;
+  }
 
   /**
    * Saves InstanceModel data to the database and children objects as specified by depth

@@ -69,13 +69,13 @@ class PageModel implements QFrame_Lockable, QFrame_Permissible {
     $rows = self::$pageTable->fetchRows('pageID', $args['pageID']);
     $this->pageRow = $rows[0];
     
-    // Load up table data in bulk to limit sql queries
-    QFrame_Db_Table::preloadAll($this->pageRow->instanceID, $this->pageRow->pageID);
-
     // page row assertion
     if ($this->pageRow === NULL) {
       throw new Exception('Page not found [' . $args['pageID'] . ']');
     }
+    
+    // Load up table data in bulk to limit sql queries
+    QFrame_Db_Table::preloadAll($this->pageRow->instanceID, $this->pageRow->pageID);
 
     $this->depth = $args['depth'];
     

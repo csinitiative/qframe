@@ -34,17 +34,10 @@ require_once 'PHPUnit/Framework.php';
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class Test_Unit_ModelModelTest extends QFrame_Test_Unit {
+class Test_Unit_ModelResponseModelTest extends QFrame_Test_Unit {
   
   public function start() {
     $this->fixture(array(
-      'QuestionnaireModel',
-      'InstanceModel',
-      'PageModel',
-      'SectionModel',
-      'QuestionModel',
-      'QuestionTypeModel',
-      'QuestionPromptModel',
       'ResponseModel',
       'DbUserModel',
       'RoleModel'
@@ -68,49 +61,8 @@ class Test_Unit_ModelModelTest extends QFrame_Test_Unit {
     $user = new DbUserModel(array('dbUserID' => 1));
     $user->addRole($adminRole);
   }
-
-  /*
-   * test that fetching one model returns the correct thing (ModelModel object)
-   */
-  public function testInstiateModelModel() {
-    $this->auth();
-    $model = new ModelModel(array('modelID' => 1));
-    $this->assertTrue($model instanceof ModelModel);
-  }
   
-  /*
-   * test that creating a new model works properly
-   */
-  public function testCreateModel() {
-    $this->auth();
-    $model = ModelModel::create('new model', 1);
-    $this->assertTrue($model instanceof ModelModel);
+  public function testTrue() {
   }
 
-  /*
-   * test getting instance object attributes
-   */
-  public function testGetInstanceAttributes() {
-    $this->auth();
-    $model = new ModelModel(array('modelID' => 1));
-    $this->assertNotNull($model->instanceName);
-  }
-  
-  /*
-   * test save() saves all model responses
-   */
-  public function testModelModelSavesModelResponses() {
-    $this->auth();
-    $model = new ModelModel(array('modelID' => 1,
-                                  'depth' => 'response'));
-    $page = $model->nextModelPage();
-    $section = $page->nextModelSection();
-    $question = $section->nextModelQuestion();
-    $response = $question->createModelResponse('match', 'test');
-    $modelResponseID = $response->modelResponseID;
-    $model->save();
-    $testResponse = new ModelResponseModel(array('modelResponseID' => $modelResponseID));
-    $this->assertEquals($modelResponseID, $testResponse->modelResponseID);
-  }
-  
 }

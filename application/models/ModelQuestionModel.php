@@ -1,0 +1,187 @@
+<?php
+/**
+ * This file is part of the CSI RegQ.
+ *
+ * The CSI RegQ is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * The CSI RegQ is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @category   Application
+ * @package    Models
+ * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
+ * @license    http://www.gnu.org/licenses/   GNU General Public License v3
+ */
+
+
+/**
+ * @category   Application
+ * @package    Models
+ * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
+ * @license    http://www.gnu.org/licenses/   GNU General Public License v3
+ */
+class ModelQuestionModel {
+  
+  /**
+   * Stores the model table object used by this class
+   * @var QFrame_Db_Table_Model
+   */
+  private static $modelTable;
+  
+  /**
+   * Stores the model response table object used by this class
+   * @var QFrame_Db_Table_ModelResponse
+   */
+  private static $modelResponseTable;
+  
+  /**
+   * Stores the question object
+   */
+  private $question;
+    
+  /**
+   * Determines depth of object hierarchy
+   */
+  private $depth;
+  
+  /**
+   * ModelResponse objects associated with this model
+   */
+  private $modelResponses = array();
+   
+  /**
+   * Store the modelID
+   */
+  private $modelID;
+   
+  /**
+   * Instantiate a new ModelQuestionModel object
+   *
+   * @param array
+   */
+  public function __construct($args = array()) {
+
+    $args = array_merge(array(
+      'depth'   => 'question'
+    ), $args);
+    $this->depth = $args['depth'];
+    
+    if (!isset(self::$modelTable)) self::$modelTable = QFrame_Db_Table::getTable('model');
+    if (!isset(self::$modelResponseTable)) self::$modelResponseTable = QFrame_Db_Table::getTable('model_response');
+    
+    if (isset($args['modelID']) && isset($args['questionID'])) {
+      $this->modelID = $args['modelID'];
+      $this->question = new QuestionModel(array('questionID' => $args['questionID'],
+                                                'depth' => $args['depth'])); 
+    }
+    else {
+      throw new InvalidArgumentException('Missing arguments to ModelQuestionModel constructor');
+    }
+   
+    if ($this->depth !== 'question') $this->_loadModelResponses();
+     
+  }
+  
+  /**
+   * Return attributes of this ModelQuestion object
+   *
+   * @param  string key
+   * @return mixed
+   */
+  public function __get($key) {
+    return $this->question->$key;
+  }
+  
+  /**
+   * Return true if an attribute exists, false otherwise
+   *
+   * @return boolean
+   */
+  public function __isset($key) {
+    if (isset($this->question->$key)) return true;
+    return false;
+  }
+  
+  /**
+   * Save this ModelQuestionModel object and its descendents
+   *
+   * @return boolean
+   */
+  public function save() {
+    
+    if (count($this->modelResponses)) {
+      foreach ($this->modelResponses as $modelResponse) {
+        $modelResponse->save();
+      }
+    }
+  
+  }
+  
+  /**
+   * Creates a ModelResponse object for this ModelQuestionModel
+   *
+   * @param type One of 'no preference', 'match' (exact text match), 'selected', 'not selected'
+   * @param target If for a question of type T, then exact text.  If type S or M (single or multi-select),
+   * then the promptID 
+   * @return ModelResponseModel
+   */
+  public function createModelResponse($type, $target) {
+    $row = self::$modelResponseTable->createRow();
+    if ($type !== 'no preference' && $type !== 'match' && $type !== 'selected' && $type !== 'not selected') {
+      throw new Exception('Unknown model response type [${type}]');
+    }
+    $row->type = $type;
+    $row->target = $target;
+    $row->modelID = $this->modelID;
+    $row->pageID = $this->question->pageID;
+    $row->sectionID = $this->question->sectionID;
+    $row->questionID = $this->question->questionID;
+    $row->save();
+    $modelResponse = new ModelResponseModel(array('modelResponseID' => $row->modelResponseID));
+    return $modelResponse;
+  }
+  
+  /**
+   * Returns the next ModelResponseModel associated with this ModelQuestionModel
+   *
+   * @return ModelResponseModel Returns null if there are no further pages
+   */
+  public function nextModelResponse() {
+    $nextModelResponse = each($this->modelResponses);
+    if(!$nextModelResponse) return;
+
+    return $nextModelResponse['value'];
+  }
+  
+  /**
+   * Deletes all responses for this Model Question
+   */
+  public function delete() {
+    $where = self::$modelTable->getAdapter()->quoteInto('modelID = ?', $this->modelID) .
+             self::$modelTable->getAdapter()->quoteInto(' AND questionID = ?', $this->question->questionID);
+    $this->modelTable->delete($where);
+  }
+  
+
+  /**
+   * Loads Model Responses
+   */
+  private function _loadModelResponses() {
+    $where = self::$modelResponseTable->getAdapter()->quoteInto('modelID = ?', $this->modelID) .
+             self::$modelResponseTable->getAdapter()->quoteInto(' AND questionID = ?', $this->question->questionID);
+
+    $rows = self::$modelResponseTable->fetchAll($where);
+    foreach ($rows as $row) {
+      $this->modelResponses[] = new ModelResponseModel(array('modelResponseID' => $row->modelResponseID));
+    }
+  }
+  
+}

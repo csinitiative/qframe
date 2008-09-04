@@ -31,99 +31,115 @@
 class ModelResponseModel {
   
   /**
-   * Model to which this response belongs
-   * @var ModelModel
+   * Stores the model table object used by this class
+   * @var QFrame_Db_Table_Model
    */
-  private $model = null;
+  private static $modelTable;
 
   /**
-   * (PRIVATE) Construct a new ModelResponseModel object
-   *
-   * @param XXX model_response row object (this is a new object if $row is not given)
+   * Stores the model response table object used by this class
+   * @var QFrame_Db_Table_ModelResponse
    */
-  private function __construct(/* XXX */$row = null) {
+  private static $modelResponseTable;
+  
+  /**
+   * Stores the ModelResponse row object
+   */
+  private $modelResponseRow;
+
+  /**
+   * Determines depth of object hierarchy
+   */
+  private $depth;
+   
+  /**
+   * Instantiate a new ModelResponseModel object
+   *
+   * @param array
+   */
+  public function __construct($args = array()) {
+
+    $args = array_merge(array(
+      'depth'   => 'response'
+    ), $args);
+    $this->depth = $args['depth'];
     
+    if (!isset(self::$modelTable)) self::$modelTable = QFrame_Db_Table::getTable('model');
+    if (!isset(self::$modelResponseTable)) self::$modelResponseTable = QFrame_Db_Table::getTable('model_response');
+    
+    if (isset($args['modelResponseID'])) {
+      $where = self::$modelResponseTable->getAdapter()->quoteInto('modelResponseID = ?', $args['modelResponseID']);
+      $this->modelResponseRow = self::$modelResponseTable->fetchRow($where);
+    }
+    else {
+      throw new InvalidArgumentException('Missing arguments to ModelResponseModel constructor');
+    }
+   
   }
   
   /**
-   * Return properties of this ModelResponseModel object
+   * Return attributes of this ModelResponse object
    *
-   * @param  string property name
+   * @param  string key
    * @return mixed
    */
-  public function __get($property) {
-    if($property === 'model') return $model;
-    if($property === 'name') return 'Dummy Response';
-  
-    throw new Exception("Property {$property} of ModelResponseModel does not exist.");
-  }
-  
-  /**
-   * Set properties of this ModelResponseModel object
-   *
-   * @param  string property name
-   * @param  mixed  property value
-   */
-  public function __set($property, $value) {
-    if($property === 'model') {
-      $this->model = $value;
-      /* also set $this->modelID to $value->modelID */
-      return;
-    }
-    if($property === 'name') return;
+  public function __get($key) {
+    if(isset($this->modelResponseRow->$key)) return $this->modelResponseRow->$key;
 
-    throw new Exception("Property {$property} of ModelResponseModel does not exist.");
+    // Otherwise, throw an exception
+    throw new Exception("Attribute not found [$key]");
+  }
+
+  /**
+   * Set attributes of this ModelResponse object
+   *
+   * @param  string key
+   * @param  string value
+   */
+   public function __set ($key, $value) {
+
+    if (isset($this->modelResponseRow->$key)) {
+      if ($this->modelResponseRow->$key !== $value) {
+        $this->modelResponseRow->$key = $value;
+        $this->dirty = 1;
+      }
+    }
+    else {
+      throw new Exception("Attribute not found [$key]");
+    }
+
   }
   
   /**
-   * Return true if a property exists, false otherwise
+   * Return true if an attribute exists, false otherwise
    *
    * @return boolean
    */
-  public function __isset($property) {
-    return ($property === 'name' || ($property === 'model' && $this->model !== null));
+  public function __isset($key) {
+    if (isset($this->modelResponseRow->$key)) return true;
+    return false;
   }
   
   /**
-   * Save this ModelResponseModel object, return true on success, false on failure
+   * Save this ModelResponseModel object
    *
    * @return boolean
    */
   public function save() {
-    return true;
+    
+    if (!$this->dirty) return;
+
+    $this->modelResponseRow->save();
+
+    $this->dirty = 0;
+  
   }
   
   /**
-   * Create a new model
-   *
-   * @param  array (optional) parameters of this new model
-   * @return ModelResponseModel
+   * Deletes this model response
    */
-  public static function create(array $params = array()) {
-    return new ModelResponseModel(null);
+  public function delete() {
+    $this->modelResponseRow->delete();
   }
-  
-  /**
-   * Update a bunch of attributes at once (rather than one at a time as properties)
-   *
-   * @param array attributes being updated
-   */
-  public function updateAttributes(array $attributes) {
-    /* this needs to be implemented (and __set() may end up using this under the covers) */
-  }
-  
-  /**
-   * Find a set of models that matches the given criteria
-   *
-   * @param  string|array the string 'all', 'first', a single ID, or an array of IDs
-   * @param  string|array (optional) a conditions string or an array of conditions
-   * @param  string       (optional) order by clause
-   * @return ModelResponseModel|array 
-   */
-  public static function find($what, $conditions = '1=1', $order = '') {
-    return array(
-      new ModelResponseModel,
-      new ModelResponseModel
-    )
-  }
+
 }
