@@ -211,6 +211,23 @@ class ModelModel {
   }
   
   /**
+   * Get all models associated with a questionnaire
+   *
+   * @param QuestionnaireModel
+   * @return array ModelModel
+   */
+  public static function getAllModels(QuestionnaireModel $questionnaire) {
+    if (!isset(self::$modelTable)) self::$modelTable = QFrame_Db_Table::getTable('model');
+    $where = self::$modelTable->getAdapter()->quoteInto('questionnaireID = ?', $questionnaire->questionnaireID);
+    $rows = self::$modelTable->fetchAll($where);
+    $models = array();
+    foreach ($rows as $row) {
+      $models[] = new ModelModel(array('modelID' => $row->modelID));
+    }
+    return $models;
+  }
+  
+  /**
    * Loads Model Pages
    */
   private function _loadModelPages() {
