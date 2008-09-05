@@ -22,7 +22,7 @@
 %div{ 'id' => 'section-' . $this->section->sectionID, 'class' => ($disabled) ? 'disabled fieldset' : 'fieldset' }
   != $this->formHidden('disableCount', $this->section->disableCount)
   .legend
-    = $this->h($this->section->sectionHeader)
+    = $this->section->sectionHeader
     %span{ 'class' => 'disableText' }
       = ($disabled) ? ' (disabled)' : ''
     %em

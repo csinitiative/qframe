@@ -1,0 +1,54 @@
+-#
+  This file is part of the CSI QFrame.
+  
+  The CSI QFrame is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+  
+  The CSI QFrame is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  
+  @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
+  @license    http://www.gnu.org/licenses/   GNU General Public License v3
+
+- $localStylesheets = array('model', 'pages', 'approve', 'calendar')
+- $localJavascript = array('pages', 'jscalendar-1.0/calendar', 'jscalendar-1.0/lang/calendar-en', 'calendar')
+
+#currentModel
+  You are currently editing:
+  %strong= $this->model->name
+  != $this->linkTo(array('action' => null, 'id' => null), '[done editing]')
+
+%h1
+  - if(!$this->isBlank($this->page->headerText))
+    != $this->markdown($this->h($this->page->headerText))
+  - else
+    = $this->page->pageHeader
+  - if(count($this->page->references) > 0)
+    %a#togglePageReferences{ 'href' => '#' } show references
+    #pageReferences{ 'style' => 'display: none;' }
+      != $this->referenceString($this->page)
+      
+- while(($section = $this->page->nextSection()))
+  .fieldset
+    .legend
+      = $section->sectionHeader
+    %em
+      != $this->referenceString($section)
+    %ol
+      - while($question = $section->nextQuestion())
+        %li
+          != $this->renderQuestion($question)
+
+#formControls
+  != $this->linkTo('#save', $this->imageTag('icons/dddddd/disk.png'), array('class' => 'controlButton'))
+  != $this->linkTo('#cancel', $this->imageTag('icons/dddddd/cancel.png'), array('class' => 'controlButton'))
+  
+- if(!$this->isBlank($this->page->footerText))
+  != $this->markdown($this->h($this->page->footerText))

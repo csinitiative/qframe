@@ -12,7 +12,7 @@ var Dashboard = {
     container.down('input[type=text]').show();
     container.down('input[name=create]').show();
     container.down('input[name=cancel]').show();
-    container.down('a.new-link').hide();
+    container.down('input[type=button][name=new]').hide();
     container.up('form').action = '/compare/create';
     container.up('form').method = 'post';
   },
@@ -30,17 +30,17 @@ var Dashboard = {
     container.down('input[type=text]').value = '';
     container.down('input[name=create]').hide();
     container.down('input[name=cancel]').hide();
-    container.down('a.new-link').show();
+    container.down('input[type=button][name=new]').show();
     container.up('form').action = '/compare';
     container.up('form').method = 'get';
   },
   
   /**
-   * Event handler for drop down change events
+   * Event handler for drop down change events on questionnaire select box
    *
    * @param Event change event
    */
-  selectChange: function(event) {
+  questionnaireSelected: function(event) {
     var form = Event.element(event).up('form');
     form.select('input[name^="model["]').each(function(element) { element.remove() });
     form.action = '/compare';
@@ -49,23 +49,54 @@ var Dashboard = {
   },
   
   /**
+   * Redirect to the edit path for the selected model
+   *
+   * @param Event event in the case that this is called as an event handler
+   */
+  editModel: function(event) {
+    var editPath = $F('editPath') + '/' + $F('model');
+    window.location = editPath;
+  },
+  
+  /**
+  * Event handler for drop down change events on model select box
+   *
+   * @param Event change event
+   */
+  modelSelected: function(event) {
+    var form = Event.element(event).up('form');
+    if($F('model') != 0) {
+      form.down('input[type=button][name=edit]').enable();
+      form.down('input[type=button][name=compare]').enable();
+    }
+    else {
+      form.down('input[type=button][name=edit]').disable();
+      form.down('input[type=button][name=compare]').disable();
+    }
+  },
+  
+  /**
    * Perform setup tasks for the dashboard
    *
    * @param Event window load event object
    */
   setup: function(event) {
-    $$('.option select').each(function(select) {
-      select.observe('change', Dashboard.selectChange);
-    });
+    // fire the appropriate function when the questionnaire select box value changes
+    $$('select[name=questionnaire]').first().observe('change', Dashboard.questionnaireSelected);
+
+    // fire the appropriate function when the questionnaire select box value changes
+    $$('select[name=model]').first().observe('change', Dashboard.modelSelected);
     
-    $$('a.new-link').each(function(link) {
-      link.observe('click', Dashboard.createNew);
-    });
+    // fire the appropriate function when the new model button is clicked
+    $$('input[type=button][name=new]').first().observe('click', Dashboard.createNew);
     
-    $$('input[name=cancel]').each(function(button) {
-      button.observe('click', Dashboard.cancelNew);
-    });
+    // fire the appropriate function when the cancel creation of new model button is clicked
+    $$('input[name=cancel]').first().observe('click', Dashboard.cancelNew);
+    
+    // fire the appropriate function when the edit model button is clicked
+    $$('input[type=button][name=edit]').first().observe('click', Dashboard.editModel);
   }
 }
 
+// on window load, run the setup function for the this file
 Event.observe(window, 'load', Dashboard.setup);

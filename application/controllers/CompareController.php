@@ -25,12 +25,36 @@
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
 class CompareController extends QFrame_Controller_Action {
+  
+  /**
+   * Store the model we are current working on
+   * @var ModelModel
+   */
+  private $model;
 
   /**
    * Override the default preDispatch to prevent loading of an instance which is
    * not necessary in the compare context
    */
-  public function preDispatch() {}
+  public function preDispatch() {
+    $id = $this->_getParam('id');
+    if($id) {
+      $this->model = new ModelModel(array('modelID' => $id));
+      $questionnaire = new QuestionnaireModel(array(
+        'questionnaireID' => $this->model->questionnaireID,
+        'depth'           => 'page'
+      ));
+      $this->_instance = $questionnaire->getDefaultInstance();
+      if($this->_hasParam('page')) {
+        $this->view->currentPageID = $this->_getParam('page');
+      }
+      else {
+        $this->view->currentPageID = $this->_instance->getFirstPage()->pageID;
+      }
+      
+      $this->view->menuItems = $this->buildMenu("/compare/edit/{$id}?page=");
+    }
+  }
   
   /**
    * Index action, either allows you to pick a model, or, if a model is selected already,
@@ -45,7 +69,8 @@ class CompareController extends QFrame_Controller_Action {
     $this->view->selected = $this->_getParam('questionnaire');
     if($this->view->selected === null) $this->view->models = null;
     else {
-      $this->view->models = ModelModel::findBy('questionnaireID', $this->view->selected);
+      $questionnaire = new QuestionnaireModel(array('questionnaireID' => $this->view->selected));
+      $this->view->models = ModelModel::getAllModels($questionnaire);
     }
   }
   
@@ -53,8 +78,20 @@ class CompareController extends QFrame_Controller_Action {
    * Create action.  Simply creates a new model.
    */
   public function createAction() {
-    $model = ModelModel::create($this->_getParam('model'));
-    $model->save();
+    $modelParams = $this->_getParam('model');
+    ModelModel::create($modelParams['name'], $modelParams['questionnaireID']);
+    // figure out if there is a way to do this better
     $this->_redirector->gotoUrl("/compare?questionnaire={$this->_getParam('questionnaire')}");
+  }
+  
+  /**
+   * Edit action. Edit a model.
+   */
+  public function editAction() {
+    $this->view->page = new PageModel(array(
+      'pageID' => $this->view->currentPageID,
+      'depth'  => 'question'
+    ));
+    $this->view->model = $this->model;
   }
 }
