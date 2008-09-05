@@ -44,8 +44,15 @@ class ModelSectionModel {
   
   /**
    * Stores the section object
+   * @var SectionModel
    */
   private $section;
+  
+  /**
+   * Stores the instance that is being compared to the model (optional)
+   * @var InstanceModel
+   */
+  private $compareInstance;
     
   /**
    * Determines depth of object hierarchy
@@ -145,7 +152,6 @@ class ModelSectionModel {
     $this->modelTable->delete($where);
   }
   
-
   /**
    * Loads Model Questions
    */
@@ -157,7 +163,8 @@ class ModelSectionModel {
     foreach ($rows as $row) {
       $this->modelQuestions[] = new ModelQuestionModel(array('modelID' => $this->modelID,
                                                              'questionID' => $row->questionID,
-                                                             'depth' => $this->depth
+                                                             'depth' => $this->depth,
+                                                             'instance' => $this->compareInstance
       ));
     }
   }

@@ -48,7 +48,7 @@ class SectionModel {
    * @var string
    */
   private $depth;
-
+   
   /**
    * Holds a reference to the parent object
    * @var PageModel
@@ -78,9 +78,10 @@ class SectionModel {
   function __construct ($args = array()) {
     // merge default parameters with arguments
     $args = array_merge(array(
-      'depth'   => 'response'
+      'depth' => 'response',
     ), $args);
-
+    $this->depth = $args['depth'];
+    
     // argument assertions
     if (!isset($args['sectionID'])) {
       throw new InvalidArgumentException('Missing sectionID as argument to SectionModel()');
@@ -100,7 +101,6 @@ class SectionModel {
     }
 
     if ($args['depth'] !== 'section') {
-      $this->depth = $args['depth'];
       $this->_loadQuestions();
     }
     
@@ -208,9 +208,8 @@ class SectionModel {
     $this->questions = array();
     foreach ($questions as $question) {
       if ($question->parentID == 0) {
-        $this->questions[] = new QuestionModel(array(
-          'questionID'  => $question->questionID,
-          'depth'       => $this->depth
+        $this->questions[] = new QuestionModel(array('questionID' => $question->questionID,
+                                                     'depth' => $this->depth
         ));
       }
     }

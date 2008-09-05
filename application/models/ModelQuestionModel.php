@@ -44,8 +44,15 @@ class ModelQuestionModel {
   
   /**
    * Stores the question object
+   * @var QuestionModel
    */
   private $question;
+  
+  /**
+   * Stores the instance that is being compared to the model (optional)
+   * @var InstanceModel
+   */
+  private $compareInstance;
     
   /**
    * Determines depth of object hierarchy
@@ -70,9 +77,11 @@ class ModelQuestionModel {
   public function __construct($args = array()) {
 
     $args = array_merge(array(
-      'depth'   => 'question'
+      'depth' => 'question',
+      'instance' => null
     ), $args);
     $this->depth = $args['depth'];
+    $this->compareInstance = $args['instance'];
     
     if (!isset(self::$modelTable)) self::$modelTable = QFrame_Db_Table::getTable('model');
     if (!isset(self::$modelResponseTable)) self::$modelResponseTable = QFrame_Db_Table::getTable('model_response');
@@ -170,6 +179,107 @@ class ModelQuestionModel {
     $this->modelTable->delete($where);
   }
   
+  /**
+   * Returns comparison information based on criteria arguments
+   * 
+   * @param array See argument array below
+   * @return array Following this structure:
+   *               array($criteria_term => array(array('question' => QuestionModel,
+   *                                                   'messages' => array(string)
+   *                                                  )
+   *                                            )
+   *               )
+   */
+  public function compare ($args = array()) {
+    // Comparison criteria
+    $args = array_merge(array('model_fail' => true,  
+                              'model_pass' => false,
+                              'additional_information' => false
+    ), $args);
+    
+    if ($this->compareInstance->depth !== 'response') throw new Exception('Comparison not possible since compare instance depth not set to response');
+    if ($this->depth !== 'response') throw new Exception('Comparison not possible since depth not set to response');
+    
+    $response = $this->question->getResponse();
+    
+    $result = array();
+    
+    if ($args['model_fail'] || $args['model_pass']) {
+      $messages = array();
+      $pass = null;
+      while ($modelResponse = $this->nextModelResponse()) {
+        switch ($modelResponse->type) {
+          case "no preference":
+            break;
+          case "match":
+            if ($modelResponse->target == $response->responseText) {
+              $messages['pass'][] = "Matches " . $modelResponse->target;
+              $pass = true;
+            }
+            else {
+              $messages['fail'][] = "Does not match " . $modelResponse->target;
+              $pass = false;
+              break;
+            }
+            break;
+          case "selected":
+            if ($modelResponse->target == $response->responseText) {
+              $messages['pass'][] = "Prompt selected: " . $modelResponse->promptText();
+              $pass = true;
+            }
+            else {
+              $messages['fail'][] = "Prompt not selected: " . $modelResponse->promptText();
+              $pass = false;
+              break;
+            }
+            break;
+          case "not selected":
+            if ($modelResponse->target == $response->responseText) {
+              $messages['fail'][] = "Prompt selected: " . $modelResponse->promptText();
+              $pass = false;
+              break;
+            }
+            else {
+              $messages['pass'][] = "Prompt not selected: " . $modelResponse->promptText();
+              $pass = true;
+            }
+            break;
+          case "or selected":
+            if ($modelResponse->target == $response->responseText) {
+              $messages['pass'][] = "Or prompt selected: " . $modelResponse->promptText();
+              $pass = true;
+            }
+            else {
+              if ($pass !== TRUE) {
+                $messages['fail'][] = "And prompt not selected: " . $modelResponse->promptText();
+                $pass = false;
+              }
+            }
+            break;
+          default:
+            throw new Exception('Unknown model response type');
+        }
+      }
+      
+      if ($pass === TRUE && $args['model_pass']) {
+        $result['model_pass'][] = array('question' => $this->question,
+                                        'messages' => $messages['pass']
+        );
+      }
+      
+      if ($pass === FALSE && $args['model_fail']) {
+        $result['model_fail'][] = array('question' => $this->question,
+                                        'messages' => $messages['fail']
+        );
+      }
+    }
+    
+    if ($args['additional_information'] && count($result) === 0 && strlen($response->additionalInfo) > 0) {
+      $result['additional_information'][] = array('question' => $this->question);
+    }
+    
+    return $result;
+  }
 
   /**
    * Loads Model Responses
@@ -180,7 +290,8 @@ class ModelQuestionModel {
 
     $rows = self::$modelResponseTable->fetchAll($where);
     foreach ($rows as $row) {
-      $this->modelResponses[] = new ModelResponseModel(array('modelResponseID' => $row->modelResponseID));
+      $this->modelResponses[] = new ModelResponseModel(array('modelResponseID' => $row->modelResponseID,
+                                                             'instance' => $this->compareInstance));
     }
   }
   

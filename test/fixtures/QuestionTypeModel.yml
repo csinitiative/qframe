@@ -7,3 +7,12 @@ data:
   sample2:
     questionTypeID: 2
     format: S
+  sample3:
+    questionTypeID: 3
+    format: M
+  sample4:
+    questionTypeID: 4
+    format: D
+  sample5:
+    questionTypeID: 5
+    format: V

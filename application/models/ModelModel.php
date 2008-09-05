@@ -44,11 +44,17 @@ class ModelModel {
   private $modelRow;
   
   /**
-   * Stores the instance object associated with this ModelModel
-   * @var QFrame_Db_Table_Row
+   * Stores the _default_ instance object associated with this ModelModel
+   * @var InstanceModel
    */
   private $instance;
   
+  /**
+   * Stores the instance that is being compared to the model (optional)
+   * @var InstanceModel
+   */
+  private $compareInstance;
+   
   /**
    * Flag for whether the contents of modelRow has changed and should therefore be saved
    */
@@ -72,9 +78,11 @@ class ModelModel {
   public function __construct($args = array()) {
     
     $args = array_merge(array(
-      'depth'   => 'model'
+      'depth' => 'model',
+      'instance' => null
     ), $args);
     $this->depth = $args['depth'];
+    $this->compareInstance = $args['instance'];
     
     if (!isset(self::$modelTable)) self::$modelTable = QFrame_Db_Table::getTable('model');
     if (!isset(self::$pageTable)) self::$pageTable = QFrame_Db_Table::getTable('page');
@@ -244,10 +252,10 @@ class ModelModel {
         'pageID' => $tRow->pageID,
         'depth' => 'page'
       ));
-      $modelPage = new ModelPageModel(array(
-        'modelID' => $this->modelRow->modelID,
-        'pageID' => $tRow->pageID,
-        'depth' => $this->depth
+      $modelPage = new ModelPageModel(array('modelID' => $this->modelRow->modelID,
+                                            'pageID' => $tRow->pageID,
+                                            'depth' => $this->depth,
+                                            'instance' => $this->compareInstance
       ));
       if($user->hasAnyAccess($page)) $this->modelPages[] = $modelPage;
     }
