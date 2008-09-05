@@ -40,7 +40,9 @@ var QFrameCalendar = {
     var showsTime = null;
     var showsOtherMonths = true;
 
-    var el = document.getElementById(id);
+    var el = $(id);
+    if(!el) el = $(id.replace(/^q/, 'response[') + '][target]');
+    if(!el) return alert('An unknown error occurred.  Contact administrator.');
     // first-time call, create the calendar.
     var cal = new Calendar(1, null, QFrameCalendar.selected, QFrameCalendar.closeHandler);
     // uncomment the following line to hide the week numbers

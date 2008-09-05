@@ -19,12 +19,15 @@
 
 - $localStylesheets = array('dashboard')
 - $localJavascript = array('dashboard')
+- $newButtonAttributes = ($this->selected === null) ? array('disabled' => 'disabled') : null;
 
 %h1 Select a Questionnaire and Model
 %h3
   Select a questionnaire and instance to perform a comparison and create or modify a model.
 %br/
 != $this->form(array(), false, 'get')
+
+!= $this->formHidden('editPath', $this->url(array('action' => 'edit')))
 
 .option
   != $this->formLabel('questionnaire', 'Questionnaire:')
@@ -36,7 +39,8 @@
   != $this->formText('model[name]', null, array('size' => 30, 'style' => 'display:none;'))
   != $this->formSubmit('create', 'create model', array('style' => 'display:none;'))
   != $this->formButton('cancel', 'cancel', array('style' => 'display:none;'))
-  - if($this->selected !== null)
-    != $this->linkTo('#', 'new', array('class' => 'new-link'))
+  != $this->formButton('new', 'new model', $newButtonAttributes)
+  != $this->formButton('edit', 'edit model', array('disabled' => 'disabled'))
+  != $this->formButton('compare', 'perform comparison', array('disabled' => 'disabled'))
 
 != $this->form(null, true)

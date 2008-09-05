@@ -170,15 +170,16 @@ class QFrame_Controller_Action extends Zend_Controller_Action {
   /**
    * Build the normal menu (list of pages) and return an array of menu elements
    *
+   * @param  string (optional) prefix for menu links
    * @return string
    */
-  protected function buildMenu() {
+  protected function buildMenu($prefix = '/page/show/') {
     $menus = array();
     if($this->_instance !== null) {
       while($page = $this->_instance->nextPage()) {
         $menus[] = array(
           'label'   => $page->pageHeader,
-          'url'     => Zend_Controller_Front::getInstance()->getBaseUrl() . "/page/show/{$page->pageID}",
+          'url'     => Zend_Controller_Front::getInstance()->getBaseUrl() . "{$prefix}{$page->pageID}",
           'current' => (isset($this->view->currentPageID) && $this->view->currentPageID == $page->pageID),
           'locked'  => LockModel::isLocked($page),
           'page'     => $page
