@@ -211,7 +211,7 @@ class ResponseModel {
             $rule->save();
             if (preg_match('/.+Page$/', $rule->type)) {
               $page = new PageModel(array('pageID' => $rule->targetID,
-                                        'depth' => 'question'));
+                                          'depth' => 'question'));
               $page->save();
             }
             elseif (preg_match('/.+Section$/', $rule->type)) {

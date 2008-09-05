@@ -72,10 +72,20 @@ class Test_Unit_ModelModelTest extends QFrame_Test_Unit {
   /*
    * test that fetching one model returns the correct thing (ModelModel object)
    */
-  public function testInstiateModelModel() {
+  public function testInstantiateModelModel() {
     $this->auth();
     $model = new ModelModel(array('modelID' => 1));
     $this->assertTrue($model instanceof ModelModel);
+  }
+  
+  /*
+   * test getting all models for a questionnaire
+   */
+  public function testGetAllModels() {
+    $this->auth();
+    $questionnaire = new QuestionnaireModel(array('questionnaireID' => 1));
+    $models = ModelModel::getAllModels($questionnaire);
+    $this->assertTrue($models[0] instanceof ModelModel);
   }
   
   /*
