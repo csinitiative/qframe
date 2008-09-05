@@ -67,3 +67,24 @@ data:
     seqNumber: 1
     questionTypeID: 1
     qText: Sample Question 1.1
+  sample8:
+    instanceID: 6
+    pageID: 6
+    sectionID: 5
+    questionID: 8
+    questionGUID: 8
+    questionNumber: '1.2'
+    seqNumber: 2
+    questionTypeID: 2
+    qText: Sample Question 1.2
+  sample9:
+    instanceID: 6
+    pageID: 6
+    sectionID: 5
+    questionID: 9
+    questionGUID: 9
+    questionNumber: '1.3'
+    seqNumber: 3
+    questionTypeID: 4
+    qText: Sample Question 1.3
+ 

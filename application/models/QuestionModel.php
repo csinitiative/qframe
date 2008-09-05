@@ -32,7 +32,7 @@ class QuestionModel implements QFrame_Storer {
   private $referenceDetailRows = array ();
   private $ruleRows;
   private $responsesIndex;
-  private $depth;
+  public $depth;
   private $parent;
   private $virtualQuestion = 0;
   public $responses;
@@ -68,7 +68,8 @@ class QuestionModel implements QFrame_Storer {
     $args = array_merge(array (
       'depth' => 'response'
     ), $args);
-
+    $this->depth = $args['depth'];
+    
     // argument assertions
     if (!isset ($args['questionID'])) {
       throw new InvalidArgumentException('Missing questionID as argument to QuestionModel constructor');
@@ -170,7 +171,6 @@ class QuestionModel implements QFrame_Storer {
     }
     
     if ($args['depth'] !== 'question') {
-      $this->depth = $args['depth'];
       $this->_loadResponses();
     }
     

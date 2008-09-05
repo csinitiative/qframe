@@ -52,7 +52,8 @@ class PageModel implements QFrame_Lockable, QFrame_Permissible {
     $args = array_merge(array(
       'depth' => 'response'
     ), $args);
-
+    $this->depth = $args['depth'];
+    
     // argument assertions
     if (!isset($args['pageID'])) {
       throw new InvalidArgumentException('Missing pageID as argument to PageModel constructor');
@@ -76,8 +77,6 @@ class PageModel implements QFrame_Lockable, QFrame_Permissible {
     
     // Load up table data in bulk to limit sql queries
     QFrame_Db_Table::preloadAll($this->pageRow->instanceID, $this->pageRow->pageID);
-
-    $this->depth = $args['depth'];
     
     $ruleRows = self::$ruleTable->fetchRows('targetID', $this->pageRow->pageID, null, $this->pageRow->instanceID);
     $disableCount = 0;

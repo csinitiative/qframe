@@ -4,13 +4,13 @@ data:
   sample1:
     promptID: 1
     questionTypeID: 2
-    value: Yes
+    value: 'Yes'
   sample2:
     promptID: 2
     questionTypeID: 2
-    value: No
+    value: 'No'
   sample3:
     promptID: 3
     questionTypeID: 2
-    value: N/A
+    value: 'N/A'
     requireAddlInfo: 1

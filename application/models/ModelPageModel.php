@@ -44,8 +44,15 @@ class ModelPageModel {
   
   /**
    * Stores the page object
+   * @var PageModel
    */
   private $page;
+  
+  /**
+   * Stores the instance that is being compared to the model (optional)
+   * @var InstanceModel
+   */
+  private $compareInstance;
     
   /**
    * Determines depth of object hierarchy
@@ -70,9 +77,11 @@ class ModelPageModel {
   public function __construct($args = array()) {
     
     $args = array_merge(array(
-      'depth'   => 'page'
+      'depth' => 'page',
+      'instance' => null
     ), $args);
     $this->depth = $args['depth'];
+    $this->compareInstance = $args['instance'];
     
     if (!isset(self::$modelTable)) self::$modelTable = QFrame_Db_Table::getTable('model');
     if (!isset(self::$sectionTable)) self::$sectionTable = QFrame_Db_Table::getTable('section');
@@ -156,7 +165,8 @@ class ModelPageModel {
     foreach ($rows as $row) {
       $this->modelSections[] = new ModelSectionModel(array('modelID' => $this->modelID,
                                                            'sectionID' => $row->sectionID,
-                                                           'depth' => $this->depth
+                                                           'depth' => $this->depth,
+                                                           'instance' => $this->compareInstance
       ));
     }
   }

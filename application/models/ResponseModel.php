@@ -30,9 +30,11 @@ class ResponseModel {
   private $stateChange = 0;
   private $parent;
   static $responseTable;
+  static $questionPromptTable;
 
   function __construct ($args = array()) {
     if (!isset(self::$responseTable)) self::$responseTable = QFrame_Db_Table::getTable('response');
+    if (!isset(self::$questionPromptTable)) self::$questionPromptTable = QFrame_Db_Table::getTable('question_prompt');
     
     $args = array_merge(array(
       'questionID'          => null,
@@ -157,6 +159,17 @@ class ResponseModel {
       throw new Exception("Attribute not found [$key]");
     }
 
+  }
+  
+  /**
+   * Get prompt text for responseText as responseText is the promptID for S and M question types
+   * @return string
+   */
+  public function promptText () {
+    $questionPromptRows = self::$questionPromptTable->fetchRows('promptID', $this->responseRow->responseText);
+    $questionPromptRow = $questionPromptRows[0];
+    if (isset($questionPromptRow->value)) return $questionPromptRow->value;
+    throw new Exception('Question prompt row not found for promptID [' . $this->responseRow->responseText . ']');
   }
   
   /**

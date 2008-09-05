@@ -43,9 +43,22 @@ class ModelResponseModel {
   private static $modelResponseTable;
   
   /**
+   * Stores the question prompt table object used by this class
+   * @var QFrame_Db_Table_QuestionPrompt
+   */
+  private static $questionPromptTable;
+  
+  /**
    * Stores the ModelResponse row object
+   * @var Zend_Db_Table_Row
    */
   private $modelResponseRow;
+  
+  /**
+   * Stores the instance that is being compared to the model (optional)
+   * @var InstanceModel
+   */
+  private $compareInstance;
 
   /**
    * Determines depth of object hierarchy
@@ -60,12 +73,15 @@ class ModelResponseModel {
   public function __construct($args = array()) {
 
     $args = array_merge(array(
-      'depth'   => 'response'
+      'depth' => 'response',
+      'instance' => null 
     ), $args);
     $this->depth = $args['depth'];
+    $this->compareInstance = $args['instance'];
     
     if (!isset(self::$modelTable)) self::$modelTable = QFrame_Db_Table::getTable('model');
     if (!isset(self::$modelResponseTable)) self::$modelResponseTable = QFrame_Db_Table::getTable('model_response');
+    if (!isset(self::$questionPromptTable)) self::$questionPromptTable = QFrame_Db_Table::getTable('question_prompt');
     
     if (isset($args['modelResponseID'])) {
       $where = self::$modelResponseTable->getAdapter()->quoteInto('modelResponseID = ?', $args['modelResponseID']);
@@ -140,6 +156,17 @@ class ModelResponseModel {
    */
   public function delete() {
     $this->modelResponseRow->delete();
+  }
+  
+  /**
+   * Get prompt text for target (when it is a promptID) for S and M question types
+   * @return string
+   */
+  public function promptText () {
+    $questionPromptRows = self::$questionPromptTable->fetchRows('promptID', $this->modelResponseRow->target);
+    $questionPromptRow = $questionPromptRows[0];
+    if (isset($questionPromptRow->value)) return $questionPromptRow->value;
+    throw new Exception('Question prompt row not found for target promptID [' . $this->modelResponseRow->target . ']');
   }
 
 }

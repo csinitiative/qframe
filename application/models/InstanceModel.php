@@ -53,9 +53,10 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
   function __construct ($args = array()) {
 
     $args = array_merge(array(
-      'depth'   => 'page'
+      'depth' => 'page'
     ), $args);
-
+    $this->depth = $args['depth'];
+    
     if (!isset(self::$questionnaireTable)) self::$questionnaireTable = QFrame_Db_Table::getTable('questionnaire');
     if (!isset(self::$instanceTable)) self::$instanceTable = QFrame_Db_Table::getTable('instance');
     if (!isset(self::$pageTable)) self::$pageTable = QFrame_Db_Table::getTable('page');
@@ -108,7 +109,6 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     }
         
     if ($args['depth'] !== 'instance') {
-      $this->depth = $args['depth'];
       $this->_loadPages();
     }
     
@@ -123,6 +123,9 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
   public function __get($key) {
     if (isset($this->instanceRow->$key)) {
       return $this->instanceRow->$key;
+    }
+    elseif ($key === 'depth') {
+      return $this->depth;
     }
  
     return $this->parent->$key;
@@ -1412,9 +1415,8 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
 
     $this->pages = array();
     foreach ($pageRowset as $tRow) {
-      $page = new PageModel(array(
-        'pageID' => $tRow->pageID,
-        'depth' => $this->depth
+      $page = new PageModel(array('pageID' => $tRow->pageID,
+                                  'depth' => $this->depth
       ));
       if($user->hasAnyAccess($page)) $this->pages[] = $page;
     }
