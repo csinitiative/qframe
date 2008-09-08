@@ -38,6 +38,8 @@ class Test_Unit_ModelSectionModelTest extends QFrame_Test_Unit {
   
   public function start() {
     $this->fixture(array(
+      'QuestionnaireModel',
+      'InstanceModel',
       'ModelModel',
       'PageModel',
       'SectionModel',
@@ -94,4 +96,120 @@ class Test_Unit_ModelSectionModelTest extends QFrame_Test_Unit {
     $this->assertEquals($modelResponseID, $testResponse->modelResponseID);
   }
 
+  /*
+   * test comparing a question of type T to a passed match modelResponse
+   */
+  public function testCompareMatchModelResponsePass() {
+    $this->auth();
+    $instance = new InstanceModel(array('instanceID' => 1,
+                                        'depth' => 'response'
+    ));
+    $question = new QuestionModel(array('questionID' => 7,
+    		                            'depth' => 'response'
+    ));
+    $response = $question->getResponse();
+    $response->responseText = 'test';
+    $response->save(); 
+    QFrame_Db_Table::reset('response');
+    $modelQuestion = new ModelQuestionModel(array('modelID' => 1,
+                                                  'questionID' => 7,
+                                                  'depth' => 'response',
+                                                  'instance' => $instance));
+    $modelResponse = $modelQuestion->createModelResponse('match', 'test');
+    $modelQuestion->save();
+    $modelSection = new ModelSectionModel(array('modelID' => 1,
+                                                'sectionID' => 5,
+                                                'depth' => 'response',
+                                                'instance' => $instance));
+    $report = $modelSection->compare(array('model_pass' => true));
+    $this->assertEquals($report['model_pass'][0]['messages'][0], 'Matches test');
+  }
+  
+  /**
+   * test comparing a question of type T to a failed match modelResponse
+   */
+  public function testCompareMatchModelResponseFail() {
+    $this->auth();
+    $instance = new InstanceModel(array('instanceID' => 1,
+                                        'depth' => 'response'
+    ));
+    $question = new QuestionModel(array('questionID' => 7,
+    		                            'depth' => 'response'
+    ));
+    $response = $question->getResponse();
+    $response->responseText = 'foo';
+    $response->save(); 
+    QFrame_Db_Table::reset('response');
+    $modelQuestion = new ModelQuestionModel(array('modelID' => 1,
+                                                  'questionID' => 7,
+                                                  'depth' => 'response',
+                                                  'instance' => $instance));
+    $modelResponse = $modelQuestion->createModelResponse('match', 'test');
+    $modelQuestion->save();
+    $modelSection = new ModelSectionModel(array('modelID' => 1,
+                                                'sectionID' => 5,
+                                                'depth' => 'response',
+                                                'instance' => $instance));
+    $report = $modelSection->compare(array('model_pass' => true));
+    $this->assertEquals($report['model_fail'][0]['messages'][0], 'Does not match test');
+  }
+  
+  /*
+   * test comparing a question of type S to a passed "selected" modelResponse
+   */
+  public function testCompareSelectedModelResponsePass() {
+    $this->auth();
+    $instance = new InstanceModel(array('instanceID' => 1,
+                                        'depth' => 'response'
+    ));
+    $question = new QuestionModel(array('questionID' => 8,
+    		                            'depth' => 'response'
+    ));
+    $response = $question->getResponse();
+    $response->responseText = '1'; // promptID for "Yes"
+    $response->save();
+    QFrame_Db_Table::reset('response');
+    $modelQuestion = new ModelQuestionModel(array('modelID' => 1,
+                                                  'questionID' => 8,
+                                                  'depth' => 'response',
+                                                  'instance' => $instance));
+    $modelResponse = $modelQuestion->createModelResponse('selected', '1');
+    $modelQuestion->save();
+    $modelSection = new ModelSectionModel(array('modelID' => 1,
+                                                'sectionID' => 5,
+                                                'depth' => 'response',
+                                                'instance' => $instance));
+    $report = $modelSection->compare(array('model_pass' => true));
+    $this->assertEquals($report['model_pass'][0]['messages'][0], 'Prompt selected: Yes');
+  }
+  
+  /*
+   * test comparing a question of type S to a failed "selected" modelResponse
+   */
+  public function testCompareSelectedModelResponseFail() {
+    $this->auth();
+    $instance = new InstanceModel(array('instanceID' => 1,
+                                        'depth' => 'response'
+    ));
+    $question = new QuestionModel(array('questionID' => 8,
+    		                            'depth' => 'response'
+    ));
+    $response = $question->getResponse();
+    $response->responseText = '2'; // promptID for "Yes"
+    $response->save();
+    QFrame_Db_Table::reset('response');
+    $modelQuestion = new ModelQuestionModel(array('modelID' => 1,
+                                                  'questionID' => 8,
+                                                  'depth' => 'response',
+                                                  'instance' => $instance));
+    $modelResponse = $modelQuestion->createModelResponse('selected', '1');
+    $modelQuestion->save();
+    $modelSection = new ModelSectionModel(array('modelID' => 1,
+                                                'sectionID' => 5,
+                                                'depth' => 'response',
+                                                'instance' => $instance));
+    $report = $modelSection->compare(array('model_pass' => true));
+    $this->assertEquals($report['model_fail'][0]['messages'][0], 'Prompt not selected: Yes');
+  }
+  
 }

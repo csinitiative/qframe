@@ -37,6 +37,12 @@ class ModelPageModel {
   private static $modelTable;
   
   /**
+   * Stores the model response table object used by this class
+   * @var QFrame_Db_Table_ModelResponse
+   */
+  private static $modelResponseTable;
+  
+  /**
    * Stores the section table object used by this class
    * @var QFrame_Db_Table_Section
    */
@@ -84,6 +90,7 @@ class ModelPageModel {
     $this->compareInstance = $args['instance'];
     
     if (!isset(self::$modelTable)) self::$modelTable = QFrame_Db_Table::getTable('model');
+    if (!isset(self::$modelResponseTable)) self::$modelResponseTable = QFrame_Db_Table::getTable('model_response');
     if (!isset(self::$sectionTable)) self::$sectionTable = QFrame_Db_Table::getTable('section');
     
     if (isset($args['modelID']) && isset($args['pageID'])) {
@@ -154,6 +161,50 @@ class ModelPageModel {
     $this->modelTable->delete($where);
   }
 
+  /**
+   * Returns comparison information based on criteria arguments
+   * 
+   * @param array See argument array below
+   * @return array Following this structure:
+   *               array($criteria_term => array(array('question' => QuestionModel,
+   *                                                   'messages' => array(string)
+   *                                                  )
+   *                                            )
+   *               )
+   */
+  public function compare ($args = array()) {
+    // Comparison criteria
+    $args = array_merge(array('model_fail' => true,  
+                              'model_pass' => false,
+                              'additional_information' => false
+    ), $args);
+    
+    if ($this->compareInstance->depth !== 'response') throw new Exception('Comparison not possible since compare instance depth not set to response');
+    if ($this->depth !== 'response') throw new Exception('Comparison not possible since depth not set to response');
+    
+    // To populate cache
+    self::$modelResponseTable->fetchRows('pageID', $this->page->pageID);
+    
+    $result = array();
+    
+    foreach ($args as $key => $value) {
+      if ($args[$key] === TRUE) $result[$key] = array();
+    }
+      
+    while ($modelSection = $this->nextModelSection()) {
+      while ($modelQuestion = $modelSection->nextModelQuestion()) {
+        $q = $modelQuestion->compare($args);
+        foreach ($q as $key => $value) {
+          if ($args[$key] === TRUE) {
+            $result[$key] = array_merge($result[$key], $q[$key]);
+          }
+        }
+      }
+    }
+    
+    return $result;
+  }
+  
   /**
    * Loads Model Sections
    */
