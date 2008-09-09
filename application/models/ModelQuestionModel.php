@@ -68,6 +68,12 @@ class ModelQuestionModel {
    * Store the modelID
    */
   private $modelID;
+  
+  /**
+   * Array of child questions
+   * @var array
+   */
+  private $name = null;
    
   /**
    * Instantiate a new ModelQuestionModel object
@@ -96,6 +102,10 @@ class ModelQuestionModel {
     }
    
     if ($this->depth !== 'question') $this->_loadModelResponses();
+    
+    if (!isset($args['noChildren']) && $this->question->format == '_questionGroup') {
+      $this->_loadChildren();
+    }
      
   }
   
@@ -106,6 +116,7 @@ class ModelQuestionModel {
    * @return mixed
    */
   public function __get($key) {
+    if($key === 'children') return $this->children;
     return $this->question->$key;
   }
   
@@ -117,6 +128,17 @@ class ModelQuestionModel {
   public function __isset($key) {
     if (isset($this->question->$key)) return true;
     return false;
+  }
+  
+  /**
+   * Pass any unimplemented method calls along to $this->question
+   *
+   * @param  string method being called
+   * @param  array  argyments to pass to said method
+   * @return mixed
+   */
+  public function __call($method, $arguments) {
+    return call_user_func_array(array($this->question, $method), $arguments);
   }
   
   /**
@@ -165,18 +187,42 @@ class ModelQuestionModel {
    */
   public function nextModelResponse() {
     $nextModelResponse = each($this->modelResponses);
-    if(!$nextModelResponse) return;
+    if(!$nextModelResponse) return null;
 
     return $nextModelResponse['value'];
+  }
+  
+  /**
+   * Determine if this question has a particular model response
+   *
+   * @param  string (optional) target to check for
+   * @return boolean
+   */
+  public function hasModelResponse($target = null) {
+    if($target === null && count($this->modelResponses) > 0) return true;
+    foreach($this->modelResponses as $response) {
+      if($response->target == $target) return true;
+    }
+    return false;
+  }
+  
+  /**
+   * Determine if this question has a single response indicating no preference
+   *
+   * @return boolean
+   */
+  public function hasNoPreference() {
+    return count($this->modelResponses) === 1 && $this->modelResponses[0]->type === 'no preference';
   }
   
   /**
    * Deletes all responses for this Model Question
    */
   public function delete() {
-    $where = self::$modelTable->getAdapter()->quoteInto('modelID = ?', $this->modelID) .
-             self::$modelTable->getAdapter()->quoteInto(' AND questionID = ?', $this->question->questionID);
-    $this->modelTable->delete($where);
+    $adapter = self::$modelResponseTable->getAdapter();
+    $where = $adapter->quoteInto('modelID = ?', $this->modelID);
+    $where .= $adapter->quoteInto(' AND questionID = ?', $this->questionID);
+    self::$modelResponseTable->delete($where);
   }
   
   /**
@@ -292,6 +338,22 @@ class ModelQuestionModel {
     foreach ($rows as $row) {
       $this->modelResponses[] = new ModelResponseModel(array('modelResponseID' => $row->modelResponseID,
                                                              'instance' => $this->compareInstance));
+    }
+  }
+  
+  /**
+   * Loads children questions
+   */
+  public function _loadChildren() {
+    $this->children = array();
+    $rows = QFrame_Db_Table::getTable('question')->fetchRows('parentID', $this->questionID,
+        'seqNumber', $this->instanceID);
+    foreach ($rows as $row) {
+      $this->children[] = new ModelQuestionModel(array(
+        'modelID'    => $this->modelID,
+        'questionID' => $row->questionID,
+        'depth'      => $this->depth
+      )); 
     }
   }
   

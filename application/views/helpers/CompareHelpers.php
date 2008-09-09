@@ -111,10 +111,10 @@ class QFrame_View_Helper_CompareHelpers {
   /**
    * Render a question (including sub questions, response elements, etc)
    *
-   * @param  QuestionModel question being rendered
+   * @param  ModelQuestionModel question being rendered
    * @return string
    */
-  public function renderQuestion(QuestionModel $question) {
+  public function renderQuestion(ModelQuestionModel $question) {
     $builder = new Tag_Builder;
     $rendered = $builder->div(array('class' => 'question'), $this->view->h($question->qText));
     $rendered .= $builder->div(array('class' => 'response'), $this->renderResponse($question));
@@ -124,27 +124,27 @@ class QFrame_View_Helper_CompareHelpers {
   /**
    * Render form controls for a text question
    *
-   * @param  QuestionModel question being rendered
+   * @param  ModelQuestionModel question being rendered
    * @return string
    */
-  public function renderText(QuestionModel $question) {
-    return $this->view->formText(
-      "response[{$question->questionID}][target]",
-      null,
-      array('size' => 50)
-    );
+  public function renderText(ModelQuestionModel $question) {
+    $name = "response[{$question->questionID}][target]";
+    $value = ($question->hasModelResponse()) ? $question->nextModelResponse()->target : null;
+    return $this->view->formText($name, $value, array('size' => 50));
   }
   
   /**
    * Render form controls for a date question
    *
-   * @param  QuestionModel question being rendered
+   * @param  ModelQuestionModel question being rendered
    * @return string
    */
-  public function renderDate(QuestionModel $question) {
+  public function renderDate(ModelQuestionModel $question) {
+    $name = "response[{$question->questionID}][target]";
+    $value = ($question->hasModelResponse()) ? $question->nextModelResponse()->target : null;
     return $this->view->formText(
-      "response[{$question->questionID}][target]",
-      null,
+      $name,
+      $value,
       array('class' => 'calendarText', 'size' => 13, 'readonly' => 1)
     ) .
     $this->view->linkTo('#showCalendar', $this->view->imageTag('icons/calendar.png', array(
@@ -157,19 +157,16 @@ class QFrame_View_Helper_CompareHelpers {
   /**
    * Render form controls for a single-select question
    *
-   * @param  QuestionModel question being rendered
+   * @param  ModelQuestionModel question being rendered
    * @return string
    */
-  public function renderSingleSelect(QuestionModel $question) {
+  public function renderSingleSelect(ModelQuestionModel $question) {
     $rendered = '';
     foreach($question->prompts as $prompt) {
-      $rendered .= $this->view->formCheckbox(
-        "response[{$question->questionID}][target][{$prompt['promptID']}]"
-      );
-      $rendered .= $this->view->formLabel(
-        "response[{$question->questionID}][target][{$prompt['promptID']}]",
-        $prompt['value']
-      );
+      $name = "response[{$question->questionID}][target][{$prompt['promptID']}]";
+      $value = ($question->hasModelResponse($prompt['promptID'])) ? 1 : 0;
+      $rendered .= $this->view->formCheckbox($name, $value);
+      $rendered .= $this->view->formLabel($name, $prompt['value']);
     }
     return $rendered;
   }
@@ -179,10 +176,10 @@ class QFrame_View_Helper_CompareHelpers {
    *
    * TODO - This needs to be extended to deal with multi-select questions
    *
-   * @param  QuestionModel question response controls are being rendered for
+   * @param  ModelQuestionModel question response controls are being rendered for
    * @return string
    */
-  public function renderResponse(QuestionModel $question) {
+  public function renderResponse(ModelQuestionModel $question) {
     $result = '';
     switch(substr($question->format, 0, 1)) {
       case 'T':
@@ -204,8 +201,13 @@ class QFrame_View_Helper_CompareHelpers {
       default:
         throw new Exception('Unknown question type');
     }
-    $result .= $this->view->formCheckbox("response[$question->questionID][noinclude]", null);
-    $result .= $this->view->formLabel("response[$question->questionID][noinclude]", 'Do not include');
+    $name = "response[$question->questionID][noinclude]";
+    $result .= $this->view->formCheckbox(
+      $name,
+      $question->hasNoPreference(),
+      array('class' => 'noinclude')
+    );
+    $result .= $this->view->formLabel($name, 'Do not include');
     return $result;
   }
 }
