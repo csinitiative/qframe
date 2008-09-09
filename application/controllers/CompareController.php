@@ -69,8 +69,21 @@ class CompareController extends QFrame_Controller_Action {
     $this->view->selected = $this->_getParam('questionnaire');
     if($this->view->selected === null) $this->view->models = null;
     else {
-      $questionnaire = new QuestionnaireModel(array('questionnaireID' => $this->view->selected));
+      $questionnaire = new QuestionnaireModel(array(
+        'questionnaireID' => $this->view->selected,
+        'depth'           => 'page'
+      ));
       $this->view->models = ModelModel::getAllModels($questionnaire);
+      while($instance = $questionnaire->nextInstance()) {
+        while($page = $instance->nextPage()) {
+          if($this->_user->hasAnyAccess($page)) {
+            $allowedInstances[] = $instance;
+            break;
+          }
+        }
+      }
+      if(isset($allowedInstances)) $this->view->instances = $allowedInstances;
+      
     }
   }
   
@@ -121,6 +134,23 @@ class CompareController extends QFrame_Controller_Action {
     $this->flash('notice', 'Model saved successfully');
     $baseUrl = $this->view->url(array('action' => 'edit', 'id' => $this->model->modelID));
     $this->_redirector->gotoUrl($baseUrl . "?page={$page->pageID}");
+  }
+  
+  /**
+   * Perform an actual comparison
+   */
+  public function doAction() {
+    unset($this->view->menuItems);
+    $instance = new InstanceModel(array(
+      'instanceID' => $this->_getParam('instance'),
+      'depth'      => 'response'
+    ));
+    $model = new ModelModel(array(
+      'modelID'  => $this->_getParam('id'),
+      'depth'    => 'response',
+      'instance' => $instance
+    ));
+    $this->view->failures = $model->compare();
   }
   
   /**

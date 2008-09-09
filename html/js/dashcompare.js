@@ -59,6 +59,55 @@ var Dashboard = {
   },
   
   /**
+   * Redirect to the comparison path for the selected model & instance
+   *
+   * @param Event event in the case that this is called as an event handler
+   */
+  doComparison: function(event) {
+    var comparePath = $F('comparePath') + '/' + $F('model') + '?instance=' + $F('instance');
+    window.location = comparePath;
+  },
+  
+  /**
+   * Perform a comparison for the selected model (allow selection of an instance)
+   *
+   * @param Event event in the case that this is called as an event handler
+   */
+  performComparison: function(event) {
+    event.stop();
+    
+    var container = $$('.instances').first();
+    container.show();
+    $$('.option').each(function(option) {
+      if(!option.hasClassName('instances')) {
+        option.childElements().each(function(element) {
+          if(element.disable) element.disable();
+        });
+      }
+    });
+  },
+  
+  /**
+   * Event handler for clicks of the cancel comparison button
+   *
+   * @param Event click event
+   */
+  cancelCompare: function(event) {
+    event.stop();
+    
+    var container = Event.element(event).up('.option');
+    container.hide();
+    $$('.option').each(function(option) {
+      if(!option.hasClassName('instances')) {
+        option.childElements().each(function(element) {
+          if(element.enable) element.enable();
+        });
+      }
+    });
+  },
+  
+  
+  /**
   * Event handler for drop down change events on model select box
    *
    * @param Event change event
@@ -76,6 +125,21 @@ var Dashboard = {
   },
   
   /**
+   * Event handler for drop down change events on instance select box
+   *
+   * @param Event change event
+   */
+  instanceSelected: function(event) {
+    var form = Event.element(event).up('form');
+    if($F('instance') != 0) {
+      form.down('input[type=button][name=doCompare]').enable();
+    }
+    else {
+      form.down('input[type=button][name=doCompare]').disable();
+    }
+  },
+  
+  /**
    * Perform setup tasks for the dashboard
    *
    * @param Event window load event object
@@ -86,6 +150,9 @@ var Dashboard = {
 
     // fire the appropriate function when the questionnaire select box value changes
     $$('select[name=model]').first().observe('change', Dashboard.modelSelected);
+
+    // fire the appropriate function when the instance select box value changes
+    $$('select[name=instance]').first().observe('change', Dashboard.instanceSelected);
     
     // fire the appropriate function when the new model button is clicked
     $$('input[type=button][name=new]').first().observe('click', Dashboard.createNew);
@@ -95,6 +162,15 @@ var Dashboard = {
     
     // fire the appropriate function when the edit model button is clicked
     $$('input[type=button][name=edit]').first().observe('click', Dashboard.editModel);
+    
+    // fire the appropriate function when the compare button is clicked
+    $$('input[type=button][name=compare]').first().observe('click', Dashboard.performComparison);
+
+    // fire the appropriate function when the cancel creation of new model button is clicked
+    $$('input[name=compareCancel]').first().observe('click', Dashboard.cancelCompare);
+
+    // fire the appropriate function when the cancel creation of new model button is clicked
+    $$('input[name=doCompare]').first().observe('click', Dashboard.doComparison);
   }
 }
 

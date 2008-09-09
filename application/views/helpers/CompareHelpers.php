@@ -210,4 +210,19 @@ class QFrame_View_Helper_CompareHelpers {
     $result .= $this->view->formLabel($name, 'Do not include');
     return $result;
   }
+  
+  /**
+   * Generates a drop down box listing all instances that belong to the chosen instance
+   *
+   * @param  Array   list of all instances to which this user has access
+   * @return string
+   */
+  public function instanceSelect($instances) {
+    $options[0] = ' ';
+    foreach($instances as $instance) {
+      $options[$instance->instanceID] = $this->view->h($instance->instanceName);
+    }
+    
+    return $this->view->formSelect('instance', null, null, $options);
+  }
 }
