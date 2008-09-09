@@ -18,7 +18,7 @@
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
 - $localStylesheets = array('dashboard')
-- $localJavascript = array('dashboard')
+- $localJavascript = array('dashcompare')
 - $newButtonAttributes = ($this->selected === null) ? array('disabled' => 'disabled') : null;
 
 %h1 Select a Questionnaire and Model
@@ -28,6 +28,7 @@
 != $this->form(array(), false, 'get')
 
 != $this->formHidden('editPath', $this->url(array('action' => 'edit')))
+!= $this->formHidden('comparePath', $this->url(array('action' => 'do')))
 
 .option
   != $this->formLabel('questionnaire', 'Questionnaire:')
@@ -42,5 +43,11 @@
   != $this->formButton('new', 'new model', $newButtonAttributes)
   != $this->formButton('edit', 'edit model', array('disabled' => 'disabled'))
   != $this->formButton('compare', 'perform comparison', array('disabled' => 'disabled'))
+- if(isset($this->instances))
+  .option.instances{ 'style' => 'display: none;' }
+    != $this->formLabel('instance', 'Instance:')
+    != $this->instanceSelect($this->instances)
+    != $this->formButton('doCompare', 'compare', array('disabled' => 'disabled'))
+    != $this->formButton('compareCancel', 'cancel')
 
 != $this->form(null, true)
