@@ -43,6 +43,12 @@ class ModelQuestionModel {
   private static $modelResponseTable;
   
   /**
+   * Stores the question table object used by this class
+   * @var QFrame_Db_Table_ModelResponse
+   */
+  private static $questionTable;
+  
+  /**
    * Stores the question object
    * @var QuestionModel
    */
@@ -91,6 +97,7 @@ class ModelQuestionModel {
     
     if (!isset(self::$modelTable)) self::$modelTable = QFrame_Db_Table::getTable('model');
     if (!isset(self::$modelResponseTable)) self::$modelResponseTable = QFrame_Db_Table::getTable('model_response');
+    if (!isset(self::$questionTable)) self::$questionTable = QFrame_Db_Table::getTable('question');
     
     if (isset($args['modelID']) && isset($args['questionID'])) {
       $this->modelID = $args['modelID'];
@@ -246,7 +253,14 @@ class ModelQuestionModel {
     if ($this->compareInstance->depth !== 'response') throw new Exception('Comparison not possible since compare instance depth not set to response');
     if ($this->depth !== 'response') throw new Exception('Comparison not possible since depth not set to response');
     
-    $response = $this->question->getResponse();
+    $where = self::$questionTable->getAdapter()->quoteInto('instanceID = ?', $this->compareInstance->instanceID) .
+             self::$questionTable->getAdapter()->quoteInto(' AND questionGUID = ?', $this->question->questionGUID);
+
+    $compareQuestionRow = self::$questionTable->fetchRow($where);
+    var_dump($compareQuestionRow);
+    $compareQuestion = new QuestionModel(array('questionID' => $compareQuestionRow->questionID,
+                                               'depth' => 'response'));
+    $response = $compareQuestion->getResponse();
     
     $result = array();
     
@@ -269,7 +283,7 @@ class ModelQuestionModel {
             }
             break;
           case "selected":
-            if ($modelResponse->target == $response->responseText) {
+            if ($modelResponse->promptText() == $response->promptText()) {
               $messages['pass'][] = "Prompt selected: " . $modelResponse->promptText();
               $pass = true;
             }
@@ -280,7 +294,7 @@ class ModelQuestionModel {
             }
             break;
           case "not selected":
-            if ($modelResponse->target == $response->responseText) {
+            if ($modelResponse->promptText() == $response->promptText()) {
               $messages['fail'][] = "Prompt selected: " . $modelResponse->promptText();
               $pass = false;
               break;
@@ -291,7 +305,7 @@ class ModelQuestionModel {
             }
             break;
           case "or selected":
-            if ($modelResponse->target == $response->responseText) {
+            if ($modelResponse->promptText() == $response->promptText()) {
               $messages['pass'][] = "Or prompt selected: " . $modelResponse->promptText();
               $pass = true;
             }
