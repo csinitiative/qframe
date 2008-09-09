@@ -291,6 +291,28 @@ class QuestionModel implements QFrame_Storer {
     }
     return $response;
   }
+  
+  /**
+   * Get a text version of the response to this question
+   *
+   * @return string
+   */
+  public function getResponseText() {
+    $response = $this->getResponse();
+    switch(substr($this->format, 0, 1)) {
+      case 'S':
+      case 'M':
+        foreach($this->prompts as $prompt) {
+          if($prompt['promptID'] == $response->responseText) return $prompt['value'];
+        }
+        break;
+      case 'T':
+      case 'D':
+        return $response->responseText;
+        break;
+    }
+    return '';
+  }
 
   private function _loadResponses() {
     if (!isset (self::$responseTable)) self::$responseTable = QFrame_Db_Table::getTable('response');

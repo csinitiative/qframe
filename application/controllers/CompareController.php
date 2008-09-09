@@ -154,7 +154,10 @@ class CompareController extends QFrame_Controller_Action {
       'depth'    => 'response',
       'instance' => $instance
     ));
-    $this->view->failures = $model->compare();
+    $this->view->failures = $model->compare(array(
+      'additional_information' => (($this->_getParam('addlInfo')) ? true : false),
+      'model_pass' => (($this->_getParam('passing')) ? true : false)
+    ));
   }
   
   /**

@@ -19,12 +19,50 @@
 
 - $localStylesheets = array('report')
 
-%h1#failure failures
-%table{ 'border' => '1' }
-  %tr
-    %th question text
-    %th error message(s)
-  - foreach($this->failures['model_fail'] as $failure)
-    %tr
-      %td= $failure['question']->qText
-      %td= implode(', ', $failure['messages'])
+- if(isset($this->failures['model_fail']))
+  %h1#failure questions that failed the model check
+  %table
+    %tr.header
+      %th.subdominant question
+      %th response
+      %th.subdominant additional information
+      %th error message(s)
+    - $rowNum = 0
+    - foreach($this->failures['model_fail'] as $failure)
+      - $rowNum++
+      %tr{ 'class' => (($rowNum % 2) ? 'odd' : 'even') }
+        %td= $failure['question']->qText
+        %td= $failure['question']->getResponseText()
+        %td= $failure['question']->getResponse()->additionalInfo
+        %td.nowrap
+          != implode("<br />", $failure['messages'])
+        
+- if(isset($this->failures['additional_information']))
+  %h1#additional questions with additional information
+  %table
+    %tr.header
+      %th question
+      %th response
+      %th.dominant additional information
+    - $rowNum = 0
+    - foreach($this->failures['additional_information'] as $failure)
+      - $rowNum++
+      %tr{ 'class' => (($rowNum % 2) ? 'odd' : 'even') }
+        %td= $failure['question']->qText
+        %td= $failure['question']->getResponseText()
+        %td= $failure['question']->getResponse()->additionalInfo
+
+- if(isset($this->failures['model_pass']))
+  %h1#passing questions that passed the model check
+  %table
+    %tr.header
+      %th question
+      %th response
+      %th.dominant additional information
+    - $rowNum = 0
+    - foreach($this->failures['model_pass'] as $failure)
+      - $rowNum++
+      %tr{ 'class' => (($rowNum % 2) ? 'odd' : 'even') }
+        %td= $failure['question']->qText
+        %td= $failure['question']->getResponseText()
+        %td= $failure['question']->getResponse()->additionalInfo

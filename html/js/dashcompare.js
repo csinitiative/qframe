@@ -64,7 +64,10 @@ var Dashboard = {
    * @param Event event in the case that this is called as an event handler
    */
   doComparison: function(event) {
-    var comparePath = $F('comparePath') + '/' + $F('model') + '?instance=' + $F('instance');
+    var addlInfo = ($F('addlInfo')) ? 1 : 0;
+    var passing = ($F('passing')) ? 1 : 0;
+    var comparePath = $F('comparePath') + '/' + $F('model');
+    comparePath += '?instance=' + $F('instance') + '&addlInfo=' + addlInfo + '&passing=' + passing;
     window.location = comparePath;
   },
   

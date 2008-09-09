@@ -257,7 +257,6 @@ class ModelQuestionModel {
              self::$questionTable->getAdapter()->quoteInto(' AND questionGUID = ?', $this->question->questionGUID);
 
     $compareQuestionRow = self::$questionTable->fetchRow($where);
-    var_dump($compareQuestionRow);
     $compareQuestion = new QuestionModel(array('questionID' => $compareQuestionRow->questionID,
                                                'depth' => 'response'));
     $response = $compareQuestion->getResponse();
@@ -322,22 +321,22 @@ class ModelQuestionModel {
       }
       
       if ($pass === TRUE && $args['model_pass']) {
-        $result['model_pass'][] = array('question' => $this->question,
+        $result['model_pass'][] = array('question' => $compareQuestion,
                                         'messages' => $messages['pass']
         );
       }
       
       if ($pass === FALSE && $args['model_fail']) {
-        $result['model_fail'][] = array('question' => $this->question,
+        $result['model_fail'][] = array('question' => $compareQuestion,
                                         'messages' => $messages['fail']
         );
       }
     }
     
     if ($args['additional_information'] && count($result) === 0 && strlen($response->additionalInfo) > 0) {
-      $result['additional_information'][] = array('question' => $this->question);
+      $result['additional_information'][] = array('question' => $compareQuestion);
     }
-    
+
     return $result;
   }
 
