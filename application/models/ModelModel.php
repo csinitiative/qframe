@@ -277,7 +277,7 @@ class ModelModel {
       if ($args[$key] === TRUE) $result[$key] = array();
     }
     
-    while ($modelPage = $this->nextModelPage()) {  
+    while ($modelPage = $this->nextModelPage()) {
       while ($modelSection = $modelPage->nextModelSection()) {
         while ($modelQuestion = $modelSection->nextModelQuestion()) {
           $q = $modelQuestion->compare($args);

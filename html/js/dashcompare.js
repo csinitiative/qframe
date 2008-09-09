@@ -152,7 +152,8 @@ var Dashboard = {
     $$('select[name=model]').first().observe('change', Dashboard.modelSelected);
 
     // fire the appropriate function when the instance select box value changes
-    $$('select[name=instance]').first().observe('change', Dashboard.instanceSelected);
+    var instance = $$('select[name=instance]').first();
+    if(instance) instance.observe('change', Dashboard.instanceSelected);
     
     // fire the appropriate function when the new model button is clicked
     $$('input[type=button][name=new]').first().observe('click', Dashboard.createNew);
@@ -167,10 +168,12 @@ var Dashboard = {
     $$('input[type=button][name=compare]').first().observe('click', Dashboard.performComparison);
 
     // fire the appropriate function when the cancel creation of new model button is clicked
-    $$('input[name=compareCancel]').first().observe('click', Dashboard.cancelCompare);
+    var compareCancel = $$('input[name=compareCancel]').first();
+    if(compareCancel) compareCancel.observe('click', Dashboard.cancelCompare);
 
     // fire the appropriate function when the cancel creation of new model button is clicked
-    $$('input[name=doCompare]').first().observe('click', Dashboard.doComparison);
+    var doCompare = $$('input[name=doCompare]').first();
+    if(doCompare) doCompare.observe('click', Dashboard.doComparison);
   }
 }
 
