@@ -49,5 +49,11 @@
     != $this->instanceSelect($this->instances)
     != $this->formButton('doCompare', 'compare', array('disabled' => 'disabled'))
     != $this->formButton('compareCancel', 'cancel')
+    %br/
+    != $this->formLabel('addlInfo', 'Always show additional info')
+    != $this->formCheckbox('addlInfo')
+    %br/
+    != $this->formLabel('addlInfo', 'Include passing questions')
+    != $this->formCheckbox('passing')
 
 != $this->form(null, true)
