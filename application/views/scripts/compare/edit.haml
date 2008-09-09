@@ -18,7 +18,7 @@
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
 - $localStylesheets = array('model', 'pages', 'approve', 'calendar')
-- $localJavascript = array('pages', 'jscalendar-1.0/calendar', 'jscalendar-1.0/lang/calendar-en', 'calendar')
+- $localJavascript = array('compare', 'pages', 'jscalendar-1.0/calendar', 'jscalendar-1.0/lang/calendar-en', 'calendar')
 
 #currentModel
   You are currently editing:
@@ -35,20 +35,28 @@
     #pageReferences{ 'style' => 'display: none;' }
       != $this->referenceString($this->page)
       
-- while(($section = $this->page->nextSection()))
+!= $this->form(array('action' => 'save'))
+
+!= $this->formHidden('page', $this->page->pageID)
+!= $this->formHidden('cancelPath', $this->url(array('action' => null, 'id' => null)))
+      
+- while(($section = $this->page->nextModelSection()))
   .fieldset
     .legend
       = $section->sectionHeader
     %em
       != $this->referenceString($section)
     %ol
-      - while($question = $section->nextQuestion())
+      - while($question = $section->nextModelQuestion())
         %li
           != $this->renderQuestion($question)
+          
+!= $this->form(null, false)
 
-#formControls
-  != $this->linkTo('#save', $this->imageTag('icons/dddddd/disk.png'), array('class' => 'controlButton'))
-  != $this->linkTo('#cancel', $this->imageTag('icons/dddddd/cancel.png'), array('class' => 'controlButton'))
+- if($this->page->getNumQuestions() > 0)
+  #formControls
+    != $this->linkTo('#saveModel', $this->imageTag('icons/dddddd/disk.png'), array('class' => 'controlButton'))
+    != $this->linkTo('#cancel', $this->imageTag('icons/dddddd/cancel.png'), array('class' => 'controlButton'))
   
 - if(!$this->isBlank($this->page->footerText))
   != $this->markdown($this->h($this->page->footerText))

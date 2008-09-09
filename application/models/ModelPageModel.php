@@ -126,6 +126,17 @@ class ModelPageModel {
   }
   
   /**
+   * Pass any unimplemented method calls along to $this->page
+   *
+   * @param  string method being called
+   * @param  array  argyments to pass to said method
+   * @return mixed
+   */
+  public function __call($method, $arguments) {
+    return call_user_func_array(array($this->page, $method), $arguments);
+  }
+  
+  /**
    * Save this ModelPageModel object and its descendents
    *
    * @return boolean

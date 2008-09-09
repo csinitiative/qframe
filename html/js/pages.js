@@ -71,6 +71,19 @@ var Pages = {
   },
   
   /**
+   * Handles a click on the "saveModel" button
+   *
+   * @param Event click event for the save button
+   */
+  saveModelHandler: function(event) {
+    event.stop();
+    
+    var forms = $$('form');
+    if(forms) forms.first().submit();
+    else alert('Could not save because no form was found on the page.')
+  },
+  
+  /**
    * Handles a click on the "cancel" button
    *
    * @param Event click event for the cancel button

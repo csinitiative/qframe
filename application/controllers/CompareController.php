@@ -80,7 +80,6 @@ class CompareController extends QFrame_Controller_Action {
   public function createAction() {
     $modelParams = $this->_getParam('model');
     ModelModel::create($modelParams['name'], $modelParams['questionnaireID']);
-    // figure out if there is a way to do this better
     $this->_redirector->gotoUrl("/compare?questionnaire={$this->_getParam('questionnaire')}");
   }
   
@@ -88,10 +87,81 @@ class CompareController extends QFrame_Controller_Action {
    * Edit action. Edit a model.
    */
   public function editAction() {
-    $this->view->page = new PageModel(array(
-      'pageID' => $this->view->currentPageID,
-      'depth'  => 'question'
+    $this->view->page = new ModelPageModel(array(
+      'modelID' => $this->model->modelID,
+      'pageID'  => $this->view->currentPageID,
+      'depth'   => 'response'
     ));
     $this->view->model = $this->model;
+  }
+  
+  /**
+   * Save action.  Save a model.
+   */
+  public function saveAction() {
+    // don't really need this but it should help with query caching efficiency
+    $page = new ModelPageModel(array(
+      'modelID' => $this->model->modelID,
+      'pageID'  => $this->view->currentPageID,
+      'depth'   => 'response'
+    ));
+    $responses = $this->_getParam('response');
+    foreach($responses as $questionID => $response) {
+      $question = new ModelQuestionModel(array(
+        'modelID'    => $this->model->modelID,
+        'questionID' => $questionID,
+        'depth'      => 'response'
+      ));
+      if($question->nextModelResponse() !== null) $question->delete();
+      if(!$this->isBlank($response)) {
+        if($response['noinclude']) $question->createModelResponse('no preference', '-');
+        else $this->setModelResponse($question, $response['target']);
+      }
+    }
+    $this->flash('notice', 'Model saved successfully');
+    $baseUrl = $this->view->url(array('action' => 'edit', 'id' => $this->model->modelID));
+    $this->_redirector->gotoUrl($baseUrl . "?page={$page->pageID}");
+  }
+  
+  /**
+   * Set the question response correctly depending on the type of question
+   *
+   * @param Object       question
+   * @param string|array target
+   */
+  private function setModelResponse($question, $target) {
+    switch(substr($question->format, 0, 1)) {
+      case 'T':
+      case 'D':
+        $question->createModelResponse('match', $target);
+        break;
+      case 'S':
+      case 'M':
+        foreach($target as $promptID => $value) {
+          if($value) $question->createModelResponse('selected', $promptID);
+        }
+        break;
+    }
+  }
+  
+  /**
+   * Determine whether a response is blank or not
+   *
+   * @param  array response data
+   * @return boolean
+   */
+  private function isBlank($response) {
+    if(isset($response['noinclude']) && $response['noinclude']) return false;
+    if(!is_array($response['target']) && $response['target'] !== null) {
+      if($response['target'] !== '' && $response['target']) return false;
+    }
+    else {
+      foreach($response['target'] as $target) {
+        if(is_array($target) && $this->isBlank($target)) return false;
+        elseif($target !== null && $target !== '' && $target != 0) return false;
+      }
+    }
+    
+    return true;
   }
 }

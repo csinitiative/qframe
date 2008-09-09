@@ -170,11 +170,14 @@ class ModelSectionModel {
 
     $rows = self::$questionTable->fetchAll($where, 'seqNumber ASC');
     foreach ($rows as $row) {
-      $this->modelQuestions[] = new ModelQuestionModel(array('modelID' => $this->modelID,
-                                                             'questionID' => $row->questionID,
-                                                             'depth' => $this->depth,
-                                                             'instance' => $this->compareInstance
-      ));
+      if($row->parentID == 0) {
+        $this->modelQuestions[] = new ModelQuestionModel(array(
+          'modelID'    => $this->modelID,
+          'questionID' => $row->questionID,
+          'depth'      => $this->depth,
+          'instance'   => $this->compareInstance
+        ));
+      }
     }
   }
   
