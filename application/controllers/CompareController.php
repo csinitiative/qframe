@@ -140,6 +140,21 @@ class CompareController extends QFrame_Controller_Action {
    * Perform an actual comparison
    */
   public function doAction() {
+    $this->runReport();
+  }
+
+  /**
+   * Perform an actual comparison
+   */
+  public function csvAction() {
+    $this->runReport();
+    $this->view->setRenderLayout(false);
+  }
+  
+  /**
+   * Do the work of running a report and assigning the results to the view
+   */
+  private function runReport() {
     unset($this->view->menuItems);
     QFrame_Db_Table::reset('response');
     QFrame_Db_Table::reset('question');

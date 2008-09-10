@@ -19,6 +19,9 @@
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
 
+// Uncomment this to see phpinfo() for the running server
+//phpinfo(); exit;
+
 /*
  * Load the core of the QFrame application
  */
