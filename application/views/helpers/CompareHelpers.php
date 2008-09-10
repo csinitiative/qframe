@@ -225,4 +225,18 @@ class QFrame_View_Helper_CompareHelpers {
     
     return $this->view->formSelect('instance', null, null, $options);
   }
+  
+  /**
+   * Escape a string for CSV
+   *
+   * @param  string that is being esacped
+   * @return string
+   */
+  public function escapeForCsv($string) {
+    $result = preg_replace('/"/', '""', $string);
+    $result = preg_replace("/\s+/", ' ', $result);
+    $result = preg_replace("/^\s+|\s+$/", '', $result);
+    
+    return $result;
+  }
 }

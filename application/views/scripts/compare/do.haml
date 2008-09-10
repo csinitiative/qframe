@@ -19,6 +19,11 @@
 
 - $localStylesheets = array('report')
 
+#reportHeader
+  != $this->linkTo(array('action' => null, 'id' => null), 'back to model selection')
+  |
+  != $this->linkTo($this->url(array('action' => 'csv')) . "?{$_SERVER['QUERY_STRING']}", 'save as csv')
+
 - if(isset($this->failures['model_fail']))
   %h1#failure questions that failed the model check
   %table

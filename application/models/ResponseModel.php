@@ -166,6 +166,9 @@ class ResponseModel {
    * @return string
    */
   public function promptText () {
+    if($this->responseRow->responseText === null || $this->responseRow->responseText === '') {
+      return '';
+    }
     $questionPromptRows = self::$questionPromptTable->fetchRows('promptID', $this->responseRow->responseText);
     $questionPromptRow = $questionPromptRows[0];
     if (isset($questionPromptRow->value)) return $questionPromptRow->value;
