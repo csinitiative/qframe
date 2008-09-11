@@ -262,6 +262,9 @@ class ModelQuestionModel {
     $response = $compareQuestion->getResponse();
     
     $result = array();
+    foreach ($args as $key => $value) {
+      $result[$key] = array();
+    }
     
     if ($args['model_fail'] || $args['model_pass']) {
       $messages = array();
@@ -333,7 +336,8 @@ class ModelQuestionModel {
       }
     }
     
-    if ($args['additional_information'] && count($result) === 0 && strlen($response->additionalInfo) > 0) {
+    if ($args['additional_information'] && (!$args['model_fail'] || count($result['model_fail']) === 0) && strlen($response->additionalInfo) > 0) {
+      if ($args['model_pass'] === TRUE) $result['model_pass'] = array();
       $result['additional_information'][] = array('question' => $compareQuestion);
     }
 
