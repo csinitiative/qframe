@@ -38,12 +38,11 @@ table, th, tr, td
   :border-collapse collapse
 
 table
-  :margin-bottom 50px
+  :margin-bottom 50px      
+  :border-bottom 1px solid #000
 
-tr
-  :border 1px solid black
-  
 th
+  :padding 3px 10px 3px 5px
   :font-size 13px
   :font-weight bold
 
@@ -52,12 +51,16 @@ td
   :font-size 11px
 
 td, th
-  :padding 2px 10px 2px 5px
   :text-align left
   :vertical-align top
 
+tr
+  :border-width 0 1px 0 1px 
+  :border-style solid
+  :border-color #000
+
 tr.header
-  :border 0
+  :border-width 0 0 1px 0
   
 th, td.nowrap
   :white-space nowrap
@@ -73,3 +76,24 @@ tr.even
 
 tr.odd
   :background-color #ddd
+  
+table#failureTable
+  :border-color #f00
+  tr
+    :border-color #f00
+  tr.odd
+    :background-color #fdd
+
+table#additionalTable
+  :border-color #ff0
+  tr
+    :border-color #ff0
+  tr.odd
+    :background-color #ffd
+
+table#passingTable
+  :border-color #0f0
+  tr
+    :border-color #0f0
+  tr.odd
+    :background-color #dfd
