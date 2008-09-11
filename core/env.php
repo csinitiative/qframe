@@ -67,3 +67,11 @@ $env_file = implode(DIRECTORY_SEPARATOR, array(
 if(file_exists($env_file)) {
   $GLOBALS['qframe_maintenance'] = Spyc::YAMLLoad($env_file);
 }
+
+/*
+ * Set a few session parameters:
+ *   timeout => 30 minutes
+ */
+Zend_Session::start();
+$session_ns = new Zend_Session_Namespace();
+$session_ns->setExpirationSeconds(1800);

@@ -105,20 +105,55 @@ abstract class Migration_Adapter {
   }
   
   /**
+   * Start a transaction (either using QFrame transactions or straight db transactions)
+   *
+   * @param  Migration migration we are currently running
+   * @return mixed
+   */
+  private final function startTransaction(Migration $migration) {
+    if(class_exists('QFrame_Db_SerializableTransaction')) {
+      $result = QFrame_Db_SerializableTransaction::startSerializableTransaction();
+    }
+    else {
+      $result = $this->dbAdapter->beginTransaction();
+    }
+    
+    if(!$result) 
+      throw new Exception('Could not begin a transaction for migration ' . get_class($migration));
+      
+    return $result;
+  }
+  
+  /**
+   * Commit a transaction (see comment above)
+   *
+   * @param mixed     transaction identifier (whatever was passed back from startTransaction())
+   * @param Migration migration that is currently running
+   */
+  private final function commitTransaction($transaction, Migration $migration) {
+    if(class_exists('QFrame_Db_SerializableTransaction')) {
+      $result = QFrame_Db_SerializableTransaction::dbCommit($transaction);
+    }
+    else {
+      if(!$this->dbAdapter->commit()) {
+        throw new Exception('Could not commit transaction for migration ' . get_class($migration));
+      }
+    }
+  }
+  
+  /**
    * Migrate up
    *
    * @param Migration migration to be applied
    * @param string    version we are migrating to
    */
   public final function up(Migration $migration, $version) {
-    if(!$this->dbAdapter->beginTransaction())
-      throw new Exception('Could not begin a transaction for migration ' . get_class($migration));
+    $result = $this->startTransaction($migration);
       
     $migration->up();
     $this->setSchemaVersion($version);
     
-    if(!$this->dbAdapter->commit())
-      throw new Exception('Could not commit transaction for migration ' . get_class($migration));
+    $this->commitTransaction($result, $migration);
   }
   
   /**
@@ -128,14 +163,12 @@ abstract class Migration_Adapter {
    * @param string    version we are migrating to
    */
   public final function down(Migration $migration, $version) {
-    if(!$this->dbAdapter->beginTransaction())
-      throw new Exception('Could not begin a transaction for migration ' . get_class($migration));
+    $result = $this->startTransaction($migration);
       
     $migration->down();
     $this->setSchemaVersion($version);
     
-    if(!$this->dbAdapter->commit())
-      throw new Exception('Could not commit transaction for migration ' . get_class($migration));
+    $this->commitTransaction($result, $migration);
   }
   
   /**
