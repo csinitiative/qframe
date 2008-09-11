@@ -145,9 +145,10 @@ function copyFiles($appName) {
  * Package everything up
  *
  * @param  string name of the current application
+ * @param  string version of the application
  * @return boolean
  */
-function package($appName) {
+function package($appName, $version) {
   echo formatMessage('-- creating archive', ' ');
   
   $exclusions = preg_split('/\s+/', file_get_contents('.exclude'));

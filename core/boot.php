@@ -89,15 +89,6 @@ $router->addRoute(
   )
 );
 
-
-/*
- * Set a few session parameters:
- *   timeout => 30 minutes
- */
-Zend_Session::start();
-$session_ns = new Zend_Session_Namespace();
-$session_ns->setExpirationSeconds(1800);
-
 /*
  * Set up the base url before dispatching
  */
