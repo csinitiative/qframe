@@ -239,4 +239,19 @@ class QFrame_View_Helper_CompareHelpers {
     
     return $result;
   }
+  
+  /**
+   * Return whether or not a failures array really contains any failures
+   *
+   * @param  array of failures
+   * @return boolean
+   */
+  public function hasFailures(array $failures) {
+    $fail = (isset($failures['model_fail']) && count($failures['model_fail']) > 0);
+    $addl = (isset($failures['additional_information']) &&
+             count($failures['additional_information']) > 0);
+    $pass = (isset($failures['model_pass']) && count($failures['model_pass']) > 0);
+    
+    return ($fail || $addl || $pass);
+  }
 }

@@ -24,9 +24,12 @@
   |
   != $this->linkTo($this->url(array('action' => 'csv')) . "?{$_SERVER['QUERY_STRING']}", 'save as csv')
 
-- if(isset($this->failures['model_fail']))
+- if(!$this->hasFailures($this->failures))
+  %h1 all responses passed
+
+- if(isset($this->failures['model_fail']) && count($this->failures['model_fail']) > 0)
   %h1#failure questions that failed the model check
-  %table
+  %table#failureTable
     %tr.header
       %th.subdominant question
       %th response
@@ -42,9 +45,9 @@
         %td.nowrap
           != implode("<br />", $failure['messages'])
         
-- if(isset($this->failures['additional_information']))
+- if(isset($this->failures['additional_information']) && count($this->failures['additional_information']) > 0)
   %h1#additional questions with additional information
-  %table
+  %table#additionalTable
     %tr.header
       %th question
       %th response
@@ -57,9 +60,9 @@
         %td= $failure['question']->getResponseText()
         %td= $failure['question']->getResponse()->additionalInfo
 
-- if(isset($this->failures['model_pass']))
+- if(isset($this->failures['model_pass']) && count($this->failures['model_pass']) > 0)
   %h1#passing questions that passed the model check
-  %table
+  %table#passingTable
     %tr.header
       %th question
       %th response
