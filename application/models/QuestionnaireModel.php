@@ -269,7 +269,7 @@ class QuestionnaireModel extends QFrame_Db_SerializableTransaction implements QF
           return $questionnaireID;
         }
         else {
-          throw new Exception('An questionnaire with the same name, version, and revision already exists with different content');
+          throw new Exception('A questionnaire with the same name, version, and revision already exists with different content');
         }
       }
     }

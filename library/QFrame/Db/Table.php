@@ -27,12 +27,13 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
   private $locked = false;
   private $bulkFileName;
   private $bulkFileHandle;
-  private static $preload = false;
-  static $discriminators;
-  static $cache;
+  static $adapter;
+  static $primaryCache;
+  static $discriminatorCache;
   static $bulkID = 0;
   static $tables;
   static $tablesReferenceMap = array();
+  static $preload = array();
   static $primaryKeysFieldTable = array();
   static $foreignKeysFieldTable = array();
   static $foreignKeysTableField = array();
@@ -43,6 +44,29 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
                                    'questionGUID' => true,
                                    'objectID' => true,
                                    'parentID' => true);
+  static $discriminatorKeysTableField = array('attachment' => null,
+                                              'crypto' => null,
+                                              'db_user' => null,
+                                              'instance' => null,
+                                              'locks' => null,
+                                              'model' => null,
+                                              'model_response' => 'modelID',
+                                              'page' => 'instanceID',
+                                              'page_reference' => 'instanceID',
+                                              'questionnaire' => null,
+                                              'question' => 'pageID',
+                                              'question_prompt' => 'instanceID',
+                                              'question_reference' => 'pageID',
+                                              'question_type' => 'instanceID',
+                                              'reference_detail' => 'instanceID',
+                                              'reference' => 'instanceID',
+                                              'response' => 'pageID',
+                                              'role' => null,
+                                              'rule' => 'instanceID',
+                                              'section' => 'pageID',
+                                              'section_reference' => 'pageID',
+                                              'state' => null);
+
                                    
   /**
    * Convert a table name to a QFrame_Db_Table_* class name
@@ -121,43 +145,89 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
     if (isset(self::$tablesReferenceMap[$tableName])) {
       $this->_referenceMap = self::$tablesReferenceMap[$tableName];
     } 
+    self::$adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
   }
   
-  public function fetchRows($field, $id, $orderby = null, $instanceID = null) {
-    $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
+  public function fetchRows($field, $id, $orderby = null, $discriminatorID = null) {
     $tableName = $this->getTablename();
+
     if (!isset(self::$foreignKeysFieldTable[$field])) {
       throw new Exception('Field must be a primary or foreign key');
     }
-    elseif (!isset(self::$forceForeignKeys[$field]) && isset(self::$cache[$tableName][$field][$id])) {
-      return self::$cache[$tableName][$field][$id];
-    }
-    elseif (isset($instanceID) && isset(self::$discriminators[$tableName][$instanceID])) {
-      if (isset(self::$cache[$tableName][$field][$id])) {
-        return self::$cache[$tableName][$field][$id];
+
+    $primaryCache = false;
+    $discriminatorCache = false;
+    $where = '1=1';
+
+    if (isset(self::$discriminatorKeysTableField[$tableName]) && self::$discriminatorKeysTableField[$tableName] === $field) {
+      if (isset(self::$discriminatorCache[$tableName][$id][$field][$id])) {
+        return self::$discriminatorCache[$tableName][$id][$field][$id];
       }
-      return array();
+      $discriminatorCache = true;
+      $discriminatorID = $id;
     }
-    elseif ($field === 'instanceID') {
-      self::$discriminators[$tableName][$id] = true;
+    elseif (isset(self::$primaryKeysFieldTable[$field][$tableName])) {
+      if (isset(self::$primaryCache[$tableName][$field][$id])) {
+        return self::$primaryCache[$tableName][$field][$id];
+      }
+      $primaryCache = true;
     }
-    $where = $adapter->quoteInto("{$field} = ?", $id);
+
+    if (isset($discriminatorID)) {
+      $discriminatorField = self::$discriminatorKeysTableField[$tableName];
+      if (isset(self::$discriminatorCache[$tableName][$discriminatorID])) {
+        if (isset(self::$discriminatorCache[$tableName][$discriminatorID][$field][$id])) {
+          return self::$discriminatorCache[$tableName][$discriminatorID][$field][$id];
+        }
+        return array();
+      }
+      $where .= " AND {$discriminatorField} = {$discriminatorID}";
+    }
+
+    $where .= " AND {$field} = {$id}";
     $rows = $this->fetchAll($where, $orderby);
-    $foreignKeys = self::$foreignKeysTableField[$tableName];
-    self::$cache[$tableName][$field][$id] = array();
-    if (count($foreignKeys)) {
-      foreach ($rows as $row) {
-        foreach ($foreignKeys as $foreignKey => $data) {
-          if (isset($row->$foreignKey)) {
-            self::$cache[$tableName][$foreignKey][$row->$foreignKey][] = $row;
+
+    if ($discriminatorCache) {
+      (isset(self::$foreignKeysTableField[$tableName])) ? $foreignKeys = self::$foreignKeysTableField[$tableName] : $foreignKeys = array();
+      // For empty rowsets.  Put something in here so that we know we've already done the query.
+      self::$discriminatorCache[$tableName][$discriminatorID][$field][$discriminatorID] = array();
+      if (count($foreignKeys)) {
+        foreach ($rows as $row) {
+          foreach ($foreignKeys as $foreignKey => $data) {
+            if (isset($row->$foreignKey)) {
+              self::$discriminatorCache[$tableName][$discriminatorID][$foreignKey][$row->$foreignKey][] = $row;
+            }
+            if (isset(self::$primaryKeysFieldTable[$foreignKey][$tableName]) && !isset(self::$primaryCache[$tableName][$foreignKey][$row->$foreignKey])) {
+              self::$primaryCache[$tableName][$foreignKey][$row->$foreignKey][] = $row;
+            }
           }
         }
       }
+      return self::$discriminatorCache[$tableName][$discriminatorID][$field][$discriminatorID];
+    }
+    elseif ($primaryCache) {
+      $foreignKeys = self::$foreignKeysTableField[$tableName];
+      // For empty rowsets.  Put something in here so that we know we've already done the query.
+      self::$primaryCache[$tableName][$field][$id] = array();
+      if (count($foreignKeys)) {
+        foreach ($rows as $row) {
+          foreach ($foreignKeys as $foreignKey => $data) {
+            if (isset($row->$foreignKey)) {
+              self::$primaryCache[$tableName][$foreignKey][$row->$foreignKey][] = $row;
+            }
+          }
+        }
+      }
+      return self::$primaryCache[$tableName][$field][$id];
     }
     else {
-      self::$cache[$tableName][$field][$id] = $rows;
+      $array = array();
+      foreach ($rows as $row) {
+        $array[] = $row;
+      }
+      return $array;
     }
-    return self::$cache[$tableName][$field][$id]; 
+
   }
   
   public function getTableName() {
@@ -209,37 +279,42 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
   }
   
   public static function reset($tableName) {
-    unset(self::$discriminators[$tableName]);
-    unset(self::$cache[$tableName]);
-    self::$preload = false;
+    unset(self::$preload[$tableName]);
+    unset(self::$primaryCache[$tableName]);
+    unset(self::$discriminatorCache[$tableName]);
   }
   
   public static function resetAll() {
     $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
     $tableNames = self::getTables();
-    self::$preload = false;
     foreach ($tableNames as $tableName) {
       QFrame_Db_Table::reset($tableName);
     }
   }
   
-  public static function preloadAll($instanceID, $pageID) {
-    if (self::$preload) return;
+  public static function preloadPage($instanceID, $pageID) {
     $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
     $tableNames = self::getTables();
     foreach ($tableNames as $tableName) {
-      if ($tableName === 'question') {
-        $table = QFrame_Db_Table::getTable($tableName);
-        $table->fetchRows('pageID', $pageID);
+      if (isset(self::$preload[$tableName][$pageID])) continue;
+      self::$preload[$tableName][$pageID] = true;
+      $table = QFrame_Db_Table::getTable($tableName);
+      if ($tableName === 'model_response') continue; // No need to preload this in normal usage
+      if (isset(self::$primaryKeysFieldTable['pageID'][$tableName]) || 
+          (isset(self::$discriminatorKeysTableField[$tableName]) && self::$discriminatorKeysTableField[$tableName] === 'pageID')) {
+        if ($tableName === 'section' || $tableName === 'question')
+          $table->fetchRows('pageID', $pageID, 'seqNumber');
+        else
+          $table->fetchRows('pageID', $pageID);
       }
-      else {
-        $table = QFrame_Db_Table::getTable($tableName);
-        if (isset($table->_metadata['instanceID'])) {
+      if (isset(self::$primaryKeysFieldTable['instanceID'][$tableName]) ||
+          (isset(self::$discriminatorKeysTableField[$tableName]) && self::$discriminatorKeysTableField[$tableName] === 'instanceID')) {
+        if ($tableName === 'page')
+          $table->fetchRows('instanceID', $instanceID, 'seqNumber');
+        else
           $table->fetchRows('instanceID', $instanceID);
-        }
       }
     }
-    self::$preload = true;
   }
   
   public static function getTable($tableName) {

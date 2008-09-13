@@ -73,12 +73,13 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     if (!isset(self::$sectionTable)) self::$sectionTable = QFrame_Db_Table::getTable('section');
 
     if (isset($args['instanceID'])) {
-      $where = self::$instanceTable->getAdapter()->quoteInto('instanceID = ?', $args['instanceID']);
-      $this->instanceRow = self::$instanceTable->fetchRow($where);
+      $rows = self::$instanceTable->fetchRows('instanceID', $args['instanceID']);
+
       // instance row assertion
-      if (!isset($this->instanceRow)) {
+      if (!isset($rows[0])) {
         throw new Exception('Instance not found [' . $args['instanceID'] . ']');
       }
+      $this->instanceRow = $rows[0];
       $this->parent = new QuestionnaireModel(array('questionnaireID' => $this->instanceRow->questionnaireID,
                                                    'depth' => 'questionnaire'));
     }
@@ -215,10 +216,8 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
 
     QFrame_Db_Table::resetAll();
 
-    QFrame_Db_Table::preloadAll($instanceID, null);
-
     $instance = new InstanceModel(array('instanceID' => $instanceID,
-                                        'depth' => 'section'));
+                                        'depth' => 'response'));
     $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
     $xml .= '<csi:questionnaire';
 
@@ -245,8 +244,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
         $xml .= "      <csi:defaultPageHidden>" . self::_xmlentities($page->defaultPageHidden) . "</csi:defaultPageHidden>\n";
       }
       $xml .= "      <csi:sections>\n";
-      while ($s = $page->nextSection()) {
-        $section = new SectionModel(array('sectionID' => $s->sectionID, 'depth' => 'response'));
+      while ($section = $page->nextSection()) {
         $xml .= "        <csi:section>\n";
         if ($complete) {
           $xml .= '          <csi:sectionHeader>' . self::_xmlentities($section->sectionHeader) . "</csi:sectionHeader>\n";
@@ -1374,7 +1372,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    * @param  See importXML.
    */
   private static function importXMLSectionReferences($instanceID, $sectionID, $referenceDetailID, $pageID) {
-    $rows = self::$sectionReferenceTable->fetchRows('sectionID', $sectionID, null, $instanceID);
+    $rows = self::$sectionReferenceTable->fetchRows('sectionID', $sectionID, null, $pageID);
     foreach ($rows as $row) {
       if ($referenceDetailID == $row->referenceDetailID) return;
     }
@@ -1390,7 +1388,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    * @param  See importXML.
    */
   private static function importXMLQuestionReferences($instanceID, $questionID, $referenceDetailID, $pageID, $sectionID) {
-    $rows = self::$questionReferenceTable->fetchRows('questionID', $questionID, null, $instanceID);
+    $rows = self::$questionReferenceTable->fetchRows('questionID', $questionID, null, $pageID);
     foreach ($rows as $row) {
       if ($referenceDetailID == $row->referenceDetailID) return;
     }

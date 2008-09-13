@@ -100,8 +100,9 @@ class ModelModel {
     if (!isset(self::$pageTable)) self::$pageTable = QFrame_Db_Table::getTable('page');
     
     if (isset($args['modelID'])) {
-      $where = self::$modelTable->getAdapter()->quoteInto('modelID = ?', $args['modelID']);
-      $this->modelRow = self::$modelTable->fetchRow($where);
+      $rows = self::$modelTable->fetchRows('modelID', $args['modelID']);
+      $this->modelRow = $rows[0];
+
       // model row assertion
       if (!isset($this->modelRow)) {
         throw new Exception('Model not found: modelID[' . $args['modelID'] . ']');
@@ -111,6 +112,7 @@ class ModelModel {
       $where = self::$modelTable->getAdapter()->quoteInto('questionnaireID = ?', $args['questionnaireID']) .
                self::$modelTable->getAdapter()->quoteInto('AND name = ?', $args['name']);
       $this->modelRow = self::$modelTable->fetchRow($where);
+
       // model row assertion
       if (!isset($this->modelRow)) {
         throw new Exception('Model not found: questionnaireID[' . $args['questionnaireID'] . '], name[' . $args['name'] . ']');
@@ -268,9 +270,6 @@ class ModelModel {
     if ($this->compareInstance->depth !== 'response') throw new Exception('Comparison not possible since compare instance depth not set to response');
     if ($this->depth !== 'response') throw new Exception('Comparison not possible since depth not set to response');
     
-    // To populate cache
-    self::$modelResponseTable->fetchRows('modelID', $this->modelRow->modelID);
-    
     $result = array();
     
     foreach ($args as $key => $value) {
@@ -301,17 +300,16 @@ class ModelModel {
     if($auth->hasIdentity()) $user = DbUserModel::findByUsername($auth->getIdentity());
     else throw new Exception("Hey, no loading pages without being logged in");
     
-    $where = self::$pageTable->getAdapter()->quoteInto('instanceID = ?', $this->instance->instanceID);
-    $pageRowset = self::$pageTable->fetchAll($where);
+    $rows = self::$pageTable->fetchRows('instanceID', $this->instance->instanceID, 'seqNumber', $this->instance->instanceID);
 
     $this->modelPages = array();
-    foreach ($pageRowset as $tRow) {
+    foreach ($rows as $row) {
       $page = new PageModel(array(
-        'pageID' => $tRow->pageID,
+        'pageID' => $row->pageID,
         'depth' => 'page'
       ));
       $modelPage = new ModelPageModel(array('modelID' => $this->modelRow->modelID,
-                                            'pageID' => $tRow->pageID,
+                                            'pageID' => $row->pageID,
                                             'depth' => $this->depth,
                                             'instance' => $this->compareInstance
       ));

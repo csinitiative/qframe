@@ -61,6 +61,7 @@ class QFrame_Controller_Plugin_Log extends Zend_Controller_Plugin_Abstract {
       if($queries = $profiler->getQueryProfiles()) {
         foreach ($queries as $query) {
           $logger->log($query->getQuery(), Zend_Log::INFO);
+          $logger->log("Ran in " . $query->getElapsedSecs() . " seconds", Zend_Log::INFO);
         }
       }
       $logger->log("  Ran {$profiler->getTotalNumQueries()} queries in " .

@@ -264,7 +264,7 @@ class FileModel {
    *
    *  array {
    *    ['<objectType>'] => array {
-   *      [<attachmentID>] => array { <attachmentDetails> }
+   *      [<objectID>] => true
    *    }  
    *  }
    *
@@ -274,20 +274,20 @@ class FileModel {
   public static function fetchObjectIdsByInstance($instanceID) {
     if (!isset(self::$attachmentTable)) self::$attachmentTable = QFrame_Db_Table::getTable('attachment');
     
-    $objects = array();
+    $result = array();
 
     // Get all files assocated with this instance ID
-    $rows = self::$attachmentTable->fetchRows('instanceID', intVal($instanceID));
+    $select = self::$attachmentTable->getAdapter()->select()
+            ->from(array('a' => 'attachment'), array('objectType', 'objectID'))
+            ->where('a.instanceID = ?', $instanceID);
+    $stmt = self::$attachmentTable->getAdapter()->query($select);
+    $rows = $stmt->fetchAll();
     
     // Sort files by objectType and add them to the array to be returned
     foreach($rows as $row) {
-      $properties = $row->toArray();
-      unset($properties['objectType']);
-      unset($properties['attachmentID']);
-      if(!isset($row->objectType)) $objects[$row->objectType] = array();
-      $objects[$row->objectType][$row->attachmentID] = $properties;
+      $result[$row['objectType']][$row['objectID']] = true;
     }
     
-    return $objects;
+    return $result;
   }
 }

@@ -156,14 +156,10 @@ class CompareController extends QFrame_Controller_Action {
    */
   private function runReport() {
     unset($this->view->menuItems);
-    QFrame_Db_Table::reset('response');
-    QFrame_Db_Table::reset('question');
     $instance = new InstanceModel(array(
       'instanceID' => $this->_getParam('instance'),
       'depth'      => 'response'
     ));
-    QFrame_Db_Table::reset('response');
-    QFrame_Db_Table::reset('question');
     $model = new ModelModel(array(
       'modelID'  => $this->_getParam('id'),
       'depth'    => 'response',

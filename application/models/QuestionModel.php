@@ -70,11 +70,6 @@ class QuestionModel implements QFrame_Storer {
     ), $args);
     $this->depth = $args['depth'];
     
-    // argument assertions
-    if (!isset ($args['questionID'])) {
-      throw new InvalidArgumentException('Missing questionID as argument to QuestionModel constructor');
-    }
-
     if (!isset (self::$questionTable)) self::$questionTable = QFrame_Db_Table::getTable('question');
     if (!isset (self::$questionReferenceTable)) self::$questionReferenceTable = QFrame_Db_Table::getTable('question_reference');
     if (!isset (self::$referenceTable)) self::$referenceTable = QFrame_Db_Table::getTable('reference');
@@ -82,13 +77,18 @@ class QuestionModel implements QFrame_Storer {
     if (!isset (self::$questionTypeTable)) self::$questionTypeTable = QFrame_Db_Table::getTable('question_type');
     if (!isset (self::$questionPromptTable)) self::$questionPromptTable = QFrame_Db_Table::getTable('question_prompt');
 
-    $questions = self::$questionTable->fetchRows('questionID', $args['questionID']);
-    $this->questionRow = $questions[0];
-
-    // question row assertion
-    if ($this->questionRow === NULL) {
-      throw new Exception('Question not found');
+    if (isset($args['questionID'])) {
+      $rows = self::$questionTable->fetchRows('questionID', $args['questionID']);
+      // question row assertion
+      if (!isset($rows[0])) {
+        throw new Exception('Question not found');
+      }
+      $this->questionRow = $rows[0];
     }
+    else {
+      throw new InvalidArgumentException('Missing arguments to QuestionModel constructor');
+    }
+
 
     if (isset ($args['parent'])) {
       $this->parent = $args['parent'];
@@ -105,9 +105,8 @@ class QuestionModel implements QFrame_Storer {
     // virtual question
     if ($this->questionTypeRow->format === 'V') {
       $this->virtualQuestion = 1;
-      $questions = self::$questionTable->fetchRows('questionGUID', $this->questionRow->questionGUID);
+      $questions = self::$questionTable->fetchRows('questionGUID', $this->questionRow->questionGUID, null, $this->questionRow->pageID);
       foreach ($questions as $question) {
-        if ($question->instanceID != $this->questionRow->instanceID) continue;
         if ($question->questionTypeID != $this->questionTypeRow->questionTypeID) {
           $seqNumber = $this->questionRow->seqNumber;
           $this->questionRow = $question;
@@ -119,7 +118,7 @@ class QuestionModel implements QFrame_Storer {
       }
     }
 
-    $questionPromptRows = self::$questionPromptTable->fetchRows('questionTypeID', $this->questionRow->questionTypeID);
+    $questionPromptRows = self::$questionPromptTable->fetchRows('questionTypeID', $this->questionRow->questionTypeID, null, $this->questionRow->instanceID);
 
     if (!isset (self::$ruleTable)) self::$ruleTable = QFrame_Db_Table::getTable('rule');
     foreach ($questionPromptRows as $row) {
@@ -159,7 +158,7 @@ class QuestionModel implements QFrame_Storer {
       $this->questionRow->save();
     }
 
-    $questionReferenceRows = self::$questionReferenceTable->fetchRows('questionID', $this->questionRow->questionID, null, $this->questionRow->instanceID);
+    $questionReferenceRows = self::$questionReferenceTable->fetchRows('questionID', $this->questionRow->questionID, null, $this->questionRow->pageID);
     foreach ($questionReferenceRows as $row) {
       $referenceDetailRows = self::$referenceDetailTable->fetchRows('referenceDetailID', $row->referenceDetailID, null, $this->questionRow->instanceID);
       foreach ($referenceDetailRows as $rd) {
@@ -316,7 +315,7 @@ class QuestionModel implements QFrame_Storer {
 
   private function _loadResponses() {
     if (!isset (self::$responseTable)) self::$responseTable = QFrame_Db_Table::getTable('response');
-    $responses = self::$responseTable->fetchRows('questionID', $this->questionRow->questionID, 'responseID', $this->questionRow->instanceID);
+    $responses = self::$responseTable->fetchRows('questionID', $this->questionRow->questionID, 'responseID', $this->questionRow->pageID);
     $this->responses = array();
     foreach ($responses as $r) {
       if (!$r->responseEndDate) {
@@ -340,7 +339,7 @@ class QuestionModel implements QFrame_Storer {
    */
   public function _loadChildren() {
     $this->children = array();
-    $rows = QFrame_Db_Table::getTable('question')->fetchRows('parentID', $this->questionRow->questionID, 'seqNumber', $this->questionRow->instanceID);
+    $rows = QFrame_Db_Table::getTable('question')->fetchRows('parentID', $this->questionRow->questionID, 'seqNumber', $this->questionRow->pageID);
     foreach ($rows as $row) {
       $this->children[] = new QuestionModel(array('questionID' => $row->questionID,
                                                   'depth' => $this->depth)); 

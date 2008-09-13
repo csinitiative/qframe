@@ -123,7 +123,7 @@ class SectionModel {
       $this->sectionRow->save();
     }
 
-    $sectionReferenceRows = self::$sectionReferenceTable->fetchRows('sectionID', $this->sectionRow->sectionID, null, $this->sectionRow->instanceID);
+    $sectionReferenceRows = self::$sectionReferenceTable->fetchRows('sectionID', $this->sectionRow->sectionID, null, $this->sectionRow->pageID);
     foreach ($sectionReferenceRows as $row) {
       $rows = self::$referenceDetailTable->fetchRows('referenceDetailID', $row->referenceDetailID, null, $this->sectionRow->instanceID);
       $this->referenceDetailRows[] = $rows[0]->toArray();
@@ -203,7 +203,7 @@ class SectionModel {
   }
 
   private function _loadQuestions() {  
-    $questions = QFrame_Db_Table::getTable('question')->fetchRows('sectionID', $this->sectionID, 'seqNumber');
+    $questions = QFrame_Db_Table::getTable('question')->fetchRows('sectionID', $this->sectionID, 'seqNumber', $this->sectionRow->pageID);
     
     $this->questions = array();
     foreach ($questions as $question) {

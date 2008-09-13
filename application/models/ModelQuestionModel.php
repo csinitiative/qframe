@@ -53,6 +53,12 @@ class ModelQuestionModel {
    * @var QuestionModel
    */
   private $question;
+
+  /**
+   * Stores the page table object used by this class
+   * @var QFrame_Db_Table_Page
+   */
+  private static $pageTable;
   
   /**
    * Stores the instance that is being compared to the model (optional)
@@ -98,6 +104,7 @@ class ModelQuestionModel {
     if (!isset(self::$modelTable)) self::$modelTable = QFrame_Db_Table::getTable('model');
     if (!isset(self::$modelResponseTable)) self::$modelResponseTable = QFrame_Db_Table::getTable('model_response');
     if (!isset(self::$questionTable)) self::$questionTable = QFrame_Db_Table::getTable('question');
+    if (!isset(self::$pageTable)) self::$pageTable = QFrame_Db_Table::getTable('page');
     
     if (isset($args['modelID']) && isset($args['questionID'])) {
       $this->modelID = $args['modelID'];
@@ -253,12 +260,16 @@ class ModelQuestionModel {
     if ($this->compareInstance->depth !== 'response') throw new Exception('Comparison not possible since compare instance depth not set to response');
     if ($this->depth !== 'response') throw new Exception('Comparison not possible since depth not set to response');
     
-    $where = self::$questionTable->getAdapter()->quoteInto('instanceID = ?', $this->compareInstance->instanceID) .
-             self::$questionTable->getAdapter()->quoteInto(' AND questionGUID = ?', $this->question->questionGUID);
-
-    $compareQuestionRow = self::$questionTable->fetchRow($where);
+    $modelPageRows = self::$pageTable->fetchRows('pageID', $this->question->pageID, null, $this->question->instanceID);
+    $modelPageRow = $modelPageRows[0];
+    $pageGUID = $modelPageRow->pageGUID;
+    $comparePageRows = self::$pageTable->fetchRows('pageGUID', $pageGUID, null, $this->compareInstance->instanceID);
+    $comparePageRow = $comparePageRows[0];
+    $compareQuestionRows = self::$questionTable->fetchRows('questionGUID', $this->question->questionGUID, null, $comparePageRow->pageID);
+    $compareQuestionRow = $compareQuestionRows[0];
     $compareQuestion = new QuestionModel(array('questionID' => $compareQuestionRow->questionID,
                                                'depth' => 'response'));
+
     $response = $compareQuestion->getResponse();
     
     $result = array();
@@ -348,10 +359,7 @@ class ModelQuestionModel {
    * Loads Model Responses
    */
   private function _loadModelResponses() {
-    $where = self::$modelResponseTable->getAdapter()->quoteInto('modelID = ?', $this->modelID) .
-             self::$modelResponseTable->getAdapter()->quoteInto(' AND questionID = ?', $this->question->questionID);
-
-    $rows = self::$modelResponseTable->fetchAll($where);
+    $rows = self::$modelResponseTable->fetchRows('questionID', $this->question->questionID, 'modelResponseID', $this->modelID);
     foreach ($rows as $row) {
       $this->modelResponses[] = new ModelResponseModel(array('modelResponseID' => $row->modelResponseID,
                                                              'instance' => $this->compareInstance));
@@ -363,8 +371,7 @@ class ModelQuestionModel {
    */
   public function _loadChildren() {
     $this->children = array();
-    $rows = QFrame_Db_Table::getTable('question')->fetchRows('parentID', $this->questionID,
-        'seqNumber', $this->instanceID);
+    $rows = QFrame_Db_Table::getTable('question')->fetchRows('parentID', $this->questionID, 'seqNumber', $this->question->pageID);
     foreach ($rows as $row) {
       $this->children[] = new ModelQuestionModel(array(
         'modelID'    => $this->modelID,
