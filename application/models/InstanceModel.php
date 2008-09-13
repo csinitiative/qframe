@@ -30,6 +30,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
   private $pages;
   private $pagesIndex;
   private $depth;
+  private $attachmentQuestions;
   static $questionnaireTable;
   static $instanceTable;
   static $pageTable;
@@ -216,6 +217,8 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
 
     QFrame_Db_Table::resetAll();
 
+    $this->attachmentQuestions = FileModel::fetchObjectIdsByInstance($this->instanceRow->instanceID);
+
     $instance = new InstanceModel(array('instanceID' => $instanceID,
                                         'depth' => 'response'));
     $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
@@ -299,19 +302,21 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
               }
               $xml .= "</csi:groupQuestionReferences>\n";
             }
-            $fileObj = new FileModel($question);
-            $ids = $fileObj->fetchAll();
-            if (count($ids)) {
-              $xml .= "              <csi:attachments>\n";
-              foreach ($ids as $id) {
-                $xml .= "                <csi:attachment>\n";
-                $file = $fileObj->fetchProperties($id);
-                $xml .= "                  <csi:filename>" . self::_xmlentities($file['filename']) . "</csi:filename>\n";
-                $xml .= "                  <csi:mime>" . self::_xmlentities($file['mime']) . "</csi:mime>\n";
-                $xml .= "                  <csi:location>files/{$id}</csi:location>\n";
-                $xml .= "                </csi:attachment>\n";
+            if (isset($this->attachmentQuestions['QuestionModel'][$question->questionID])) {
+              $fileObj = new FileModel($question);
+              $ids = $fileObj->fetchAll();
+              if (count($ids)) {
+                $xml .= "              <csi:attachments>\n";
+                foreach ($ids as $id) {
+                  $xml .= "                <csi:attachment>\n";
+                  $file = $fileObj->fetchProperties($id);
+                  $xml .= "                  <csi:filename>" . self::_xmlentities($file['filename']) . "</csi:filename>\n";
+                  $xml .= "                  <csi:mime>" . self::_xmlentities($file['mime']) . "</csi:mime>\n";
+                  $xml .= "                  <csi:location>files/{$id}</csi:location>\n";
+                  $xml .= "                </csi:attachment>\n";
+                }
+                $xml .= "              </csi:attachments>\n";
               }
-              $xml .= "              </csi:attachments>\n";
             }
             $padding = '  ';
             $questions = $question->children;
@@ -409,19 +414,21 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
                $xml .= "$padding              </csi:responses>\n";
               }
             }
-            $fileObj = new FileModel($question);
-            $ids = $fileObj->fetchAll();
-            if (count($ids)) {
-              $xml .= "$padding              <csi:attachments>\n";
-              foreach ($ids as $id) {
-                $xml .= "$padding                <csi:attachment>\n";
-                $file = $fileObj->fetchProperties($id);
-                $xml .= "$padding                  <csi:filename>" . self::_xmlentities($file['filename']) . "</csi:filename>\n";
-                $xml .= "$padding                  <csi:mime>" . self::_xmlentities($file['mime']) . "</csi:mime>\n";
-                $xml .= "$padding                  <csi:location>files/{$id}</csi:location>\n";
-                $xml .= "$padding                </csi:attachment>\n";
+            if (isset($this->attachmentQuestions['QuestionModel'][$question->questionID])) {
+              $fileObj = new FileModel($question);
+              $ids = $fileObj->fetchAll();
+              if (count($ids)) {
+                $xml .= "$padding              <csi:attachments>\n";
+                foreach ($ids as $id) {
+                  $xml .= "$padding                <csi:attachment>\n";
+                  $file = $fileObj->fetchProperties($id);
+                  $xml .= "$padding                  <csi:filename>" . self::_xmlentities($file['filename']) . "</csi:filename>\n";
+                  $xml .= "$padding                  <csi:mime>" . self::_xmlentities($file['mime']) . "</csi:mime>\n";
+                  $xml .= "$padding                  <csi:location>files/{$id}</csi:location>\n";
+                  $xml .= "$padding                </csi:attachment>\n";
+                }
+                $xml .= "$padding              </csi:attachments>\n";
               }
-              $xml .= "$padding              </csi:attachments>\n";
             }
             $xml .= "$padding            </csi:question>" . "\n";
           }

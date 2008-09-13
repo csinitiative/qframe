@@ -188,17 +188,20 @@ class ZipArchiveModel extends ZipArchive {
    * Adds all attachments associated with the instance to the zip archive
    */
   public function addAttachments() {
+    $attachmentQuestions = FileModel::fetchObjectIdsByInstance($this->instance->instanceID);
     $instance = new InstanceModel(array('instanceID' => $this->instance->instanceID,
                                         'depth' => 'question'));
     while($page = $instance->nextPage()) {
       while ($section = $page->nextSection()) {
         while ($question = $section->nextQuestion()) {
-          $fileObj = new FileModel($question);
-          $ids = $fileObj->fetchAll();
-          if ($ids === NULL) continue;
-          foreach ($ids as $id) {
-            $file = $fileObj->fetchWithProperties($id);
-            $this->addFromString("files/{$id}", $file['contents']);
+          if (isset($attachmentQuestions['QuestionModel'][$question->questionID])) {
+            $fileObj = new FileModel($question);
+            $ids = $fileObj->fetchAll();
+            if ($ids === NULL) continue;
+            foreach ($ids as $id) {
+              $file = $fileObj->fetchWithProperties($id);
+              $this->addFromString("files/{$id}", $file['contents']);
+            }
           }
         }
       }

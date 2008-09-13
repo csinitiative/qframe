@@ -30,6 +30,13 @@ class PageController extends QFrame_Controller_Action {
    * Method to execute before dispatching takes place
    */
   public function preDispatch() {
+    parent::preDispatch();
+  }
+  
+  /**
+   * Action for editing a particular page
+   */
+  public function editAction() {
     $pageID = $this->_getParam('id');
     $this->view->currentPageID = $pageID;
 
@@ -39,13 +46,6 @@ class PageController extends QFrame_Controller_Action {
       $this->view->attachmentQuestions = FileModel::fetchObjectIdsByInstance($page->instanceID);
     }
 
-    parent::preDispatch();
-  }
-  
-  /**
-   * Action for editing a particular page
-   */
-  public function editAction() {
     // get a PageModel object for the current page
     $this->view->page = new PageModel(array('pageID' => $this->view->currentPageID));
     
@@ -70,10 +70,17 @@ class PageController extends QFrame_Controller_Action {
    * Action for viewing a particular page
    */
   public function viewAction() {
-    $pageId = $this->_getParam('id');
-    $this->view->page = new PageModel(array('pageID' => $pageId));
+    $pageID = $this->_getParam('id');
+
+    if ($pageID > 0) {
+      $page = new PageModel(array('pageID' => $pageID,
+                                  'depth' => 'page'));
+      $this->view->attachmentQuestions = FileModel::fetchObjectIdsByInstance($page->instanceID);
+    }
+
+    $this->view->page = new PageModel(array('pageID' => $pageID));
     if(!$this->_user->hasAccess('view', $this->view->page)) $this->denyAccess();
-    $this->view->currentPageID = $pageId;
+    $this->view->currentPageID = $pageID;
   }
   
   /**
