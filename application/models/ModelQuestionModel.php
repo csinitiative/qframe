@@ -240,7 +240,7 @@ class ModelQuestionModel {
   }
   
   /**
-   * Returns comparison information based on criteria arguments
+   * Returns comparison information based on criteria arguments. Virtual questions always return an empty array.
    * 
    * @param array See argument array below
    * @return array Following this structure:
@@ -257,6 +257,11 @@ class ModelQuestionModel {
                               'additional_information' => false
     ), $args);
     
+
+    if ($this->question->virtualQuestion) {
+      return array();
+    }
+
     if ($this->compareInstance->depth !== 'response') throw new Exception('Comparison not possible since compare instance depth not set to response');
     if ($this->depth !== 'response') throw new Exception('Comparison not possible since depth not set to response');
     

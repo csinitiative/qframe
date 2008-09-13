@@ -206,18 +206,10 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
       return self::$discriminatorCache[$tableName][$discriminatorID][$field][$discriminatorID];
     }
     elseif ($primaryCache) {
-      $foreignKeys = self::$foreignKeysTableField[$tableName];
-      // For empty rowsets.  Put something in here so that we know we've already done the query.
-      self::$primaryCache[$tableName][$field][$id] = array();
-      if (count($foreignKeys)) {
-        foreach ($rows as $row) {
-          foreach ($foreignKeys as $foreignKey => $data) {
-            if (isset($row->$foreignKey)) {
-              self::$primaryCache[$tableName][$foreignKey][$row->$foreignKey][] = $row;
-            }
-          }
-        }
-      }
+      if ($rows->current()) 
+        self::$primaryCache[$tableName][$field][$id][] = $rows->current();
+      else // For empty rowsets.  Put something in here so that we know we've already done the query.
+        self::$primaryCache[$tableName][$field][$id] = array();
       return self::$primaryCache[$tableName][$field][$id];
     }
     else {
