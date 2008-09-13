@@ -75,9 +75,6 @@ class PageModel implements QFrame_Lockable, QFrame_Permissible {
       throw new Exception('Page not found [' . $args['pageID'] . ']');
     }
     
-    // Load up table data in bulk to limit sql queries
-    QFrame_Db_Table::preloadAll($this->pageRow->instanceID, $this->pageRow->pageID);
-    
     $ruleRows = self::$ruleTable->fetchRows('targetID', $this->pageRow->pageID, null, $this->pageRow->instanceID);
     $disableCount = 0;
     foreach ($ruleRows as $row) {
@@ -167,13 +164,13 @@ class PageModel implements QFrame_Lockable, QFrame_Permissible {
   }
 
   private function _loadSections() {
+    // Load up table data in bulk to limit sql queries
+    QFrame_Db_Table::preloadPage($this->pageRow->instanceID, $this->pageRow->pageID);
     
-    $where = self::$sectionTable->getAdapter()->quoteInto('pageID = ?', $this->pageID);
-    
-    $sections = self::$sectionTable->fetchAll($where, 'seqNumber ASC');
+    $rows = self::$sectionTable->fetchRows('pageID', $this->pageRow->pageID, 'seqNumber', $this->pageRow->pageID);
     $this->sections = array();
-    foreach ($sections as $section) {
-      $this->sections[] = new SectionModel(array('sectionID' => $section->sectionID,
+    foreach ($rows as $row) {
+      $this->sections[] = new SectionModel(array('sectionID' => $row->sectionID,
                                                  'depth' => $this->depth
       ));
     }

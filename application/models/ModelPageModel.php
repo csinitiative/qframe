@@ -41,7 +41,7 @@ class ModelPageModel {
    * @var QFrame_Db_Table_ModelResponse
    */
   private static $modelResponseTable;
-  
+
   /**
    * Stores the section table object used by this class
    * @var QFrame_Db_Table_Section
@@ -101,6 +101,9 @@ class ModelPageModel {
     else {
       throw new InvalidArgumentException('Missing arguments to ModelPageModel constructor');
     }
+
+    // To populate cache
+    self::$modelResponseTable->fetchRows('modelID', $this->modelID, 'modelResponseID', $this->modelID);
 
     if ($this->depth !== 'page') $this->_loadModelSections();
   }
@@ -193,9 +196,6 @@ class ModelPageModel {
     if ($this->compareInstance->depth !== 'response') throw new Exception('Comparison not possible since compare instance depth not set to response');
     if ($this->depth !== 'response') throw new Exception('Comparison not possible since depth not set to response');
     
-    // To populate cache
-    self::$modelResponseTable->fetchRows('pageID', $this->page->pageID);
-    
     $result = array();
     
     foreach ($args as $key => $value) {
@@ -220,10 +220,10 @@ class ModelPageModel {
    * Loads Model Sections
    */
   private function _loadModelSections() {
-    $where = self::$sectionTable->getAdapter()->quoteInto('instanceID = ?', $this->page->instanceID) .
-             self::$sectionTable->getAdapter()->quoteInto(' AND pageID = ?', $this->page->pageID);
-    
-    $rows = self::$sectionTable->fetchAll($where, 'seqNumber ASC');
+    // Load up table data in bulk to limit sql queries
+    QFrame_Db_Table::preloadPage($this->page->instanceID, $this->page->pageID);
+
+    $rows = self::$sectionTable->fetchRows('pageID', $this->page->pageID, 'seqNumber', $this->page->pageID);
     foreach ($rows as $row) {
       $this->modelSections[] = new ModelSectionModel(array('modelID' => $this->modelID,
                                                            'sectionID' => $row->sectionID,

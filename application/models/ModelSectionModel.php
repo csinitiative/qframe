@@ -165,10 +165,7 @@ class ModelSectionModel {
    * Loads Model Questions
    */
   private function _loadModelQuestions() {
-    $where = self::$questionTable->getAdapter()->quoteInto('instanceID = ?', $this->section->instanceID) .
-             self::$questionTable->getAdapter()->quoteInto(' AND sectionID = ?', $this->section->sectionID);
-
-    $rows = self::$questionTable->fetchAll($where, 'seqNumber ASC');
+    $rows = self::$questionTable->fetchRows('sectionID', $this->section->sectionID, 'seqNumber', $this->section->pageID);
     foreach ($rows as $row) {
       if($row->parentID == 0) {
         $this->modelQuestions[] = new ModelQuestionModel(array(
@@ -203,7 +200,7 @@ class ModelSectionModel {
     if ($this->depth !== 'response') throw new Exception('Comparison not possible since depth not set to response');
     
     // To populate cache
-    self::$modelResponseTable->fetchRows('sectionID', $this->section->sectionID);
+    self::$modelResponseTable->fetchRows('sectionID', $this->section->sectionID, 'modelResponseID', $this->modelID);
     
     $result = array();
     

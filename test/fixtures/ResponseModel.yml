@@ -3,12 +3,14 @@ table: response
 data:
   sample1:
     questionID: 1
+    pageID: 1
     responseID: 1
     responseDate: 2007-10-21 00:21:43
     responseText: Sample Response 1
     additionalInfo: This is some additional information
   sample2:
     questionID: 1
+    pageID: 1
     responseID: 2
     responseDate: 2007-10-25 00:21:43
     responseText: Sample Response 2
@@ -16,6 +18,7 @@ data:
     state: Assigned
   sample4:
     questionID: 1
+    pageID: 1
     responseID: 4
     responseDate: 2007-10-26 00:21:43
     responseText: Sample Response 4
@@ -23,6 +26,7 @@ data:
     state: Approved
   sample5:
     questionID: 1
+    pageID: 1
     responseID: 5
     responseDate: 2007-10-27 00:21:43
     responseText: Sample Response 5
@@ -30,6 +34,7 @@ data:
     state: Unassigned
   sample3:
     questionID: 1
+    pageID: 1
     responseID: 3
     responseDate: 2007-10-28 00:21:43
     responseText: Sample Response 3
@@ -37,6 +42,7 @@ data:
     state: Completed
   sample6:
     questionID: 2
+    pageID: 1
     responseID: 6
     responseDate: 2007-10-28 00:21:43
     responseText: 3

@@ -30,7 +30,15 @@ class PageController extends QFrame_Controller_Action {
    * Method to execute before dispatching takes place
    */
   public function preDispatch() {
-    $this->view->currentPageID = $this->_getParam('id');
+    $pageID = $this->_getParam('id');
+    $this->view->currentPageID = $pageID;
+
+    if ($pageID > 0) {
+      $page = new PageModel(array('pageID' => $pageID,
+                                  'depth' => 'page'));
+      $this->view->attachmentQuestions = FileModel::fetchObjectIdsByInstance($page->instanceID);
+    }
+
     parent::preDispatch();
   }
   
@@ -159,7 +167,7 @@ class PageController extends QFrame_Controller_Action {
     }
 
     $page = new PageModel(array('pageID' => $this->_getParam('id'),
-                              'depth' => 'response'));
+                                'depth' => 'response'));
     $page->save();
         
     $instance = new InstanceModel(array('instanceID' => $page->instanceID,

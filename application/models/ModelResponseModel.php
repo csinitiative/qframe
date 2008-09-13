@@ -61,6 +61,11 @@ class ModelResponseModel {
   private $compareInstance;
 
   /**
+   * Flag for whether the contents of modelResponseRow has changed and should therefore be saved
+   */
+  private $dirty = 0;
+
+  /**
    * Determines depth of object hierarchy
    */
   private $depth;
@@ -84,11 +89,16 @@ class ModelResponseModel {
     if (!isset(self::$questionPromptTable)) self::$questionPromptTable = QFrame_Db_Table::getTable('question_prompt');
     
     if (isset($args['modelResponseID'])) {
-      $where = self::$modelResponseTable->getAdapter()->quoteInto('modelResponseID = ?', $args['modelResponseID']);
-      $this->modelResponseRow = self::$modelResponseTable->fetchRow($where);
+      $rows = self::$modelResponseTable->fetchRows('modelResponseID', $args['modelResponseID']);
+      $this->modelResponseRow = $rows[0];
     }
     else {
       throw new InvalidArgumentException('Missing arguments to ModelResponseModel constructor');
+    }
+
+    // model response row assertion
+    if ($this->modelResponseRow === NULL) {
+      throw new Exception('Model response not found');
     }
    
   }

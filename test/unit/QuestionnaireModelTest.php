@@ -238,6 +238,7 @@ class Test_Unit_QuestionnaireModelTest extends QFrame_Test_Unit {
     ));
     $instanceID = $questionnaire->getDefaultInstance()->instanceID;
     $questionnaire->delete();
+    QFrame_Db_Table::resetAll();
     try {
       new InstanceModel(array('instanceID' => $instanceID));
     } catch(Exception $e) {

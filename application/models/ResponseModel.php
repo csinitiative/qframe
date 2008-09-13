@@ -47,7 +47,7 @@ class ResponseModel {
 
 
     if (isset($args['responseID'])) {
-      $responseRows = self::$responseTable->fetchRows('responseID', intval($args['responseID']), null, $args['instanceID']);
+      $responseRows = self::$responseTable->fetchRows('responseID', intval($args['responseID']));
       foreach ($responseRows as $r) {
         if (!$r->responseEndDate) {
           $this->responseRow = $r;
@@ -169,7 +169,7 @@ class ResponseModel {
     if($this->responseRow->responseText === null || $this->responseRow->responseText === '') {
       return '';
     }
-    $questionPromptRows = self::$questionPromptTable->fetchRows('promptID', $this->responseRow->responseText);
+    $questionPromptRows = self::$questionPromptTable->fetchRows('promptID', $this->responseRow->responseText, null, $this->responseRow->instanceID);
     $questionPromptRow = $questionPromptRows[0];
     if (isset($questionPromptRow->value)) return $questionPromptRow->value;
     throw new Exception('Question prompt row not found for promptID [' . $this->responseRow->responseText . ']');

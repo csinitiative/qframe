@@ -58,7 +58,8 @@
       .additionalInfo= $response->additionalInfo
   
     .attachments
-      != $this->attachments($this->question, $mode)    
+      - if (isset($this->attachmentQuestions['QuestionModel'][$this->question->questionID]))
+        != $this->attachments($this->question, $mode)    
     .subordinates
       %ol
         != $this->renderPartial('question', $this->question->children, true)
