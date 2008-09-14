@@ -181,10 +181,11 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
         }
         return array();
       }
-      $where .= " AND {$discriminatorField} = {$discriminatorID}";
+      $where .= self::$adapter->quoteInto(" AND {$discriminatorField} = ?", $discriminatorID);
+
     }
 
-    $where .= " AND {$field} = {$id}";
+    $where .= self::$adapter->quoteInto(" AND {$field} = ?", $id);
     $rows = $this->fetchAll($where, $orderby);
 
     if ($discriminatorCache) {
