@@ -63,7 +63,7 @@ $backupFullPath = _path($backupDir, "{$options['dbname']}." . date("Ymd") . "." 
 /*
  * Set up the base MySQL client command
  */
-$command = "mysqldump --complete-insert --flush-logs --single-transaction " .
+$command = "mysqldump --complete-insert --single-transaction " .
            "--result-file='{$backupFullPath}' " .
            "--host={$options['host']} ";
 $user = isset($_SERVER['argv'][3]) ? $_SERVER['argv'][3] : $options['username'];
