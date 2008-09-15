@@ -1,4 +1,4 @@
-SetEnv          QFRAME_ENV production
+SetEnv          QFRAME_ENV development
 
 RewriteEngine   on
 RewriteRule     \.css$ sass.php [L]
