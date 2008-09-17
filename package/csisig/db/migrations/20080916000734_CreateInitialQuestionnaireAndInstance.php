@@ -2,6 +2,10 @@
 class CreateInitialQuestionnaireAndInstance extends Migration {
 
   public function up() {
+    // reset db metadata cache
+    QFrame_Db_Table::scanDb();
+    QFrame_Db_Table::resetAll();
+
     $this->auth();
     $xml = file_get_contents(_path(PROJECT_PATH, 'xml', 'sig-3-1-questionnaire-definition.xml'));
     QuestionnaireModel::importXML($xml);
@@ -28,7 +32,9 @@ class CreateInitialQuestionnaireAndInstance extends Migration {
    * Authenticate
    */
   private function auth() {
-    $authAdapter = new QFrame_Auth_Adapter('admin', 'admin');
+    // create an auth adapter that will auto-grant admin rights
+    $authAdapter = new QFrame_Auth_Adapter('', '', true);
+    
     $auth = Zend_Auth::getInstance();
     if(!$auth->authenticate($authAdapter)->isValid()) {
       throw new Exception('Authentication failed');

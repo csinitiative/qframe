@@ -363,6 +363,16 @@ class Test_Unit_DbUserModelTest extends QFrame_Test_Unit {
     $this->assertTrue($user->hasAnyAccess($page));
   }
   
+  /*
+   * test that getAutoAdmin() returns a DbUserModel object that has access to anything
+   */
+  public function testGettingAutoAdmin() {
+    $user = new DbUserModel(array('autoAdmin' => true));
+    $page = new PageModel(array('pageID' => 1, 'depth' => 'page'));
+    $this->assertTrue($user->hasAccess('admin'));
+    $this->assertTrue($user->hasAnyAccess($page));
+  }
+  
   
   /*
    * generate a new user

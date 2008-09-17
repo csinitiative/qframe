@@ -57,11 +57,9 @@ include(_path(CORE_PATH, 'database.php'));
  */
 include(_path($core_path, 'dynamic.php'));
 
-// perform mock authentication
-$auth_adapter = new QFrame_Auth_Adapter('admin', 'admin');
-$auth = Zend_Auth::getInstance();
-$auth->authenticate($auth_adapter);
-
+/*
+ * Change the password
+ */
 $user = DbUserModel::findByUsername($username);
 if ($user === NULL) { die("Username ${username} not found.\n\n"); }
 

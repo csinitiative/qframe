@@ -37,12 +37,20 @@ class DbUserModel implements QFrame_Paginable {
   private $roles = null;
   
   /**
+   * Whether or not this user is a dummy user
+   * @var boolean
+   */
+  private $admin = false;
+  
+  /**
    * Find and return a user by username
    *
    * @param  string username being requested
    * @return DbUserModel
    */
   public static function findByUsername($username) {
+    if($username instanceof DbUserModel) return $username;
+    
     if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('db_user');
     $where = self::$dbUserTable->getAdapter()->quoteInto('dbUserName = ?', $username);
     $user = self::$dbUserTable->fetchRow($where);
@@ -50,7 +58,7 @@ class DbUserModel implements QFrame_Paginable {
     
     return null;
   }
-  
+    
   /**
    * Produces a where clause for the given search term
    *
@@ -147,10 +155,15 @@ class DbUserModel implements QFrame_Paginable {
       
     $args = array_merge(array(
       'dbUserFullName'  => null,
-      'dbUserActive'    => 'Y'
+      'dbUserActive'    => 'Y',
+      'autoAdmin'       => false
     ), $args);
 
-    if(isset($args['dbRow'])) $this->dbUserRow = $args['dbRow'];
+    if($args['autoAdmin']) {
+      $this->admin = true;
+      return;
+    }
+    elseif(isset($args['dbRow'])) $this->dbUserRow = $args['dbRow'];
     elseif (!isset($args['dbUserID'])) {
       if(!isset($args['dbUserName']) || !isset($args['dbUserPW']))
         throw new InvalidArgumentException('New users must be assigned a username and password');
@@ -288,6 +301,9 @@ class DbUserModel implements QFrame_Paginable {
    * @return boolean
    */
   public function hasAccess($permission, QFrame_Permissible $permissible = null) {
+    // if this user is an auto admin, return true
+    if($this->admin) return true;
+    
     if($this->roles === null) $this->loadRoles();
     foreach($this->roles as $role) {
       $role = RoleModel::find($role['roleID']);
@@ -304,6 +320,9 @@ class DbUserModel implements QFrame_Paginable {
    * @return boolean
    */
   public function hasAnyAccess(QFrame_Permissible $permissible) {
+    // if this user is an auto admin, return true
+    if($this->admin) return true;
+
     foreach(array('view', 'edit', 'approve') as $permission) {
       if($this->hasAccess($permission, $permissible)) return true;
     }
