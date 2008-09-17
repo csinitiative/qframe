@@ -41,18 +41,26 @@ class QFrame_Auth_Adapter implements Zend_Auth_Adapter_Interface {
    * @var string
    */
   private $password = null;
+  
+  /**
+   * Whether this adapter is generating an auto-admin
+   * @var boolean
+   */
+  private $admin = false;
 
   /**
    * Class constructor
    *
    * Constructs a new auth adapter with a given username and password
    *
-   * @param string username
-   * @param string password
+   * @param string  username
+   * @param string  password
+   * @param boolean (optional) whether this adapter should ignore u/p and create an auto admin
    */
-  public function __construct($username, $password) {
+  public function __construct($username, $password, $admin = false) {
     $this->username = $username;
     $this->password = $password;
+    $this->admin = $admin;
   }
   
   /**
@@ -61,6 +69,12 @@ class QFrame_Auth_Adapter implements Zend_Auth_Adapter_Interface {
    * @return Zend_Auth_Result
    */
   public function authenticate() {
+    // if we are set up to auto-admin, go ahead and do that
+    if($this->admin) {
+      $user = new DbUserModel(array('autoAdmin' => true));
+      return new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $user);
+    }
+    
     $user = DbUserModel::findByUsername($this->username);
     if(is_null($user))
       return new Zend_Auth_Result(Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND, null);

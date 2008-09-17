@@ -1072,8 +1072,8 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     $seqNumber = $page->getElementsByTagName('seqNumber')->item(0)->nodeValue;
     $pageHeader = $page->getElementsByTagName('pageHeader')->item(0)->nodeValue;
     $description = isset($page->getElementsByTagName('description')->item(0)->nodeValue) ? $page->getElementsByTagName('description')->item(0)->nodeValue : '';
-    $headerText = $page->getElementsByTagName('headerText')->item(0)->nodeValue;
-    $footerText = $page->getElementsByTagName('footerText')->item(0)->nodeValue;
+    $headerText = isset($page->getElementsByTagName('headerText')->item(0)->nodeValue) ? $page->getElementsByTagName('headerText')->item(0)->nodeValue : null;
+    $footerText = isset($page->getElementsByTagName('footerText')->item(0)->nodeValue) ? $page->getElementsByTagName('footerText')->item(0)->nodeValue : null;
     $cloneable = isset($page->getElementsByTagName('cloneable')->item(0)->nodeValue) ? $page->getElementsByTagName('cloneable')->item(0)->nodeValue : 0;
     $defaultPageHidden = isset($page->getElementsByTagName('defaultPageHidden')->item(0)->nodeValue) ? $page->getElementsByTagName('defaultPageHidden')->item(0)->nodeValue : 0;
     $pageGUID = $page->getElementsByTagName('pageGUID')->item(0)->nodeValue;

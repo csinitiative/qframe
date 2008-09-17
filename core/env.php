@@ -32,6 +32,9 @@ if(!defined('QFRAME_ENV')) {
   if(isset($_ENV['QFRAME_ENV'])) {
     $env = $_ENV['QFRAME_ENV'];
   }
+  elseif(getenv('QFRAME_ENV')) {
+    $env = getenv('QFRAME_ENV');
+  }
   elseif(function_exists('apache_getenv') && apache_getenv('QFRAME_ENV')) {
     $env = apache_getenv('QFRAME_ENV');
   }
