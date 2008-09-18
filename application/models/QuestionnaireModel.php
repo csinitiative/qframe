@@ -454,4 +454,14 @@ class QuestionnaireModel extends QFrame_Db_SerializableTransaction implements QF
     return $signature;
   }
 
+
+  /**
+   *  Refreshes the signature associated with this questionnaire.  This should only have to be used for migrations.
+   */
+  public function refreshSignature() {
+    $signature = self::generateSignature($this->fetchQuestionnaireDefinition());
+    $this->questionnaireRow->signature = $signature;
+    $this->questionnaireRow->save();
+  }
+
 }
