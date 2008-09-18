@@ -35,6 +35,7 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
   static $tablesReferenceMap = array();
   static $preload = array();
   static $primaryKeysFieldTable = array();
+  static $primaryKeysTableField = array();
   static $foreignKeysFieldTable = array();
   static $foreignKeysTableField = array();
   static $forceForeignKeys = array('sourceID' => true,
@@ -106,6 +107,7 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
       foreach ($table->_metadata as $field => $data) {
         if ($data['PRIMARY'] === true) {
           self::$primaryKeysFieldTable[$field][$tableName] = true;
+          self::$primaryKeysTableField[$tableName][$field] = true;
         }
       }
     }
@@ -166,7 +168,8 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
       $discriminatorCache = true;
       $discriminatorID = $id;
     }
-    elseif (isset(self::$primaryKeysFieldTable[$field][$tableName])) {
+    // Currently no support for caching compound primary keys
+    elseif (isset(self::$primaryKeysFieldTable[$field][$tableName]) && count(self::$primaryKeysTableField[$tableName]) === 1) {
       if (isset(self::$primaryCache[$tableName][$field][$id])) {
         return self::$primaryCache[$tableName][$field][$id];
       }
@@ -198,7 +201,8 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
             if (isset($row->$foreignKey)) {
               self::$discriminatorCache[$tableName][$discriminatorID][$foreignKey][$row->$foreignKey][] = $row;
             }
-            if (isset(self::$primaryKeysFieldTable[$foreignKey][$tableName]) && !isset(self::$primaryCache[$tableName][$foreignKey][$row->$foreignKey])) {
+            // Currently no support for caching compound primary keys
+            if (isset(self::$primaryKeysFieldTable[$foreignKey][$tableName]) && count(self::$primaryKeysTableField[$tableName]) === 1 && !isset(self::$primaryCache[$tableName][$foreignKey][$row->$foreignKey])) {
               self::$primaryCache[$tableName][$foreignKey][$row->$foreignKey][] = $row;
             }
           }
