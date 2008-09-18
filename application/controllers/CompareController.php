@@ -132,8 +132,7 @@ class CompareController extends QFrame_Controller_Action {
       }
     }
     $this->flash('notice', 'Model saved successfully');
-    $baseUrl = $this->view->url(array('action' => 'edit', 'id' => $this->model->modelID));
-    $this->_redirector->gotoUrl($baseUrl . "?page={$page->pageID}");
+    $this->_redirector->gotoUrl("/compare/edit/{$this->model->modelID}?page={$page->pageID}");
   }
   
   /**

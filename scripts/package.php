@@ -138,6 +138,7 @@ function copyFiles($appName) {
   echo formatMessage('-- copying files', ' ');
   exec("cp -R {$files} tmp/{$appName}", $output, $return);
   `find tmp/{$appName} -name \".svn\" -exec rm -rf '{}' ';'`;
+  mkdir("tmp/{$appName}/tmp");
   return $return === 0;
 }
 
@@ -164,6 +165,7 @@ function package($appName, $version) {
       "tar {$exclusionFlags} -cjvf {$appName}{$version}.tar.bz2 {$appName}";
   chdir('tmp');
   exec($command, $output, $return);
+  chdir('..');
   $return = 0;
   return $return === 0;
 }

@@ -52,15 +52,6 @@ class QFrame_Config {
   }
   
   /**
-   * Returns the singleton object for this class
-   * @return QFrame_Config
-   */
-  public static function instance() {
-    if(self::$instance === null) self::$instance = new QFrame_Config;
-    return self::$instance;
-  }
-  
-  /**
    * Returns whether or not a particular configuration option exists
    *
    * @param  string name of the option we are checking for
@@ -86,4 +77,13 @@ class QFrame_Config {
       
     return $GLOBALS['qframe_env'][$property];
   }
+
+  /**
+   * Returns the singleton object for this class
+   * @return QFrame_Config
+   */
+  public static function instance() {
+    if(self::$instance === null) self::$instance = new QFrame_Config;
+    return self::$instance;
+  }  
 }

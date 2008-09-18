@@ -215,12 +215,14 @@ class QFrame_Controller_Action extends Zend_Controller_Action {
       'current'  => ($this instanceof CompareController),
       'external' => false,
     );
-    $pages[] = array(
-      'label'    => 'Online Help',
-      'url'      => QFrame_Config::instance()->help_url,
-      'current'  => false,
-      'external' => true,
-    );
+    if(isset(QFrame_Config::instance()->help_url)) {
+      $pages[] = array(
+        'label'    => 'Online Help',
+        'url'      => QFrame_Config::instance()->help_url,
+        'current'  => false,
+        'external' => true,
+      );
+    }
     return $pages;
   }
   
