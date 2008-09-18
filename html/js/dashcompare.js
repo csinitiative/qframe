@@ -13,7 +13,7 @@ var Dashboard = {
     container.down('input[name=create]').show();
     container.down('input[name=cancel]').show();
     container.down('input[type=button][name=new]').hide();
-    container.up('form').action = '/compare/create';
+    container.up('form').action += '/create';
     container.up('form').method = 'post';
   },
   
@@ -31,7 +31,7 @@ var Dashboard = {
     container.down('input[name=create]').hide();
     container.down('input[name=cancel]').hide();
     container.down('input[type=button][name=new]').show();
-    container.up('form').action = '/compare';
+    container.up('form').action = container.up('form').action.replace(/\/create$/, '');
     container.up('form').method = 'get';
   },
   
@@ -43,7 +43,6 @@ var Dashboard = {
   questionnaireSelected: function(event) {
     var form = Event.element(event).up('form');
     form.select('input[name^="model["]').each(function(element) { element.remove() });
-    form.action = '/compare';
     form.method = 'get';
     form.submit();
   },

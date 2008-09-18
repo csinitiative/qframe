@@ -9,6 +9,7 @@ scripts/package.php
 sql/load*
 svnlog
 svnexclude
+svnignore
 testdata
 tmp/*
 www
