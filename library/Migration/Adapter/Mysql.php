@@ -1,13 +1,13 @@
 <?php
 /**
- * This file is part of the CSI RegQ.
+ * This file is part of the CSI QFrame.
  *
- * The CSI RegQ is free software; you can redistribute it and/or modify
+ * The CSI QFrame is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * The CSI RegQ is distributed in the hope that it will be useful,
+ * The CSI QFrame is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -274,13 +274,13 @@ abstract class Migration_Adapter_Mysql extends Migration_Adapter {
    * Add a column to an existing table
    *
    * @param  string table name
+   * @param  string new column name
+   * @param  string new column type
    * @param  array  column definition
    * @return boolean
    */
   public function addColumn($table, $name, $type, array $options = array()) {
-    $column = $this->generateColumn(array($name, $type, $options), array('primary' => false));
-    $table = $this->dbAdapter->quoteIdentifier($table);
-    return $this->dbAdapter->query("ALTER TABLE {$table} ADD COLUMN {$column}");
+    $this->addOrModifyColumn(true, $table, $name, $type, $options);
   }
   
   /**
@@ -294,5 +294,35 @@ abstract class Migration_Adapter_Mysql extends Migration_Adapter {
     $table = $this->dbAdapter->quoteIdentifier($table);
     $column = $this->dbAdapter->quoteIdentifier($name);
     return $this->dbAdapter->query("ALTER TABLE {$table} DROP COLUMN {$column}");
+  }
+  
+  /**
+   * Alter an existing column
+   *
+   * @param  string table name
+   * @param  string column name
+   * @param  string new column type
+   * @param  array  column definition
+   * @return boolean
+   */
+  public function alterColumn($table, $name, $type, array $options = array()) {
+    $this->addOrModifyColumn(false, $table, $name, $type, $options);
+  }
+  
+  /**
+   * Add a new column or modify an existing column
+   *
+   * @param  boolean is this a new column?
+   * @param  string  table name
+   * @param  string  column name
+   * @param  string  new column type
+   * @param  array   column definition
+   * @return boolean
+   */
+  private function addOrModifyColumn($new, $table, $name, $type, array $options) {
+    $verb = ($new) ? 'ADD' : 'MODIFY';
+    $column = $this->generateColumn(array($name, $type, $options), array('primary' => false));
+    $table = $this->dbAdapter->quoteIdentifier($table);
+    return $this->dbAdapter->query("ALTER TABLE {$table} {$verb} COLUMN {$column}");
   }
 }
