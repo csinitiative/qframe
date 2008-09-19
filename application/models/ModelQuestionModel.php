@@ -86,6 +86,12 @@ class ModelQuestionModel {
    * @var array
    */
   private $name = null;
+  
+  /**
+   * Children of this question
+   * @var array
+   */
+  private $children = array();
    
   /**
    * Instantiate a new ModelQuestionModel object
@@ -381,8 +387,9 @@ class ModelQuestionModel {
       $this->children[] = new ModelQuestionModel(array(
         'modelID'    => $this->modelID,
         'questionID' => $row->questionID,
-        'depth'      => $this->depth
-      )); 
+        'depth'      => $this->depth,
+        'instance'   => $this->compareInstance
+      ));
     }
   }
   

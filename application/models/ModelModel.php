@@ -285,6 +285,13 @@ class ModelModel {
               $result[$key] = array_merge($result[$key], $q[$key]);
             }
           }
+          foreach($modelQuestion->children as $child) {
+            foreach($child->compare($args) as $key => $value) {
+              if ($args[$key] === TRUE) {
+                $result[$key] = array_merge($result[$key], $value);
+              }
+            }
+          }
         }
       }
     }
