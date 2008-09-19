@@ -243,7 +243,7 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
     }
     
     self::$bulkID++;
-    $id = intVal($array['instanceID'] . str_pad(self::$bulkID, 8, "0", STR_PAD_LEFT)); 
+    $id = intVal($array['instanceID'] . str_pad(self::$bulkID, 6, "0", STR_PAD_LEFT)); 
     
     $values = array();
     foreach ($this->_metadata as $field => $data) {
