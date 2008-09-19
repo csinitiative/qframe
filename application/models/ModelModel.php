@@ -279,10 +279,9 @@ class ModelModel {
     while ($modelPage = $this->nextModelPage()) {
       while ($modelSection = $modelPage->nextModelSection()) {
         while ($modelQuestion = $modelSection->nextModelQuestion()) {
-          $q = $modelQuestion->compare($args);
-          foreach ($q as $key => $value) {
+          foreach ($modelQuestion->compare($args) as $key => $value) {
             if ($args[$key] === TRUE) {
-              $result[$key] = array_merge($result[$key], $q[$key]);
+              $result[$key] = array_merge($result[$key], $value);
             }
           }
           foreach($modelQuestion->children as $child) {
