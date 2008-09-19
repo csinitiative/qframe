@@ -82,6 +82,7 @@ class QFrame_View_Helper_ErrorHelpers {
     foreach($call['args'] as $arg) {
       if(is_object($arg)) $args[] = 'Object(' . get_class($arg) . ')';
       elseif(is_string($arg)) $args[] = "'{$arg}'";
+      elseif(is_array($arg)) $args[] = 'Array(' . count($arg) . ')';
       else $args[] = $arg;
     }
     return (isset($args)) ? implode(', ', $args) : '';
