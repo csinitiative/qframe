@@ -48,8 +48,9 @@
       != $this->referenceString($section)
     %ol
       - while($question = $section->nextModelQuestion())
-        %li
-          != $this->renderQuestion($question)
+        - if(!$question->virtualQuestion)
+          %li
+            != $this->renderQuestion($question)
           
 != $this->form(null, false)
 
