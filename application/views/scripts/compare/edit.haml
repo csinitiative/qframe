@@ -17,7 +17,7 @@
   @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
-- $localStylesheets = array('model', 'pages', 'approve', 'calendar')
+- $localStylesheets = array('pages', 'approve', 'calendar', 'model')
 - $localJavascript = array('compare', 'pages', 'jscalendar-1.0/calendar', 'jscalendar-1.0/lang/calendar-en', 'calendar')
 
 #currentModel
@@ -48,9 +48,12 @@
       != $this->referenceString($section)
     %ol
       - while($question = $section->nextModelQuestion())
-        - if(!$question->virtualQuestion)
-          %li
-            != $this->renderQuestion($question)
+        %li
+          - if($question->virtualQuestion)
+            .approvalMessage
+                != $this->imageTag('icons/eeeeee/arrow_right.png', array('class' => 'inline', 'alt' => ''))
+                This is a virtual question
+          != $this->renderQuestion($question)
           
 != $this->form(null, false)
 

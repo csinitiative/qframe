@@ -54,3 +54,10 @@ function _path() {
   $args = func_get_args();
   return implode(DIRECTORY_SEPARATOR, $args);
 }
+
+/*
+ * Function to determine if a variable is "blank"
+ */
+function _blank($var) {
+  return ($var === null || $var === '' || $var === 0);
+}

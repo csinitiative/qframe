@@ -86,29 +86,6 @@ class QFrame_View_Helper_CompareHelpers {
   }
   
   /**
-   * Generate a string containing all of the references for an object
-   *
-   * @param  mixed  object whose references we are going to print out
-   * @param  string (optional) prompt string
-   * @return string
-   */
-  public function referenceString($referenced, $prompt = null) {
-    if(!isset($referenced->references) || count($referenced->references) <= 0) return;
-    
-    $builder = new Tag_Builder;
-    foreach($referenced->references as $reference) {
-      $shortName = $this->view->h($reference['shortName']);
-      $item = $this->view->h($reference['item']);
-      $references[] = "{$shortName} {$item}";
-    }
-    
-    $output = '';
-    if($prompt !== null) $output = "<strong>{$prompt}:</strong> ";
-    $output .= (isset($references)) ? $builder->em(' (' . implode(', ', $references) . ')') : '';
-    return $output;
-  }
-  
-  /**
    * Render a question (including sub questions, response elements, etc)
    *
    * @param  ModelQuestionModel question being rendered
@@ -116,9 +93,41 @@ class QFrame_View_Helper_CompareHelpers {
    */
   public function renderQuestion(ModelQuestionModel $question) {
     $builder = new Tag_Builder;
-    $rendered = $builder->div(array('class' => 'question'), $this->view->h($question->qText));
+    
+    $questionText = $builder->strong($this->view->h($question->qText));
+    if(!_blank($question->questionNumber)) {
+      $questionNum = $builder->em("({$this->view->h($question->questionNumber)})");
+      $questionText = "{$questionNum}&nbsp;{$questionText}";
+    }
+    $questionText .= $this->referenceString($question);
+    
+    $rendered = $builder->div(array('class' => 'question'), $questionText);
     $rendered .= $builder->div(array('class' => 'response'), $this->renderResponse($question));
     return $rendered;
+  }
+  
+  /**
+   * Generate a string containing all of the references for an object
+   *
+   * @param  mixed  object whose references we are going to print out
+   * @return string
+   */
+  public function referenceString($referenced) {
+    // if the object has no references, just return a blank string
+    if(!isset($referenced->references) || count($referenced->references) <= 0) return '';
+    
+    // new tag builder object
+    $builder = new Tag_Builder;
+    
+    // go through each reference generating a short reference string
+    foreach($referenced->references as $reference) {
+      $shortName = $this->view->h($reference['shortName']);
+      $item = $this->view->h($reference['item']);
+      $references[] = "{$shortName} {$item}";
+    }
+    
+    // return an imploded version of all generated strings
+    return $builder->em('&nbsp;(' . implode(',&nbsp;', $references) . ')');
   }
   
   /**
@@ -180,6 +189,9 @@ class QFrame_View_Helper_CompareHelpers {
    * @return string
    */
   public function renderResponse(ModelQuestionModel $question) {
+    // if we are dealing with a virtual question, don't output a control
+    if($question->virtualQuestion) return '';
+    
     $result = '';
     switch(substr($question->format, 0, 1)) {
       case 'T':
