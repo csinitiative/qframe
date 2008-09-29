@@ -84,6 +84,12 @@ ul#pageHeading
     :color = !menu_link_bg - #333
   textarea.additionalInfoRequired
     :color = !menu_link_bg - #088
+  .remediationInfo
+    :color = !menu_link_bg - #888
+    :width 100%
+  textarea.remediationInfo
+    :height 50px
+    :color = !menu_link_bg - #333
   textarea.hasContent
     :color = !page_fg
   .response
@@ -197,6 +203,10 @@ ul#pageHeading
       label.outer
         :padding-left 2px
       div.additionalInfo
+        :padding 4px 0
+        :font-size 11px
+        :font-style italic
+      div.remediationInfo
         :padding 4px 0
         :font-size 11px
         :font-style italic

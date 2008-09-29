@@ -128,7 +128,10 @@ class CompareController extends QFrame_Controller_Action {
       if($question->nextModelResponse() !== null) $question->delete();
       if(!$this->isBlank($response)) {
         if($response['noinclude']) $question->createModelResponse('no preference', '-');
-        else $this->setModelResponse($question, $response['target']);
+        else {
+          if($response['target']) $this->setModelResponse($question, $response['target']);
+          if($response['remediationInfoMod'] == 1) $question->createModelResponse('remediation info', -1, $response['remediationInfo']);
+        }
       }
     }
     $this->flash('notice', 'Model saved successfully');

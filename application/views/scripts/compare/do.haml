@@ -47,6 +47,12 @@
         %td= $failure['question']->getResponse()->additionalInfo
         %td.nowrap
           != implode("<br />", $failure['messages'])
+      - if ($failure['remediation_info'])
+        %tr{ 'class' => (($rowNum %2) ? 'odd' : 'even') }
+          %td{ 'colspan' => 4 }
+            %b Remediation:
+            = $failure['remediation_info']
+
         
 - if(isset($this->failures['additional_information']) && count($this->failures['additional_information']) > 0)
   %h1#additional questions with additional information
@@ -62,6 +68,11 @@
         %td= $failure['question']->qText
         %td= $failure['question']->getResponseText()
         %td= $failure['question']->getResponse()->additionalInfo
+      - if ($failure['remediation_info'])
+        %tr{ 'class' => (($rowNum %2) ? 'odd' : 'even') }
+          %td{ 'colspan' => 3 }
+            %b Remediation:
+            = $failure['remediation_info']
 
 - if(isset($this->failures['model_pass']) && count($this->failures['model_pass']) > 0)
   %h1#passing questions that passed the model check
@@ -77,3 +88,8 @@
         %td= $failure['question']->qText
         %td= $failure['question']->getResponseText()
         %td= $failure['question']->getResponse()->additionalInfo
+      - if ($failure['remediation_info'])
+        %tr{ 'class' => (($rowNum %2) ? 'odd' : 'even') }
+          %td{ 'colspan' => 3 }
+            %b Remediation:
+            = $failure['remediation_info']

@@ -18,7 +18,7 @@
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
 - $localStylesheets = array('pages', 'approve', 'calendar', 'model')
-- $localJavascript = array('compare', 'pages', 'jscalendar-1.0/calendar', 'jscalendar-1.0/lang/calendar-en', 'calendar')
+- $localJavascript = array('moreoptions', 'compare', 'pages', 'jscalendar-1.0/calendar', 'jscalendar-1.0/lang/calendar-en', 'calendar')
 
 #currentModel
   You are currently editing:
@@ -53,7 +53,7 @@
             .approvalMessage
                 != $this->imageTag('icons/eeeeee/arrow_right.png', array('class' => 'inline', 'alt' => ''))
                 This is a virtual question
-          != $this->renderQuestion($question)
+          != $this->renderPartial('question', $question)
           
 != $this->form(null, false)
 

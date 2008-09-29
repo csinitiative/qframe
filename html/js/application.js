@@ -45,6 +45,22 @@ var CsiQframe = {
       $(e.name + '_mod').value = 1;
     }
   },
+
+  /**
+   * Event handler for focus events on remediation info text boxes
+   *
+   * @param Event event object representing this event
+   */
+  remediationInfoFocus: function(evt) {
+    var e = Event.element(evt);
+    if(!e.hasClassName('hasContent')) {
+      e.value = '';
+      e.addClassName('hasContent');
+      base = e.name;
+      base = base.replace(/]$/, '');
+      $(base + 'Mod]').value = 1;
+    }
+  },
   
   /**
    * Event handler for blur events on additional info text boxes
@@ -60,9 +76,25 @@ var CsiQframe = {
       $(e.name + '_mod').value = 0;
     }
   },
+
+  /**
+   * Event handler for blur events on remediation info text boxes
+   *
+   * @param Event event object representing this event
+   */
+  remediationInfoBlur: function(evt) {
+    var e = Event.element(evt);
+    if(e.value == '') {
+      e.value = 'Enter remediation information here';
+      e.removeClassName('hasContent');
+      base = e.name;
+      base = base.replace(/]$/, '');
+      $(base + 'Mod]').value = 0;
+    }
+  },
   
   /**
-   * Sets up focus and blur event listeners for new addditional info
+   * Sets up focus and blur event listeners for new additional info
    * text boxes
    *
    * @param Element element to add listeners to
@@ -70,6 +102,17 @@ var CsiQframe = {
   setupAddlInfoListeners: function(e) {
     e.observe('focus', CsiQframe.addlInfoFocus);
     e.observe('blur', CsiQframe.addlInfoBlur);
+  },
+
+  /**
+   * Sets up focus and blur event listeners for new remediation info
+   * text boxes
+   *
+   * @param Element element to add listeners to
+   */
+  setupRemediationInfoListeners: function(e) {
+    e.observe('focus', CsiQframe.remediationInfoFocus);
+    e.observe('blur', CsiQframe.remediationInfoBlur);
   },
   
   /**
@@ -122,6 +165,10 @@ Event.observe(window, 'load', function () {
   
   $$('.additionalInfo').each(function(e) {
     CsiQframe.setupAddlInfoListeners(e);
+  });
+
+  $$('.remediationInfo').each(function(e) {
+    CsiQframe.setupRemediationInfoListeners(e);
   });
   
   $$('form.questions').each(function(frm) {

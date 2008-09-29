@@ -101,8 +101,9 @@ class QFrame_View_Helper_CompareHelpers {
     }
     $questionText .= $this->referenceString($question);
     
-    $rendered = $builder->div(array('class' => 'question'), $questionText);
-    $rendered .= $builder->div(array('class' => 'response'), $this->renderResponse($question));
+    $rendered = $builder->div(array('class' => 'questionText'), $questionText);
+    $rendered .= $builder->span(array('class' => 'response'), $this->renderResponse($question));
+
     return $rendered;
   }
   
@@ -205,9 +206,6 @@ class QFrame_View_Helper_CompareHelpers {
         break;
       case '_':
         if($question->format == '_questionGroup') {
-          foreach($question->children as $child) {
-            $result .= $this->renderQuestion($child);
-          }
           return $result;
         }
       default:
@@ -266,4 +264,51 @@ class QFrame_View_Helper_CompareHelpers {
     
     return ($fail || $addl || $pass);
   }
+
+  /**
+   * Outputs an option button for the "more options" panel
+   *
+   * @param  string name of the javascript event handler
+   * @param  string image filename
+   * @param  string description (when hovered over)
+   * @param  string (optional) class to apply to the button
+   * @return string
+   */
+  public function optionButton($handler, $image, $description, $class = 'inline') {
+    $image = 'icons/ffffff/' . $image;
+    return $this->view->linkTo(
+      "#{$handler}",
+      $this->view->imageTag($image, array('class' => $class, 'title' => $description))
+    );
+  }
+
+  /**
+   * Return HTML for the remediation info box
+   *
+   * @param  ModelQuestionModel
+   * @return string
+   */
+  public function remediationInfo(ModelQuestionModel $modelQuestion) {
+    $class = 'remediationInfo';
+    if($modelQuestion->hasRemediationInfo()) {
+      $class .= ' hasContent';
+      $content = $this->view->h($modelQuestion->remediationInfo());
+      $style = '';
+      $mod = 1;
+    }
+    else {
+      $style = 'display: none;';
+      $content = 'Enter remediation information here';
+      $mod = 0;
+    }
+
+    $remediationInfo = $this->view->formTextarea("response[{$modelQuestion->questionID}][remediationInfo]", $content, array(
+      'class' => $class,
+      'style' => $style
+    ));
+    $remediationInfoMod = $this->view->formHidden("response[{$modelQuestion->questionID}][remediationInfoMod]", $mod);
+
+    return $remediationInfo . $remediationInfoMod;
+  }
+
 }
