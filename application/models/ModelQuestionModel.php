@@ -184,10 +184,10 @@ class ModelQuestionModel {
    * then the promptID 
    * @return ModelResponseModel
    */
-  public function createModelResponse($type, $target) {
+  public function createModelResponse($type, $target, $info = '') {
     $row = self::$modelResponseTable->createRow();
-    if ($type !== 'no preference' && $type !== 'match' && $type !== 'selected' && $type !== 'not selected') {
-      throw new Exception('Unknown model response type [${type}]');
+    if ($type !== 'no preference' && $type !== 'match' && $type !== 'selected' && $type !== 'not selected' && $type !== 'remediation info') {
+      throw new Exception("Unknown model response type [${type}]");
     }
     $row->type = $type;
     $row->target = $target;
@@ -195,6 +195,7 @@ class ModelQuestionModel {
     $row->pageID = $this->question->pageID;
     $row->sectionID = $this->question->sectionID;
     $row->questionID = $this->question->questionID;
+    $row->info = $info;
     $row->save();
     $modelResponse = new ModelResponseModel(array('modelResponseID' => $row->modelResponseID));
     return $modelResponse;
@@ -224,6 +225,30 @@ class ModelQuestionModel {
       if($response->target == $target) return true;
     }
     return false;
+  }
+
+  /**
+   * Determine if this question has remediation information
+   *
+   * @return boolean
+   */
+  public function hasRemediationInfo() {
+    foreach($this->modelResponses as $response) {
+      if($response->type === 'remediation info') return true;
+    }
+    return false;
+  }
+
+  /**
+   * Return remediation information
+   *
+   * @return string
+   */
+  public function remediationInfo() {
+    foreach($this->modelResponses as $response) {
+      if($response->type === 'remediation info') return $response->info;
+    }
+    return;
   }
   
   /**
@@ -290,6 +315,7 @@ class ModelQuestionModel {
     
     if ($args['model_fail'] || $args['model_pass']) {
       $messages = array();
+      $remediationInfo = '';
       $pass = null;
       while ($modelResponse = $this->nextModelResponse()) {
         switch ($modelResponse->type) {
@@ -340,6 +366,9 @@ class ModelQuestionModel {
               }
             }
             break;
+          case "remediation info":
+            $remediationInfo = $modelResponse->info;
+            break;
           default:
             throw new Exception('Unknown model response type');
         }
@@ -347,13 +376,15 @@ class ModelQuestionModel {
       
       if ($pass === TRUE && $args['model_pass']) {
         $result['model_pass'][] = array('question' => $compareQuestion,
-                                        'messages' => $messages['pass']
+                                        'messages' => $messages['pass'],
+                                        'remediation_info' => $remediationInfo
         );
       }
       
       if ($pass === FALSE && $args['model_fail']) {
         $result['model_fail'][] = array('question' => $compareQuestion,
-                                        'messages' => $messages['fail']
+                                        'messages' => $messages['fail'],
+                                        'remediation_info' => $remediationInfo
         );
       }
     }

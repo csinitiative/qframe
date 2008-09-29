@@ -22,7 +22,7 @@
 - header('Content-Type: application/octet-stream');
 - header('Content-Disposition: attachment; filename=report.csv')
 - $lookup = array('model_fail' => 'failure', 'model_pass' => 'pass', 'additional_information' => 'had addl info')
-"category","question","response","additional information","failure message(s)"
+"category","question","response","additional information","failure message(s)","remediation info"
 - foreach($this->failures as $index => $entries) 
   - foreach($entries as $entry)
     - $question = $this->escapeForCsv($entry['question']->qText)
@@ -32,5 +32,6 @@
       - $messages[] = $this->escapeForCsv($message)
     - if(!isset($messages)) $messageString = ''
     - else $messageString = implode('","', $messages)
+    - $remediationInfo = $this->escapeForCsv($entry['remediation_info'])
     - unset($messages)
-    != "\"{$lookup[$index]}\",\"{$question}\",\"{$response}\",\"{$addl}\",\"{$messageString}\""
+    != "\"{$lookup[$index]}\",\"{$question}\",\"{$response}\",\"{$addl}\",\"{$messageString}\",\"{$remediationInfo}\""

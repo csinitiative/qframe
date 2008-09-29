@@ -212,6 +212,24 @@ var MoreOptions = {
     MoreOptions.hideOptions(questionWrapper);
     $(link).up('li').remove();
   },
+
+  /**
+   * Show the remediation info panel for the model question associated with
+   * the passed in link element
+   *
+   * @param Event event object for the click that generated this call
+   */
+  showRemediationInfo: function(event) {
+    event.stop();
+  
+    var link = Event.element(event);
+    var moreOptions = link.up('.more-options');
+    var questionWrapper = link.up('.question');
+  
+    questionWrapper.down('.remediationInfo').show();
+    MoreOptions.hideOptions(questionWrapper);
+    $(link).up('li').remove();
+  },
   
   /**
    * Attach a new file to this response
