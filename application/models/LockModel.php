@@ -201,10 +201,7 @@ class LockModel extends QFrame_Db_SerializableTransaction {
   public static function releaseAll(QFrame_Lockable $lockable) {
     $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
     $transactionNumber = self::startSerializableTransaction();
-    $adapter->delete('locks', 'className = ? AND objectID = ?', array(
-      get_class($lockable),
-      $lockable->objectID()
-    ));
+    $adapter->delete('locks', $adapter->quoteInto('className = ?', get_class($lockable)) . ' AND ' . $adapter->quoteInto('objectID = ?', $lockable->objectID()));
     self::dbCommit($transactionNumber);
   }
   
