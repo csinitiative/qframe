@@ -211,13 +211,22 @@ class QFrame_View_Helper_CompareHelpers {
       default:
         throw new Exception('Unknown question type');
     }
-    $name = "response[$question->questionID][noinclude]";
+    $result .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+    $name = "response[$question->questionID][requireAttachment]";
+    $result .= $this->view->formCheckbox(
+      $name,
+      $question->hasAttachmentRequirement(),
+      array('class' => 'requireAttachment')
+    );
+    $result .= $this->view->formLabel($name, 'Require Attachment');
+        $name = "response[$question->questionID][noinclude]";
     $result .= $this->view->formCheckbox(
       $name,
       $question->hasNoPreference(),
       array('class' => 'noinclude')
     );
     $result .= $this->view->formLabel($name, 'Do not include');
+
     return $result;
   }
   

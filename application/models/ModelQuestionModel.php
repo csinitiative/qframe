@@ -186,7 +186,7 @@ class ModelQuestionModel {
    */
   public function createModelResponse($type, $target, $info = '') {
     $row = self::$modelResponseTable->createRow();
-    if ($type !== 'no preference' && $type !== 'match' && $type !== 'selected' && $type !== 'not selected' && $type !== 'remediation info') {
+    if ($type !== 'no preference' && $type !== 'match' && $type !== 'selected' && $type !== 'not selected' && $type !== 'remediation info' && $type !== 'require attachment') {
       throw new Exception("Unknown model response type [${type}]");
     }
     $row->type = $type;
@@ -235,6 +235,18 @@ class ModelQuestionModel {
   public function hasRemediationInfo() {
     foreach($this->modelResponses as $response) {
       if($response->type === 'remediation info') return true;
+    }
+    return false;
+  }
+
+  /**
+   * Determine if this question has an attachment requirement
+   *
+   * @return boolean
+   */
+  public function hasAttachmentRequirement() {
+    foreach($this->modelResponses as $response) {
+      if($response->type === 'require attachment') return true;
     }
     return false;
   }
@@ -368,6 +380,17 @@ class ModelQuestionModel {
             break;
           case "remediation info":
             $remediationInfo = $modelResponse->info;
+            break;
+          case "require attachment":
+            $file = new FileModel($compareQuestion);
+            if ($file->hasAttachment()) {
+              $pass = true;
+              $messages['pass'][] = 'Has attachment';
+            }
+            else {
+              $pass = false;
+              $messages['fail'][] = 'No attachment';
+            }
             break;
           default:
             throw new Exception('Unknown model response type');
