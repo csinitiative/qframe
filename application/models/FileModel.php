@@ -208,6 +208,18 @@ class FileModel {
   }
 
   /**
+   * Returns a boolean as to whether the specified object has an attachment
+   *
+   * @return boolean
+   */
+  public function hasAttachment() {
+    $ids = $this->fetchAll();
+    if (count($ids) > 0)
+      return true;
+    return false;
+  }
+
+  /**
    * Fetches an array of properties for files
    *
    * @return Array list of properties arrays for files owned by this object

@@ -131,6 +131,7 @@ class CompareController extends QFrame_Controller_Action {
         else {
           if($response['target']) $this->setModelResponse($question, $response['target']);
           if($response['remediationInfoMod'] == 1) $question->createModelResponse('remediation info', -1, $response['remediationInfo']);
+          if($response['requireAttachment'] == 1) $question->createModelResponse('require attachment', -1);
         }
       }
     }
@@ -204,6 +205,9 @@ class CompareController extends QFrame_Controller_Action {
     if(isset($response['noinclude']) && $response['noinclude']) return false;
     if(!is_array($response['target']) && $response['target'] !== null) {
       if($response['target'] !== '' && $response['target']) return false;
+    }
+    elseif (isset($response['requireAttachment']) && $response['requireAttachment'] !== '') {
+      return false;
     }
     else {
       foreach($response['target'] as $target) {
