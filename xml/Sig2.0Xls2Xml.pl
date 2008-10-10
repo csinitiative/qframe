@@ -45,7 +45,31 @@ foreach my $sheet (@{$excel->{Worksheet}}) {
       $main_pages = 1;
     }
 
-    if ($main_pages) {
+    if ($sheet->{Name} =~ /^Business Info/) {
+      my $qText = ($sheet->{Cells}[$row][0]->{Val});
+      $qText = Encode::decode('UCS2', $qText) if $sheet->{Cells}[$row][0]->{Code} eq 'ucs2';
+
+      print qq[            <csi:question>\n];
+      print qq[              <csi:qText>] . encode_entities($qText) . qq[</csi:qText>\n];
+      print qq[              <csi:questionGUID>] . $questionGUID++ . qq[</csi:questionGUID>\n];
+      print qq[              <csi:seqNumber>] . $questionSeqNumber++ . qq[</csi:seqNumber>\n];
+      print qq[              <csi:questionType>T</csi:questionType>\n];
+      print qq[            </csi:question>\n];
+    }
+    elsif ($sheet->{Name} =~ /^Documentation/) {
+      my $qText = ($sheet->{Cells}[$row][0]->{Val});
+      $qText = Encode::decode('UCS2', $qText) if $sheet->{Cells}[$row][0]->{Code} eq 'ucs2';
+
+      if ($sheet->{Cells}[$row][0]->{Format}->{Indent} > 0) {
+        print qq[            <csi:question>\n];
+        print qq[              <csi:qText>] . encode_entities($qText) . qq[</csi:qText>\n];
+        print qq[              <csi:questionGUID>] . $questionGUID++ . qq[</csi:questionGUID>\n];
+        print qq[              <csi:seqNumber>] . $questionSeqNumber++ . qq[</csi:seqNumber>\n];
+        print qq[              <csi:questionType>T</csi:questionType>\n];
+        print qq[            </csi:question>\n];
+      }
+    }
+    elsif ($main_pages) {
       my $qText = ($sheet->{Cells}[$row][2]->{Val});
       $qText = Encode::decode('UCS2', $qText) if $sheet->{Cells}[$row][2]->{Code} eq 'ucs2';
 
