@@ -72,6 +72,7 @@ foreach my $sheet (@{$excel->{Worksheet}}) {
     elsif ($main_pages) {
       my $qText = ($sheet->{Cells}[$row][2]->{Val});
       $qText = Encode::decode('UCS2', $qText) if $sheet->{Cells}[$row][2]->{Code} eq 'ucs2';
+      next unless $qText;
 
       next if $qText =~ /^FI Question/;
 
@@ -81,10 +82,10 @@ foreach my $sheet (@{$excel->{Worksheet}}) {
             print STDERR "Did not add a question for questionGroup before question: $qText\n";
           }
           print qq[            </csi:questionGroup>\n];
-          @sub_cols = ();
           $in_question_group = '';
           $added_question = 0;
         }
+        @sub_cols = ();
 
         print qq[            <csi:questionGroup>\n];
         print qq[              <csi:qText>] . encode_entities($qText) . qq[</csi:qText>\n];
@@ -94,20 +95,19 @@ foreach my $sheet (@{$excel->{Worksheet}}) {
 
         @sub_cols = ();
         for (my $i = 3; $sheet->{Cells}[$row][$i]->{Format}->{Rotate} > 0 && $sheet->{Cells}[$row][$i]->{Val}; $i++) {
-#          print "GREG: " . $sheet->{Cells}[$row][$i]->{Val} . "\n";
           push @sub_cols, $sheet->{Cells}[$row][$i]->{Val};
         }
       }
-      elsif ($qText && $sheet->{Cells}[$row][3]->{Format}->{Fill}->[0] == 1 && $sheet->{Cells}[$row][3]->{Format}->{Fill}->[1] == 22 && $sheet->{Cells}[$row][3]->{Format}->{Fill}->[2] == 64) {
+      elsif ($qText =~ /\:\s*$/ || $sheet->{Cells}[$row][3]->{Format}->{Fill}->[1] == 22) {
         if ($in_question_group) {
           if (!$added_question ) {
             print STDERR "Did not add a question for questionGroup before question: $qText\n";
           }
           print qq[            </csi:questionGroup>\n];
-          @sub_cols = ();
           $in_question_group = '';
           $added_question = 0;
         }
+        @sub_cols = ();
 
         print qq[            <csi:questionGroup>\n];
         print qq[              <csi:qText>] . encode_entities($qText) . qq[</csi:qText>\n];
@@ -119,7 +119,6 @@ foreach my $sheet (@{$excel->{Worksheet}}) {
         my $padding = '';
         if ($in_question_group) {
           if ($sheet->{Cells}[$row][2]->{Format}->{Indent} == 0 && !($sheet->{Cells}[$row][5]->{Format}->{Fill}->[0] == 1 && $sheet->{Cells}[$row][5]->{Format}->{Fill}->[1] == 41 && $sheet->{Cells}[$row][5]->{Format}->{Fill}->[2] == 64)) {
-#            print "GREG: " . Dumper($sheet->{Cells}[$row][5]) . "\n";
             if (!$added_question ) {
               print STDERR "Did not add a question for questionGroup before question: $qText\n";
             }
