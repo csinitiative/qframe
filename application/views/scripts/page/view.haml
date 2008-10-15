@@ -22,15 +22,16 @@
 
 != $this->topLinks($this->page, $this->loggedInUser)
 
-%h1
-  - if(!$this->isBlank($this->page->headerText))
-    != $this->markdown($this->h($this->page->headerText))
-  - else
-    = $this->page->pageHeader
-  - if(count($this->page->references) > 0)
-    %a#togglePageReferences{ 'href' => '#' } show references
-    #pageReferences{ 'style' => 'display: none;' }
-      != $this->referenceString($this->page)
+- if(!$this->isBlank($this->page->headerText))
+  != $this->markdown($this->h($this->page->headerText))
+- else
+  %h1
+  = $this->page->pageHeader
+
+- if(count($this->page->references) > 0)
+  %a#togglePageReferences{ 'href' => '#' } show references
+  #pageReferences{ 'style' => 'display: none;' }
+    != $this->referenceString($this->page)
   
 - while(($section = $this->page->nextSection()))
   != $this->renderPartial('section', $section)
