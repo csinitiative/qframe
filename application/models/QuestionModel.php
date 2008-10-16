@@ -107,7 +107,7 @@ class QuestionModel implements QFrame_Storer {
       $this->virtualQuestion = 1;
       $questions = self::$questionTable->fetchRows('questionGUID', $this->questionRow->questionGUID);
       foreach ($questions as $question) {
-        if ($question->questionTypeID != $this->questionTypeRow->questionTypeID) {
+        if ($question->instanceID == $this->questionRow->instanceID && $question->questionTypeID != $this->questionTypeRow->questionTypeID) {
           $seqNumber = $this->questionRow->seqNumber;
           $this->questionRow = $question;
           $this->questionRow->seqNumber = $seqNumber;
