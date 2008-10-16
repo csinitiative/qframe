@@ -195,9 +195,13 @@ foreach my $line (@xml) {
     print $response;
     print $line;
   }
+  elsif ($line =~ /<csi:questionType>D<\/csi:questionType>/) {
+    print $line;
+    $response = ''; # Don't import date types since this will almost certainly break the xml schema rules
+  }
   else {
-    $line =~ s/\x{2018}/'/g; # apostophre
-    $line =~ s/\x{2019}/'/g; # apostophre
+    $line =~ s/\x{2018}/'/g; # apostrophe
+    $line =~ s/\x{2019}/'/g; # apostrophe
     $line =~ s/\x{201C}/"/g; # left double quote
     $line =~ s/\x{201D}/"/g; # right double quote
     print $line;
