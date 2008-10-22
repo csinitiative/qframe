@@ -55,6 +55,6 @@ $auth_adapter = new QFrame_Auth_Adapter('', '', true);
 $auth = Zend_Auth::getInstance();
 $auth->authenticate($auth_adapter);
 
-$content = file_get_contents(_path(PROJECT_PATH, 'xml', 'sig-3-1-questionnaire-definition.xml'));
+$content = file_get_contents(_path(PROJECT_PATH, 'xml', 'sig-4-0-questionnaire-definition.xml'));
 QuestionnaireModel::importXML($content);
-InstanceModel::importXML($content, 'Acme Bank');
+InstanceModel::importXML($content, 'Acme Vendor');
