@@ -2,18 +2,43 @@
 <csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-qframe" questionnaireName="CSI SIG" questionnaireVersion="4.0" revision="1" targetQFrameVersion="1.0">
   <csi:pages>
     <csi:page>
-      <csi:pageHeader>Cover Page</csi:pageHeader>
+      <csi:pageHeader>Instructions</csi:pageHeader>
       <csi:pageGUID>1</csi:pageGUID>
       <csi:seqNumber>1</csi:seqNumber>
-      <csi:sections>
-        <csi:section>
-          <csi:sectionHeader></csi:sectionHeader>
-          <csi:sectionGUID>1</csi:sectionGUID>
-          <csi:seqNumber>1</csi:seqNumber>
-          <csi:questions>
-          </csi:questions>
-        </csi:section>
-      </csi:sections>
+      <csi:headerText>Instructions
+===
+
+Shared Assessments Program  
+The Sante Fe Group and BITS 
+Standardized Information Gathering (SIG) Questionnaire 
+Version 4.0 
+Released: October 21, 2008 
+
+[http://www.sharedassessments.org](http://www.sharedassessments.org)  
+sharedassessments@santa-fe-group.com
+
+Questionnaire Instructions:  
+One of the many benefits of Shared Assessments Program is the reduction of the number of audits and questionnaires that service providers must undergo. If this questionnaire was provided with instructions to complete only the SIGLite/Level 1 questions, those are found in the &quot;SIG Lite&quot; page.  This page may also be used to help select the most appropriate areas of the SIG for a given type of service provided. Additional depth of evaluation can be found in the Level 2 questions and the full SIG. As different customers may request more information based on the scope or criticality of services you provide to that customer, you may find it helpful to initially complete the entire SIG so that you will be able to provide consistent responses to all your customers.
+ 
+There are three parts to this questionnaire:
+
+- SIG Lite
+- Level 2 Questions
+- The SIG (pages A - L)
+
+Depending on whether instructions were provided to fill out the SIG or the SIG Lite, please follow the instructions below: 
+ 
+SIG:  
+1. Complete the Business Information page.  
+2. Compile all documentation requested on the Documentation page.  
+3. Answer all of the questions on the SIG Lite, Level 2 Questions and pages A - L by selecting either Yes, No or N/A from the drop-down list provided.  
+4. Use the &quot;Additional Information&quot; space to provide any pertinent information.  An explanation is required in this space if the response is N/A.  
+ 
+SIG Lite:   
+1. Complete the Business Information page.  
+2. Compile all documentation requested on the Documentation page.  
+3. Answer all of the questions on the SIG Lite page by selecting either Yes, No or N/A from the drop-down list provided.  
+4. Use the &quot;Additional Information&quot; space to provide any pertinent information.  An explanation is required in this space if the response is N/A.</csi:headerText>
     </csi:page>
     <csi:page>
       <csi:pageHeader>Business Information</csi:pageHeader>
@@ -598,7 +623,6 @@
                 <csi:disableQuestion>259</csi:disableQuestion>
                 <csi:disableQuestion>260</csi:disableQuestion>
                 <csi:disableQuestion>261</csi:disableQuestion>
-                <csi:disableQuestion>2485</csi:disableQuestion>
               </csi:questionPrompt>
               <csi:questionPrompt>
                 <csi:promptText>N/A</csi:promptText>
@@ -912,7 +936,6 @@
                 <csi:disableQuestion>178</csi:disableQuestion>
                 <csi:disableQuestion>179</csi:disableQuestion>
                 <csi:disableQuestion>180</csi:disableQuestion>
-                <csi:disableQuestion>2538</csi:disableQuestion>
                 <csi:disableQuestion>2539</csi:disableQuestion>
                 <csi:disableQuestion>2540</csi:disableQuestion>
                 <csi:disableQuestion>2541</csi:disableQuestion>
@@ -976,7 +999,6 @@
                 <csi:disableQuestion>288</csi:disableQuestion>
                 <csi:disableQuestion>289</csi:disableQuestion>
                 <csi:disableQuestion>290</csi:disableQuestion>
-                <csi:disableQuestion>2544</csi:disableQuestion>
                 <csi:disableQuestion>2545</csi:disableQuestion>
                 <csi:disableQuestion>2546</csi:disableQuestion>
                 <csi:disableQuestion>2547</csi:disableQuestion>
@@ -987,7 +1009,6 @@
                 <csi:disableQuestion>2552</csi:disableQuestion>
                 <csi:disableQuestion>2553</csi:disableQuestion>
                 <csi:disableQuestion>2554</csi:disableQuestion>
-                <csi:disableQuestion>2555</csi:disableQuestion>
               </csi:questionPrompt>
               <csi:questionPrompt>
                 <csi:promptText>N/A</csi:promptText>
@@ -4437,7 +4458,6 @@
                 <csi:disableQuestion>259</csi:disableQuestion>
                 <csi:disableQuestion>260</csi:disableQuestion>
                 <csi:disableQuestion>261</csi:disableQuestion>
-                <csi:disableQuestion>2485</csi:disableQuestion>
               </csi:questionPrompt>
               <csi:questionPrompt>
                 <csi:promptText>N/A</csi:promptText>
@@ -4991,7 +5011,6 @@
                 <csi:disableQuestion>178</csi:disableQuestion>
                 <csi:disableQuestion>179</csi:disableQuestion>
                 <csi:disableQuestion>180</csi:disableQuestion>
-                <csi:disableQuestion>2538</csi:disableQuestion>
                 <csi:disableQuestion>2539</csi:disableQuestion>
                 <csi:disableQuestion>2540</csi:disableQuestion>
                 <csi:disableQuestion>2541</csi:disableQuestion>
@@ -5040,7 +5059,6 @@
                 <csi:disableQuestion>288</csi:disableQuestion>
                 <csi:disableQuestion>289</csi:disableQuestion>
                 <csi:disableQuestion>290</csi:disableQuestion>
-                <csi:disableQuestion>2555</csi:disableQuestion>
               </csi:questionPrompt>
               <csi:questionPrompt>
                 <csi:promptText>N/A</csi:promptText>
@@ -13259,23 +13277,13 @@
               <csi:questionNumber>B.3.1</csi:questionNumber>
               <csi:questionType>V</csi:questionType>
             </csi:question>
-            <csi:question>
-              <csi:qText>Is the information security policy communicated via the following; to the following constituents:</csi:qText>
-              <csi:questionGUID>2485</csi:questionGUID>
-              <csi:seqNumber>591</csi:seqNumber>
-              <csi:questionNumber>B.3.1.1</csi:questionNumber>
-              <csi:questionType>S</csi:questionType>
-              <csi:questionPrompt>
-                <csi:promptText>Yes</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>No</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>N/A</csi:promptText>
-                <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
-              </csi:questionPrompt>
-            </csi:question>
+            </csi:questions>
+          </csi:section>
+          <csi:section>
+            <csi:sectionHeader>B.3.1.1: Is the information security policy communicated via the following; to the following constituents:</csi:sectionHeader>
+            <csi:sectionGUID>20</csi:sectionGUID>
+            <csi:seqNumber>8</csi:seqNumber>
+            <csi:questions>
             <csi:questionGroup>
               <csi:qText>Email:</csi:qText>
               <csi:questionGUID>222</csi:questionGUID>
@@ -16402,23 +16410,13 @@
                 <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
               </csi:questionPrompt>
             </csi:question>
-            <csi:question>
-              <csi:qText>Are the following background checks performed on:</csi:qText>
-              <csi:questionGUID>2538</csi:questionGUID>
-              <csi:seqNumber>766</csi:seqNumber>
-              <csi:questionNumber>E.2.1.4</csi:questionNumber>
-              <csi:questionType>S</csi:questionType>
-              <csi:questionPrompt>
-                <csi:promptText>Yes</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>No</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>N/A</csi:promptText>
-                <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
-              </csi:questionPrompt>
-            </csi:question>
+            </csi:questions>
+          </csi:section>
+          <csi:section>
+            <csi:sectionHeader>E.2.1.4: Are the following background checks performed on:</csi:sectionHeader>
+            <csi:sectionGUID>21</csi:sectionGUID>
+            <csi:seqNumber>8</csi:seqNumber>
+            <csi:questions>
             <csi:questionGroup>
               <csi:qText>Criminal:</csi:qText>
               <csi:questionGUID>148</csi:questionGUID>
@@ -16898,29 +16896,26 @@
                 </csi:questionPrompt>
               </csi:question>
             </csi:questionGroup>
+            </csi:questions>
+          </csi:section>
+          <csi:section>
+            <csi:sectionHeader></csi:sectionHeader>
+            <csi:sectionGUID>22</csi:sectionGUID>
+            <csi:seqNumber>22</csi:seqNumber>
+            <csi:questions>
             <csi:question>
               <csi:questionGUID>183</csi:questionGUID>
               <csi:seqNumber>797</csi:seqNumber>
               <csi:questionNumber>E.3</csi:questionNumber>
               <csi:questionType>V</csi:questionType>
             </csi:question>
-            <csi:question>
-              <csi:qText>Are the following agreements; signed by:</csi:qText>
-              <csi:questionGUID>2544</csi:questionGUID>
-              <csi:seqNumber>798</csi:seqNumber>
-              <csi:questionNumber>E.3.1</csi:questionNumber>
-              <csi:questionType>S</csi:questionType>
-              <csi:questionPrompt>
-                <csi:promptText>Yes</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>No</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>N/A</csi:promptText>
-                <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
-              </csi:questionPrompt>
-            </csi:question>
+            </csi:questions>
+          </csi:section>
+          <csi:section>
+            <csi:sectionHeader>E.3.1: Are the following agreements; signed by:</csi:sectionHeader>
+            <csi:sectionGUID>23</csi:sectionGUID>
+            <csi:seqNumber>23</csi:seqNumber>
+            <csi:questions>
             <csi:questionGroup>
               <csi:qText>Acceptable Use:</csi:qText>
               <csi:questionGUID>184</csi:questionGUID>
@@ -17417,29 +17412,26 @@
                 </csi:questionPrompt>
               </csi:question>
             </csi:questionGroup>
+            </csi:questions>
+          </csi:section>
+          <csi:section>
+            <csi:sectionHeader></csi:sectionHeader>
+            <csi:sectionGUID>24</csi:sectionGUID>
+            <csi:seqNumber>24</csi:seqNumber>
+            <csi:questions>
             <csi:question>
               <csi:questionGUID>264</csi:questionGUID>
               <csi:seqNumber>829</csi:seqNumber>
               <csi:questionNumber>E.3.8</csi:questionNumber>
               <csi:questionType>V</csi:questionType>
             </csi:question>
-            <csi:question>
-              <csi:qText>Are the following agreements required to be re-read and re-accepted by:</csi:qText>
-              <csi:questionGUID>2555</csi:questionGUID>
-              <csi:seqNumber>830</csi:seqNumber>
-              <csi:questionNumber>E.3.8.1</csi:questionNumber>
-              <csi:questionType>S</csi:questionType>
-              <csi:questionPrompt>
-                <csi:promptText>Yes</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>No</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>N/A</csi:promptText>
-                <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
-              </csi:questionPrompt>
-            </csi:question>
+            </csi:questions>
+          </csi:section>
+          <csi:section>
+            <csi:sectionHeader>E.3.8.1: Are the following agreements required to be re-read and re-accepted by:</csi:sectionHeader>
+            <csi:sectionGUID>25</csi:sectionGUID>
+            <csi:seqNumber>25</csi:seqNumber>
+            <csi:questions>
             <csi:questionGroup>
               <csi:qText>Acceptable Use:</csi:qText>
               <csi:questionGUID>265</csi:questionGUID>
@@ -17743,6 +17735,13 @@
                 </csi:questionPrompt>
               </csi:question>
             </csi:questionGroup>
+            </csi:questions>
+          </csi:section>
+          <csi:section>
+            <csi:sectionHeader></csi:sectionHeader>
+            <csi:sectionGUID>26</csi:sectionGUID>
+            <csi:seqNumber>26</csi:seqNumber>
+            <csi:questions>
             <csi:question>
               <csi:questionGUID>212</csi:questionGUID>
               <csi:seqNumber>851</csi:seqNumber>
@@ -60896,74 +60895,307 @@
       </csi:sections>
     </csi:page>
     <csi:page>
-      <csi:pageHeader>M. Additional Questions</csi:pageHeader>
-      <csi:pageGUID>19</csi:pageGUID>
-      <csi:seqNumber>19</csi:seqNumber>
-      <csi:sections>
-        <csi:section>
-          <csi:sectionHeader></csi:sectionHeader>
-          <csi:sectionGUID>19</csi:sectionGUID>
-          <csi:seqNumber>19</csi:seqNumber>
-          <csi:questions>
-          </csi:questions>
-        </csi:section>
-      </csi:sections>
-    </csi:page>
-    <csi:page>
       <csi:pageHeader>Glossary</csi:pageHeader>
       <csi:pageGUID>20</csi:pageGUID>
       <csi:seqNumber>20</csi:seqNumber>
-      <csi:sections>
-        <csi:section>
-          <csi:sectionHeader></csi:sectionHeader>
-          <csi:sectionGUID>20</csi:sectionGUID>
-          <csi:seqNumber>20</csi:seqNumber>
-          <csi:questions>
-          </csi:questions>
-        </csi:section>
-      </csi:sections>
+      <csi:headerText>Glossary
+===
+
+**Acceptable Use Policy:** An acceptable use policy is part of the information security framework, defining what users are and are not allowed to do with the IT systems of the organization. It should contain a subset of the information security policy and refer users to the full security policy when relevant. It should also clearly define the sanctions applied if a user violates the policy.
+
+**Acknowledgement of Acceptable:** Use A written attestation from a user of an information system indicating the user's acceptance and willingness to comply with the relevant information systems control policies.
+
+**Anti-Tailgating / Anti-Piggybacking Mechanism:** Two sets of doors whereby access to the second is not granted until the individual has passed through (and closed) the first, often referred to as a &quot;man trap.&quot; A controlled turnstile is also considered an anti-tailgating/piggybacking mechanism.
+
+**Asset Classification:** The category or type assigned to an asset, which is derived from the asset classification policy. Asset classifications frequently vary from company to company.
+
+**Asset Control Tag:** A unique identification number assigned to all inventoried assets.
+
+**Attribute:** A property or field of a particular object.
+
+**Baseline:**  A benchmark by which subsequent items are measured.
+
+**Battery:** An electrochemical cell (or enclosed and protected material) that can be charged electrically to provide a static potential for power or released electrical charge when needed.
+
+**Biometric Reader:**  A device that uses measurable biological characteristics such as fingerprints or iris patterns to assist in authenticating a person to an electronic system.
+
+**Business Continuity Plan (BCP):** A process that defines exactly how, for which applications, and for how long a business plans to continue functioning after a disruptive event. The business continuity plan is usually an overarching plan that includes both operational and technology-related tasks.
+
+**Business Impact Analysis (BIA):**  This term is applicable across Technology Risk Management, i.e., in both information security and business continuity planning domains. An impact analysis results in the differentiation between critical and non-critical business functions. A function may be considered critical if there is an unacceptable impact to stakeholders from damage to the function. The perception of the acceptability of disruption may be modified by the cost of establishing and maintaining appropriate business or technical recovery solutions. A function may also be considered critical if dictated by law.
+
+**Change Initiation Request (CIR):** A document (physical or electronic) used to track change requests, including new features, enhancement requests, defects, and changed requirements. The change initiation request document must contain:
+
+- Name of the person initiating the change
+- System affected by the change
+- Description of the change that includes the file name(s) and file location(s)
+- The date the change will occur
+- An approval signature by someone other than the person initiating the change
+- An approval date
+
+**Climate Control System:**  A combination of sensors and equipment that monitors the temperature and humidity in a sensitive environment (such as a data center) and that automatically heats/cools/dehumidifies as needed to keep the atmosphere within acceptable tolerances.
+
+**Cold Site:** A remote facility that provides the equipment necessary for data and process restoration.
+
+**Complex Password:**  A password that combines alphabetic and non-alphabetic characters, such as special or numeric characters.
+
+**Confidentiality:** The protection of sensitive information from unauthorized disclosure and sensitive facilities from physical, technical, or electronic penetration or exploitation.
+
+**Constituent:** An active employee or contractor.
+
+**Contractor:** A contracted professional with expertise in a particular domain or area.
+
+**DMZ (Demilitarized zone):** A controlled network space, delimited by firewalls or other policy-enforcing devices, which is neither inside an organization's network nor directly part of the Internet. A DMZ is typically used to isolate an organization's most highly secured information assets while allowing predefined access to those assets that must provide or receive data outside of the organization. The access and services provided should be restricted to the absolute minimum required.
+
+**Enclosed:**  Closed in, surrounded, or included within.
+
+**Exception:** A result that deviates from the norm or expectation.
+
+**External Vulnerability:** Scan A systematic review process using software tools designed to search for and map systems for weaknesses in an application, computer or network, which is executed from a network address outside of the target network. The intent is to determine if there are points of weakness in the security control system that can be exploited from outside the network.
+
+**Externally Facing:** In network terms, the network entry point that receives inbound traffic.
+
+**Extranet:** Refers to an intranet that is partially accessible to authorized outsiders.
+
+**Facility:**  A structure, building, or multiple structures or buildings in which operations are conducted for the services provided. These operations include handling, processing and storage of information, data or systems, as well as personnel that support the operations.
+
+**Fire Suppression System:** A combination of sensors and equipment designed to detect the presence of heat/smoke/fire and actuate a fire retardant or fire extinguishing system.
+
+**Firewall:** A set of related programs, located at a network gateway server that protects the resources of private networks from other networks. Firewalls can be application/proxy, packet filtering, or stateful based. Examples of firewalls are Cisco PIX, Check Point Firewall, Juniper NetScreen and Cyberguard. Though they contain some firewall functionality, routers are not included in this definition.
+
+**Firewall Rule:** Information added to the firewall configuration to define the organization's security policy through conditional statements that instruct the firewall how to react in a particular situation.
+
+**Fluid Sensor:** A mechanical device sensitive to the presence of water or moisture that transmits a signal to a measuring or control instrument.
+
+**Gateway:** A node on a network that facilitates the communication of information between two or more nodes.
+
+**General:** Perimeter An area with fully enclosed walls that extend from floor to ceiling (beyond raised floors and ceilings) surrounding the secure perimeter. This may be the same floor as the secure perimeter, if shared by other tenants in the facility, or the facility itself.
+
+**Generator:** A device that converts mechanical energy to electrical energy; in this sense, an engine (usually fuel-powered) that provides electrical current as input to a power source.
+
+**Hardware Systems:** Includes servers and network devices.
+
+**Heat Detector:** A mechanical device that is sensitive to temperature and transmits a signal to a measuring or control instrument.
+
+**Hot Site:**  A duplicate of the original site of the organization, with full computer systems as well as near-complete backups of user data.
+
+**IDF:** See Intermediate Distribution Frame
+
+**Immediate Perimeter:** A rack or cage housing the target systems.
+
+**Incident:** Events outside normal operations that disrupt those operational processes. An incident can be a relatively minor event, such as running out of disk space on a server, or a major disruption, such as a breach of database security and the loss of private and confidential customer information.
+
+**Incident Severity:** Incidents should be categorized by severity using, at a minimum, a three-point scale of minor, moderately severe, and severe. For each level of severity, IT organizations should define acceptable resolution times, escalation procedures, and reporting procedures.
+
+**Intermediate Distribution Frame:** A free-standing or wall-mounted rack for managing and interconnecting the telecommunications cable between end user devices and a main distribution frame (MDF).
+
+**Internal Vulnerability:** Scan A systematic review process using software tools designed to search for and map systems for weaknesses in an application, computer or network, executed from a network address within the target network. The intent is to determine whether points of weakness in the security control system exist that could be exploited by a user with access to the internal network.
+
+**Internet:**  A global network connecting millions of computers. More than 100 countries are linked into exchanges of data, news and opinions.
+
+**Internet Protocol (IP):** A networking standard that allows messages to be sent back and forth over the Internet or other IP networks.
+
+**Intranet:** An IP network that resides behind a firewall and is accessible only to people who are members of the same company or organization.
+
+**Intrusion Detection Systems (IDS):** A security inspection system for computers and networks that can allow for the inspection of systems activity and inbound/outbound network activity. The IDS key function identifies suspicious activity or patterns that may indicate a network or system attack.
+
+**Intrusion Protection System (IPS):** A more sophisticated Intrusion Detection System (IDS) that allows administrators to configure predefined actions to be taken if suspicious activity is detected.
+
+**Inventory:** An itemized list of current assets.
+
+**Local Backup:** A method for backing up data on the local system such as an attached tape or storage device.
+
+**Main Distribution Frame:** A wiring rack that connects outside lines with internal lines. It is used to connect public or private lines coming into the building to internal networks
+
+**Master Change Log:** A document or database that contains a report of each change initiation request (CIR) (approved or rejected). The document or database must contain:
+
+- Reference to a CIR
+- Date submitted
+- Date of change
+- Name of affected system
+- Approval status (approved or rejected)
+
+**MD5:** A one-way cryptographic hash algorithm that produces a unique 128 bit alphanumeric fingerprint of its input.
+
+**MDF:** See Main Distribution Frame
+
+**Mobile Code:** Software code that is transferred from one computer to another and executes automatically. Examples of mobile code include scripts (JavaScript, VBScript), Java applets, ActiveX controls, Flash animations, Shockwave movies (and Xtras), and macros embedded within Office documents
+
+**Modem:** A device that allows a computer or terminal to transmit data over an analog telephone line.
+
+**NAT Network Address Translation (NAT):** Involves rewriting the source and/or destination addresses of IP packets as they pass through a network device.
+
+**Network Devices:** Computer networking devices are units that mediate data in a computer network. Computer networking devices are also called network equipment, Intermediate Systems (IS) or InterWorking Unit (IWU).
+
+**Network Segment:** A portion of a computer network that is separated from the remainder of the network by a device such as a repeater, hub, bridge, switch or router. Each segment may contain one or multiple computers or other hosts. Network segments are typically established for throughput and/or security reasons.
+
+**Network time protocol (NTP):** A protocol designed to synchronize the clocks of computers over a network.
+
+**Node:**  Any physical device with a unique network address.
+
+**Non-Employees:** Auditors, consultants, contractors, and vendors.
+
+**Non-Public Personal Information (NPI):** Any personally identifiable financial information that is not publicly available. Non-Public Information includes but is not limited to name, address, city, state, Zip code, telephone number, Social Security number, credit card number, bank account number and financial history.
+
+**Owner:** An individual or entity that has approved management responsibility for controlling the production, development, maintenance, use and security of the assets. It does not mean that the person actually has any property rights to the asset.
+
+**Ownership:** A formally assigned responsibility over a given asset.
+
+**Personal Identification Number (PIN):** A secret shared between a user and a system that can be used to authenticate the user to the system.
+
+**Physical Media:** Any portable device or substance (e.g., paper) used to store data for specific and legitimate purposes. Examples of physical media include:
+
+- Magnetic tapes and disks
+- Cartridges, including 9-track, DAT, and VHS
+- Optical disks in CD and DVD format
+- Microfilm/fiche
+- Paper (e.g., computer generated reports and other printouts)
+- Static memory devices, such as USB (memory sticks)
+
+**Port Scan:** A systematic scan of a computer's ports that identifies open doors. Used in managing networks, port scanning also can be used maliciously to find a weakened access point from which to break into computer.
+
+**Post-Deployment Test Document:** A document that provides evidence that the change was tested and approved in the production environment. The document must contain:
+
+- Reference to a CIR
+- Identified deployment resources
+- Deployment start date
+- Deployment end date
+- Expected results
+- Actual results
+- Approval signature
+- Approval date
+
+**Power Redundancy:** Any type of power delivery mechanism that provides continuous power to connected systems in the event of a failure in the main delivery mechanism for electricity. Such mechanisms include multiple electric feeds, automatic failover generators, and uninterruptible power supplies.
+
+**Pre-Deployment Test Document:** A document (electronic or paper) that provides evidence that the requested changes were tested prior to deployment in the production environment. The document will be inspected for the following items:
+
+- Reference to a CIR
+- Identified testing resources
+- Testing start date
+- Testing end date
+- Expected test results
+- Actual test results
+
+**Privacy Policy:** An official statement (on a website or communicated by other means) addressing the type of information an entity collects, how the information is used, how the individual may access this data, and the steps for removing data. A privacy statement usually includes information about how the entity protects the information it collects and uses.
+
+**Protocol:** A set of rules and formats that enable the proper exchange of information between different systems.
+
+**Publicly Accessible:** In networking terms, able to accept a connection originating from the public domain - e.g., the Internet.
+
+**Raised Floor:** Used in data center construction, a raised floor above the &quot;true&quot; floor allows air conditioning flow and wiring to pass freely under equipment. This space between the true and raised floors is accessed by removable floor tiles.
+
+**Receiver Company:** The financial institution that has contracted with a service provider for a specific service.
+
+**Residual Risk Rating Scoring Method:** A calculation of the risk that remains after security controls have been applied, typically calculated as:
+
+**Risk Prioritization Scoring Method:** A systematic approach that quantifies risk in terms of loss potential, then sequences the risks in order to determine the order in which compensating controls should be implemented.
+
+**Scoping Meeting:** A meeting held prior to commencement of the Shared Assessments engagement, to determine target systems to be included in a company's AUP and SIG.
+
+**Secure Perimeter:** A space fully enclosed by walls that surround the immediate perimeter, extend from floor to ceiling (beyond raised floors and ceilings), is contained, and the points of entry of which are secured.
+
+**Secure Socket Layer (SSL):** A protocol developed by Netscape for transmitting private documents via the Internet. SSL uses a cryptographic system with two keys to encrypt data: a public key known to everyone and a private or secret key known only to the recipient of the message.
+
+**Security Policy:** A published document or set of documents defining requirements for one or more aspects of information security.
+
+**Sensitive Information:** Also known as &quot;target data&quot;, any customer data stored at the service provider's facility. This data may be stored in the form of physical media, digital media, or any other storage medium.
+
+**Server:** A computer that makes services, such as access to data files, programs, and peripheral devices, available to workstations on a network.
+
+**Service Provider:** An organization that provides outsourced services such as data processing, applications or systems to a client.
+
+**Service Set Identifier (SSID):** A 32-character unique identifier attached to the header of packets sent over a wide area network to identify each packet as part of that network.
+
+**Simple Mail Transfer Protocol (SMTP):** The de facto standard for email transmissions across the Internet.
+
+**Smoke Detector:** A mechanical device that is sensitive to the presence of smoke or particulate material in the air that transmits a signal to a measuring or control instrument.
+
+**Status Change:** Change to employment status that is recorded in HR such as promotions, demotions or departmental changes.
+
+**Stewardship:** The act of managing and maintaining a given asset.
+
+**System Owner:** The business unit that retains financial ownership or decision rights for the business use of the asset.
+
+**System Steward:**  The primary assigned administrator responsible for maintenance and day-to-day tasks that support the business.
+
+**Target Data:** Non-Public Personal Information that is stored, transmitted, or processed by the service provider.
+
+**Target System:** Computer hardware and software in scope for the engagement and containing target data.
+
+**Threat Impact Calculation Method:** A systematic method of determining the loss potential of a particular threat, based upon the value of assets affected.
+
+**Threat Probability Calculation Method:** A systematic method of determining the potential for a particular threat to occur, based on the likelihood of the occurrence collected from internal staff, past records, and official security records.
+  Threats x Vulnerability x Asset Value = Total Risk
+  (Threats x Vulnerability x Asset Value) x Controls Gap = Residual Risk
+
+**Token:** A unique identifier generated on both a host and small user-held device, that allows the user to authenticate to the host.
+
+**True ceiling:** The permanent overhead interior surface of a room, constructed of solid building materials offering resistance to and evidence of unauthorized entry.
+
+**True floor:** The permanent bottom interior surface of a room, constructed of solid building materials offering resistance to and evidence of unauthorized entry.
+
+**Unapproved:** Operating without consent.
+
+**Unidentified:** Being or having an unknown or unnamed source.
+
+**Uninterruptible Power Supply (UPS):** A power supply consisting of a bank of batteries, which is continually charged. When power fails, the UPS becomes the source of electrical current for computer equipment until the batteries are discharged. A UPS is often connected to a generator that can provide electrical power indefinitely.
+
+**Vibration Alarm Sensor:** An alarm that responds to vibrations in the surface onto which it is mounted. A normally closed switch momentarily opens when the sensor is subjected to a vibration of sufficiently large amplitude.
+
+**Virtual Private Network (VPN):** A communication tunnel running through a shared network, such as the Internet, which uses encryption and other security mechanisms to ensure the data cannot be intercepted and that the data senders and receivers are authenticated.
+
+**Volumetric Alarm Sensor:** An alarm sensor designed and employed to detect an unauthorized person in a confined space when the space is normally unoccupied. Such alarms would include ultrasonic, microwave, and infrared sensors.
+
+**War Walk:** Also known as &quot;war drive,&quot; using a laptop to &quot;sniff&quot; for wireless access points. War walking may be used to locate a public access point for personal use or as a controls assessment to identify access points that are inadequately secured and may indicate an elevated risk of breach.
+
+**Warm Site:** A remote facility which replicates production data in set intervals.
+
+**Water Sensor:** A mechanical device sensitive to the presence of water or moisture that transmits a signal to a measuring or control instrument.
+
+**Workstation:** (1) Like personal computers, most workstations are single user computers. However, workstations are typically linked together to form a local area network, although they can also be used as stand alone systems. (2) In networking, workstation refers to any computer connected to a local area network, and could be an actual workstation or a personal computer.</csi:headerText>
     </csi:page>
     <csi:page>
       <csi:pageHeader>Overview</csi:pageHeader>
       <csi:pageGUID>21</csi:pageGUID>
       <csi:seqNumber>21</csi:seqNumber>
-      <csi:sections>
-        <csi:section>
-          <csi:sectionHeader></csi:sectionHeader>
-          <csi:sectionGUID>21</csi:sectionGUID>
-          <csi:seqNumber>21</csi:seqNumber>
-          <csi:questions>
-          </csi:questions>
-        </csi:section>
-      </csi:sections>
+      <csi:headerText>Standardized Information Gathering (SIG) Overview
+===
+
+When applications, systems and services are outsourced, responsibility for reputation, transaction, regulatory and other risks associated with the outsourcing relationship remains with the financial institution. To develop an appropriate risk mitigation strategy, the institution must be able to identify and understand the controls upon which the service provider relies to address risks associated with outsourced services. 
+
+The Shared Assessments Program was created to develop a standardized approach to obtaining consistent information about a service provider's information technology practices, processes and controls. The Program consists of two complementary documents: a questionnaire, commonly referred to as the Standardized Information Gathering Questionnaire (SIG) and a set of executable tests, called the Agreed Upon Procedures (AUP). Consistent with ISO 27002:2005*, both documents identify control areas designed to document the service provider's ability to actively manage information security controls. 
+
+Standardized Information Gathering Questionnaire (SIG): Developed by Financial Institution Shared Assessments Program members to leverage the BITS IT Service Providers Expectations Matrix and address the control areas covered in ISO 27002:2005, the SIG used to obtain required documentation and establish a profile on operations and controls for each of the control areas. When used as a standalone document, the questionnaire provides information clients need to evaluate the security controls in place.
+
+Agreed Upon Procedures (AUP): Developed by the Financial Institution Shared Assessments Program Working Group with the Big 4 accounting firms acting as Technical Advisors, the AUPs gather and report on control areas using objective and consistent procedures.  Procedures address control objectives in the following areas: Risk Management, Security Policy, Organization of Information Security, Asset Management, Human Resource Security, Physical and Environmental Security, Communications and Operations Management, Access Control, Information Systems Acquisition, Information Security Incident Management, Business Continuity Management, and Compliance.  Procedures attest to the existence of controls without rendering opinions of sufficiency, thus enabling multiple financial institutions to view results in the context of their own risk tolerance and in the context of industry risk management and regulatory requirements.
+
+When the SIG and AUP are combined, clients, service providers, and assessment organizations have an outline for an evaluation program to obtain information and objectively verify selected controls. Clients are then better able to identify risks, comply with regulatory requirements, and reduce inconsistencies in the evaluation of information received from service providers.  
+
+Using the SIG The Standardized Information Gathering (SIG) is used to obtain required documentation from a service provider and establish a profile on its operations and controls for each control area. The SIG is based on the BITS IT Service Providers Expectations Matrix, ISO 27002:2005, and risk requirements of Shared Assessments Program member institutions.
+
+Update Process Technology, threats and regulations change. The Financial Institution Shared Assessments Program's update process ensures that the SIG and AUP documents continue to meet risk management and regulatory requirements.  The documents are updated at least annually.  For more information on the latest releases, please visit the Financial Institution Shared Assessments Program website at [http://www.bitsinfo.org/FISAP](http://www.bitsinfo.org/FISAP).
+
+*ISO/IEC 27002 can be purchased directly from the American National Standards Institute, 25 West 43rd Street, New York 10036, 212-642-4900
+[http://webstore.ansi.org/default.aspx](http://webstore.ansi.org/default.aspx)</csi:headerText>
     </csi:page>
     <csi:page>
       <csi:pageHeader>Version History</csi:pageHeader>
       <csi:pageGUID>22</csi:pageGUID>
       <csi:seqNumber>22</csi:seqNumber>
-      <csi:sections>
-        <csi:section>
-          <csi:sectionHeader></csi:sectionHeader>
-          <csi:sectionGUID>22</csi:sectionGUID>
-          <csi:seqNumber>22</csi:seqNumber>
-          <csi:questions>
-          </csi:questions>
-        </csi:section>
-      </csi:sections>
-    </csi:page>
-    <csi:page>
-      <csi:pageHeader>Formula Notes</csi:pageHeader>
-      <csi:pageGUID>23</csi:pageGUID>
-      <csi:seqNumber>23</csi:seqNumber>
-      <csi:sections>
-        <csi:section>
-          <csi:sectionHeader></csi:sectionHeader>
-          <csi:sectionGUID>23</csi:sectionGUID>
-          <csi:seqNumber>23</csi:seqNumber>
-          <csi:questions>
-          </csi:questions>
-        </csi:section>
-      </csi:sections>
+      <csi:headerText>Date        Version    Comments
+
+7/10/2006   2.0b       Submitted to steering committee for review
+
+7/25/2006   2.0 final  Added glossary and version history, locked version
+
+10/1/2007   3.0 WG     Added high level questions, standardized formatting, mapped version 2.
+
+10/12/2007  3.0 Final  Minor changes to formatting, and question changes to BCP section
+
+1/4/2008    3.1 Final  Format and question count changes addition of SIG Lite tab.
+
+9/1/2008    4.0 Draft  Submitted to Steering Committee for approval
+
+10/21/2008  4.0 Final  Release final</csi:headerText>
     </csi:page>
   </csi:pages>
 </csi:questionnaire>
