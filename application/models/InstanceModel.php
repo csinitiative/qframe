@@ -1330,8 +1330,10 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
         $shortName = $reference->getElementsByTagName('shortName')->item(0)->nodeValue;
         $referenceName = $reference->getElementsByTagName('referenceName')->item(0)->nodeValue;
         $item = $reference->getElementsByTagName('item')->item(0)->nodeValue;
-        $referenceText = $reference->getElementsByTagName('referenceText')->item(0)->nodeValue;
-        $referenceURL = $reference->getElementsByTagName('referenceURL')->item(0)->nodeValue;
+        $rText = $reference->getElementsByTagName('referenceText')->item(0);
+        $referenceText = (isset($rText)) ? $rText->nodeValue : null;
+        $rURL = $reference->getElementsByTagName('referenceURL')->item(0);
+        $referenceURL = (isset($rURL)) ? $rURL->nodeValue : null;
         if (!isset($processedReferences[$shortName])) {
           self::$referenceTable->insertBulk(array('shortName' => $shortName,
                                                   'instanceID' => $instanceID,
