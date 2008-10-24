@@ -96,7 +96,13 @@ SIG Lite:
               <csi:qText>Is this a publicly or privately held company?</csi:qText>
               <csi:questionGUID>2898</csi:questionGUID>
               <csi:seqNumber>8</csi:seqNumber>
-              <csi:questionType>T</csi:questionType>
+              <csi:questionType>S</csi:questionType>
+              <csi:questionPrompt>
+                <csi:promptText>Publicly held</csi:promptText>
+              </csi:questionPrompt>
+              <csi:questionPrompt>
+                <csi:promptText>Privately held</csi:promptText>
+              </csi:questionPrompt>
             </csi:question>
             <csi:question>
               <csi:qText>If Public, what is the name of the Exchange?</csi:qText>
@@ -126,7 +132,13 @@ SIG Lite:
               <csi:qText>Are there any material claims or judgments against the company?</csi:qText>
               <csi:questionGUID>2903</csi:questionGUID>
               <csi:seqNumber>13</csi:seqNumber>
-              <csi:questionType>T</csi:questionType>
+              <csi:questionType>S</csi:questionType>
+              <csi:questionPrompt>
+                <csi:promptText>Yes</csi:promptText>
+              </csi:questionPrompt>
+              <csi:questionPrompt>
+                <csi:promptText>No</csi:promptText>
+              </csi:questionPrompt>
             </csi:question>
             <csi:question>
               <csi:qText>If yes, please describe, including any impact it may have on the service being provided</csi:qText>
@@ -140,30 +152,41 @@ SIG Lite:
               <csi:seqNumber>15</csi:seqNumber>
               <csi:questionType>T</csi:questionType>
             </csi:question>
-            <csi:question>
+            <csi:questionGroup>
               <csi:qText>Is this a shared service? (A shared service is provided to multiple clients vs. a dedicated service, which is provided only to 1 client.)</csi:qText>
               <csi:questionGUID>2906</csi:questionGUID>
               <csi:seqNumber>16</csi:seqNumber>
-              <csi:questionType>T</csi:questionType>
-            </csi:question>
-            <csi:question>
-              <csi:qText>- Shared:</csi:qText>
-              <csi:questionGUID>2907</csi:questionGUID>
-              <csi:seqNumber>17</csi:seqNumber>
-              <csi:questionType>T</csi:questionType>
-            </csi:question>
-            <csi:question>
-              <csi:qText>- Dedicated:</csi:qText>
-              <csi:questionGUID>2908</csi:questionGUID>
-              <csi:seqNumber>18</csi:seqNumber>
-              <csi:questionType>T</csi:questionType>
-            </csi:question>
-            <csi:question>
-              <csi:qText>- Other: Please explain</csi:qText>
-              <csi:questionGUID>2909</csi:questionGUID>
-              <csi:seqNumber>19</csi:seqNumber>
-              <csi:questionType>T</csi:questionType>
-            </csi:question>
+              <csi:question>
+                <csi:qText>- Shared:</csi:qText>
+                <csi:questionGUID>2907</csi:questionGUID>
+                <csi:seqNumber>17</csi:seqNumber>
+                <csi:questionType>S</csi:questionType>
+                <csi:questionPrompt>
+                  <csi:promptText>Yes</csi:promptText>
+                </csi:questionPrompt>
+                <csi:questionPrompt>
+                  <csi:promptText>No</csi:promptText>
+                </csi:questionPrompt>
+              </csi:question>
+              <csi:question>
+                <csi:qText>- Dedicated:</csi:qText>
+                <csi:questionGUID>2908</csi:questionGUID>
+                <csi:seqNumber>18</csi:seqNumber>
+                <csi:questionType>S</csi:questionType>
+                <csi:questionPrompt>
+                  <csi:promptText>Yes</csi:promptText>
+                </csi:questionPrompt>
+                <csi:questionPrompt>
+                  <csi:promptText>No</csi:promptText>
+                </csi:questionPrompt>
+              </csi:question>
+              <csi:question>
+                <csi:qText>- Other: Please explain</csi:qText>
+                <csi:questionGUID>2909</csi:questionGUID>
+                <csi:seqNumber>19</csi:seqNumber>
+                <csi:questionType>T</csi:questionType>
+              </csi:question>
+            </csi:questionGroup>
             <csi:question>
               <csi:qText>Provide an explanation of what is considered target data.</csi:qText>
               <csi:questionGUID>2910</csi:questionGUID>
@@ -186,7 +209,13 @@ SIG Lite:
               <csi:qText>Are there any additional location(s) where target data is stored?</csi:qText>
               <csi:questionGUID>2913</csi:questionGUID>
               <csi:seqNumber>23</csi:seqNumber>
-              <csi:questionType>T</csi:questionType>
+              <csi:questionType>S</csi:questionType>
+              <csi:questionPrompt>
+                <csi:promptText>Yes</csi:promptText>
+              </csi:questionPrompt>
+              <csi:questionPrompt>
+                <csi:promptText>No</csi:promptText>
+              </csi:questionPrompt>
             </csi:question>
             <csi:question>
               <csi:qText>If so, provide locations (address, city, state, country).</csi:qText>
@@ -194,42 +223,41 @@ SIG Lite:
               <csi:seqNumber>24</csi:seqNumber>
               <csi:questionType>T</csi:questionType>
             </csi:question>
-            <csi:question>
+            <csi:questionGroup>
               <csi:qText>Please provide details in the following areas:</csi:qText>
               <csi:questionGUID>2915</csi:questionGUID>
               <csi:seqNumber>25</csi:seqNumber>
-              <csi:questionType>T</csi:questionType>
-            </csi:question>
-            <csi:question>
-              <csi:qText>- Operating system(s)</csi:qText>
-              <csi:questionGUID>2916</csi:questionGUID>
-              <csi:seqNumber>26</csi:seqNumber>
-              <csi:questionType>T</csi:questionType>
-            </csi:question>
-            <csi:question>
-              <csi:qText>- Workstations # of devices</csi:qText>
-              <csi:questionGUID>2917</csi:questionGUID>
-              <csi:seqNumber>27</csi:seqNumber>
-              <csi:questionType>T</csi:questionType>
-            </csi:question>
-            <csi:question>
-              <csi:qText>- Servers # of devices</csi:qText>
-              <csi:questionGUID>2918</csi:questionGUID>
-              <csi:seqNumber>28</csi:seqNumber>
-              <csi:questionType>T</csi:questionType>
-            </csi:question>
-            <csi:question>
-              <csi:qText>- List Applications in scope.</csi:qText>
-              <csi:questionGUID>2919</csi:questionGUID>
-              <csi:seqNumber>29</csi:seqNumber>
-              <csi:questionType>T</csi:questionType>
-            </csi:question>
-            <csi:question>
-              <csi:qText>- Number of employees by function (e.g., development, systems operations, information security)</csi:qText>
-              <csi:questionGUID>2920</csi:questionGUID>
-              <csi:seqNumber>30</csi:seqNumber>
-              <csi:questionType>T</csi:questionType>
-            </csi:question>
+              <csi:question>
+                <csi:qText>- Operating system(s)</csi:qText>
+                <csi:questionGUID>2916</csi:questionGUID>
+                <csi:seqNumber>26</csi:seqNumber>
+                <csi:questionType>T</csi:questionType>
+              </csi:question>
+              <csi:question>
+                <csi:qText>- Workstations # of devices</csi:qText>
+                <csi:questionGUID>2917</csi:questionGUID>
+                <csi:seqNumber>27</csi:seqNumber>
+                <csi:questionType>T</csi:questionType>
+              </csi:question>
+              <csi:question>
+                <csi:qText>- Servers # of devices</csi:qText>
+                <csi:questionGUID>2918</csi:questionGUID>
+                <csi:seqNumber>28</csi:seqNumber>
+                <csi:questionType>T</csi:questionType>
+              </csi:question>
+              <csi:question>
+                <csi:qText>- List Applications in scope.</csi:qText>
+                <csi:questionGUID>2919</csi:questionGUID>
+                <csi:seqNumber>29</csi:seqNumber>
+                <csi:questionType>T</csi:questionType>
+              </csi:question>
+              <csi:question>
+                <csi:qText>- Number of employees by function (e.g., development, systems operations, information security)</csi:qText>
+                <csi:questionGUID>2920</csi:questionGUID>
+                <csi:seqNumber>30</csi:seqNumber>
+                <csi:questionType>T</csi:questionType>
+              </csi:question>
+            </csi:questionGroup>
           </csi:questions>
         </csi:section>
       </csi:sections>
