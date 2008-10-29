@@ -549,7 +549,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
   }
 
   /**
-   * Returns the number of approved questions for this page
+   * Returns the number of approved questions for this instance
    *
    * @return integer
    */
@@ -573,7 +573,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
   }
 
   /**
-   * Returns the number of questions for this page that are complete (answered)
+   * Returns the number of questions for this instance that are complete (answered)
    *
    * @return integer
    */
@@ -618,6 +618,28 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     $stmt = self::$instanceTable->getAdapter()->query($select, $bindVars);
     $result = $stmt->fetchAll();
     $count += $result[0]['tally'];
+
+    return $count;
+  }
+  
+  /**
+   * Returns the number of questions for this instance that are disabled
+   *
+   * @return integer
+   */
+  public function getNumQuestionsDisabled() {
+    $questionGroupTypeID = self::$questionTypeTable->getQuestionTypeID($this->instanceRow->instanceID, '_questionGroup');
+    $virtualQuestionTypeID = self::$questionTypeTable->getQuestionTypeID($this->instanceRow->instanceID, 'V');
+    if (!isset($virtualQuestionTypeID)) $virtualQuestionTypeID = -1;
+    if (!isset($questionGroupTypeID)) $questionGroupTypeID = -1;
+    
+    $stmt = self::$instanceTable->getAdapter()->query('SELECT COUNT(*) AS tally FROM question AS ' .
+        'q WHERE q.disableCount > 0 AND q.instanceID = ? AND q.questionTypeID != ? AND ' . 
+        'q.questionTypeID != ?',
+      array($this->instanceRow->instanceID, $questionGroupTypeID, $virtualQuestionTypeID)
+    );
+    $result = $stmt->fetchAll();
+    $count = $result[0]['tally'];
 
     return $count;
   }

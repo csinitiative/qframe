@@ -274,6 +274,28 @@ class PageModel implements QFrame_Lockable, QFrame_Permissible {
   }
   
   /**
+   * Return the number of questions for this page that are disabled
+   *
+   * @return integer
+   */
+  public function getNumQuestionsDisabled() {
+    $questionGroupTypeID = self::$questionTypeTable->getQuestionTypeID($this->pageRow->instanceID, '_questionGroup');
+    $virtualQuestionTypeID = self::$questionTypeTable->getQuestionTypeID($this->pageRow->instanceID, 'V');
+    if (!isset($virtualQuestionTypeID)) $virtualQuestionTypeID = -1;
+    if (!isset($questionGroupTypeID)) $questionGroupTypeID = -1;    
+    
+    $stmt = self::$pageTable->getAdapter()->query('SELECT COUNT(*) as tally FROM question as q ' .
+        'WHERE q.disableCount > 0 AND q.pageID = ? AND q.questionTypeID != ? AND ' . 
+        'q.questionTypeID != ?',
+      array($this->pageRow->pageID, $questionGroupTypeID, $virtualQuestionTypeID)
+    );
+    $result = $stmt->fetchAll();
+    $count = $result[0]['tally'];
+
+    return $count;
+  }
+  
+  /**
    * Return an ID that is guaranteed to be unique among objects of type PageModel
    *
    * @return string
