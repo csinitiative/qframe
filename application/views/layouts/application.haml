@@ -65,7 +65,7 @@
               Approved:
               %strong= $this->currentInstance->numApproved
               of
-              %strong= $this->currentInstance->numQuestions
+              %strong= $this->currentInstance->numQuestions - $this->currentInstance->getNumQuestionsDisabled()
               = "({$this->currentInstance->getPctApproved()}%)"
               %br/
               %br/
