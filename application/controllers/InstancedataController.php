@@ -19,6 +19,7 @@
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
 
+require_once(PROJECT_PATH . '/library/dompdf-0.5.1/dompdf_config.inc.php');
 
 /**
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
@@ -324,6 +325,18 @@ class InstancedataController extends QFrame_Controller_Admin {
       $this->view->archive = $zip->getZipFileContents();
     }
     $zip->deleteZipFile();
+    $this->view->setRenderLayout(false);
+  }
+
+  public function PdfDownloadAction() {
+    $session = new Zend_Session_Namespace('login');
+    $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
+                                        'depth' => 'instance'));
+    $html = $instance->xml2html();
+    $dompdf = new DOMPDF();
+    $dompdf->load_html($html);
+    $dompdf->render();
+    $this->view->pdf = $dompdf->output();
     $this->view->setRenderLayout(false);
   }
     

@@ -329,6 +329,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
             if ($question->virtualQuestion) {
               $xml .= "$padding              <csi:questionGUID>" . self::_xmlentities($question->questionGUID) . "</csi:questionGUID>\n";
               $xml .= "$padding              <csi:seqNumber>" . self::_xmlentities($question->seqNumber) . "</csi:seqNumber>\n";
+              $xml .= "$padding              <csi:questionNumber>" . self::_xmlentities($question->questionNumber) . "</csi:questionNumber>\n";
               $xml .= "$padding              <csi:questionType>V</csi:questionType>\n";
             }
             else {
@@ -922,6 +923,47 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     
     return $instance->instanceID;
     
+  }
+
+  /**
+   * Apply an XSLT to the XML which returns XHTML
+   */
+  public function xml2html() {
+
+    $dom = new DOMDocument();
+    $dom->loadXML($this->toXML(1));
+    $errors = libxml_get_errors();
+    try {
+      $logger = Zend_Registry::get('logger');
+    }
+    catch (Zend_Exception $e) {}
+    foreach ($errors as $error) {
+      $message = rtrim("XML error on line {$error->line} of {$error->file}: {$error->message}");
+      if(isset($logger) && $logger) $logger->log($message, Zend_Log::ERR);
+      error_log($message);
+    }
+    if(count($errors) > 0) throw new Exception('XML Exception');
+
+    $xsl = new DOMDocument();
+    if (!$xsl->load(_path(PROJECT_PATH, 'xml', 'csi-qframe-instance-to-html-v1_0.xsl'))) {
+      $errors = libxml_get_errors();
+      try {
+        $logger = Zend_Registry::get('logger');
+      }
+      catch (Zend_Exception $e) {}
+      foreach ($errors as $error) {
+        $message = rtrim("XSL XML error on line {$error->line} of {$error->file}: {$error->message}");
+        if(isset($logger) && $logger) $logger->log($message, Zend_Log::ERR);
+        error_log($message);
+      }
+      if(count($errors) > 0) throw new Exception('XSL XML Validation Exception');
+    }
+
+    $proc = new XSLTProcessor();
+    $proc->importStyleSheet($xsl);
+
+    $result = $proc->transformToXML($dom);
+    return $result;
   }
   
   /**
