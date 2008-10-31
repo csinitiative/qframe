@@ -43,8 +43,13 @@ function __autoload($class) {
    */
   if(preg_match('/Model$/', $class)) {
     $model_path = implode(DIRECTORY_SEPARATOR, array(APPLICATION_PATH, 'models', $class . '.php'));
-    if(file_exists($model_path)) require_once($model_path);
+    if(file_exists($model_path)) {
+      require_once($model_path);
+      return;
+    }
   }
+
+  DOMPDF_autoload($class);
 }
 
 /*

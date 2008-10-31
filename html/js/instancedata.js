@@ -55,6 +55,15 @@ var Data = {
   },
 
   /**
+   * Handles a click on the "PDFDownload" button
+   *
+   * @param Event click event for the "PDFDownload" button
+   */
+  PDFDownloadHandler: function(event) {
+    _handle(event, 'ResponsesFullXML', 'PDFDownload');
+  },
+
+  /**
    * Handles a click on the "ResponsesOnlyXMLView" button
    *
    * @param Event click event for the "ResponsesOnlyXMLView" button
