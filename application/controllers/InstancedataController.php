@@ -293,50 +293,97 @@ class InstancedataController extends QFrame_Controller_Admin {
    
   public function ResponsesFullXMLDownloadAction() {
     $session = new Zend_Session_Namespace('login');
-    $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
-                                        'depth' => 'instance'));
     $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
-    if (isset($cryptoID) && $cryptoID != 0) {
-      $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
-      $this->view->xml = $crypto->encrypt($instance->toXML(1));
-      $this->view->cryptoID = $cryptoID;
+    if ($this->_hasParam('download') && isset($session->tempFile)) {
+      if (isset($cryptoID) && $cryptoID != 0) {
+        $this->view->cryptoID = $cryptoID;
+      }
+      $this->view->xml = file_get_contents($session->tempFile);
+      unlink($session->tempFile);
+      unset($session->tempFile);
     }
     else {
-      $this->view->xml = $instance->toXML(1);
+      $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
+                                          'depth' => 'instance'));
+      $tempFile = tempnam(PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp', 'exp');
+      $xml = '';
+      if (isset($cryptoID) && $cryptoID != 0) {
+        $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
+        $xml = $crypto->encrypt($instance->toXML(1));
+        $this->view->cryptoID = $cryptoID;
+      }
+      else {
+        $xml = $instance->toXML(1);
+      }
+      file_put_contents($tempFile, $xml);
+      $session->tempFile = $tempFile;
     }
-    $this->view->setRenderLayout(false);      
+    $this->view->setRenderLayout(false);
   }
   
   public function ResponsesFullXMLArchiveAction() {
     $session = new Zend_Session_Namespace('login');
-    $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
-                                        'depth' => 'instance'));
-    $zip = new ZipArchiveModel($instance, array('new' => 1));
-    $zip->addInstanceFullResponsesXMLDocument();
-    $zip->addAttachments();
-    $zip->close();
     $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
-    if (isset($cryptoID) && $cryptoID != 0) {
-      $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
-      $this->view->archive = $crypto->encrypt($zip->getZipFileContents());
-      $this->view->cryptoID = $cryptoID;
+    if ($this->_hasParam('download') && isset($session->tempFile)) {
+      if (isset($cryptoID) && $cryptoID != 0) {
+        $this->view->cryptoID = $cryptoID;
+      }
+      $this->view->archive = file_get_contents($session->tempFile);
+      unlink($session->tempFile);
+      unset($session->tempFile);
     }
     else {
-      $this->view->archive = $zip->getZipFileContents();
+      $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
+                                          'depth' => 'instance'));
+      $zip = new ZipArchiveModel($instance, array('new' => 1));
+      $zip->addInstanceFullResponsesXMLDocument();
+      $zip->addAttachments();
+      $zip->close();
+      $tempFile = tempnam(PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp', 'exp');
+      $archive = '';
+      if (isset($cryptoID) && $cryptoID != 0) {
+        $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
+        $archive = $crypto->encrypt($zip->getZipFileContents());
+        $this->view->cryptoID = $cryptoID;
+      }
+      else {
+        $archive = $zip->getZipFileContents();
+      }
+      $zip->deleteZipFile();
+      file_put_contents($tempFile, $archive);
+      $session->tempFile = $tempFile;
     }
-    $zip->deleteZipFile();
     $this->view->setRenderLayout(false);
   }
 
   public function PdfDownloadAction() {
     $session = new Zend_Session_Namespace('login');
-    $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
-                                        'depth' => 'instance'));
-    $html = $instance->xml2html();
-    $dompdf = new DOMPDF();
-    $dompdf->load_html($html);
-    $dompdf->render();
-    $this->view->pdf = $dompdf->output();
+    $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
+    if ($this->_hasParam('download') && isset($session->tempFile)) {
+      if (isset($cryptoID) && $cryptoID != 0) {
+        $this->view->cryptoID = $cryptoID;
+      }
+      $this->view->pdf = file_get_contents($session->tempFile);
+      unlink($session->tempFile);
+      unset($session->tempFile);
+    }
+    else {
+      $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
+                                          'depth' => 'instance'));
+      $html = $instance->xml2html();
+      $dompdf = new DOMPDF();
+      $dompdf->load_html($html);
+      $dompdf->render();
+      $pdf = $dompdf->output();
+      if (isset($cryptoID) && $cryptoID != 0) {
+        $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
+        $pdf = $crypto->encrypt($pdf);
+        $this->view->cryptoID = $cryptoID;
+      }
+      $tempFile = tempnam(PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp', 'exp');
+      file_put_contents($tempFile, $pdf);
+      $session->tempFile = $tempFile;
+    }
     $this->view->setRenderLayout(false);
   }
     

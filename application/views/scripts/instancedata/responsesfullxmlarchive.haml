@@ -17,12 +17,27 @@
   @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
-- header('Cache-Control: no-store, no-cache, must-revalidate, private, post-check=0, pre-check=0', FALSE);
-- header('Pragma: no-cache');
-- header('Content-Type: application/octet-stream');
-- if (isset($this->cryptoID))
+- if (isset($this->archive))
+  - header('Cache-Control: no-store, no-cache, must-revalidate, private, post-check=0, pre-check=0', FALSE);
+  - header('Pragma: no-cache');
+  - header('Content-Type: application/octet-stream');
+  - if (isset($this->cryptoID))
     - header('Content-Disposition: attachment; filename=instance-responses.zip.enc');
-- else
+  - else
     - header('Content-Disposition: attachment; filename=instance-responses.zip');
-
-!= $this->archive
+  != $this->archive
+- else
+  %html
+    %head
+      <script type="text/javascript">
+        function initialize() {
+          parent.setTimeout("Effect.Fade('disableOverlay', { duration: 0.01, to: 0.00 })", 1);
+          document.forms[0].submit();
+        }
+      </script>
+    %body{ 'onload' => 'initialize();' }
+      != $this->form(array(), false, 'get')
+      != $this->formHidden('download', '1')
+      - if (isset($this->cryptoID))
+        != $this->formHidden('cryptoID', $this->cryptoID)
+      != $this->form(null, true)

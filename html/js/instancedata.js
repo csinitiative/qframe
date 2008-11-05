@@ -206,11 +206,13 @@ function _handle (event, form, action) {
   if (action) {
     $$('form.' + form).first().action = $F('base_url') + '/instancedata/' + action;
   }
-  $$('form.' + form).first().submit();
 
-  if (action.match(/(Download|Archive)$/)) {
-    setTimeout("Effect.Fade('disableOverlay', { duration: 0.01, to: 0.00 })", 4000);
-  }
+  var iframe = document.createElement("iframe");
+  iframe.height = '1px';
+  iframe.width = '1px';
+  iframe.src = $$('form.' + form).first().action + '?cryptoID=' + $$('form.' + form).first().down('#cryptoID').value;
+  document.body.appendChild(iframe);
+
 }
 
 Event.observe(window, 'load', Data.setup);
