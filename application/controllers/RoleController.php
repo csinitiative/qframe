@@ -85,46 +85,41 @@ class RoleController extends QFrame_Controller_Admin {
     if($this->getRequest()->isPost()) $this->updatePermissions();
     
     $session = new Zend_Session_Namespace('login');
-    if(!isset($session->instanceID)) {
-      $instanceID = ($this->_hasParam('instance')) ? $this->_getParam('instance') : null;
-      $questionnaireID = ($this->_hasParam('questionnaire')) ? $this->_getParam('questionnaire') : null;
-
-      if(is_numeric($instanceID) && $instanceID != 0) {
-        $session->instanceID = intVal($instanceID);
-        $this->_redirector->gotoRouteAndExit(array());
+    $origQuestionnaireID = $session->questionnaireID;
+    $origInstanceID = $session->instanceID;
+    if($this->_hasParam('questionnaire')) {
+      $session->questionnaireID = $this->_getParam('questionnaire');
+      if($this->_hasParam('instance') && is_numeric($this->_getParam('instance')) && $this->_getParam('instance') > 0) {
+        $session->instanceID = $this->_getParam('instance');
       }
+      else {
+        unset($session->instanceID);
+      }
+      if ($origQuestionnaireID != $this->_getParam('questionnaire')) {
+        unset($session->instanceID);
+      }
+      $this->_redirector->gotoRoute(array('action' => 'permissions', 'id' => $this->_getParam('id')));
+    }
 
-      $questionnaires = QuestionnaireModel::getAllQuestionnaires('page');
-      $allowedInstances = array();
-      foreach($questionnaires as $questionnaire) {
-        while($instance = $questionnaire->nextInstance()) {
-          while($page = $instance->nextPage()) {
-            if($this->_user->hasAnyAccess($page)) {
-              $allowedInstances[] = $instance;
-              break;
-            }
+    $questionnaires = QuestionnaireModel::getAllQuestionnaires('page');
+    $allowedInstances = array();
+    foreach($questionnaires as $questionnaire) {
+      while($instance = $questionnaire->nextInstance()) {
+        while($page = $instance->nextPage()) {
+          if($this->_user->hasAnyAccess($page)) {
+            $allowedInstances[] = $instance;
+            break;
           }
         }
       }
-      $this->view->instances = $allowedInstances;
-      $this->view->questionnaire = $questionnaireID;
     }
+    $this->view->instances = $allowedInstances;
+
+    $this->view->questionnaire = $session->questionnaireID;
+    $this->view->instance = $session->instanceID;
 
     $this->view->role = RoleModel::find($this->_getParam('id'));
 
-    $this->view->changeInstancePath = $this->view->url(array(
-      'action' => 'changeInstance',
-      'id'     => $this->view->role->roleID
-    ));
-  }
-  
-  /**
-   * Change the current instance
-   */
-  public function changeInstanceAction() {
-    $session = new Zend_Session_Namespace('login');
-    unset($session->instanceID);
-    $this->_redirector->gotoRoute(array('action' => 'permissions', 'id' => $this->_getParam('id')));
   }
   
   /**

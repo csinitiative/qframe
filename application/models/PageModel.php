@@ -305,15 +305,14 @@ class PageModel implements QFrame_Lockable, QFrame_Permissible {
   }
   
   /**
-   * Return an ID that is unique to this page but common to all instances of this
-   * page on different questionnaires.
+   * Return an ID that is unique to this page on this questionnaire
    * 
    * @return string
    */
   public function getPermissionID() {
     $id = get_class($this) . '_';
-    if($this->pageGUID) $id .= "GUID{$this->pageGUID}";
-    else $id .= "ID{$this->pageID}";
+    $id .= "$this->instanceID-";
+    $id .= "$this->pageID";
     
     return $id;
   }

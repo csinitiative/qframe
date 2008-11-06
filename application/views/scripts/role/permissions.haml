@@ -34,11 +34,21 @@
           = $permission
           != $this->formCheckbox("global[{$permission}]", $this->role->hasAccess($permission))
   #page
+    %h2 page permissions
+    Select a questionnaire and instance to set per-page permissions.
+    %br/
+    %br/
+    != $this->formHidden('selectURL', $this->url(array()))
+    .option
+      != $this->formLabel('questionnaire', 'Questionnaire:')
+      != $this->questionnaireSelect($this->questionnaire)
+    .option
+      != $this->formLabel('instance', 'Instance:')
+      != $this->instanceSelect($this->instances, $this->questionnaire, 'instance', $this->instance)
     - if(isset($this->currentInstance))
       %table
         %tr
           %th.left
-            %h2 page permissions
           %th
             != $this->imageTag('icons/ffffff/magnifier.png', array('class' => 'inline tooltip', 'tooltip' => 'view'))
           %th
@@ -62,17 +72,6 @@
               != $this->formCheckbox("page[{$page->pageID}][edit]", $this->role->hasAccess('edit', $page))
             %td
               != $this->formCheckbox("page[{$page->pageID}][approve]", $this->role->hasAccess('approve', $page))
-    - else
-      %h3
-        Select a questionnaire and instance to set per-page permissions.
-      %br/
-      != $this->formHidden('selectURL', $this->url(array()))
-      .option
-        != $this->formLabel('questionnaire', 'Questionnaire:')
-        != $this->questionnaireSelect($this->instances, $this->questionnaire)
-      .option
-        != $this->formLabel('instance', 'Instance:')
-        != $this->instanceSelect($this->instances, $this->questionnaire)
   #options
     != $this->formSubmit('submitButton', 'save')
     != $this->formButton('cancelButton', 'cancel')

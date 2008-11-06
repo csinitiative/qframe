@@ -52,7 +52,7 @@ class QFrame_View_Helper_InstancedataHelpers {
   * @param string element name
   * @return string
   */
-  public function questionnaireSelect($questionnaireID, $name = 'questionnaire') {
+  public function questionnaireSelect($questionnaireID = null, $name = 'questionnaire') {
     if($questionnaireID === null) $options[0] = ' ';
     $questionnaires = QuestionnaireModel::getAllQuestionnaires();
     foreach($questionnaires as $questionnaire) {
