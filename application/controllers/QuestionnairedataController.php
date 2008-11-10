@@ -59,6 +59,7 @@ class QuestionnaireDataController extends QFrame_Controller_Admin {
     $this->view->dataInstances = $allowedInstances;
     
     $this->view->cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
+    $this->view->decryptID = ($this->_hasParam('decryptID')) ? $this->_getParam('decryptID') : null;
     
   }
     
@@ -97,7 +98,7 @@ class QuestionnaireDataController extends QFrame_Controller_Admin {
       UPLOAD_ERR_EXTENSION => 'File upload stopped by extension.',
     );
     
-    $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
+    $decryptID = ($this->_hasParam('decryptID')) ? $this->_getParam('decryptID') : null;
 
     $errorCode = $_FILES['questionnaireFile']['error'];
     if ($errorCode !== UPLOAD_ERR_OK) {
@@ -111,10 +112,10 @@ class QuestionnaireDataController extends QFrame_Controller_Admin {
     $filename = $_FILES['questionnaireFile']['name'];
     
     if (preg_match('/\.enc$/i', $filename)) {
-      if (!isset($cryptoID) || $cryptoID == 0) {
+      if (!isset($decryptID) || $decryptID == 0) {
         throw new Exception('Key not specified for encrypted file');
       }
-      $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
+      $crypto = new CryptoModel(array('cryptoID' => $decryptID));
       if (preg_match('/\.zip\.enc$/i', $filename)) {
         $decrypted = $crypto->decrypt(file_get_contents($file));
         $tempfile = tempnam(PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp', 'zip');

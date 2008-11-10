@@ -23,7 +23,7 @@
 != $this->form(null, false, 'post', array('class' => 'importQuestionnaire', 'enctype' => 'multipart/form-data'))
   .option
     Decryption:
-    != $this->cryptoSelect($this->cryptoID)
+    != $this->cryptoSelect($this->decryptID, 'decryptID')
     &nbsp;&nbsp;
     != $this->formFile('questionnaireFile')
     != $this->linkTo('#importQuestionnaire', $this->formButton('importQuestionnaire', 'Upload'), array('class' => 'dataButton'))

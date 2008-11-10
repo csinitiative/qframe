@@ -7,7 +7,7 @@ class CreateInitialQuestionnaireAndInstance extends Migration {
     QFrame_Db_Table::resetAll();
 
     $this->auth();
-    $xml = file_get_contents(_path(PROJECT_PATH, 'xml', 'sig-3-1-questionnaire-definition.xml'));
+    $xml = file_get_contents(_path(PROJECT_PATH, 'xml', 'sig-4-0-questionnaire-definition.xml'));
     QuestionnaireModel::importXML($xml);
     InstanceModel::importXML($xml, 'Sample SIG Instance');
   }
