@@ -207,11 +207,21 @@ function _handle (event, form, action) {
     $$('form.' + form).first().action = $F('base_url') + '/instancedata/' + action;
   }
 
-  var iframe = document.createElement("iframe");
-  iframe.height = '1px';
-  iframe.width = '1px';
-  iframe.src = $$('form.' + form).first().action + '?cryptoID=' + $$('form.' + form).first().down('#cryptoID').value;
-  document.body.appendChild(iframe);
+  if (action.match(/(Download|Archive)$/)) {
+    var iframe = document.createElement("iframe");
+    iframe.height = '1px';
+    iframe.width = '1px';
+    if ($$('form.' + form).first().down('#cryptoID')) {
+      iframe.src = $$('form.' + form).first().action + '?cryptoID=' + $$('form.' + form).first().down('#cryptoID').value;
+    }
+    else {
+      iframe.src = $$('form.' + form).first().action;
+    }
+    document.body.appendChild(iframe);
+  }
+  else {
+    $$('form.' + form).first().submit();
+  }
 
 }
 

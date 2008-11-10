@@ -31,7 +31,7 @@ An exported Responses XML document is required to import an instance into
   %tr
     %td
       Decryption:
-      != $this->cryptoSelect($this->cryptoID)
+      != $this->cryptoSelect($this->decryptID, 'decryptID')
       &nbsp;&nbsp;
     %td
       != $this->formFile('instanceFile')

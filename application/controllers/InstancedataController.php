@@ -91,6 +91,7 @@ class InstancedataController extends QFrame_Controller_Admin {
     $this->view->newInstanceResponsesQuestionnaireID = $questionnaireID;
     
     $this->view->cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
+    $this->view->decryptID = ($this->_hasParam('decryptID')) ? $this->_getParam('decryptID') : null;
     
   }
 
@@ -174,7 +175,7 @@ class InstancedataController extends QFrame_Controller_Admin {
     $instanceName = $this->_getParam('instanceName');
     $importResponses = $this->_getParam('importResponsesRadioButton');
     
-    $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
+    $decryptID = ($this->_hasParam('decryptID')) ? $this->_getParam('decryptID') : null;
     
     if(is_numeric($instanceID)) {
       $session->importResponsesInstanceID = intVal($instanceID);
@@ -204,10 +205,10 @@ class InstancedataController extends QFrame_Controller_Admin {
     $filename = $_FILES['instanceFile']['name'];
     
     if (preg_match('/\.enc$/i', $filename)) {
-      if (!isset($cryptoID) || $cryptoID == 0) {
+      if (!isset($decryptID) || $decryptID == 0) {
         throw new Exception('Key not specified for encrypted file');
       }
-      $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
+      $crypto = new CryptoModel(array('cryptoID' => $decryptID));
       if (preg_match('/\.zip\.enc$/i', $filename)) {
         $decrypted = $crypto->decrypt(file_get_contents($file), false);
         $tempfile = tempnam(PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp', 'zip');
