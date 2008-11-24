@@ -46,6 +46,7 @@ elementFormDefault="qualified">
                       <Field name="referenceText"><xsl:value-of select="csi:referenceText"/></Field>
                     </xsl:for-each>
                     <xsl:for-each select="./csi:responses/csi:response">
+                      <Field name="responseDate"><xsl:value-of select="csi:responseDate"/></Field>
                       <Field name="responseText"><xsl:value-of select="csi:responseText"/></Field>
                       <Field name="responseState"><xsl:value-of select="ancestor::csi:responses[1]/csi:state"/></Field>
                       <xsl:if test="ancestor::csi:responses[1]/csi:additionalInfo">
@@ -84,6 +85,7 @@ elementFormDefault="qualified">
                       <Field name="referenceText"><xsl:value-of select="csi:referenceText"/></Field>
                     </xsl:for-each>
                     <xsl:for-each select="./csi:responses/csi:response">
+                      <Field name="responseDate"><xsl:value-of select="csi:responseDate"/></Field>
                       <Field name="responseText"><xsl:value-of select="csi:responseText"/></Field>
                       <Field name="responseState"><xsl:value-of select="ancestor::csi:responses[1]/csi:state"/></Field>
                       <xsl:if test="ancestor::csi:responses[1]/csi:additionalInfo">
