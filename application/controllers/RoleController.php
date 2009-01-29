@@ -33,7 +33,7 @@ class RoleController extends QFrame_Controller_Admin {
     $this->view->q = $this->_getParam('q');
     $page = ($this->_hasParam('page')) ? intval($this->_getParam('page')) : 1;
     $this->view->pager =
-        new QFrame_Paginator('RoleModel', 5, $page, 'roleDescription ASC', $this->view->q);
+        new QFrame_Paginator('RoleModel', 20, $page, 'roleDescription ASC', $this->view->q);
   }
   
   /**

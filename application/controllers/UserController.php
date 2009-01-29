@@ -33,7 +33,7 @@ class UserController extends QFrame_Controller_Admin {
     $this->view->q = $this->_getParam('q');
     $page = ($this->_hasParam('page')) ? intval($this->_getParam('page')) : 1;
     $this->view->pager =
-        new QFrame_Paginator('DbUserModel', 5, $page, 'dbUserFullName ASC', $this->view->q);
+        new QFrame_Paginator('DbUserModel', 20, $page, 'dbUserFullName ASC', $this->view->q);
   }
   
   /**
