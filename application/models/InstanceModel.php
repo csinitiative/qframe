@@ -383,7 +383,6 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
                   $xml .= "$padding              <csi:responses>\n";
                   $xml .= "$padding                <csi:state>" . self::_xmlentities($response->state) . "</csi:state>\n";
                   $xml .= "$padding                <csi:additionalInfo>" . self::_xmlentities($response->additionalInfo) . "</csi:additionalInfo>\n";
-                  $xml .= "$padding                <csi:approverComments>" . self::_xmlentities($response->approverComments) . "</csi:approverComments>\n";
                 }
                 
                 $responseDate = $response->responseDate;
