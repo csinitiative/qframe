@@ -276,23 +276,18 @@ class ResponseModel {
     // if we require additional info and none is provided, FALSE
     if($this->requiresAdditionalInfo() && !$this->hasAdditionalInfo()) return false;
     
-    // check children if we are a parent...if any is not approvable, FALSE
-    if (!isset($this->parent)) {
-      $this->parent = new QuestionModel(array('questionID' => $this->responseRow->questionID,
-                                              'depth' => 'question'));
-    }
-    $question = $this->parent;
+    $question = new QuestionModel(array('questionID' => $this->responseRow->questionID,
+                                        'depth' => 'response'));
+
     if($question->parent instanceof SectionModel) {
-      $question = $this->parent;
       foreach($question->children as $child) {
         $response = $child->getResponse();
         if(!$response->hasApprovableResponse()) return false;
       }
+      // since question group and all children passed, the questionGroup passes
+      if(count($question->children) > 0) return true;
     }
-    
-    // if this is the parent of a question group and we got here, all children are approvable
-    if($question->format === '_questionGroup') return true;
-    
+
     // check approvability of this specific response
     if($this->responseID !== null && $this->responseText !== null && $this->responseText !== '') {
       return true;
