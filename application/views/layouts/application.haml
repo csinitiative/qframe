@@ -68,6 +68,10 @@
               %strong= $this->currentInstance->numQuestions - $this->currentInstance->getNumQuestionsDisabled()
               = "({$this->currentInstance->getPctApproved()}%)"
               %br/
+              - if ($this->currentInstance->getNumQuestionsDisabled() > 0)
+                Disabled:
+                %strong= $this->currentInstance->getNumQuestionsDisabled()
+              %br/
               %br/
               != $this->linkTo($this->changeInstancePath, '[change]')
         %h1= (isset($this->menuTitle)) ? $this->menuTitle : 'pages'
