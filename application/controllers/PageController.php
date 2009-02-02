@@ -209,7 +209,7 @@ class PageController extends QFrame_Controller_Action {
         
         if($response->requiresAdditionalInfo() && !$response->hasAdditionalInfo()) {
           throw new Exception(
-            'Invalid attempt to approve a response that requires additional with none provided'
+            'Invalid attempt to approve a response that requires additional information with none provided'
           );
         }
         
