@@ -360,14 +360,17 @@ class QFrame_View_Helper_PageHelpers {
    * @return string
    */
   public function stats($page) {
+    $disabledNum = $page->getNumQuestionsDisabled();
     $completePcnt = round(($page->numComplete / $page->numQuestions) * 100, 2) . '%';
     $approvedPcnt = round(($page->numApproved / $page->numQuestions) * 100, 2) . '%';
     $complete = "complete: <strong>{$page->numComplete}</strong> of " .
         "<strong>{$page->numQuestions}</strong> ({$completePcnt})";
-    $availableQuestions = $page->numQuestions - $page->getNumQuestionsDisabled();
+    $availableQuestions = $page->numQuestions - $disabledNum;
     if ($availableQuestions > 0) {
       $approved = "approved: <strong>{$page->numApproved}</strong> of " .
                   "<strong>{$availableQuestions}</strong> ({$approvedPcnt})";
+      if ($disabledNum > 0) 
+        $approved .= " | disabled: {$disabledNum}";
       return "{$complete} | {$approved}";
     }
     return "{$complete} | approved: all disabled";
