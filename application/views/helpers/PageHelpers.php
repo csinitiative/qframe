@@ -187,6 +187,28 @@ class QFrame_View_Helper_PageHelpers {
     }
     return '';
   }
+
+  /**
+   * Generate responder information
+   *
+   * @param  ResponseModel question response
+   * @return string
+   */
+  public function responderInfo($response) {
+    $builder = new Tag_Builder;
+    $result = '';
+    if (is_numeric($response->dbUserID) && strlen($response->responseText) > 0) {
+      if ($response->dbUserID == -1) {
+        $result = '[Responder: NA]';
+      }
+      else {
+        $user = new DbUserModel(array('dbUserID' => $response->dbUserID));
+        $result = "[{$user->dbUserName}]";
+      }
+    }
+    $result = $builder->span(array('class' => 'responderInfo'), $result);
+    return $result;
+  }
     
   /**
    * Generates the HTML for a question prompt

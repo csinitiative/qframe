@@ -38,7 +38,8 @@
           .comments= $response->approverComments
     != $this->questionPrompt($this->question)
     - if(!$this->question->virtualQuestion && $mode === 'edit' && $response->state != 2)
-      != $this->questionElement($this->question, $response)
+      != $this->responderInfo($response)
+      != $this->questionElement($this->question, $response) 
       != $this->formHidden("disableCount[{$this->question->questionID}]", $this->question->disableCount)
       != $this->linkTo('#', 'More Options', array('class' => 'options-link'))
       != $this->imageTag('right-arrow.gif', array('class' => 'inline', 'alt' => ''))
@@ -54,7 +55,7 @@
         != $this->optionButton('hideOptionsHandler', 'close_button.gif', 'close options panel', 'close')
         .description hover over an icon for a description
     - elseif($this->question->virtualQuestion || ($mode === 'view' || $mode === 'approve') || ($mode === 'edit' && $response->state == 2))
-      != $this->questionText($response)
+      != $this->questionText($response) . ' ' . $this->responderInfo($response)
       .additionalInfo= $response->additionalInfo
   
     .attachments

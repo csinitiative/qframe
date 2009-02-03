@@ -107,6 +107,9 @@ class PageController extends QFrame_Controller_Action {
     $page = new PageModel(array('pageID' => $this->_getParam('id'), 'depth' => 'page'));
     $lock = $this->lockPage($page, 'edit');
     $attachments = array();
+
+    $auth = Zend_Auth::getInstance();
+    $user = DbUserModel::findByUsername($auth->getIdentity());
     
     $responses = array();
     $additionalInfo = '';
@@ -157,7 +160,7 @@ class PageController extends QFrame_Controller_Action {
       $response = $q->getResponse();
       $response->responseText = join(',', $data['value']);
       $response->additionalInfo = $data['addl'];
-      $response->save();
+      $response->save($user);
     }
     
     /* If there are any file uploads that didn't auto-upload before the user saved */

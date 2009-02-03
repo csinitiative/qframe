@@ -42,7 +42,8 @@ class ResponseModel {
       'responseText'        => null,
       'additionalInfo'      => null,
       'externalReference'   => null,
-      'state'               => null
+      'state'               => null,
+      'dbUserID'            => -1
     ), $args);
 
 
@@ -71,16 +72,20 @@ class ResponseModel {
       $this->responseRow->additionalInfo = $args['additionalInfo'];
       $this->responseRow->externalReference = $args['externalReference'];
       $this->responseRow->state = $args['state'];
+      $this->responseRow->dbUserID = $args['dbUserID'];
       $this->dirty = 1;
     }
     
   }
   
-  public function save() {
+  public function save($dbUser = null) {
     
     if (!$this->dirty) {
       return;
     }
+
+    if ($dbUser instanceof DbUserModel)
+      $this->responseRow->dbUserID = $dbUser->dbUserID;
 
     $this->responseRow->additionalInfo = trim($this->responseRow->additionalInfo);
     $this->responseRow->approverComments = trim($this->responseRow->approverComments);
@@ -147,7 +152,7 @@ class ResponseModel {
   public function __set ($key, $value) {
 
     if (isset($this->responseRow->$key)) {
-      if ($this->responseRow->$key !== $value) {
+      if ($this->responseRow->$key != $value) {
         if ($key === 'state') {
           $this->stateChange = 1;
         }
