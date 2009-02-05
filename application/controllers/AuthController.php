@@ -90,6 +90,7 @@ class AuthController extends QFrame_Controller_Action {
       else {
         $user = DbUserModel::findByUsername($auth->getIdentity());
         $user->dbUserPW = $this->_getParam('new1');
+        $user->dbUserPWChange = 'N';
         $user->save();
         $this->logout('Password successfully changed');
       }

@@ -75,10 +75,16 @@ class QFrame_Controller_Action extends Zend_Controller_Action {
     if($auth->hasIdentity()) {
       $this->_user = DbUserModel::findByUsername($auth->getIdentity());
       $this->view->loggedInUser = $this->_user;
-      if($this->_user) {
-        foreach(LockModel::getLocks($this->_user) as $lock) {
-          $lock->release();
-        }
+      foreach(LockModel::getLocks($this->_user) as $lock) {
+        $lock->release();
+      }
+      if ($this->_user->mustChangePassword() &&
+          ($this->getRequest()->getControllerName() !== 'auth' || $this->getRequest()->getActionName() !== 'passwd')) {
+         $this->_redirector->gotoRouteAndExit(
+           array('controller' => 'auth', 'action' => 'passwd'),
+           null,
+           true
+         );
       }
     }
     elseif($this->getRequest()->getControllerName() !== 'auth') {
