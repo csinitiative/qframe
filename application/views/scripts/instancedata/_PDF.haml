@@ -18,17 +18,32 @@
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
 - $localStylesheets = array('instancedata')
-- $localJavascript = array('instancedata')
+- $localJavascript = array('instancedata', 'checkboxes')
 
 %h3
   = $this->dataInstance->instanceName
-  Responses XML Document
-This XML document contains both question and response information. This document is used to import an instance into another installation or another enterprise system.  If you want to export any attachments associated with this instance, it must be exported as a Zip Archive.
+  PDF Download
+This PDF document contains both question and response information and is the human-readable version of the instance.  Select the pages to be included in the PDF.
 %br/
 %br/
-!= $this->form(array('action' => 'ResponsesFullXML'), false, 'post', array('class' => 'ResponsesFullXML'))
+!= $this->form(array('action' => 'PDFDownload'), false, 'post', array('class' => 'PDFDownload'))
 Encryption:
 != $this->cryptoSelect($this->cryptoID)
-!= $this->linkTo('#ResponsesFullXMLDownload', $this->formButton('ResponsesFullXMLDownload', 'XML Only'), array('class' => 'dataButton'))
-!= $this->linkTo('#ResponsesFullXMLArchive', $this->formButton('ResponsesFullXMLArchive', 'Zip Archive'), array('class' => 'dataButton'))
+!= $this->linkTo('#PDFDownload', $this->formButton('PDFDownload', 'PDF'), array('class' => 'dataButton'))
+- if(isset($this->dataInstance))
+  #pageHeaders
+    %table
+      %tr
+        %th.left
+        %th
+          != $this->imageTag('icons/ffffff/magnifier.png', array('class' => 'inline tooltip', 'tooltip' => 'select'))
+      %tr
+        %th &nbsp;
+        %th
+          != $this->formCheckbox("checkall_][pdf]", false)
+      - while($page = $this->dataInstance->nextPage())
+        %tr
+          %td.label= $page->pageHeader
+          %td
+            != $this->formCheckbox("pageHeader[{$page->pageHeader}][pdf]", true)
 != $this->form(null, true)

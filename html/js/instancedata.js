@@ -60,7 +60,7 @@ var Data = {
    * @param Event click event for the "PDFDownload" button
    */
   PDFDownloadHandler: function(event) {
-    _handle(event, 'ResponsesFullXML', 'PDFDownload');
+    _handle(event, 'PDFDownload', 'PDFDownload');
   },
 
   /**
@@ -211,11 +211,14 @@ function _handle (event, form, action) {
     var iframe = document.createElement("iframe");
     iframe.height = '1px';
     iframe.width = '1px';
-    if ($$('form.' + form).first().down('#cryptoID')) {
-      iframe.src = $$('form.' + form).first().action + '?cryptoID=' + $$('form.' + form).first().down('#cryptoID').value;
-    }
-    else {
-      iframe.src = $$('form.' + form).first().action;
+    iframe.src = $$('form.' + form).first().action + '?1=1';
+    inputs = $$('form.' + form).first().getElements();
+    for (i = 0; i < inputs.length; i++) {
+       e = inputs[i];
+       if ((e.type == 'checkbox' || e.type == 'radio') && e.checked != true) {
+         continue;
+       }
+       iframe.src += '&' + e.name + '=' + e.value;
     }
     document.body.appendChild(iframe);
   }
