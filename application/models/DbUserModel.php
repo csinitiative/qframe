@@ -156,6 +156,7 @@ class DbUserModel implements QFrame_Paginable {
     $args = array_merge(array(
       'dbUserFullName'  => null,
       'dbUserActive'    => 'Y',
+      'dbUserPWChange'    => 'N',
       'autoAdmin'       => false
     ), $args);
 
@@ -174,6 +175,7 @@ class DbUserModel implements QFrame_Paginable {
       $this->dbUserRow->dbUserPW = self::hashPassword($args['dbUserPW']);
       $this->dbUserRow->dbUserFullName = $args['dbUserFullName'];
       $this->dbUserRow->dbUserActive = $args['dbUserActive'];
+      $this->dbUserRow->dbUserPWChange = $args['dbUserPWChange'];
 
       $this->dirty = 1;
     }
@@ -326,6 +328,19 @@ class DbUserModel implements QFrame_Paginable {
     foreach(array('view', 'edit', 'approve') as $permission) {
       if($this->hasAccess($permission, $permissible)) return true;
     }
+    return false;
+  }
+
+  /**
+   * Determine whether or not this user must change password
+   *
+   * @return boolean
+   */
+  public function mustChangePassword() {
+    // if this user is an auto admin, return false
+    if($this->admin) return false;
+
+    if ($this->dbUserPWChange == 'Y') return true;
     return false;
   }
   

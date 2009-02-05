@@ -45,6 +45,9 @@
       != $this->formLabel('user[dbUserActive]', 'Active', array('class' => 'inline'))
       != $this->formCheckbox('user[dbUserActive]', $this->form === null || $this->form->dbUserActive === 'Y', null, array('Y', 'N'))
     %li
+      != $this->formLabel('user[dbUserPWChange]', 'Force Password Change On Next Logon', array('class' => 'inline'))
+      != $this->formCheckbox('user[dbUserPWChange]', $this->form->dbUserPWChange === 'Y', null, array('Y', 'N'))
+    %li
       != $this->formSubmit('submitButton', $label)
       - if(isset($this->action) && $this->action === 'edit')
         != $this->formButton('cancelButton', 'cancel')
