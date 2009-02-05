@@ -18,7 +18,7 @@
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
 - $localStylesheets = array('instancedata')
-- $localJavascript = array('instancedata')
+- $localJavascript = array('instancedata', 'checkboxes')
 
 != $this->renderPartial('ImportInstance', null)
 
@@ -54,12 +54,12 @@ Create a new instance from an existing questionnaire.  Pick a name for the new i
     %br/
     %h3	 Export XML
     %hr/
-    -# Responses-only (no question information) is commented out for this version of CSI QFrame
-    -# until it is determined if this is something that would benefit users.
-    -# != $this->renderPartial('ResponsesXML', null)
-    -# %br/
-    -# %br/
     != $this->renderPartial('FullXML', null)
+    %br/
+    %br/
+    %h3	 Printable Version
+    %hr/
+    != $this->renderPartial('PDF', null)
     %br/
     %br/
     != $this->renderPartial('CopyInstance', null)

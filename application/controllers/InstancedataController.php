@@ -37,7 +37,7 @@ class InstancedataController extends QFrame_Controller_Admin {
 
     if (is_numeric($questionnaireID) && $questionnaireID > 0) {
       $this->view->dataQuestionnaire = new QuestionnaireModel(array('questionnaireID' => $questionnaireID,
-                                                              'depth' => 'questionnaire'));
+                                                                    'depth' => 'questionnaire'));
     }
     else {
       $questionnaireID = null;
@@ -45,7 +45,7 @@ class InstancedataController extends QFrame_Controller_Admin {
 
     if (is_numeric($instanceID) && $instanceID > 0) {
       $this->view->dataInstance = new InstanceModel(array('instanceID' => $instanceID,
-                                                          'depth' => 'instance'));
+                                                          'depth' => 'page'));
     }
     else {
       $instanceID = null;
@@ -360,6 +360,13 @@ class InstancedataController extends QFrame_Controller_Admin {
   public function PdfDownloadAction() {
     $session = new Zend_Session_Namespace('login');
     $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
+    $pageHeadersAll = ($this->_hasParam('pageHeader')) ? $this->_getParam('pageHeader') : array();
+    $pageHeaders = array();
+    while (list($key, $val) = each($pageHeadersAll)) {
+      if (isset($val[pdf]) && $val[pdf] == 1) { 
+        $pageHeaders[] = $key;
+      }
+    }
     if ($this->_hasParam('download') && isset($session->tempFile)) {
       if (isset($cryptoID) && $cryptoID != 0) {
         $this->view->cryptoID = $cryptoID;
@@ -371,7 +378,7 @@ class InstancedataController extends QFrame_Controller_Admin {
     else {
       $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
                                           'depth' => 'instance'));
-      $html = $instance->xml2html();
+      $html = $instance->xml2html($pageHeaders);
       $dompdf = new DOMPDF();
       $dompdf->load_html($html);
       $dompdf->render();

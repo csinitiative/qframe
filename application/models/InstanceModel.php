@@ -210,9 +210,10 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    *
    * @param  integer If true, exports the entire questionnaire definition (question text, etc). 
    *                 If false, only exports guid and response data.
+   * @param array PageHeader strings to export.  If empty, export entire instance.
    * @return string XML Document
    */
-  public function toXML($complete = 0) {
+  public function toXML($complete = 0, $pageHeaders = array()) {
     $instanceID = $this->instanceRow->instanceID;
 
     QFrame_Db_Table::resetAll();
@@ -233,6 +234,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
             '" instanceName="' . self::_xmlentities($instance->instanceName) . '">' . "\n";
     $xml .= "  <csi:pages>\n";
     while ($page = $instance->nextPage()) {
+      if (count($pageHeaders) > 0 && array_search($page->pageHeader, $pageHeaders) === FALSE) continue;
       $xml .= "    <csi:page>\n";
       if ($complete) {
         $xml .= "      <csi:pageHeader>" . self::_xmlentities($page->pageHeader) . "</csi:pageHeader>\n";
@@ -927,10 +929,10 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
   /**
    * Apply an XSLT to the XML which returns XHTML
    */
-  public function xml2html() {
+  public function xml2html($pageHeaders = array()) {
 
     $dom = new DOMDocument();
-    $dom->loadXML($this->toXML(1));
+    $dom->loadXML($this->toXML(1, $pageHeaders));
     $errors = libxml_get_errors();
     try {
       $logger = Zend_Registry::get('logger');
