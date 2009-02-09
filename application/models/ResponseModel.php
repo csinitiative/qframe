@@ -41,6 +41,7 @@ class ResponseModel {
       'instanceID'          => null,
       'responseText'        => null,
       'additionalInfo'      => null,
+      'privateNote'         => null,
       'externalReference'   => null,
       'state'               => null,
       'dbUserID'            => -1
@@ -70,6 +71,7 @@ class ResponseModel {
       $this->responseRow->sectionID = intval($args['sectionID']);
       $this->responseRow->responseText = $args['responseText'];
       $this->responseRow->additionalInfo = $args['additionalInfo'];
+      $this->responseRow->privateNote = $args['privateNote'];
       $this->responseRow->externalReference = $args['externalReference'];
       $this->responseRow->state = $args['state'];
       $this->responseRow->dbUserID = $args['dbUserID'];
@@ -88,6 +90,7 @@ class ResponseModel {
       $this->responseRow->dbUserID = $dbUser->dbUserID;
 
     $this->responseRow->additionalInfo = trim($this->responseRow->additionalInfo);
+    $this->responseRow->privateNote = trim($this->responseRow->privateNote);
     $this->responseRow->approverComments = trim($this->responseRow->approverComments);
     $this->responseRow->responseText = trim($this->responseRow->responseText);
 
@@ -196,6 +199,15 @@ class ResponseModel {
    */
   public function hasAdditionalInfo() {
     return ($this->additionalInfo !== null && $this->additionalInfo !== '');
+  }
+
+  /**
+   * Return whether or not this response has associated private notes
+   *
+   * @return boolean
+   */
+  public function hasPrivateNote() {
+    return ($this->privateNote !== null && $this->privateNote !== '');
   }
   
   /**

@@ -112,7 +112,6 @@ class PageController extends QFrame_Controller_Action {
     $user = DbUserModel::findByUsername($auth->getIdentity());
     
     $responses = array();
-    $additionalInfo = '';
     foreach($this->_getAllParams() as $key => $value) {
       // if the element's name begins 'qXXX' where X is a digit
       if(preg_match('/^q(\d+)(.*)$/', $key, $matches)) {
@@ -129,11 +128,13 @@ class PageController extends QFrame_Controller_Action {
           }
           if (strlen($value) > 0) {
             $responses[$questionID]['value'][] = $value;
-            if(intval($this->_getParam("q{$q->questionID}_addl_mod")))
-              $responses[$questionID]['addl'] = $this->_getParam("q{$q->questionID}_addl");
-            else
-              $responses[$questionID]['addl'] = null;        
           }
+        }
+        elseif($remainder == "_addl_mod" && intval($this->_getParam("q{$questionID}_addl_mod"))) {
+          $responses[$questionID]['addl'] = $this->_getParam("q{$questionID}_addl");
+        }
+        elseif($remainder == "_privateNote_mod" && intval($this->_getParam("q{$questionID}_privateNote_mod"))) {
+          $responses[$questionID]['pNote'] = $this->_getParam("q{$questionID}_privateNote");
         }
         
         // if the remainder indicates an array of attachments
@@ -158,8 +159,9 @@ class PageController extends QFrame_Controller_Action {
     foreach ($responses as $questionID => $data) {
       $q = new QuestionModel(array('questionID' => $questionID));
       $response = $q->getResponse();
-      $response->responseText = join(',', $data['value']);
-      $response->additionalInfo = $data['addl'];
+      if (isset($data['value'])) $response->responseText = join(',', $data['value']);
+      if (isset($data['addl'])) $response->additionalInfo = $data['addl'];
+      if (isset($data['pNote'])) $response->privateNote = $data['pNote'];
       $response->save($user);
     }
     
