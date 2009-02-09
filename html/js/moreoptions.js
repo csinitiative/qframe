@@ -208,7 +208,26 @@ var MoreOptions = {
     var moreOptions = link.up('.more-options');
     var questionWrapper = link.up('.question');
     
+    questionWrapper.down('.additionalInfo_main').show();
     questionWrapper.down('.additionalInfo').show();
+    MoreOptions.hideOptions(questionWrapper);
+    $(link).up('li').remove();
+  },
+
+  /**
+   * Show the private notes panel for the question associated with
+   * the passed in link element
+   *
+   * @param Event event object for the click that generated this call
+   */
+  showPrivateNote: function(event) {
+    event.stop();
+    var link = Event.element(event);
+    var moreOptions = link.up('.more-options');
+    var questionWrapper = link.up('.question');
+
+    questionWrapper.down('.privateNote_main').show();
+    questionWrapper.down('.privateNote').show();
     MoreOptions.hideOptions(questionWrapper);
     $(link).up('li').remove();
   },

@@ -260,6 +260,7 @@ class QFrame_View_Helper_PageHelpers {
    * @return string
    */
   public function additionalInfo(ResponseModel $response) {
+    $builder = new Tag_Builder;
     $class = 'additionalInfo';
     if($response->hasAdditionalInfo()) {
       $class .= ' hasContent';
@@ -279,13 +280,41 @@ class QFrame_View_Helper_PageHelpers {
       $mod = 0;
     }
     
-    $addlInfo = $this->view->formTextarea("q{$response->parent->questionID}_addl", $content, array(
-      'class' => $class,
-      'style' => $style
-    ));
+    $addlInfo = "<br/>additional information:<br/>\n";
+    $addlInfo .= $this->view->formTextarea("q{$response->parent->questionID}_addl", $content, array('class' => $class, 'style' => $style));
+    $addlInfo = $builder->span(array('class' => 'additionalInfo_main', 'style' => $style), $addlInfo);
     $addlInfoMod = $this->view->formHidden("q{$response->parent->questionID}_addl_mod", $mod);
     
     return $addlInfo . $addlInfoMod;
+  }
+
+  /**
+   * Return HTML for the private notes box
+   *
+   * @param  ResponseModel response in queston
+   * @return string
+   */
+  public function privateNote(ResponseModel $response) {
+    $builder = new Tag_Builder;
+    $class = 'privateNote';
+    if($response->hasPrivateNote()) {
+      $class .= ' hasContent';
+      $content = $this->view->h($response->privateNote);
+      $style = '';
+      $mod = 1;
+    }
+    else {
+      $style = 'display: none;';
+      $content = 'Enter private notes here';
+      $mod = 0;
+    }
+
+    $privNote = "<br/>private notes:<br/>\n";
+    $privNote .= $this->view->formTextarea("q{$response->parent->questionID}_privateNote", $content, array('class' => $class, 'style' => $style));
+    $privNote = $builder->span(array('class' => 'privateNote_main', 'style' => $style), $privNote);
+    $privNoteMod = $this->view->formHidden("q{$response->parent->questionID}_privateNote_mod", $mod);
+
+    return $privNote . $privNoteMod;
   }
   
   /**

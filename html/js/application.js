@@ -29,6 +29,11 @@ var CsiQframe = {
         e.remove();
       }
     });
+    $$('.privateNote').each(function(e) {
+      if(!e.hasClassName('hasContent') || e.value == '') {
+        e.remove();
+      }
+    });
     return true;
   },
   
@@ -38,6 +43,20 @@ var CsiQframe = {
    * @param Event event object representing this event
    */
   addlInfoFocus: function(evt) {
+    var e = Event.element(evt);
+    if(!e.hasClassName('hasContent')) {
+      e.value = '';
+      e.addClassName('hasContent');
+      $(e.name + '_mod').value = 1;
+    }
+  },
+
+  /**
+   * Event handler for focus events on private note text boxes
+   *
+   * @param Event event object representing this event
+   */
+  privateNoteFocus: function(evt) {
     var e = Event.element(evt);
     if(!e.hasClassName('hasContent')) {
       e.value = '';
@@ -78,6 +97,20 @@ var CsiQframe = {
   },
 
   /**
+   * Event handler for blur events on private note text boxes
+   *
+   * @param Event event object representing this event
+   */
+  privateNoteBlur: function(evt) {
+    var e = Event.element(evt);
+    if(e.value == '') {
+      e.value = 'Enter private notes here';
+      e.removeClassName('hasContent');
+      $(e.name + '_mod').value = 0;
+    }
+  },
+
+  /**
    * Event handler for blur events on remediation info text boxes
    *
    * @param Event event object representing this event
@@ -102,6 +135,17 @@ var CsiQframe = {
   setupAddlInfoListeners: function(e) {
     e.observe('focus', CsiQframe.addlInfoFocus);
     e.observe('blur', CsiQframe.addlInfoBlur);
+  },
+
+  /**
+   * Sets up focus and blur event listeners for new private notes
+   * text boxes
+   *
+   * @param Element element to add listeners to
+   */
+  setupPrivateNoteListeners: function(e) {
+    e.observe('focus', CsiQframe.privateNoteFocus);
+    e.observe('blur', CsiQframe.privateNoteBlur);
   },
 
   /**
@@ -165,6 +209,10 @@ Event.observe(window, 'load', function () {
   
   $$('.additionalInfo').each(function(e) {
     CsiQframe.setupAddlInfoListeners(e);
+  });
+
+  $$('.privateNote').each(function(e) {
+    CsiQframe.setupPrivateNoteListeners(e);
   });
 
   $$('.remediationInfo').each(function(e) {

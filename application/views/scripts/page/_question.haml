@@ -43,12 +43,17 @@
       != $this->formHidden("disableCount[{$this->question->questionID}]", $this->question->disableCount)
       != $this->linkTo('#', 'More Options', array('class' => 'options-link'))
       != $this->imageTag('right-arrow.gif', array('class' => 'inline', 'alt' => ''))
+      %br/
       != $this->additionalInfo($response)
+      != $this->privateNote($response)
       .more-options{ 'style' => 'display: none;' }
         %ul
           - if(!$response->hasAdditionalInfo())
             %li
               != $this->optionButton('showAddlInfo', 'page_white_edit.png', 'add additional information')
+          - if(!$response->hasPrivateNote())
+            %li
+              != $this->optionButton('showPrivateNote', 'page_white_edit_p.png', 'add private notes')
           - if($this->question->parent instanceof SectionModel)
             %li
               != $this->optionButton('attach', 'attach.png', 'attach a file')
@@ -56,7 +61,15 @@
         .description hover over an icon for a description
     - elseif($this->question->virtualQuestion || ($mode === 'view' || $mode === 'approve') || ($mode === 'edit' && $response->state == 2))
       != $this->questionText($response) . ' ' . $this->responderInfo($response)
-      .additionalInfo= $response->additionalInfo
+      %br/
+      - if (strlen($response->additionalInfo) > 0)
+        %br/
+         additional info:
+        .additionalInfo= $response->additionalInfo
+      - if (strlen($response->privateNote) > 0)
+        %br/
+        private notes:
+        .privateNote= $response->privateNote
   
     .attachments
       - if (isset($this->attachmentQuestions['QuestionModel'][$this->question->questionID]))

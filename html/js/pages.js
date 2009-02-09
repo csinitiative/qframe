@@ -18,12 +18,17 @@ var Pages = {
    */
   requireAddlRadioClick: function(event) {
     var radio = Event.element(event);
+    var addlInfoMain = radio.up('.question').down('.additionalInfo_main');
     var addlInfo = radio.up('.question').down('.additionalInfo');
     if(radio.checked) {
       addlInfo.addClassName('additionalInfoRequired');
       addlInfo.value += ' (required)';
     }
-    if(!addlInfo.visible()) addlInfo.show();
+    if(!addlInfoMain.visible()) {
+      addlInfoMain.show();
+      addlInfo.show();
+    }
+      
   },
   
   /**
@@ -33,13 +38,14 @@ var Pages = {
    */
   radioClick: function(event) {
     var radio = Event.element(event);
+    var addlInfoMain = radio.up('.question').down('.additionalInfo_main');
     var addlInfo = radio.up('.question').down('.additionalInfo');
-    if(!radio.hasClassName('require-addl') && radio.checked && addlInfo.visible()) {
+    if(!radio.hasClassName('require-addl') && radio.checked && addlInfoMain.visible()) {
       addlInfo.removeClassName('additionalInfoRequired');
       addlInfo.value = addlInfo.value.replace(/ \(required\)$/, '');
     }
   },
-  
+
   /**
    * Handles a click on the "save" button
    *

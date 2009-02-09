@@ -230,6 +230,7 @@ class QuestionModel implements QFrame_Storer {
     $args = array_merge(array (
       'responseText' => null,
       'additionalInfo' => null,
+      'privateNote' => null,
       'externalReference' => null,
       'state' => null
     ), $args);
@@ -241,6 +242,7 @@ class QuestionModel implements QFrame_Storer {
       'sectionID' => $this->questionRow->sectionID,
       'responseText' => $args['responseText'],
       'additionalInfo' => $args['additionalInfo'],
+      'privateNote' => $args['privateNote'],
       'externalReference' => $args['externalReference'],
       'state' => $args['state'],
       'parent' => $this
