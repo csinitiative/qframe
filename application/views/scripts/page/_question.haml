@@ -19,7 +19,7 @@
 
 - $mode = Zend_Controller_Front::getInstance()->getRequest()->getActionName()
 - $response = $this->question->getResponse()
-- $style = ($this->question->disableCount > 0) ? 'display: none;' : '';
+- $style = ($this->question->disableCount > 0) ? 'opacity:0.5;filter:alpha(opacity=50)' : '';
 
 %li{ 'style' => $style }
   .question{ 'id' => "question-{$this->question->questionID}" }
@@ -28,6 +28,9 @@
         - if($this->question->virtualQuestion)
           != $this->imageTag('icons/eeeeee/arrow_right.png', array('class' => 'inline', 'alt' => ''))
           This is a virtual question
+        - elseif($this->question->disableCount > 0)
+          != $this->imageTag('icons/eeeeee/disabled', array('class' => 'inline', 'alt' => ''))
+          This question has been disabled
         - elseif($response->state == 2) 
           != $this->imageTag('icons/eeeeee/accept.png', array('class' => 'inline', 'alt' => ''))
           This response has been approved
