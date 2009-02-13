@@ -21,11 +21,19 @@
 
 %html
   %head
-    <script type="text/javascript">
+    - if (isset($this->error))
+      <script type="text/javascript">
+      function initialize() {
+        parent.setTimeout("Effect.Fade('disableOverlay', { duration: 0.01, to: 0.00 })", 1);
+        != 'alert("Save error:' . addslashes($this->error) . '");'
+      }
+      </script>
+    - else
+      <script type="text/javascript">
       function initialize() {
         parent.setTimeout("Effect.Fade('disableOverlay', { duration: 0.01, to: 0.00 })", 1);
       }
-    </script>
+      </script>
   %body{ 'onload' => 'initialize();' }
     != $this->form(array(), false, 'get')
     != $this->form(null, true)
