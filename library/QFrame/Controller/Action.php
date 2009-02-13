@@ -164,6 +164,7 @@ class QFrame_Controller_Action extends Zend_Controller_Action {
       $this->_instance = new InstanceModel(array('instanceID' => $session->instanceID,
                                                  'depth' => 'page'));
       $this->view->currentInstance = $this->_instance;
+      $this->view->numQuestionsDisabled = $this->_instance->getNumQuestionsDisabled();
       $this->view->instanceInfo = array(
         'questionnaire'        => $this->_instance->questionnaireName,
         'questionnaireVersion' => $this->_instance->questionnaireVersion,

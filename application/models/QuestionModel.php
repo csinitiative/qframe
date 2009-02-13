@@ -379,4 +379,23 @@ class QuestionModel implements QFrame_Storer {
     return $fileModel->fetchAllProperties();
   }
 
+  /**
+   * Return QuestionModel objects of source questions that disabled this question
+   */
+  public function getDisableSourceQuestions() {
+    $ruleRows = self::$ruleTable->fetchRows('targetID', $this->questionRow->questionID, null, $this->questionRow->instanceID);
+    $source = array();
+    foreach ($ruleRows as $row) {
+      if ($row->enabled == 'Y' && $row->type == 'disableQuestion') {
+        $questionPromptID = $row->sourceID;
+        $questionPromptRows = self::$questionPromptTable->fetchRows('promptID', $questionPromptID, null, $this->questionRow->instanceID);
+        $questionTypeID = $questionPromptRows[0]->questionTypeID;
+        $questionRows = self::$questionTable->fetchRows('questionTypeID', $questionTypeID);
+        $source[] = new QuestionModel(array('questionID' => $questionRows[0]->questionID,
+                                            'depth' => 'response'));
+      }
+    }
+    return $source;
+  }
+
 }

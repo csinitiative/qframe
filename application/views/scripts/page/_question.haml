@@ -35,7 +35,7 @@
         .approvalMessage
           - if($this->question->disableCount > 0)
             != $this->imageTag('icons/eeeeee/disabled', array('class' => 'inline', 'alt' => ''))
-            This question has been disabled
+            != 'This question has been disabled by ' . $this->disabledSource($this->question)
           - elseif($this->question->virtualQuestion)
             != $this->imageTag('icons/eeeeee/arrow_right.png', array('class' => 'inline', 'alt' => ''))
             This is a virtual question
