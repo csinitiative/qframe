@@ -441,7 +441,7 @@ class QFrame_View_Helper_PageHelpers {
     $pageHeader = $source[0]->parent->parent->pageHeader;
     $s = $source[0];
     $questionNumber = $s->questionNumber;
-    $qText = (strlen($s->qText) <= 10) ? $s->qText : substr($s->qText, 0, 10) . "...";
+    $qText = (strlen($s->qText) <= 30) ? $s->qText : substr($s->qText, 0, 30) . "...";
     if ($questionNumber)
       return "{$pageHeader}: {$questionNumber}";
     else

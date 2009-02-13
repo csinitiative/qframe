@@ -112,88 +112,92 @@ class PageController extends QFrame_Controller_Action {
    * Saves the page currently being edited
    */
   public function saveAction() {
-    $page = new PageModel(array('pageID' => $this->_getParam('id'), 'depth' => 'page'));
-    $lock = $this->lockPage($page, 'edit');
-    $attachments = array();
+    try {
+      $page = new PageModel(array('pageID' => $this->_getParam('id'), 'depth' => 'page'));
+      $lock = $this->lockPage($page, 'edit');
+      $attachments = array();
 
-    $auth = Zend_Auth::getInstance();
-    $user = DbUserModel::findByUsername($auth->getIdentity());
+      $auth = Zend_Auth::getInstance();
+      $user = DbUserModel::findByUsername($auth->getIdentity());
     
-    $responses = array();
-    foreach($this->_getAllParams() as $key => $value) {
-      // if the element's name begins 'qXXX' where X is a digit
-      if(preg_match('/^q(\d+)(.*)$/', $key, $matches)) {
-        $questionID = intval($matches[1]);
-        $remainder = $matches[2];
+      $responses = array();
+      foreach($this->_getAllParams() as $key => $value) {
+        // if the element's name begins 'qXXX' where X is a digit
+        if(preg_match('/^q(\d+)(.*)$/', $key, $matches)) {
+          $questionID = intval($matches[1]);
+          $remainder = $matches[2];
         
-        // if the element name consists of *only* 'qXXX' or qXXX_mXXX for multiple select question types
-        if($remainder == '' || preg_match('/^_m(\d+)$/', $remainder)) {
-          $q = new QuestionModel(array('questionID' => $questionID));
-          $response = $q->getResponse();
-          if($response->state == 2) {
-            $this->flash('error', 'You cannot modify a response that has been approved');
-            $this->_redirector->gotoRouteAndExit(array('action' => 'view', 'id' => $page->pageID));
+          // if the element name consists of *only* 'qXXX' or qXXX_mXXX for multiple select question types
+          if($remainder == '' || preg_match('/^_m(\d+)$/', $remainder)) {
+            $q = new QuestionModel(array('questionID' => $questionID));
+            $response = $q->getResponse();
+            if($response->state == 2) {
+              $this->flash('error', 'You cannot modify a response that has been approved');
+              $this->_redirector->gotoRouteAndExit(array('action' => 'view', 'id' => $page->pageID));
+            }
+            if (strlen($value) > 0) {
+              $responses[$questionID]['value'][] = $value;
+            }
           }
-          if (strlen($value) > 0) {
-            $responses[$questionID]['value'][] = $value;
+          elseif($remainder == "_addl_mod" && intval($this->_getParam("q{$questionID}_addl_mod"))) {
+            $responses[$questionID]['addl'] = $this->_getParam("q{$questionID}_addl");
           }
-        }
-        elseif($remainder == "_addl_mod" && intval($this->_getParam("q{$questionID}_addl_mod"))) {
-          $responses[$questionID]['addl'] = $this->_getParam("q{$questionID}_addl");
-        }
-        elseif($remainder == "_privateNote_mod" && intval($this->_getParam("q{$questionID}_privateNote_mod"))) {
-          $responses[$questionID]['pNote'] = $this->_getParam("q{$questionID}_privateNote");
-        }
+          elseif($remainder == "_privateNote_mod" && intval($this->_getParam("q{$questionID}_privateNote_mod"))) {
+            $responses[$questionID]['pNote'] = $this->_getParam("q{$questionID}_privateNote");
+          }
         
-        // if the remainder indicates an array of attachments
-        elseif($remainder == '_attachments') {
-          $question = new QuestionModel(array('questionID' => $questionID));
-          foreach($value as $file) {
+          // if the remainder indicates an array of attachments
+          elseif($remainder == '_attachments') {
+            $question = new QuestionModel(array('questionID' => $questionID));
+            foreach($value as $file) {
+              $fileModel = new FileModel($question);
+              $properties = Spyc::YAMLLoad(PROJECT_PATH . '/tmp/.' . $file);
+              $fileModel->storeFilename(PROJECT_PATH . '/tmp/' . $file, $properties);
+            }
+          }   
+        
+          // if the element name ends in '_fileXXX_delete'
+          elseif(preg_match('/^_file(\d+)_delete$/', $remainder, $matches) && $value === 'true') {
+            $question = new QuestionModel(array('questionID' => $questionID));
             $fileModel = new FileModel($question);
-            $properties = Spyc::YAMLLoad(PROJECT_PATH . '/tmp/.' . $file);
-            $fileModel->storeFilename(PROJECT_PATH . '/tmp/' . $file, $properties);
+            $fileModel->delete(intval($matches[1]));
           }
-        }   
-        
-        // if the element name ends in '_fileXXX_delete'
-        elseif(preg_match('/^_file(\d+)_delete$/', $remainder, $matches) && $value === 'true') {
-          $question = new QuestionModel(array('questionID' => $questionID));
-          $fileModel = new FileModel($question);
-          $fileModel->delete(intval($matches[1]));
         }
       }
-    }
     
-    foreach ($responses as $questionID => $data) {
-      $q = new QuestionModel(array('questionID' => $questionID));
-      $response = $q->getResponse();
-      if (isset($data['value'])) $response->responseText = join(',', $data['value']);
-      if (isset($data['addl'])) $response->additionalInfo = $data['addl'];
-      if (isset($data['pNote'])) $response->privateNote = $data['pNote'];
-      $response->save($user);
-    }
-    
-    /* If there are any file uploads that didn't auto-upload before the user saved */
-    foreach($_FILES as $name => $file) {
-      if($file['size'] > 0) {
-        $question = new QuestionModel(array('questionID' => intVal($name)));
-        $fileModel = new FileModel($question);
-        $properties = array(
-          'filename'  => $file['name'],
-          'mime'      => $file['type']
-        );
-        $fileModel->storeFilename($file['tmp_name'], $properties);
+      foreach ($responses as $questionID => $data) {
+        $q = new QuestionModel(array('questionID' => $questionID));
+        $response = $q->getResponse();
+        if (isset($data['value'])) $response->responseText = join(',', $data['value']);
+        if (isset($data['addl'])) $response->additionalInfo = $data['addl'];
+        if (isset($data['pNote'])) $response->privateNote = $data['pNote'];
+        $response->save($user);
       }
-    }
+    
+      /* If there are any file uploads that didn't auto-upload before the user saved */
+      foreach($_FILES as $name => $file) {
+        if($file['size'] > 0) {
+          $question = new QuestionModel(array('questionID' => intVal($name)));
+          $fileModel = new FileModel($question);
+          $properties = array(
+            'filename'  => $file['name'],
+            'mime'      => $file['type']
+          );
+          $fileModel->storeFilename($file['tmp_name'], $properties);
+        }
+      }
 
-    $page = new PageModel(array('pageID' => $this->_getParam('id'),
-                                'depth' => 'response'));
-    $page->save();
+      $page = new PageModel(array('pageID' => $this->_getParam('id'),
+                                  'depth' => 'response'));
+      $page->save();
         
-    $instance = new InstanceModel(array('instanceID' => $page->instanceID,
-                                        'depth' => 'page'));
-    $instance->save();
-      
+      $instance = new InstanceModel(array('instanceID' => $page->instanceID,
+                                          'depth' => 'page'));
+      $instance->save();
+    }
+    catch (Exception $e) {
+      $this->view->error = $e->getMessage();
+    }
     $this->view->setRenderLayout(false);
   }
   
@@ -255,15 +259,22 @@ class PageController extends QFrame_Controller_Action {
    * Accepts a file upload and outputs only the temp filename
    */
   public function uploadAction() {    
+    try {
+      if(count($_FILES) > 1) throw new Exception('Too many files posted at the same time');
+      $file = current($_FILES);
+      if (!file_exists($file['tmp_name'])) throw new Exception('Could not find temporary file: ' . $file['tmp_name']);
+      move_uploaded_file($file['tmp_name'], PROJECT_PATH . '/tmp/' . basename($file['tmp_name']));
+      if (!file_exists(PROJECT_PATH . '/tmp/' . basename($file['tmp_name']))) throw new Exception('Could not find temporary file: ' . PROJECT_PATH . '/tmp/' . basename($file['tmp_name']));
+      file_put_contents(PROJECT_PATH . '/tmp/.' . basename($file['tmp_name']), Spyc::YAMLDump(array(
+        'filename'      => $file['name'],
+        'mime'          => $file['type']
+      )));
+      $this->view->filename = basename($file['tmp_name']);
+    }
+    catch (Exception $e) {
+      $this->view->error = $e->getMessage();
+    }
     $this->view->setRenderLayout(false);
-    if(count($_FILES) > 1) throw new Exception('Too many files posted at the same time');
-    $file = current($_FILES);
-    move_uploaded_file($file['tmp_name'], PROJECT_PATH . '/tmp/' . basename($file['tmp_name']));
-    file_put_contents(PROJECT_PATH . '/tmp/.' . basename($file['tmp_name']), Spyc::YAMLDump(array(
-      'filename'      => $file['name'],
-      'mime'          => $file['type']
-    )));
-    $this->view->filename = basename($file['tmp_name']);
   }
   
   /**

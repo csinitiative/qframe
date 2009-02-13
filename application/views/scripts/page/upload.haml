@@ -17,4 +17,9 @@
   @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
-!= $this->filename
+- if (isset($this->error))
+  <script type="text/javascript">
+    != 'alert("Save error:' . addslashes($this->error) . '");'
+  </script>
+- else
+  != $this->filename
