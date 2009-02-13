@@ -38,6 +38,10 @@ class PageController extends QFrame_Controller_Action {
    */
   public function editAction() {
     $pageID = $this->_getParam('id');
+    $subPageNum = ($this->_hasParam('sp')) ? $this->_getParam('sp') : 1;
+    $this->view->spNum = $subPageNum;
+    $this->view->spNumSkip = ($subPageNum - 1) * 100;
+    $this->view->spNumLeft = 100;
     $this->view->currentPageID = $pageID;
 
     if ($pageID > 0) {
@@ -71,6 +75,10 @@ class PageController extends QFrame_Controller_Action {
    */
   public function viewAction() {
     $pageID = $this->_getParam('id');
+    $subPageNum = ($this->_hasParam('sp')) ? $this->_getParam('sp') : 1;
+    $this->view->spNum = $subPageNum;
+    $this->view->spNumSkip = ($subPageNum - 1) * 100;
+    $this->view->spNumLeft = 100;
 
     if ($pageID > 0) {
       $page = new PageModel(array('pageID' => $pageID,
@@ -186,11 +194,7 @@ class PageController extends QFrame_Controller_Action {
                                         'depth' => 'page'));
     $instance->save();
       
-    $lock->release();
-    
-    // redirect to the view action
-    $this->flash('notice', 'Edits successfully saved');
-    $this->_redirector->gotoRoute(array('action' => 'edit', 'id' => $page->pageID));
+    $this->view->setRenderLayout(false);
   }
   
   /**
@@ -198,6 +202,10 @@ class PageController extends QFrame_Controller_Action {
    */
   public function approveAction() {
     $page = new PageModel(array('pageID' => $this->_getParam('id'), 'depth' => 'response'));
+    $subPageNum = ($this->_hasParam('sp')) ? $this->_getParam('sp') : 1;
+    $this->view->spNum = $subPageNum;
+    $this->view->spNumSkip = ($subPageNum - 1) * 100;
+    $this->view->spNumLeft = 100;
     $lock = $this->lockPage($page);
     
     // if this request is a post, go ahead and do approvals
@@ -236,9 +244,7 @@ class PageController extends QFrame_Controller_Action {
                                           'depth' => 'page'));
       $instance->save();
       
-      $lock->release();
-      $this->flash('notice', 'Approvals successfully saved');
-      $this->_redirector->gotoRouteAndExit(array('action' => 'approve', 'id' => $page->pageID));
+      $this->_redirector->gotoRouteAndExit(array('action' => 'save', 'id' => $page->pageID));
     }
 
     // set variables for the view

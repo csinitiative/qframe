@@ -73,9 +73,17 @@ var Pages = {
     
     content.setStyle({ top: top + 'px', left: left + 'px' });
     Effect.Appear('disableOverlay', { duration: 0.15, to: 0.90 });
+
+    var iframe = document.createElement("iframe");
+    iframe.name = 'saveIFrame';
+    iframe.height = '1px';
+    iframe.width = '1px';
+    iframe.src = $$('form.questions').first().action;
+    document.body.appendChild(iframe);
+    $$('form.questions').first().target = 'saveIFrame';
     $$('form.questions').first().submit();
   },
-  
+
   /**
    * Handles a click on the "saveModel" button
    *

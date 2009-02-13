@@ -333,6 +333,33 @@ class QFrame_View_Helper_PageHelpers {
       $this->view->imageTag($image, array('class' => $class, 'title' => $description))
     );
   }
+
+  /**
+   * Outputs an subpages buttons
+   *
+   * @param  PageModel Page object
+   * @param  integer The current page number
+   * @param  integer Questions per page
+   * @return string
+   */
+  public function subpagesButtons($page, $spNum, $qPerPage) {
+    $totalSubPages = ceil($page->numQuestions / $qPerPage);
+    if($page->numQuestions <= 0 || $totalSubPages <= 1) return;
+
+    $action = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
+    for ($p = 1; $p <= $totalSubPages; $p++) {
+      if ($p == $spNum) {
+        $links[] = "<span class='selectedsubpage'>{$p}</span>";
+      }
+      else {
+        $links[] = $this->view->linkTo($this->view->url(array('action' => $action, 'id' => $page->pageID)) . "?sp={$p}", $p);
+      }
+    }
+    $actions = '<ul id="subpages"><li>';
+    if(isset($links)) $actions .= implode($links, ' | </li><li>') . '</li>';
+    return "{$actions}<li class=\"bottom\"></li></ul>";
+  }
+
   
   /**
    * Returns a series of attachment links for the given question
@@ -386,9 +413,10 @@ class QFrame_View_Helper_PageHelpers {
    *
    * @param  PageModel    current page
    * @param  DbUserModel currently logged in user
+   * @param  integer The current page number
    * @return string
    */
-  public function topLinks($page, $user) {
+  public function topLinks($page, $user, $spNum) {
     if($page->numQuestions <= 0) return;
     
     $current = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
@@ -396,7 +424,7 @@ class QFrame_View_Helper_PageHelpers {
     //TODO need to relocate this list of available actions somewhere more appropriate
     foreach(array('view', 'edit', 'approve') as $action) {
       if($action !== $current && $user->hasAccess($action, $page)) {
-        $links[] = $this->view->linkTo(array('action' => $action, 'id' => $page->pageID), $action);
+        $links[] = $this->view->linkTo($this->view->url(array('action' => $action, 'id' => $page->pageID)) . "?sp={$spNum}", $action);
       }
     }
     $actions = '<ul id="pageHeading">' . $actions . '<li>';
@@ -426,4 +454,5 @@ class QFrame_View_Helper_PageHelpers {
     }
     return "{$complete} | approved: all disabled";
   }
+
 }

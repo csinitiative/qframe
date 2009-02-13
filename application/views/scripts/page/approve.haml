@@ -20,7 +20,8 @@
 - $localStylesheets = array('pages', 'approve', 'getting_started')
 - $localJavascript = array('pages', 'approve', 'getting_started', 'cookies')
 
-!= $this->topLinks($this->page, $this->loggedInUser)
+!= $this->topLinks($this->page, $this->loggedInUser, $this->spNum)
+!= $this->subpagesButtons($this->page, $this->spNum, 100)
 
 %h1
   = $this->page->pageHeader

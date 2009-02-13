@@ -49,6 +49,31 @@ ul#pageHeading
       :text-decoration none
       &:hover
         :text-decoration underline
+
+ul#subpages
+  :background-color = !menu_link_bg + #030
+  :padding 0
+  :margin 0
+  :list-style none
+  :vertical-align bottom
+  span.selectedsubpage
+    :font-weight bold
+    :color black
+  li
+    :float left
+    :margin 7px 0 0 5px
+    :padding 0
+    &.bottom
+      :margin 0
+      :background-color = !page_bg
+      :float none
+      :clear both
+    a
+      :color = !menu_link_fg
+      :text-decoration none
+      &:hover
+        :text-decoration underline
+
     
 #disableOverlay
   :position absolute
