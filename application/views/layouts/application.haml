@@ -65,12 +65,12 @@
               Approved:
               %strong= $this->currentInstance->numApproved
               of
-              %strong= $this->currentInstance->numQuestions - $this->currentInstance->getNumQuestionsDisabled()
+              %strong= $this->currentInstance->numQuestions - $this->numQuestionsDisabled
               = "({$this->currentInstance->getPctApproved()}%)"
               %br/
-              - if ($this->currentInstance->getNumQuestionsDisabled() > 0)
+              - if ($this->numQuestionsDisabled > 0)
                 Disabled:
-                %strong= $this->currentInstance->getNumQuestionsDisabled()
+                %strong= $this->numQuestionsDisabled
               %br/
               %br/
               != $this->linkTo($this->changeInstancePath, '[change]')

@@ -198,10 +198,7 @@ class QFrame_View_Helper_PageHelpers {
     $builder = new Tag_Builder;
     $result = '';
     if (is_numeric($response->dbUserID) && strlen($response->responseText) > 0) {
-      if ($response->dbUserID == -1) {
-        $result = '[Responder: NA]';
-      }
-      else {
+      if ($response->dbUserID != -1) {
         $user = new DbUserModel(array('dbUserID' => $response->dbUserID));
         $result = "[{$user->dbUserName}]";
       }
@@ -430,6 +427,25 @@ class QFrame_View_Helper_PageHelpers {
     $actions = '<ul id="pageHeading">' . $actions . '<li>';
     if(isset($links)) $actions .= implode($links, ' | </li><li>') . '</li>';
     return "{$actions}<li class=\"stats\">{$this->stats($page)}</li><li class=\"bottom\"></li></ul>";
+  }
+
+  /**
+   * Returns formatted output for disabled question's source information
+   *
+   * @param  QuestionModel the disabled question
+   * @return string
+   */
+  public function disabledSource($question) {
+    $source = $question->getDisableSourceQuestions();
+    if (empty($source)) return;
+    $pageHeader = $source[0]->parent->parent->pageHeader;
+    $s = $source[0];
+    $questionNumber = $s->questionNumber;
+    $qText = (strlen($s->qText) <= 10) ? $s->qText : substr($s->qText, 0, 10) . "...";
+    if ($questionNumber)
+      return "{$pageHeader}: {$questionNumber}";
+    else
+      return "{$pageHeader}: {$qText}";
   }
   
   /**
