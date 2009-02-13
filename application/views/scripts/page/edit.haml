@@ -20,7 +20,8 @@
 - $localStylesheets = array('pages', 'approve', 'getting_started', 'calendar')
 - $localJavascript = array('moreoptions', 'pages', 'rules', 'getting_started', 'cookies', 'jscalendar-1.0/calendar', 'jscalendar-1.0/lang/calendar-en', 'calendar')
 
-!= $this->topLinks($this->page, $this->loggedInUser)
+!= $this->topLinks($this->page, $this->loggedInUser, $this->spNum)
+!= $this->subpagesButtons($this->page, $this->spNum, 100)
 
 %h1
   = $this->page->pageHeader

@@ -16,26 +16,16 @@
   
   @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
-  
-- $localStylesheets = array('pages', 'approve')
-- $localJavascript = array('pages')
 
-!= $this->topLinks($this->page, $this->loggedInUser, $this->spNum)
-!= $this->subpagesButtons($this->page, $this->spNum, 100)
+- $localJavascript = array('lib/prototype')
 
-- if(!$this->isBlank($this->page->headerText))
-  != $this->markdown($this->h($this->page->headerText))
-- else
-  %h1
-  = $this->page->pageHeader
-
-- if(count($this->page->references) > 0)
-  %a#togglePageReferences{ 'href' => '#' } show references
-  #pageReferences{ 'style' => 'display: none;' }
-    != $this->referenceString($this->page)
-  
-- while(($section = $this->page->nextSection()))
-  != $this->renderPartial('section', $section)
-  
-- if(!$this->isBlank($this->page->footerText))
-  != $this->markdown($this->h($this->page->footerText))
+%html
+  %head
+    <script type="text/javascript">
+      function initialize() {
+        parent.setTimeout("Effect.Fade('disableOverlay', { duration: 0.01, to: 0.00 })", 1);
+      }
+    </script>
+  %body{ 'onload' => 'initialize();' }
+    != $this->form(array(), false, 'get')
+    != $this->form(null, true)

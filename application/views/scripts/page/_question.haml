@@ -21,79 +21,87 @@
 - $response = $this->question->getResponse()
 - $style = ($this->question->disableCount > 0) ? 'opacity:0.5;filter:alpha(opacity=50)' : '';
 
-%li{ 'style' => $style }
-  .question{ 'id' => "question-{$this->question->questionID}" }
-    - if($this->question->parent instanceof SectionModel && $mode != 'approve')
-      .approvalMessage
-        - if($this->question->virtualQuestion)
-          != $this->imageTag('icons/eeeeee/arrow_right.png', array('class' => 'inline', 'alt' => ''))
-          This is a virtual question
-        - elseif($this->question->disableCount > 0)
-          != $this->imageTag('icons/eeeeee/disabled', array('class' => 'inline', 'alt' => ''))
-          This question has been disabled
-        - elseif($response->state == 2) 
-          != $this->imageTag('icons/eeeeee/accept.png', array('class' => 'inline', 'alt' => ''))
-          This response has been approved
-        - else
-          != $this->imageTag('icons/eeeeee/delete.png', array('class' => 'inline', 'alt' => ''))
-          This response has not been approved
-        - if($response->approverComments !== null && $response->approverComments !== '')
-          .comments= $response->approverComments
-    != $this->questionPrompt($this->question)
-    - if(!$this->question->virtualQuestion && $mode === 'edit' && $response->state != 2)
-      != $this->responderInfo($response)
-      != $this->questionElement($this->question, $response) 
-      != $this->formHidden("disableCount[{$this->question->questionID}]", $this->question->disableCount)
-      != $this->linkTo('#', 'More Options', array('class' => 'options-link'))
-      != $this->imageTag('right-arrow.gif', array('class' => 'inline', 'alt' => ''))
-      %br/
-      != $this->additionalInfo($response)
-      != $this->privateNote($response)
-      .more-options{ 'style' => 'display: none;' }
-        %ul
-          - if(!$response->hasAdditionalInfo())
-            %li
-              != $this->optionButton('showAddlInfo', 'page_white_edit.png', 'add additional information')
-          - if(!$response->hasPrivateNote())
-            %li
-              != $this->optionButton('showPrivateNote', 'page_white_edit_p.png', 'add private notes')
-          - if($this->question->parent instanceof SectionModel)
-            %li
-              != $this->optionButton('attach', 'attach.png', 'attach a file')
-        != $this->optionButton('hideOptionsHandler', 'close_button.gif', 'close options panel', 'close')
-        .description hover over an icon for a description
-    - elseif($this->question->virtualQuestion || ($mode === 'view' || $mode === 'approve') || ($mode === 'edit' && $response->state == 2))
-      != $this->questionText($response) . ' ' . $this->responderInfo($response)
-      %br/
-      - if (strlen($response->additionalInfo) > 0)
-        %br/
-         additional info:
-        .additionalInfo= $response->additionalInfo
-      - if (strlen($response->privateNote) > 0)
-        %br/
-        private notes:
-        .privateNote= $response->privateNote
-  
-    .attachments
-      - if (isset($this->attachmentQuestions['QuestionModel'][$this->question->questionID]))
-        != $this->attachments($this->question, $mode)    
-    .subordinates
-      %ol
-        != $this->renderPartial('question', $this->question->children, true)
-  
-    - if($mode === 'approve' && $this->question->parent instanceof SectionModel)
-      .approval
-        - if($this->question->virtualQuestion)
-          This is a virtual question and cannot be approved
-        - elseif($response->requiresAdditionalInfo() && !$response->hasAdditionalInfo())
-          Approval not yet possible because additional info is required but has not been provided
-        - elseif($response->hasApprovableResponse())
-          != $this->formLabel("approvals[{$response->questionID}]", 'Approved')
-          != $this->formRadio("approvals[{$response->questionID}]", $response->state, null, array(1 => 'No', 2 => 'Yes'), '&nbsp;')
-          - if($response->approverComments === null || $response->approverComments === '')
-            != $this->linkTo('#addComment', 'Add Comment')
-            != $this->formTextarea("comments[{$response->questionID}]", null, array('style' => 'display: none;'))
+- if(empty($this->question->children) && $this->spNumSkip > 0)
+  - if (!$this->question->virtualQuestion) $this->spNumSkip--
+- elseif(!empty($this->question->children) && $this->spNumSkip > 0)
+  != $this->renderPartial('question', $this->question->children, true)
+- elseif($this->spNumLeft <= 0)
+- else
+  - if (!$this->question->virtualQuestion && empty($this->question->children))
+    - $this->spNumLeft--
+  %li{ 'style' => $style }
+    .question{ 'id' => "question-{$this->question->questionID}" }
+      - if($this->question->parent instanceof SectionModel && $mode != 'approve')
+        .approvalMessage
+          - if($this->question->disableCount > 0)
+            != $this->imageTag('icons/eeeeee/disabled', array('class' => 'inline', 'alt' => ''))
+            This question has been disabled
+          - elseif($this->question->virtualQuestion)
+            != $this->imageTag('icons/eeeeee/arrow_right.png', array('class' => 'inline', 'alt' => ''))
+            This is a virtual question
+          - elseif($response->state == 2) 
+            != $this->imageTag('icons/eeeeee/accept.png', array('class' => 'inline', 'alt' => ''))
+            This response has been approved
           - else
-            != $this->formTextarea("comments[{$response->questionID}]", $this->h($response->approverComments))
-        - else
-          Approval not yet possible because of insufficient response data
+            != $this->imageTag('icons/eeeeee/delete.png', array('class' => 'inline', 'alt' => ''))
+            This response has not been approved
+          - if($response->approverComments !== null && $response->approverComments !== '')
+            .comments= $response->approverComments
+      != $this->questionPrompt($this->question)
+      - if(!$this->question->virtualQuestion && $mode === 'edit' && $response->state != 2)
+        != $this->responderInfo($response)
+        != $this->questionElement($this->question, $response) 
+        != $this->formHidden("disableCount[{$this->question->questionID}]", $this->question->disableCount)
+        != $this->linkTo('#', 'More Options', array('class' => 'options-link'))
+        != $this->imageTag('right-arrow.gif', array('class' => 'inline', 'alt' => ''))
+        %br/
+        != $this->additionalInfo($response)
+        != $this->privateNote($response)
+        .more-options{ 'style' => 'display: none;' }
+          %ul
+            - if(!$response->hasAdditionalInfo())
+              %li
+                != $this->optionButton('showAddlInfo', 'page_white_edit.png', 'add additional information')
+            - if(!$response->hasPrivateNote())
+              %li
+                != $this->optionButton('showPrivateNote', 'page_white_edit_p.png', 'add private notes')
+            - if($this->question->parent instanceof SectionModel)
+              %li
+                != $this->optionButton('attach', 'attach.png', 'attach a file')
+          != $this->optionButton('hideOptionsHandler', 'close_button.gif', 'close options panel', 'close')
+          .description hover over an icon for a description
+      - elseif($this->question->virtualQuestion || ($mode === 'view' || $mode === 'approve') || ($mode === 'edit' && $response->state == 2))
+        != $this->questionText($response) . ' ' . $this->responderInfo($response)
+        %br/
+        - if (strlen($response->additionalInfo) > 0)
+          %br/
+           additional info:
+          .additionalInfo= $response->additionalInfo
+        - if (strlen($response->privateNote) > 0)
+          %br/
+          private notes:
+          .privateNote= $response->privateNote
+    
+      .attachments
+        - if (isset($this->attachmentQuestions['QuestionModel'][$this->question->questionID]))
+          != $this->attachments($this->question, $mode)    
+      .subordinates
+        %ol
+          != $this->renderPartial('question', $this->question->children, true)
+    
+      - if($mode === 'approve' && $this->question->parent instanceof SectionModel)
+        .approval
+          - if($this->question->virtualQuestion)
+            This is a virtual question and cannot be approved
+          - elseif($response->requiresAdditionalInfo() && !$response->hasAdditionalInfo())
+            Approval not yet possible because additional info is required but has not been provided
+          - elseif($response->hasApprovableResponse())
+            != $this->formLabel("approvals[{$response->questionID}]", 'Approved')
+            != $this->formRadio("approvals[{$response->questionID}]", $response->state, null, array(1 => 'No', 2 => 'Yes'), '&nbsp;')
+            - if($response->approverComments === null || $response->approverComments === '')
+              != $this->linkTo('#addComment', 'Add Comment')
+              != $this->formTextarea("comments[{$response->questionID}]", null, array('style' => 'display: none;'))
+            - else
+              != $this->formTextarea("comments[{$response->questionID}]", $this->h($response->approverComments))
+          - else
+            Approval not yet possible because of insufficient response data
