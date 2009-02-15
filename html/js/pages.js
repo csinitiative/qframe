@@ -40,7 +40,7 @@ var Pages = {
     var radio = Event.element(event);
     var addlInfoMain = radio.up('.question').down('.additionalInfo_main');
     var addlInfo = radio.up('.question').down('.additionalInfo');
-    if(!radio.hasClassName('require-addl') && radio.checked && addlInfoMain.visible()) {
+    if(!radio.hasClassName('require-addl') && radio.checked && addlInfoMain && addlInfoMain.visible()) {
       addlInfo.removeClassName('additionalInfoRequired');
       addlInfo.value = addlInfo.value.replace(/ \(required\)$/, '');
     }
@@ -68,19 +68,13 @@ var Pages = {
     var dims = document.viewport.getDimensions();
     var offsets = document.viewport.getScrollOffsets();
     var content = $('disableOverlay').down('.content');
-    var top = (dims.height / 2) - 30 + offsets.top;
-    var left = (dims.width / 2) - 30 + offsets.left;
-    
+    var top = (dims.height / 2) - 30;
+    var left = (dims.width / 2) - 30;
+    $('disableOverlay').setStyle({ top: offsets.top + 'px', left: 0 });
     content.setStyle({ top: top + 'px', left: left + 'px' });
     Effect.Appear('disableOverlay', { duration: 0.15, to: 0.90 });
 
-    var iframe = document.createElement("iframe");
-    iframe.name = 'saveIFrame';
-    iframe.height = '1px';
-    iframe.width = '1px';
-    iframe.src = $$('form.questions').first().action;
-    document.body.appendChild(iframe);
-    $$('form.questions').first().target = 'saveIFrame';
+    var iframe = $('saveIFrame');
     $$('form.questions').first().submit();
   },
 

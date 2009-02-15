@@ -198,11 +198,22 @@ function _handle (event, form, action) {
   var dims = document.viewport.getDimensions();
   var offsets = document.viewport.getScrollOffsets();
   var content = $('disableOverlay').down('.content');
-  var top = (dims.height / 2) - 30 + offsets.top;
-  var left = (dims.width / 2) - 30 + offsets.left;
-
+  var top = (dims.height / 2) - 30;
+  var left = (dims.width / 2) - 30;
+  $('disableOverlay').setStyle({ top: offsets.top + 'px', left: 0 });
   content.setStyle({ top: top + 'px', left: left + 'px' });
+  forms = $$('form');
+  for (f = 0; f < forms.length; f++) {
+    inputs = forms[f].getElements();
+    for (i = 0; i < inputs.length; i++) {
+       e = inputs[i];
+       if (e.type == 'select-one') {
+         Effect.Fade(e, { duration: 0.01, to: 0.00 })
+       }
+    }
+  }
   Effect.Appear('disableOverlay', { duration: 0.15, to: 0.90 });
+
   if (action) {
     $$('form.' + form).first().action = $F('base_url') + '/instancedata/' + action;
   }

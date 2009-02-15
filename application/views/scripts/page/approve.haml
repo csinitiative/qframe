@@ -33,7 +33,7 @@
 - if(!$this->isBlank($this->page->headerText))
   != $this->markdown($this->h($this->page->headerText))
   
-!= $this->form(array('action' => 'approve', 'id' => $this->page->pageID), false, 'post', array('class' => 'questions'))
+!= $this->form(array('action' => 'approveSave', 'id' => $this->page->pageID), false, 'post', array('class' => 'questions', 'target' => 'saveIFrame'))
 != $this->formHidden('cancelPath', $this->url(array('action' => 'view')))
 
 - while(($section = $this->page->nextSection()))
@@ -54,3 +54,5 @@
     != $this->imageTag('progress-large-black.gif')
     
 != $this->renderPartial('getting_started', null)
+
+%iframe{ 'class' => 'saveIFrame', 'id' => 'saveIFrame', 'name' => 'saveIFrame', 'height' => '1px', 'weight' => '1px', 'style' => 'display: none'  }
