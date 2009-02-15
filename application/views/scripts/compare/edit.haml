@@ -26,14 +26,14 @@
   != $this->linkTo(array('action' => null, 'id' => null), '[done editing]')
 
 %h1
-  - if(!$this->isBlank($this->page->headerText))
-    != $this->markdown($this->h($this->page->headerText))
-  - else
-    = $this->page->pageHeader
+  - $this->page->pageHeader
   - if(count($this->page->references) > 0)
     %a#togglePageReferences{ 'href' => '#' } show references
     #pageReferences{ 'style' => 'display: none;' }
       != $this->referenceString($this->page)
+
+- if(!$this->isBlank($this->page->headerText))
+  != $this->markdown($this->h($this->page->headerText))
       
 != $this->form(array('action' => 'save'))
 

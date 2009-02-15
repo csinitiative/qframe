@@ -369,7 +369,6 @@ var MoreOptions = {
     // with the correct response
     newFile.type = 'hidden';
     newFile.name = question + '_attachments[]';
-    alert($('uploadIframe').contentDocument);
     if ($('uploadIframe').contentWindow) { // IE6
       newFile.value = $('uploadIframe').contentWindow.document.body.innerHTML.replace(/^\s+|\s+$/g, '');
     }
