@@ -17,9 +17,19 @@
   @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
-- if (isset($this->error))
-  <script type="text/javascript">
-    != 'alert("Save error:' . addslashes($this->error) . '");'
-  </script>
-- else
-  != $this->filename
+%html
+  %head
+    - if (isset($this->error))
+      <script type="text/javascript">
+      function initialize() {
+        != 'alert("Upload error:' . addslashes($this->error) . '");'
+      }
+      </script>
+    - else
+      <script type="text/javascript">
+      function initialize() {
+        parent.setTimeout("MoreOptions.uploadFinished()", 1);
+      }
+      </script>
+  %body{ 'onload' => 'initialize();' }
+    != $this->filename

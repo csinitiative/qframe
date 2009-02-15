@@ -349,7 +349,6 @@ var MoreOptions = {
     fileElement.hide();
     fileElement.insert({ after: filename });
     attachment.down('.progress').show();
-    $('uploadIframe').observe('load', MoreOptions.uploadFinished);
     uploadForm.insert({ bottom: fileElement });
     uploadForm.submit();
     attachment.addClassName('uploading');
@@ -370,7 +369,13 @@ var MoreOptions = {
     // with the correct response
     newFile.type = 'hidden';
     newFile.name = question + '_attachments[]';
-    newFile.value = $('uploadIframe').contentDocument.body.innerHTML.replace(/^\s+|\s+$/g, '');
+    alert($('uploadIframe').contentDocument);
+    if ($('uploadIframe').contentWindow) { // IE6
+      newFile.value = $('uploadIframe').contentWindow.document.body.innerHTML.replace(/^\s+|\s+$/g, '');
+    }
+    else {
+      newFile.value = $('uploadIframe').contentDocument.body.innerHTML.replace(/^\s+|\s+$/g, '');
+    }
     attachment.insert({ bottom: newFile });
     
     // do some cleanup (highlight newly inserted attachment, remove progress indicator, etc.)

@@ -17,8 +17,8 @@
   @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
-- header('Cache-Control: no-store, no-cache, must-revalidate, private, post-check=0, pre-check=0', FALSE);
-- header('Pragma: no-cache');
+- header('Cache-Control: private');
+- header('Pragma: ');
 - header('Content-Type: application/octet-stream');
 - if (isset($this->cryptoID))
     - header('Content-Disposition: attachment; filename=completed-response-schema.xsd.enc');

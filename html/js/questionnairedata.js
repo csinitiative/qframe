@@ -115,11 +115,12 @@ function _handle (event, form, action) {
   var dims = document.viewport.getDimensions();
   var offsets = document.viewport.getScrollOffsets();
   var content = $('disableOverlay').down('.content');
-  var top = (dims.height / 2) - 30 + offsets.top;
-  var left = (dims.width / 2) - 30 + offsets.left;
-
+  var top = (dims.height / 2) - 30;
+  var left = (dims.width / 2) - 30;
+  $('disableOverlay').setStyle({ top: offsets.top + 'px', left: 0 });
   content.setStyle({ top: top + 'px', left: left + 'px' });
   Effect.Appear('disableOverlay', { duration: 0.15, to: 0.90 });
+
   if (action) {
     $$('form.' + form).first().action = $F('base_url') + '/questionnairedata/' + action;
   }

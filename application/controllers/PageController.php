@@ -212,48 +212,56 @@ class PageController extends QFrame_Controller_Action {
     $this->view->spNumLeft = 100;
     $lock = $this->lockPage($page);
     
-    // if this request is a post, go ahead and do approvals
-    if($this->getRequest()->isPost()) {
-      $comments = $this->_getParam('comments');
-      foreach($this->_getParam('approvals') as $questionID => $state) {
-        $question = $page->getQuestion(intval($questionID));
-        if($question === null) {
-          throw new Exception(
-            'Invalid attempt to approve a non-existent question or question on another page'
-          );
-        }
-        $response = $question->getResponse();
-        
-        if($response->requiresAdditionalInfo() && !$response->hasAdditionalInfo()) {
-          throw new Exception(
-            'Invalid attempt to approve a response that requires additional information with none provided'
-          );
-        }
-        
-        $response->state = intval($state);
-        if(array_key_exists($questionID, $comments)) {
-          if($comments[$questionID] === '') $response->approverComments = null;
-          else $response->approverComments = $comments[$questionID];
-        }
-        $response->save();
-        foreach($question->children as $child) {
-          $response = $child->getResponse();
-          $response->state = intval($state);
-          $response->save();
-        }
-      }
-      $page->save();
-      
-      $instance = new InstanceModel(array('instanceID' => $page->instanceID,
-                                          'depth' => 'page'));
-      $instance->save();
-      
-      $this->_redirector->gotoRouteAndExit(array('action' => 'save', 'id' => $page->pageID));
-    }
-
     // set variables for the view
     $this->view->page = $page;
   }
+
+  public function approveSaveAction() {
+    try {
+      if ($this->_hasParam('approvals')) {
+        $page = new PageModel(array('pageID' => $this->_getParam('id'), 'depth' => 'response'));
+
+        $comments = $this->_getParam('comments');
+        foreach($this->_getParam('approvals') as $questionID => $state) {
+          $question = $page->getQuestion(intval($questionID));
+          if($question === null) {
+              throw new Exception(
+              'Invalid attempt to approve a non-existent question or question on another page'
+            );
+          }
+          $response = $question->getResponse();
+
+          if($response->requiresAdditionalInfo() && !$response->hasAdditionalInfo()) {
+            throw new Exception(
+              'Invalid attempt to approve a response that requires additional information with none provided'
+            );
+          }
+
+          $response->state = intval($state);
+          if(array_key_exists($questionID, $comments)) {
+            if($comments[$questionID] === '') $response->approverComments = null;
+            else $response->approverComments = $comments[$questionID];
+          }
+          $response->save();
+          foreach($question->children as $child) {
+            $response = $child->getResponse();
+            $response->state = intval($state);
+            $response->save();
+          }
+        }
+        $page->save();
+
+        $instance = new InstanceModel(array('instanceID' => $page->instanceID,
+                                            'depth' => 'page'));
+        $instance->save();
+      }
+    }
+    catch (Exception $e) {
+      $this->view->error = $e->getMessage();
+    }
+    $this->view->setRenderLayout(false);
+  }
+
   
   /**
    * Accepts a file upload and outputs only the temp filename

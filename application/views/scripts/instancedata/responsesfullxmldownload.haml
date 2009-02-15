@@ -17,21 +17,23 @@
   @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
+- $localJavascript = array('lib/prototype')
+
 - if (isset($this->xml))
-  - header('Cache-Control: no-store, no-cache, must-revalidate, private, post-check=0, pre-check=0', FALSE);
-  - header('Pragma: no-cache');
-  - header('Content-Type: application/octet-stream');
+  - header('Cache-Control: private');
+  - header('Pragma: ');
+  - header('Content-Type: application/octet-stream;');
   - if (isset($this->cryptoID))
-    - header('Content-Disposition: attachment; filename=instance-responses.xml.enc');
+    - header('Content-disposition: attachment; filename=instance-responses.xml.enc');
   - else
-    - header('Content-Disposition: attachment; filename=instance-responses.xml');
+    - header('Content-disposition: attachment; filename=instance-responses.xml;');
   != $this->xml
 - else
   %html
     %head
       <script type="text/javascript">
         function initialize() {
-          parent.setTimeout("Effect.Fade('disableOverlay', { duration: 0.01, to: 0.00 })", 1);
+          parent.setTimeout(" forms = $$('form'); for (f = 0; f < forms.length; f++) { inputs = forms[f].getElements(); for (i = 0; i < inputs.length; i++) { e = inputs[i]; if (e.type == 'select-one') { Effect.Appear(e, { duration: 0.15, to: 0.90 }); } } } Effect.Fade('disableOverlay', { duration: 0.01, to: 0.00 }); ", 1);
           document.forms[0].submit();
         }
       </script>
