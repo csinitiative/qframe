@@ -42,13 +42,6 @@ An exported Responses XML document is required to import an instance into
   %tr
     %td Import Responses:
   %tr
-    - if ($this->importResponsesRadioButton === 'doNotImportAnyResponses' || !$this->importResponsesRadioButton)
-      %td
-        <input type="radio" name="importResponsesRadioButton" value="doNotImportAnyResponses" class="importResponsesRadioButton" checked="1" />Do not import any responses
-    - else
-      %td
-        <input type="radio" name="importResponsesRadioButton" value="doNotImportAnyResponses" class="importResponsesRadioButton"/>Do not import any responses
-  %tr
     - if ($this->importResponsesRadioButton === 'importXMLResponses')
       %td
         <input type="radio" name="importResponsesRadioButton" value="importXMLResponses" class="importResponsesRadioButton" checked="1"/>Import XML Responses
