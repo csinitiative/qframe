@@ -31,7 +31,7 @@
     - else
       <script type="text/javascript">
       function initialize() {
-        parent.setTimeout("Effect.Fade('disableOverlay', { duration: 0.01, to: 0.00 })", 1);
+        parent.setTimeout("Effect.Fade('disableOverlay', { duration: 0.01, to: 0.00 }); $$('.pending').each(function(p) { p.removeClassName('pending'); p.addClassName('existing'); p.name = ''; });", 1);
       }
       </script>
   %body{ 'onload' => 'initialize();' }
