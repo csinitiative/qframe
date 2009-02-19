@@ -51,7 +51,7 @@
   != $this->linkTo('#save', $this->imageTag('icons/dddddd/disk.png'), array('class' => 'controlButton'))
   != $this->linkTo('#cancel', $this->imageTag('icons/dddddd/cancel.png'), array('class' => 'controlButton'))
 
-%iframe#uploadIframe{ 'name' => 'uploadIframe', 'style' => 'display: none;' } &nbsp;
+%iframe#uploadIframe{ 'src' => '../../favicon.ico', 'name' => 'uploadIframe', 'style' => 'display: none;' } &nbsp;
 
 #disableOverlay{ 'style' => 'display: none;' }
   .content
@@ -60,4 +60,4 @@
 
 != $this->renderPartial('getting_started', null)
 
-%iframe{ 'class' => 'saveIFrame', 'id' => 'saveIFrame', 'name' => 'saveIFrame', 'height' => '1px', 'weight' => '1px', 'style' => 'visibility: hidden'  }
+%iframe{ 'src' => '../../favicon.ico', 'class' => 'saveIFrame', 'id' => 'saveIFrame', 'name' => 'saveIFrame', 'height' => '1px', 'weight' => '1px', 'style' => 'visibility: hidden'  }
