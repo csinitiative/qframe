@@ -175,7 +175,8 @@ class DbUserModel implements QFrame_Paginable {
       $this->dbUserRow->dbUserPW = self::hashPassword($args['dbUserPW']);
       $this->dbUserRow->dbUserFullName = $args['dbUserFullName'];
       $this->dbUserRow->dbUserActive = $args['dbUserActive'];
-      $this->dbUserRow->dbUserPWChange = $args['dbUserPWChange'];
+      if (isset($this->dbUserRow->dbUserPWChange))
+        $this->dbUserRow->dbUserPWChange = $args['dbUserPWChange'];
 
       $this->dirty = 1;
     }
