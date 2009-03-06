@@ -983,7 +983,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
           $additionalInfo = $importResponse['additionalInfo'];
           $approverComments = $importResponse['approverComments'];
           $questionPromptID = $questionPromptsMap[$questionTypeID][$responseText];
-          if (!isset($questionPromptID)) throw new Exception('Question prompt ID not found');
+          if (!isset($questionPromptID)) throw new Exception("Question prompt ID not found for response [$responseText] for question with GUID [$questionGUID]");
           array_push($rt, $questionPromptID);
         }    
         $newResponse = new ResponseModel(array('questionID' => $questionID,
@@ -1026,7 +1026,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
               $responseDate = $response->getElementsByTagName('responseDate')->item(0)->nodeValue;
               $responseText = $response->getElementsByTagName('responseText')->item(0)->nodeValue;
               $questionPromptID = $questionPromptsMap[$questionTypeID][$responseText];
-              if (!isset($questionPromptID)) throw new Exception('Question prompt ID not found');
+              if (!isset($questionPromptID)) throw new Exception("Question prompt ID not found for response [$responseText] for question with GUID [$questionGUID]");
               array_push($rt, $questionPromptID);
             }
             $newResponse = new ResponseModel(array('questionID' => $questionID,
