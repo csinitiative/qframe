@@ -35,7 +35,7 @@ class QuestionModel implements QFrame_Storer {
   public $depth;
   private $parent;
   private $virtualQuestion = 0;
-  public $responses;
+  public $responses = array();
   static $questionTable;
   static $questionTypeTable;
   static $questionPromptTable;
