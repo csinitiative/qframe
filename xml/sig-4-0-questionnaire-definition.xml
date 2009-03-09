@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-qframe" questionnaireName="CSI SIG" questionnaireVersion="4.0" revision="1" targetQFrameVersion="1.0">
+<csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-qframe" questionnaireName="CSI SIG" questionnaireVersion="4.0" revision="2" targetQFrameVersion="1.0">
   <csi:pages>
     <csi:page>
       <csi:pageHeader>Instructions</csi:pageHeader>
@@ -58914,17 +58914,6 @@ SIG Lite:
               <csi:questionGUID>2336</csi:questionGUID>
               <csi:seqNumber>3032</csi:seqNumber>
               <csi:questionNumber>KA.1.4.1.1</csi:questionNumber>
-              <csi:questionType>S</csi:questionType>
-              <csi:questionPrompt>
-                <csi:promptText>Yes</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>No</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>N/A</csi:promptText>
-                <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
-              </csi:questionPrompt>
             </csi:question>
             <csi:question>
               <csi:qText>Is there a Recovery Point Objective (RPO) for this product, service or application?</csi:qText>
@@ -58948,17 +58937,7 @@ SIG Lite:
               <csi:questionGUID>2777</csi:questionGUID>
               <csi:seqNumber>3034</csi:seqNumber>
               <csi:questionNumber>KA.1.4.2.1</csi:questionNumber>
-              <csi:questionType>S</csi:questionType>
-              <csi:questionPrompt>
-                <csi:promptText>Yes</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>No</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>N/A</csi:promptText>
-                <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
-              </csi:questionPrompt>
+              <csi:questionType>T</csi:questionType>
             </csi:question>
             <csi:question>
               <csi:questionGUID>2778</csi:questionGUID>
@@ -59207,17 +59186,7 @@ SIG Lite:
               <csi:questionGUID>2795</csi:questionGUID>
               <csi:seqNumber>3054</csi:seqNumber>
               <csi:questionNumber>KA.1.10.3</csi:questionNumber>
-              <csi:questionType>S</csi:questionType>
-              <csi:questionPrompt>
-                <csi:promptText>Yes</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>No</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>N/A</csi:promptText>
-                <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
-              </csi:questionPrompt>
+              <csi:questionType>T</csi:questionType>
             </csi:question>
             <csi:question>
               <csi:qText>Does the alternate site(s) use a different power grid from the primary site?</csi:qText>

@@ -57,4 +57,5 @@ $auth->authenticate($auth_adapter);
 
 $content = file_get_contents(_path(PROJECT_PATH, 'xml', 'sig-4-0-questionnaire-definition.xml'));
 QuestionnaireModel::importXML($content);
-InstanceModel::importXML($content, 'Acme Vendor');
+$options['pageResponses']['all'] = 1; // import all responses
+InstanceModel::importXML($content, 'Acme Vendor', $options);
