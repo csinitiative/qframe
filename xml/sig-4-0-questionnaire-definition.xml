@@ -58914,6 +58914,7 @@ SIG Lite:
               <csi:questionGUID>2336</csi:questionGUID>
               <csi:seqNumber>3032</csi:seqNumber>
               <csi:questionNumber>KA.1.4.1.1</csi:questionNumber>
+              <csi:questionType>T</csi:questionType>
             </csi:question>
             <csi:question>
               <csi:qText>Is there a Recovery Point Objective (RPO) for this product, service or application?</csi:qText>
