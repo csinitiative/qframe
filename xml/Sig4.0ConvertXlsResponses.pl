@@ -33,7 +33,7 @@ foreach my $sheet (@{ $excel->{Worksheet} }) {
   print STDERR "Processing $name\n";
   
   foreach my $row ($sheet->{MinRow} .. $sheet->{MaxRow}) {
-    if ($name eq 'Business Info' || $name eq 'Documentation') {
+    if ($name eq 'Documentation') {
       my $guid = ( $sheet->{Cells}[$row][0]->{Val} );
       my $response = ( $sheet->{Cells}[$row][2]->{Val} );
       next if $guid !~ /^\d+$/ || !$response;
@@ -72,6 +72,11 @@ foreach my $sheet (@{ $excel->{Worksheet} }) {
       else {
         next;
       }
+      # Fix typo in SIG 4.0 spreadsheet
+      if ($guid == 2898) {
+        $response =~ s/Publicy/Publicly/;
+      }
+
       $guids{$guid}{response} = $response;
       $guids{$guid}{addlInfo} = $addlInfo;
     }
