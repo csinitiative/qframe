@@ -18706,100 +18706,89 @@ SIG Lite:
                 </csi:questionPrompt>
               </csi:question>
             </csi:questionGroup>
-            <csi:question>
+            <csi:questionGroup>
               <csi:qText>Are the following controls present in the building that contains the target data?</csi:qText>
               <csi:questionGUID>2560</csi:questionGUID>
               <csi:seqNumber>906</csi:seqNumber>
-              <csi:questionNumber>F.1.4</csi:questionNumber>
-              <csi:questionType>S</csi:questionType>
-              <csi:questionPrompt>
-                <csi:promptText>Yes</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>No</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>N/A</csi:promptText>
-                <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
-              </csi:questionPrompt>
-            </csi:question>
-            <csi:question>
-              <csi:qText>Signs or markings that identify the operations of the facility (e.g., datacenter)?</csi:qText>
-              <csi:questionGUID>2561</csi:questionGUID>
-              <csi:seqNumber>907</csi:seqNumber>
-              <csi:questionNumber>F.1.4.1</csi:questionNumber>
-              <csi:questionReferences>
-                <csi:reference>
-                  <csi:shortName>AUP</csi:shortName>
-                  <csi:referenceName>Agreed Upon Procedures</csi:referenceName>
-                  <csi:item>F.2 Physical Security Controls - Target Data</csi:item>
-                </csi:reference>
-                <csi:reference>
-                  <csi:shortName>ISO</csi:shortName>
-                  <csi:referenceName>ISO 17799:2005</csi:referenceName>
-                  <csi:item>9.1.3 Securing offices, rooms, and facilities</csi:item>
-                </csi:reference>
-              </csi:questionReferences>
-              <csi:questionType>S</csi:questionType>
-              <csi:questionPrompt>
-                <csi:promptText>Yes</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>No</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>N/A</csi:promptText>
-                <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
-              </csi:questionPrompt>
-            </csi:question>
-            <csi:question>
-              <csi:qText>Permit only authorized; photographic, video, audio or other recording equipment within the facility?</csi:qText>
-              <csi:questionGUID>2562</csi:questionGUID>
-              <csi:seqNumber>908</csi:seqNumber>
-              <csi:questionNumber>F.1.4.2</csi:questionNumber>
-              <csi:questionReferences>
-                <csi:reference>
-                  <csi:shortName>ISO</csi:shortName>
-                  <csi:referenceName>ISO 17799:2005</csi:referenceName>
-                  <csi:item>9.1.5 Working in secure areas</csi:item>
-                </csi:reference>
-              </csi:questionReferences>
-              <csi:questionType>S</csi:questionType>
-              <csi:questionPrompt>
-                <csi:promptText>Yes</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>No</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>N/A</csi:promptText>
-                <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
-              </csi:questionPrompt>
-            </csi:question>
-            <csi:question>
-              <csi:qText>Roof access secured and alarmed?</csi:qText>
-              <csi:questionGUID>2563</csi:questionGUID>
-              <csi:seqNumber>909</csi:seqNumber>
-              <csi:questionNumber>F.1.4.3</csi:questionNumber>
-              <csi:questionReferences>
-                <csi:reference>
-                  <csi:shortName>AUP</csi:shortName>
-                  <csi:referenceName>Agreed Upon Procedures</csi:referenceName>
-                  <csi:item>F.2 Physical Security Controls - Target Data</csi:item>
-                </csi:reference>
-              </csi:questionReferences>
-              <csi:questionType>S</csi:questionType>
-              <csi:questionPrompt>
-                <csi:promptText>Yes</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>No</csi:promptText>
-              </csi:questionPrompt>
-              <csi:questionPrompt>
-                <csi:promptText>N/A</csi:promptText>
-                <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
-              </csi:questionPrompt>
-            </csi:question>
+              <csi:groupQuestionNumber>F.1.4</csi:groupQuestionNumber>
+              <csi:question>
+                <csi:qText>Signs or markings that identify the operations of the facility (e.g., datacenter)?</csi:qText>
+                <csi:questionGUID>2561</csi:questionGUID>
+                <csi:seqNumber>907</csi:seqNumber>
+                <csi:questionNumber>F.1.4.1</csi:questionNumber>
+                <csi:questionReferences>
+                  <csi:reference>
+                    <csi:shortName>AUP</csi:shortName>
+                    <csi:referenceName>Agreed Upon Procedures</csi:referenceName>
+                    <csi:item>F.2 Physical Security Controls - Target Data</csi:item>
+                  </csi:reference>
+                  <csi:reference>
+                    <csi:shortName>ISO</csi:shortName>
+                    <csi:referenceName>ISO 17799:2005</csi:referenceName>
+                    <csi:item>9.1.3 Securing offices, rooms, and facilities</csi:item>
+                  </csi:reference>
+                </csi:questionReferences>
+                <csi:questionType>S</csi:questionType>
+                <csi:questionPrompt>
+                  <csi:promptText>Yes</csi:promptText>
+                </csi:questionPrompt>
+                <csi:questionPrompt>
+                  <csi:promptText>No</csi:promptText>
+                </csi:questionPrompt>
+                <csi:questionPrompt>
+                  <csi:promptText>N/A</csi:promptText>
+                  <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
+                </csi:questionPrompt>
+              </csi:question>
+              <csi:question>
+                <csi:qText>Permit only authorized; photographic, video, audio or other recording equipment within the facility?</csi:qText>
+                <csi:questionGUID>2562</csi:questionGUID>
+                <csi:seqNumber>908</csi:seqNumber>
+                <csi:questionNumber>F.1.4.2</csi:questionNumber>
+                <csi:questionReferences>
+                  <csi:reference>
+                    <csi:shortName>ISO</csi:shortName>
+                    <csi:referenceName>ISO 17799:2005</csi:referenceName>
+                    <csi:item>9.1.5 Working in secure areas</csi:item>
+                  </csi:reference>
+                </csi:questionReferences>
+                <csi:questionType>S</csi:questionType>
+                <csi:questionPrompt>
+                  <csi:promptText>Yes</csi:promptText>
+                </csi:questionPrompt>
+                <csi:questionPrompt>
+                  <csi:promptText>No</csi:promptText>
+                </csi:questionPrompt>
+                <csi:questionPrompt>
+                  <csi:promptText>N/A</csi:promptText>
+                  <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
+                </csi:questionPrompt>
+              </csi:question>
+              <csi:question>
+                <csi:qText>Roof access secured and alarmed?</csi:qText>
+                <csi:questionGUID>2563</csi:questionGUID>
+                <csi:seqNumber>909</csi:seqNumber>
+                <csi:questionNumber>F.1.4.3</csi:questionNumber>
+                <csi:questionReferences>
+                  <csi:reference>
+                    <csi:shortName>AUP</csi:shortName>
+                    <csi:referenceName>Agreed Upon Procedures</csi:referenceName>
+                    <csi:item>F.2 Physical Security Controls - Target Data</csi:item>
+                  </csi:reference>
+                </csi:questionReferences>
+                <csi:questionType>S</csi:questionType>
+                <csi:questionPrompt>
+                  <csi:promptText>Yes</csi:promptText>
+                </csi:questionPrompt>
+                <csi:questionPrompt>
+                  <csi:promptText>No</csi:promptText>
+                </csi:questionPrompt>
+                <csi:questionPrompt>
+                  <csi:promptText>N/A</csi:promptText>
+                  <csi:requireAdditionalInfo>1</csi:requireAdditionalInfo>
+                </csi:questionPrompt>
+              </csi:question>
+            </csi:questionGroup>
             <csi:question>
               <csi:questionGUID>337</csi:questionGUID>
               <csi:seqNumber>910</csi:seqNumber>
