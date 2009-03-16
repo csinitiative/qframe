@@ -42,6 +42,11 @@ class ErrorController extends QFrame_Controller_Action {
    */
   public function errorAction() {
     $this->view->exceptions = $this->_response->getException();
+    $logger = Zend_Registry::get('logger');
+    foreach($this->view->exceptions as $e) {
+      $message = $e->getMessage();
+      if(isset($logger) && $logger) $logger->log($message, Zend_Log::ERR);
+    }
   }
   
   /**
