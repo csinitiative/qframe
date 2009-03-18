@@ -15,7 +15,7 @@ class CreateTableSection extends Migration {
       array('sectionID', 'integer'),
       array('sectionGUID', 'integer', array('null' => true)),
       array('seqNumber', 'integer'),
-      array('sectionHeader', 'string', array('limit' => 80, 'null' => true)),
+      array('sectionHeader', 'string', array('limit' => 255, 'null' => true)),
       array('description', 'string', array('limit' => 128, 'null' => true)),
       array('required', 'boolean', array('default' => 1)),
       array('cloneable', 'boolean', array('default' => 0)),
