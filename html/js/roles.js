@@ -23,7 +23,7 @@ var Roles = {
       });
     }
     
-    $$('#permissions #page .option select').each(function(select) {
+    $$('#permissions #page_permissions .option select').each(function(select) {
       select.observe('change', Roles.selectChange);
     });
   }
