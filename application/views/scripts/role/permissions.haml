@@ -33,7 +33,7 @@
         %li
           = $permission
           != $this->formCheckbox("global[{$permission}]", $this->role->hasAccess($permission))
-  #page
+  #page_permissions
     %h2 page permissions
     Select a questionnaire and instance to set per-page permissions.
     %br/
