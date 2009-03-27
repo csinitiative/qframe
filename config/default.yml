@@ -3,3 +3,4 @@ data_path: data
 base_url: ""
 application_name: CSI QFrame
 help_url: https://qframe.csinitiative.net/wiki
+application_url: http://www.csinitiative.com
