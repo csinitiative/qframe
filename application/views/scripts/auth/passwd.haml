@@ -18,7 +18,7 @@
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
 #content.wide
-  %a{ 'target' => '_new', 'href' => 'http://www.csinitiative.com' }
+  %a{ 'target' => '_new', 'href' => QFrame_Config::instance()->application_url }
     != $this->imageTag('logo.gif', array('alt' => '[CSI Logo]', 'class' => 'inline'))
 
   %h1 change your password

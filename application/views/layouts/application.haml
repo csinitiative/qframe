@@ -34,7 +34,7 @@
     != $this->formHidden('base_url', $this->baseUrl)
     #page
       #header
-        %a{ 'target' => '_new', 'href' => 'http://www.csinitiative.com' }
+        %a{ 'target' => '_new', 'href' => QFrame_Config::instance()->application_url }
           != $this->imageTag('logo.gif', array('alt' => '[CSI Logo]', 'class' => 'inline'))
         %ol
           - if(isset($this->headerPages))
