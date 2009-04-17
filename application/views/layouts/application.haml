@@ -35,7 +35,7 @@
     #page
       #header
         %a{ 'target' => '_new', 'href' => QFrame_Config::instance()->application_url }
-          != $this->imageTag('logo.gif', array('alt' => '[CSI Logo]', 'class' => 'inline'))
+          != $this->imageTag('logo.png', array('alt' => '[CSI Logo]', 'class' => 'inline'))
         %ol
           - if(isset($this->headerPages))
             != $this->renderPartial('page', $this->headerPages, true, true)

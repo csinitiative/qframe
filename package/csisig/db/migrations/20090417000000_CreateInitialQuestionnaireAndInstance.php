@@ -17,8 +17,8 @@ class CreateInitialQuestionnaireAndInstance extends Migration {
     try {
       $instance = new InstanceModel(array(
         'questionnaireName'    => 'CSI SIG',
-        'questionnaireVersion' => '3.1',
-        'revision'             => '1',
+        'questionnaireVersion' => '4.0',
+        'revision'             => '2',
         'instanceName'         => 'Sample SIG Instance'
       ));
       $questionnaire = $instance->parent;
