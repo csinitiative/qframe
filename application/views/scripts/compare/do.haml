@@ -35,14 +35,19 @@
   %table#failureTable
     %tr.header
       %th.subdominant question
+      %th page
+      %th num
       %th response
       %th.subdominant additional information
       %th error message(s)
     - $rowNum = 0
     - foreach($this->failures['model_fail'] as $failure)
       - $rowNum++
+      - $page = ($failure['question']->parent instanceof SectionModel) ? $failure['question']->parent->parent->pageHeader : $failure['question']->parent->parent->parent->pageHeader
       %tr{ 'class' => (($rowNum % 2) ? 'odd' : 'even') }
         %td= $failure['question']->qText
+        %td= $page
+        %td= $failure['question']->questionNumber
         %td= $failure['question']->getResponseText()
         %td= $failure['question']->getResponse()->additionalInfo
         %td.nowrap
@@ -59,13 +64,18 @@
   %table#additionalTable
     %tr.header
       %th question
+      %th page
+      %th num
       %th response
       %th.dominant additional information
     - $rowNum = 0
     - foreach($this->failures['additional_information'] as $failure)
       - $rowNum++
+      - $page = ($failure['question']->parent instanceof SectionModel) ? $failure['question']->parent->parent->pageHeader : $failure['question']->parent->parent->parent->pageHeader
       %tr{ 'class' => (($rowNum % 2) ? 'odd' : 'even') }
         %td= $failure['question']->qText
+        %td= $page
+        %td= $failure['question']->questionNumber
         %td= $failure['question']->getResponseText()
         %td= $failure['question']->getResponse()->additionalInfo
       - if ($failure['remediation_info'])
@@ -79,13 +89,18 @@
   %table#passingTable
     %tr.header
       %th question
+      %th page
+      %th num
       %th response
       %th.dominant additional information
     - $rowNum = 0
     - foreach($this->failures['model_pass'] as $failure)
       - $rowNum++
+      - $page = ($failure['question']->parent instanceof SectionModel) ? $failure['question']->parent->parent->pageHeader : $failure['question']->parent->parent->parent->pageHeader
       %tr{ 'class' => (($rowNum % 2) ? 'odd' : 'even') }
         %td= $failure['question']->qText
+        %td= $page
+        %td= $failure['question']->questionNumber
         %td= $failure['question']->getResponseText()
         %td= $failure['question']->getResponse()->additionalInfo
       - if ($failure['remediation_info'])

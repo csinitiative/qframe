@@ -22,10 +22,12 @@
 - header('Content-Type: application/octet-stream');
 - header('Content-Disposition: attachment; filename=report.csv')
 - $lookup = array('model_fail' => 'failure', 'model_pass' => 'pass', 'additional_information' => 'had addl info')
-"category","question","response","additional information","failure message(s)","remediation info"
+"category","page","question number","question","response","additional information","failure message(s)","remediation info"
 - foreach($this->failures as $index => $entries) 
   - foreach($entries as $entry)
     - $question = $this->escapeForCsv($entry['question']->qText)
+    - $page = ($entry['question']->parent instanceof SectionModel) ? $this->escapeForCsv($entry['question']->parent->parent->pageHeader) : $this->escapeForCsv($entry['question']->parent->parent->parent->pageHeader);
+    - $questionNumber = $this->escapeForCsv($entry['question']->questionNumber)
     - $response = $this->escapeForCsv($entry['question']->getResponseText())
     - $addl = $this->escapeForCsv($entry['question']->getResponse()->additionalInfo)
     - foreach($entry['messages'] as $message)
@@ -34,4 +36,4 @@
     - else $messageString = implode('","', $messages)
     - $remediationInfo = $this->escapeForCsv($entry['remediation_info'])
     - unset($messages)
-    != "\"{$lookup[$index]}\",\"{$question}\",\"{$response}\",\"{$addl}\",\"{$messageString}\",\"{$remediationInfo}\""
+    != "\"{$lookup[$index]}\",\"{$page}\",\"{$questionNumber}\",\"{$question}\",\"{$response}\",\"{$addl}\",\"{$messageString}\",\"{$remediationInfo}\""
