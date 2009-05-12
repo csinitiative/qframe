@@ -33,7 +33,7 @@
 - if(!$this->isBlank($this->page->headerText))
   != $this->markdown($this->h($this->page->headerText))
   
-!= $this->form(array('action' => 'save', 'id' => $this->page->pageID), false, 'post', array('class' => 'questions', 'enctype' => 'multipart/form-data', target => 'saveIFrame' ))
+!= $this->form(array('action' => 'save', 'id' => $this->page->pageID), false, 'post', array('class' => 'questions', 'enctype' => 'multipart/form-data', 'target' => 'saveIFrame' ))
 != $this->formHidden('pageID', $this->currentPageID)
 != $this->formHidden('cancelPath', $this->url(array('action' => 'view')))
 

@@ -18,26 +18,6 @@ var CsiQframe = {
   },
   
   /**
-   * Process question form submission.  Any required validation would occur here
-   * as well as manipulation of form elements prior to submission.
-   *
-   * @param Event event object representing the event that triggered this call
-   */
-  questionsSubmit: function(evt) {
-    $$('.additionalInfo').each(function(e) {
-      if(!e.hasClassName('hasContent') || e.value == '') {
-        e.remove();
-      }
-    });
-    $$('.privateNote').each(function(e) {
-      if(!e.hasClassName('hasContent') || e.value == '') {
-        e.remove();
-      }
-    });
-    return true;
-  },
-  
-  /**
    * Event handler for focus events on additional info text boxes
    *
    * @param Event event object representing this event
@@ -47,8 +27,31 @@ var CsiQframe = {
     if(!e.hasClassName('hasContent')) {
       e.value = '';
       e.addClassName('hasContent');
-      $(e.name + '_mod').value = 1;
     }
+  },
+  
+  /**
+   * Event handler for blur events on additional info text boxes
+   *
+   * @param Event event object representing this event
+   */
+  addlInfoBlur: function(evt) {
+    var e = Event.element(evt);
+    if(e.value == '') {
+      e.value = 'Enter additional information here';
+      if(e.hasClassName('additionalInfoRequired')) e.value += ' (required)';
+      e.removeClassName('hasContent');
+    }
+  },
+  
+  /**
+   * Event handler for keypress events on additional info text boxes
+   *
+   * @param Event event object representing this event
+   */
+  addlInfoKeypress: function(evt) {
+    var e = Event.element(evt);
+    $(e.name + '_mod').value = 1;
   },
 
   /**
@@ -61,8 +64,30 @@ var CsiQframe = {
     if(!e.hasClassName('hasContent')) {
       e.value = '';
       e.addClassName('hasContent');
-      $(e.name + '_mod').value = 1;
     }
+  },
+  
+  /**
+   * Event handler for blur events on private note text boxes
+   *
+   * @param Event event object representing this event
+   */
+  privateNoteBlur: function(evt) {
+    var e = Event.element(evt);
+    if(e.value == '') {
+      e.value = 'Enter private notes here';
+      e.removeClassName('hasContent');
+    }
+  },
+  
+  /**
+   * Event handler for keypress events on additional info text boxes
+   *
+   * @param Event event object representing this event
+   */
+  privateNoteKeypress: function(evt) {
+    var e = Event.element(evt);
+    $(e.name + '_mod').value = 1;
   },
 
   /**
@@ -78,35 +103,6 @@ var CsiQframe = {
       base = e.name;
       base = base.replace(/]$/, '');
       $(base + 'Mod]').value = 1;
-    }
-  },
-  
-  /**
-   * Event handler for blur events on additional info text boxes
-   *
-   * @param Event event object representing this event
-   */
-  addlInfoBlur: function(evt) {
-    var e = Event.element(evt);
-    if(e.value == '') {
-      e.value = 'Enter additional information here';
-      if(e.hasClassName('additionalInfoRequired')) e.value += ' (required)';
-      e.removeClassName('hasContent');
-      $(e.name + '_mod').value = 0;
-    }
-  },
-
-  /**
-   * Event handler for blur events on private note text boxes
-   *
-   * @param Event event object representing this event
-   */
-  privateNoteBlur: function(evt) {
-    var e = Event.element(evt);
-    if(e.value == '') {
-      e.value = 'Enter private notes here';
-      e.removeClassName('hasContent');
-      $(e.name + '_mod').value = 0;
     }
   },
 
@@ -135,6 +131,7 @@ var CsiQframe = {
   setupAddlInfoListeners: function(e) {
     e.observe('focus', CsiQframe.addlInfoFocus);
     e.observe('blur', CsiQframe.addlInfoBlur);
+    e.observe('keypress', CsiQframe.addlInfoKeypress);
   },
 
   /**
@@ -146,6 +143,7 @@ var CsiQframe = {
   setupPrivateNoteListeners: function(e) {
     e.observe('focus', CsiQframe.privateNoteFocus);
     e.observe('blur', CsiQframe.privateNoteBlur);
+    e.observe('keypress', CsiQframe.privateNoteKeypress);
   },
 
   /**
@@ -217,10 +215,6 @@ Event.observe(window, 'load', function () {
 
   $$('.remediationInfo').each(function(e) {
     CsiQframe.setupRemediationInfoListeners(e);
-  });
-  
-  $$('form.questions').each(function(frm) {
-    frm.observe('submit', CsiQframe.questionsSubmit);
   });
   
   $$('img.hover').each(function(img) {

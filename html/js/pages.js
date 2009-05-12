@@ -45,6 +45,36 @@ var Pages = {
       addlInfo.value = addlInfo.value.replace(/ \(required\)$/, '');
     }
   },
+  
+  /**
+   * Since a save does not refresh the page, this function will reset all of the controls to the
+   * states that they should be in at page load
+   */
+  resetControls: function() {
+    // reset all addl_mod element values to 0 (after a save no elements have been modififed)
+    $$('input[type=hidden][name$=addl_mod]').each(function(element) {
+      element.value = 0;
+    });
+    
+    // hide any additional info boxes that now have no content
+    $$('textarea:not([class~=hasContent])').each(function(element) {
+      var container = element.up('span');
+      if(container.visible()) {
+        container.hide();
+        element.value = 'Enter additional information here';
+        if(element.hasClassName('additionalInfoRequired')) element.value += ' (required)';
+        
+        container.next('.more-options').select('ul li').each(function(option) {
+          if(container.hasClassName('additionalInfo_main') && option.down('a[href="#showAddlInfo"]')) {
+            option.show();
+          }
+          else if(container.hasClassName('privateNote_main') && option.down('a[href="#showPrivateNote"]')) {
+            option.show();
+          }
+        });
+      }
+    });
+  },
 
   /**
    * Handles a click on the "save" button
@@ -59,7 +89,7 @@ var Pages = {
       if(attachment.timer) attachment.timer.stop();
     });
     
-    /* Check for a still-uploading file and more the file element back to the main form
+    /* Check for a still-uploading file and move the file element back to the main form
      * if one is found */
     var upload = $('uploadForm');
     if(upload) upload = upload.down('input[type=file]');
@@ -73,8 +103,12 @@ var Pages = {
     $('disableOverlay').setStyle({ top: offsets.top + 'px', left: 0 });
     content.setStyle({ top: top + 'px', left: left + 'px' });
     Effect.Appear('disableOverlay', { duration: 0.15, to: 0.90 });
+    
+    /* make sure that any additional_info boxes that are marked as having no content are wiped */
+    $$('textarea:not([class~=hasContent])').each(function(element) {
+      element.value = '';
+    });
 
-    var iframe = $('saveIFrame');
     $$('form.questions').first().submit();
   },
 
