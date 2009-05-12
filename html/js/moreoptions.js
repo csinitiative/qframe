@@ -211,7 +211,7 @@ var MoreOptions = {
     questionWrapper.down('.additionalInfo_main').show();
     questionWrapper.down('.additionalInfo').show();
     MoreOptions.hideOptions(questionWrapper);
-    $(link).up('li').remove();
+    $(link).up('li').hide();
   },
 
   /**
@@ -229,7 +229,7 @@ var MoreOptions = {
     questionWrapper.down('.privateNote_main').show();
     questionWrapper.down('.privateNote').show();
     MoreOptions.hideOptions(questionWrapper);
-    $(link).up('li').remove();
+    $(link).up('li').hide();
   },
 
   /**
@@ -247,7 +247,7 @@ var MoreOptions = {
   
     questionWrapper.down('.remediationInfo').show();
     MoreOptions.hideOptions(questionWrapper);
-    $(link).up('li').remove();
+    $(link).up('li').hide();
   },
   
   /**

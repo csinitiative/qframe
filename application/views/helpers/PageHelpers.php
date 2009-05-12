@@ -263,24 +263,21 @@ class QFrame_View_Helper_PageHelpers {
       $class .= ' hasContent';
       $content = $this->view->h($response->additionalInfo);
       $style = '';
-      $mod = 1;
     }
     elseif($response->requiresAdditionalInfo()) {
       $class .= ' additionalInfoRequired';
       $content = 'Enter additional information here (required)';
       $style = '';
-      $mod = 0;
     }
     else {
       $style = 'display: none;';
       $content = 'Enter additional information here';
-      $mod = 0;
     }
     
     $addlInfo = "<br/>additional information:<br/>\n";
     $addlInfo .= $this->view->formTextarea("q{$response->parent->questionID}_addl", $content, array('class' => $class, 'style' => $style));
     $addlInfo = $builder->span(array('class' => 'additionalInfo_main', 'style' => $style), $addlInfo);
-    $addlInfoMod = $this->view->formHidden("q{$response->parent->questionID}_addl_mod", $mod);
+    $addlInfoMod = $this->view->formHidden("q{$response->parent->questionID}_addl_mod", 0);
     
     return $addlInfo . $addlInfoMod;
   }
@@ -298,18 +295,16 @@ class QFrame_View_Helper_PageHelpers {
       $class .= ' hasContent';
       $content = $this->view->h($response->privateNote);
       $style = '';
-      $mod = 1;
     }
     else {
       $style = 'display: none;';
       $content = 'Enter private notes here';
-      $mod = 0;
     }
 
     $privNote = "<br/>private notes:<br/>\n";
     $privNote .= $this->view->formTextarea("q{$response->parent->questionID}_privateNote", $content, array('class' => $class, 'style' => $style));
     $privNote = $builder->span(array('class' => 'privateNote_main', 'style' => $style), $privNote);
-    $privNoteMod = $this->view->formHidden("q{$response->parent->questionID}_privateNote_mod", $mod);
+    $privNoteMod = $this->view->formHidden("q{$response->parent->questionID}_privateNote_mod", 0);
 
     return $privNote . $privNoteMod;
   }
