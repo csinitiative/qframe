@@ -27,8 +27,9 @@
 %br/
 != $this->form(array(), false, 'get')
 
-!= $this->formHidden('editPath', $this->url(array('action' => 'edit')))
 != $this->formHidden('comparePath', $this->url(array('action' => 'do')))
+!= $this->formHidden('editPath', $this->url(array('action' => 'edit')))
+!= $this->formHidden('deletePath', $this->url(array('action' => 'delete')))
 
 .option
   != $this->formLabel('questionnaire', 'Questionnaire:')
@@ -41,8 +42,9 @@
   != $this->formSubmit('create', 'create model', array('style' => 'display:none;'))
   != $this->formButton('cancel', 'cancel', array('style' => 'display:none;'))
   != $this->formButton('new', 'new model', $newButtonAttributes)
-  != $this->formButton('edit', 'edit model', array('disabled' => 'disabled'))
   != $this->formButton('compare', 'perform comparison', array('disabled' => 'disabled'))
+  != $this->formButton('edit', 'edit model', array('disabled' => 'disabled'))
+  != $this->formButton('delete', 'delete model', array('disabled' => 'disabled'))
 - if(isset($this->instances))
   .option.instances{ 'style' => 'display: none;' }
     != $this->formLabel('instance', 'Instance:')
