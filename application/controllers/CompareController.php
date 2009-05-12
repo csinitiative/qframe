@@ -109,6 +109,14 @@ class CompareController extends QFrame_Controller_Action {
   }
   
   /**
+   * Delete action. Delete a model.
+   */
+  public function deleteAction() {
+    $this->model->delete();
+    $this->_redirector->gotoUrl("/compare?questionnaire={$this->_getParam('questionnaire')}");
+  }
+  
+  /**
    * Save action.  Save a model.
    */
   public function saveAction() {

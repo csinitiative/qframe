@@ -58,6 +58,18 @@ var Dashboard = {
   },
   
   /**
+   * Redirect to the delete path for the selected model
+   *
+   * @param Event event in the case that this is called as an event handler
+   */
+  deleteModel: function(event) {
+    if (confirm('This action cannot be undone.  Are you sure?')) {
+      var deletePath = $F('deletePath') + '/' + $F('model');
+      window.location = deletePath + '?questionnaire=' + $F('model[questionnaireID]');
+    }
+  },
+  
+  /**
    * Redirect to the comparison path for the selected model & instance
    *
    * @param Event event in the case that this is called as an event handler
@@ -117,12 +129,14 @@ var Dashboard = {
   modelSelected: function(event) {
     var form = Event.element(event).up('form');
     if($F('model') != 0) {
-      form.down('input[type=button][name=edit]').enable();
       form.down('input[type=button][name=compare]').enable();
+      form.down('input[type=button][name=edit]').enable();
+      form.down('input[type=button][name=delete]').enable();
     }
     else {
-      form.down('input[type=button][name=edit]').disable();
       form.down('input[type=button][name=compare]').disable();
+      form.down('input[type=button][name=edit]').disable();
+      form.down('input[type=button][name=delete]').disable();
     }
   },
   
@@ -165,6 +179,9 @@ var Dashboard = {
     
     // fire the appropriate function when the edit model button is clicked
     $$('input[type=button][name=edit]').first().observe('click', Dashboard.editModel);
+    
+    // fire the appropriate function when the edit model button is clicked
+    $$('input[type=button][name=delete]').first().observe('click', Dashboard.deleteModel);
     
     // fire the appropriate function when the compare button is clicked
     $$('input[type=button][name=compare]').first().observe('click', Dashboard.performComparison);
