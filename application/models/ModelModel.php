@@ -250,6 +250,23 @@ class ModelModel {
   }
   
   /**
+   * Get the model (or models) with the given name
+   *
+   * @param string model The name of the model (or models) we are looking for
+   * @return array
+   */
+  public static function findModelsByName($name) {
+    if (!isset(self::$modelTable)) self::$modelTable = QFrame_Db_Table::getTable('model');
+    $where = self::$modelTable->getAdapter()->quoteInto('name = ?', $name);
+    $rows = self::$modelTable->fetchAll($where);
+    $models = array();
+    foreach ($rows as $row) {
+      $models[] = new ModelModel(array('modelID' => $row->modelID));
+    }
+    return $models;
+  }
+  
+  /**
    * Returns comparison information based on criteria arguments
    * 
    * @param array See argument array below
