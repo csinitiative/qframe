@@ -91,8 +91,18 @@ class CompareController extends QFrame_Controller_Action {
    * Create action.  Simply creates a new model.
    */
   public function createAction() {
+    // fetch model parameters
     $modelParams = $this->_getParam('model');
-    ModelModel::create($modelParams['name'], $modelParams['questionnaireID']);
+    
+    // make sure that another model with this name does not already exist
+    if(count(ModelModel::findModelsByName($modelParams['name'])) > 0) {
+      $this->flash('error', 'A model with the specified name already exists');
+    }
+    else {
+      ModelModel::create($modelParams['name'], $modelParams['questionnaireID']);
+    }
+    
+    // redirect back to the model selection screen
     $this->_redirector->gotoUrl("/compare?questionnaire={$this->_getParam('questionnaire')}");
   }
   
