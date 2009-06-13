@@ -1,0 +1,12 @@
+svnlog
+svnignore
+project.tmproj
+notes
+tmp/*
+log/*.log
+application/views/cache/*
+config/database.yml
+scripts/local*
+docs/*
+html/css/*.cache
+html/css/*.csscache
