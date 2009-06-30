@@ -663,7 +663,8 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    */
   public function getPctApproved() {
     if($this->numQuestions == 0) return '100';
-    return round(($this->numApproved / $this->numQuestions) * 100, 2);
+    $availableQuestions = $this->numQuestions - $this->getNumQuestionsDisabled();
+    return round(($this->numApproved / $availableQuestions) * 100, 2);
   }
   
   /**
