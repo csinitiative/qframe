@@ -210,7 +210,7 @@ class PageModel implements QFrame_Lockable, QFrame_Permissible {
     if (!isset($questionGroupTypeID)) $questionGroupTypeID = -1;
     $select = 'SELECT COUNT(q.questionID) AS tally FROM question AS q INNER JOIN ' .
         '(SELECT DISTINCT questionID FROM response WHERE state = 2 AND ISNULL(responseEndDate)) ' .
-        'AS r WHERE q.pageID = ? AND q.questionTypeID != ? AND q.questionTypeID != ? AND ' .
+        'AS r WHERE q.pageID = ? AND q.disableCount = 0 AND q.questionTypeID != ? AND q.questionTypeID != ? AND ' .
         'q.questionID = r.questionID AND q.questionTypeID != ? AND q.questionTypeID != ?';
     $bindVars = array(
       $this->pageRow->pageID,

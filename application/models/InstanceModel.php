@@ -562,7 +562,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     if (!isset($questionGroupTypeID)) $questionGroupTypeID = -1;
     $select = 'SELECT COUNT(q.questionID) AS tally FROM question AS q INNER JOIN ' .
         '(SELECT DISTINCT questionID FROM response WHERE state = 2 AND ISNULL(responseEndDate)) ' .
-        'AS r WHERE q.instanceID = ? AND q.questionTypeID != ? AND q.questionTypeID != ? AND ' .
+        'AS r WHERE q.instanceID = ? AND q.disableCount = 0 AND q.questionTypeID != ? AND q.questionTypeID != ? AND ' .
         'q.questionID = r.questionID';
     $bindVars = array(
       $this->instanceRow->instanceID,
