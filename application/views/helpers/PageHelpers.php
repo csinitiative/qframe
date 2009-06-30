@@ -199,8 +199,11 @@ class QFrame_View_Helper_PageHelpers {
     $result = '';
     if (is_numeric($response->dbUserID) && strlen($response->responseText) > 0) {
       if ($response->dbUserID != -1) {
-        $user = new DbUserModel(array('dbUserID' => $response->dbUserID));
-        $result = "[{$user->dbUserName}]";
+        try {
+          $user = new DbUserModel(array('dbUserID' => $response->dbUserID));
+          $result = "[{$user->dbUserName}]";
+        }
+        catch (Exception $e) {}
       }
     }
     $result = $builder->span(array('class' => 'responderInfo'), $result);
