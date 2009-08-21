@@ -39,7 +39,7 @@ elementFormDefault="qualified">
                 <xsl:for-each select="./csi:question">
                   <strong><xsl:value-of select="csi:questionNumber"/><xsl:text> </xsl:text><xsl:value-of select="csi:qText"/></strong><br/>
                   <xsl:if test="./csi:responses/csi:response/*">
-                    <xsl:value-of select="csi:response/csi:responseText"/><br/><br/>
+                    <xsl:value-of select="csi:responses/csi:response/csi:responseText"/><br/><br/>
                     <xsl:if test="csi:question/csi:response/csi:additionalInfo">
                       Additional Information: <xsl:value-of select="csi:question/csi:response/csi:additionalInfo"/><br/><br/>
                     </xsl:if>
