@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-qframe" questionnaireName="CSI SIG" questionnaireVersion="4.0" revision="2" targetQFrameVersion="1.0">
+<csi:questionnaire xmlns:csi="http://www.csinitiative.com/ns/csi-qframe" questionnaireName="CSI SIG" questionnaireVersion="4.0" revision="3" targetQFrameVersion="1.0">
   <csi:pages>
     <csi:page>
       <csi:pageHeader>Instructions</csi:pageHeader>
@@ -16347,7 +16347,7 @@ SIG Lite:
         <csi:section>
           <csi:sectionHeader></csi:sectionHeader>
           <csi:sectionGUID>10</csi:sectionGUID>
-          <csi:seqNumber>10</csi:seqNumber>
+          <csi:seqNumber>8</csi:seqNumber>
           <csi:questions>
             <csi:question>
               <csi:questionGUID>2536</csi:questionGUID>
@@ -16443,7 +16443,7 @@ SIG Lite:
           <csi:section>
             <csi:sectionHeader>E.2.1.4: Are the following background checks performed on:</csi:sectionHeader>
             <csi:sectionGUID>21</csi:sectionGUID>
-            <csi:seqNumber>8</csi:seqNumber>
+            <csi:seqNumber>9</csi:seqNumber>
             <csi:questions>
             <csi:questionGroup>
               <csi:qText>Criminal:</csi:qText>
