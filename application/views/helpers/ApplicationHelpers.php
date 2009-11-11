@@ -54,7 +54,7 @@ class QFrame_View_Helper_ApplicationHelpers {
    * @return string
    */
   public function h($str) {
-    return htmlentities($str);
+    return htmlentities($str, ENT_COMPAT, "UTF-8");
   }
   
   /**
