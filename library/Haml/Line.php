@@ -20,8 +20,8 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
- 
- 
+
+
 /** Haml_Prolog */
 require_once 'Haml/Prolog.php';
 
@@ -58,7 +58,7 @@ class Haml_Line {
   const STATE_UNESCAPED = 47;
   const STATE_AFTERTAG = 50;
   const STATE_CODE = 55;
-  
+
   /**
    * List of symbols with simple state transitions
    * @var array
@@ -71,7 +71,7 @@ class Haml_Line {
     '='  => self::STATE_CODE,
     "\n" => self::STATE_END
   );
-  
+
   /**
    * Character by character line-parser
    *
@@ -88,9 +88,10 @@ class Haml_Line {
    * @param   string  the string being parsed
    * @param   boolean species whether this line has children (lines with a greater
    * indentation level and immediately following this line)
+   * @param   string  (optional) character set to use when parsing this line
    * @return  Haml_Element
    */
-  static function parse($str, $has_children) {
+  static function parse($str, $has_children, $charset = 'UTF-8') {
     $token = '';
     $tag = NULL;
     $wrap_content = false;
@@ -98,19 +99,19 @@ class Haml_Line {
     $echo_content = false;
     $hide_comment = false;
     $comment = false;
-    
+
     if($str == '') return '';
-    
+
     if(substr($str, 0, 3) == '!!!') return new Haml_Prolog(trim(substr($str, 3)));
     if(trim($str) == '/') return new Haml_Comment();
-    
+
     $state = self::STATE_BEGIN;
     $str .= "\n";
     for($i = 0; $i < strlen($str); $i++) {
       $ch = $str[$i];
       switch($state) {
-      
-      /* The beginning state (mostly recognizes special characters that are valid line-leaders) */        
+
+      /* The beginning state (mostly recognizes special characters that are valid line-leaders) */
       case self::STATE_BEGIN:
         if($ch == '%') $state = self::STATE_TAG;
         else if($ch == '#') {
@@ -143,7 +144,7 @@ class Haml_Line {
           $token .= $ch;
         }
         break;
-        
+
       /* State where the first character we saw was a !, need to see if the next character is = */
       case self::STATE_UNESCAPED:
         if($ch == '=') {
@@ -155,7 +156,7 @@ class Haml_Line {
           $state = self::STATE_CONTENT;
         }
         break;
-      
+
       /* State where we are inside of the actual tag name ('%' as a line-leader) */
       case self::STATE_TAG:
         if(array_key_exists($ch, self::$symbols)) {
@@ -170,7 +171,7 @@ class Haml_Line {
         }
         else $token .= $ch;
         break;
-      
+
       /* State where we are inside of an ID (line began with a '#' or a '#' was found
        * while in STATE_TAG or STATE_CLASS)
        */
@@ -182,7 +183,7 @@ class Haml_Line {
         }
         else $token .= $ch;
         break;
-        
+
       /* See above comment replacing 'ID' with 'Class' */
       case self::STATE_CLASS:
         if(array_key_exists($ch, self::$symbols)) {
@@ -192,7 +193,7 @@ class Haml_Line {
         }
         else $token .= $ch;
         break;
-      
+
       /* Line began with an '=', hence the line contains code that must be wrapped/echoed */
       case self::STATE_CODE:
         if($ch == ' ') {
@@ -203,7 +204,7 @@ class Haml_Line {
         }
         else throw new Exception("Invalid tag string '" . $line . "'");
         break;
-      
+
       /* Double-quoted string found in attribute list (in other words, don't break out of
        * the attribute list of a } and recognize the escape character)
        */
@@ -212,7 +213,7 @@ class Haml_Line {
         else if($ch == "\\") $state = self::STATE_ESC;
         $token .= $ch;
         break;
-      
+
       /* Basically a place holder state to give a free ride to the character following
        * the escape character while inside a double-quoted string
        */
@@ -220,7 +221,7 @@ class Haml_Line {
         $state = self::STATE_DQS;
         $token .= $ch;
         break;
-      
+
       /* Single-quoted string found in attribute list (see above minus the bit about escape
        * characters)
        */
@@ -228,7 +229,7 @@ class Haml_Line {
         if($ch == "'") $state = self::STATE_ATTRS;
         $token .= $ch;
         break;
-      
+
       /* This state occurs as an attribute list is ending or just after a tag without an
        * attribute list.  It basically serves to look for the few things that can occur
        * in this situation (a space for normal content, / for a self-closing tag, or =
@@ -246,7 +247,7 @@ class Haml_Line {
           return $tag;
         }
         break;
-      
+
       /* Essentially a catch-all state for when the real work is done.  Just collects
        * characters until a newline is found at which time it wraps (or doesn't wrap)
        * content and either adds content to the tag that has been created for this line
@@ -257,7 +258,9 @@ class Haml_Line {
         if($wrap_content && !$echo_content && $ch === '#') return new Haml_Comment(true);
         if($ch == "\n") {
           if($wrap_content) {
-            if($echo_content && $escape_content) $token = "htmlentities({$token})";
+            if($echo_content && $escape_content) {
+              $token = "htmlentities({$token}, ENT_COMPAT, \"{$charset}\")";
+            }
             if($echo_content) $token = ' echo ' . $token . " . \"\\n\";";
             else if($has_children && is_null($tag)) $tag = new Haml_Block(trim($token));
             else $token .= ';';
@@ -270,7 +273,7 @@ class Haml_Line {
         }
         else $token .= $ch;
         break;
-      
+
       /* Inside an attribute list and *not* inside a string */
       case self::STATE_ATTRS:
         if($ch == '}') {
@@ -281,13 +284,13 @@ class Haml_Line {
         }
         else if($ch == "'") $state = self::STATE_SQS;
         else if($ch == '"') $state = self::STATE_DQS;
-      
+
       /* Catch-all */
       default:
         $token .= $ch;
       }
     }
-    
+
     /* Should never get here but a good idea to have in case an editor is used that
      * does any analysis fo the code and determines that this function is not
      * guaranteed to return

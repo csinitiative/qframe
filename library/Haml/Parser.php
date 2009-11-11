@@ -46,7 +46,7 @@ class Haml_Parser {
    * @var string
    */
   private $indent_string = NULL;
-  
+
   /**
    * Current indent level
    * @var integer
@@ -58,6 +58,12 @@ class Haml_Parser {
    * @var string
    */
   private $template = NULL;
+
+  /**
+   * Character set to use
+   * @var string
+   */
+  private $charset = 'UTF-8';
 
   /**
    * Stack of unclosed tags (push on > indent, pop on < indent)
@@ -83,11 +89,13 @@ class Haml_Parser {
    * Simply accepts a template and assigns it to the appropriate member
    *
    * @param string Haml template to be parsed
+   * @param string (optional) character set to use (defaults to UTF-8)
    */
-  function __construct($template) {
+  function __construct($template, $charset = 'UTF-8') {
     $this->template = $template;
+    $this->charset = $charset;
   }
-  
+
   /**
    * Renders a template
    *
@@ -109,15 +117,15 @@ class Haml_Parser {
       $tag = array_pop($this->tag_stack);
 	    $output .= str_repeat($this->indent_string, $i) . $tag->end() . "\n";
     }
-    
+
     /*
      * Remove closing ?> and opening <?php when they are adjoined by only whitespace
      */
     $output = preg_replace('/\?>\s*<\?php/', '', $output);
-    
+
     return $output;
   }
-  
+
   /**
    * (PRIVATE) Render a line (sans white space)
    *
@@ -133,15 +141,15 @@ class Haml_Parser {
     $current_indent = $this->get_indent_level($line);
     if($this->hide_until !== null && $current_indent > $this->hide_until) return null;
     elseif($this->hide_until !== null) $this->hide_until = null;
-    
-    
+
+
     if(trim($line) == '') {
       $this->blank_lines++;
-      return null;  
+      return null;
     }
-        
+
   	$content = $this->indent($line) . str_repeat($this->indent_string, $this->indent_level);
-  	$parsed = Haml_Line::parse($line, $current_indent < $next_level);
+  	$parsed = Haml_Line::parse($line, $current_indent < $next_level, $this->charset);
     if($parsed instanceof Haml_Element) {
       if($parsed->hide_content()) {
         $this->hide_until = $current_indent;
@@ -153,8 +161,8 @@ class Haml_Parser {
     else if($parsed instanceof Haml_Prolog) $content .= $parsed->content();
     else $content .= $parsed;
   	return $content;
-  } 
-  
+  }
+
   /**
    * (PRIVATE) Determine the indentation for the given line using
    *
@@ -180,7 +188,7 @@ class Haml_Parser {
   	$line = trim($line);
   	return $content;
   }
-  
+
   /**
    * (PRIVATE) Fetches the indent level for a given line
    *
@@ -198,7 +206,7 @@ class Haml_Parser {
     }
     else return 0;
   }
-  
+
   /**
    * (PRIVATE) Returns leading whitespace for a given string
    *
