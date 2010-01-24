@@ -19,6 +19,12 @@
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
 
+/*
+ * Default PHP setting(s)
+ */
+if (ini_get('memory_limit') <= '384M')
+  ini_set('memory_limit', '384M');
+
 // Uncomment this to see phpinfo() for the running server
 //phpinfo(); exit;
 
