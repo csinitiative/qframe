@@ -21,11 +21,12 @@
  
 
 // Get database connection information for all environments
-$db_profiles = Spyc::YAMLLoad(CONFIG_PATH . DIRECTORY_SEPARATOR . 'database.yml');
+$db_config = CONFIG_PATH . DIRECTORY_SEPARATOR . 'database.yml';
+$db_profiles = Spyc::YAMLLoad($db_config);
 
 // Check for a valid environment
 if(!isset($db_profiles[QFRAME_ENV]))
-  die("Specified environment '" . QFRAME_ENV . "' does not exist.\n\n");
+  die("Specified database environment '" . QFRAME_ENV . "' does not exist in '$db_config'.\n\n");
 
 // Get the database connection information for this environment
 $db_options = array_merge(array(
