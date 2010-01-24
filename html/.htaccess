@@ -1,5 +1,8 @@
 SetEnv          QFRAME_ENV development
 
+php_value upload_max_filesize 32M
+php_value post_max_size 32M
+
 RewriteEngine   on
 RewriteRule     \.css$ sass.php [L]
 RewriteRule     !\.(js|ico|gif|jpg|png|css|php|html)$ route.php
