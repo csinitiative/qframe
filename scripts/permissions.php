@@ -145,6 +145,7 @@ chdir(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..');
 
 // Establish baseline ownership and permissions
 echo "Setting baseline permissions (this may take a while)...\n";
+
 // Set ownership of all files to root:root at first
 `chown -R root:{$root_group_id} .`;
 // Set directories to 755
@@ -156,48 +157,53 @@ echo "Setting baseline permissions (this may take a while)...\n";
 
 // Go through all of the directories in the permissions array applying the requested permissions
 foreach($permissions as $directory => $settings) {
+  //If file or directory doesn't exist, then create it doesn't exist
   if(!file_exists($directory)) {
-    echo "File or directory '{$directory}' does not exist.\n";
+    echo "File or directory '{$directory}' does not exist, attempting to create.\n";
+    $rv = mkdir($directory);
+
+    if(!$rv){
+      echo "Cannot create '{$directory}'.\n";
+    }
   }
-  else {
-    // Print a message to let the user know what directory is being changed
-    echo "Processing settings for '{$directory}'...\n";
-    
-    // Change file mode if that change is requested by settings
-    if(isset($settings['mod'])) {
-      // Set up any necessary flags
-      $flags = '';
-      if(!isset($settings['recurse']) || $settings['recurse']) $flags .= '-R';
 
-      // Done using backticks because PHP wrapper "chmod()" does not support recursive mode
-      // changes
-      `chmod {$flags} {$settings['mod']} {$directory}`;
-      
-      // If the "contents" option is set, also set the mode on the contents
-      if(isset($settings['contents']) && $settings['contents']) {
-        `find {$directory} -maxdepth 1 ! -type d -exec chmod {$settings['mod']} '{}' ';'`;
-      }
-
-      echo "  changing file mode to {$settings['mod']}\n";
-    }
+  // Print a message to let the user know what directory is being changed
+  echo "Processing settings for '{$directory}'...\n";
   
-    // Change file permissions if that change is requested by settings
-    if(isset($settings['own'])) {
-      // Set up any necessary flags
-      $flags = '';
-      if(!isset($settings['recurse']) || $settings['recurse']) $flags .= '-R';
-      
-      // Done using backticks because of a peculiarity in Mac OS where the user www resolves
-      // to the user _www when using the native chmod but not when using the PHP function
-      `chown {$flags} {$settings['own']} {$directory}`;
-      
-      // If the "contents" option is set, also set the ownership on the contents
-      if(isset($settings['contents']) && $settings['contents']) {
-        `find {$directory} -maxdepth 1 ! -type d -exec chown {$settings['own']} '{}' ';'`;
-      }
-      
-      echo "  changing file ownership to {$settings['own']}\n";
+  // Change file mode if that change is requested by settings
+  if(isset($settings['mod'])) {
+    // Set up any necessary flags
+    $flags = '';
+    if(!isset($settings['recurse']) || $settings['recurse']) $flags .= '-R';
+
+    // Done using backticks because PHP wrapper "chmod()" does not support recursive mode
+    // changes
+    `chmod {$flags} {$settings['mod']} {$directory}`;
+    
+    // If the "contents" option is set, also set the mode on the contents
+    if(isset($settings['contents']) && $settings['contents']) {
+      `find {$directory} -maxdepth 1 ! -type d -exec chmod {$settings['mod']} '{}' ';'`;
     }
+
+    echo "  changing file mode to {$settings['mod']}\n";
+  }
+
+  // Change file permissions if that change is requested by settings
+  if(isset($settings['own'])) {
+    // Set up any necessary flags
+    $flags = '';
+    if(!isset($settings['recurse']) || $settings['recurse']) $flags .= '-R';
+    
+    // Done using backticks because of a peculiarity in Mac OS where the user www resolves
+    // to the user _www when using the native chmod but not when using the PHP function
+    `chown {$flags} {$settings['own']} {$directory}`;
+    
+    // If the "contents" option is set, also set the ownership on the contents
+    if(isset($settings['contents']) && $settings['contents']) {
+      `find {$directory} -maxdepth 1 ! -type d -exec chown {$settings['own']} '{}' ';'`;
+    }
+    
+    echo "  changing file ownership to {$settings['own']}\n";
   }
 }
 
