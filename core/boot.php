@@ -22,8 +22,11 @@
 /*
  * Default PHP setting(s)
  */
-if (ini_get('memory_limit') <= '384M')
+if (ini_get('memory_limit') < '384M')
   ini_set('memory_limit', '384M');
+
+if (ini_get('max_execution_time') < 60)
+  ini_set('max_execution_time', 60);
 
 // Uncomment this to see phpinfo() for the running server
 //phpinfo(); exit;
