@@ -1,5 +1,5 @@
 <?php
-class CreateInitialQuestionnaireAndInstance4rev2 extends Migration {
+class CreateInitialQuestionnaireAndInstance5 extends Migration {
 
   public function up() {
     // reset db metadata cache
