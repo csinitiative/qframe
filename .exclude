@@ -1,6 +1,6 @@
-*.svn
 .exclude
 .project
+.git
 artwork
 data/files/*
 docs/sig*

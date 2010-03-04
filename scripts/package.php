@@ -19,7 +19,7 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
- 
+
 echo "\n";
 
 // change to the root directory of the application
@@ -31,7 +31,7 @@ $profile = ($_SERVER['argc'] > 2) ? "{$_SERVER['argv'][2]}" : null;
 $appName = ($profile !== null) ? $profile : 'qframe';
 $basename = basename(getcwd());
 
-// copy files 
+// copy files
 if(!copyFiles($appName)) {
   cleanup($appName);
   die(formatMessage("== Packaging FAILED (copying files) ", '='));
@@ -82,17 +82,17 @@ function replace($profile, $directory = null) {
   if($directory === null) {
     // if no profile has been specified no replacement necessary, automatic success!
     if($profile === null) return true;
-  
+
     // output what we are doing
     echo formatMessage('-- performing package profile replacements', ' ');
-  
+
     // check to make sure the specified package profile exists
     if(!file_exists("package/{$profile}") || !is_dir("package/{$profile}")) return false;
-    
+
     // set initial directory
     $directory = "package/{$profile}";
   }
-  
+
   $tmpDirectory = preg_replace('/^package/', 'tmp', $directory);
   foreach(array_diff(scandir($directory), array('.', '..', '.svn')) as $file) {
     if(is_dir("{$directory}/{$file}")) {
@@ -104,7 +104,7 @@ function replace($profile, $directory = null) {
       if($return !== 0) return false;
     }
   }
-  
+
   return true;
 }
 
@@ -126,13 +126,13 @@ function cleanup($appName) {
  */
 function copyFiles($appName) {
   if(!file_exists("tmp/{$appName}")) mkdir("tmp/{$appName}");
-  else { 
+  else {
     echo formatMessage('-- clearing staging directory', ' ');
     foreach(scandir("tmp/{$appName}") as $file) {
       if($file !== '.' && $file !== '..') `rm -rf tmp/{$appName}/{$file}`;
     }
   }
-  
+
   $noCopy = array('.', '..', '.exclude', 'tmp', 'package');
   $files = implode(' ', array_diff(scandir('.'), $noCopy));
   echo formatMessage('-- copying files', ' ');
@@ -151,15 +151,15 @@ function copyFiles($appName) {
  */
 function package($appName, $version) {
   echo formatMessage('-- creating archive', ' ');
-  
+
   $exclusions = preg_split('/\s+/', file_get_contents('.exclude'));
   foreach($exclusions as $exclusion) {
     $exclusion = trim($exclusion);
-    $exclusionFlags[] = "--exclude={$appName}/{$exclusion}";
+    if($exclusion != '') $exclusionFlags[] = "--exclude={$appName}/{$exclusion}";
   }
   $exclusionFlags = implode(' ', $exclusionFlags);
   $filename = "";
-  
+
   // Include COPY_EXTENDED_ATTRIBUTES_DISABLE=true for packaging on Mac OS X
   $command = 'COPY_EXTENDED_ATTRIBUTES_DISABLE=true COPYFILE_DISABLE=true ' .
       "tar {$exclusionFlags} -cjvf {$appName}{$version}.tar.bz2 {$appName}";
