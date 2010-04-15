@@ -12,11 +12,11 @@ var CsiQframe = {
    * Removes the necessary class name to menu items on mouse out
    *
    * @param Event event object for the mouseout event
-   */  
+   */
   menuMouseOut: function(e) {
     Element.removeClassName(Event.element(e).up(), 'over');
   },
-  
+
   /**
    * Event handler for focus events on additional info text boxes
    *
@@ -29,7 +29,7 @@ var CsiQframe = {
       e.addClassName('hasContent');
     }
   },
-  
+
   /**
    * Event handler for blur events on additional info text boxes
    *
@@ -43,7 +43,7 @@ var CsiQframe = {
       e.removeClassName('hasContent');
     }
   },
-  
+
   /**
    * Event handler for keypress events on additional info text boxes
    *
@@ -66,7 +66,7 @@ var CsiQframe = {
       e.addClassName('hasContent');
     }
   },
-  
+
   /**
    * Event handler for blur events on private note text boxes
    *
@@ -79,7 +79,7 @@ var CsiQframe = {
       e.removeClassName('hasContent');
     }
   },
-  
+
   /**
    * Event handler for keypress events on additional info text boxes
    *
@@ -121,7 +121,7 @@ var CsiQframe = {
       $(base + 'Mod]').value = 0;
     }
   },
-  
+
   /**
    * Sets up focus and blur event listeners for new additional info
    * text boxes
@@ -132,6 +132,7 @@ var CsiQframe = {
     e.observe('focus', CsiQframe.addlInfoFocus);
     e.observe('blur', CsiQframe.addlInfoBlur);
     e.observe('keypress', CsiQframe.addlInfoKeypress);
+    e.observe('change', CsiQframe.addlInfoKeypress);
   },
 
   /**
@@ -156,7 +157,7 @@ var CsiQframe = {
     e.observe('focus', CsiQframe.remediationInfoFocus);
     e.observe('blur', CsiQframe.remediationInfoBlur);
   },
-  
+
   /**
    * Swaps an image on mouse over
    *
@@ -166,7 +167,7 @@ var CsiQframe = {
     var img = Event.element(evt);
     img.src = img.src.replace(/(\.\w{2,5})$/, '-hover$1');
   },
-  
+
   /**
    * Swaps an image on mouse out
    *
@@ -176,7 +177,7 @@ var CsiQframe = {
     var img = Event.element(evt);
     img.src = img.src.replace(/-hover(\.\w{2,5})$/, '$1');
   },
-  
+
   /**
    * Handle the click of a lock icon (will allow a user to force unlock a page)
    *
@@ -184,13 +185,13 @@ var CsiQframe = {
    */
   unlockTab: function(event) {
     event.stop();
-    
+
     var image = Event.element(event);
     if(image.down('img')) image = image.down('img');
-    
+
     if(confirm('Unlocking this page will cause the user who currently has the page locked to lose ' +
         'any unsaved work.  Are you sure?')) {
-      window.location = image.id;    
+      window.location = image.id;
     }
   }
 };
@@ -204,7 +205,7 @@ Event.observe(window, 'load', function () {
     e.observe('mouseover', CsiQframe.menuMouseOver);
     e.observe('mouseout', CsiQframe.menuMouseOut);
   });
-  
+
   $$('.additionalInfo').each(function(e) {
     CsiQframe.setupAddlInfoListeners(e);
   });
@@ -216,12 +217,12 @@ Event.observe(window, 'load', function () {
   $$('.remediationInfo').each(function(e) {
     CsiQframe.setupRemediationInfoListeners(e);
   });
-  
+
   $$('img.hover').each(function(img) {
     img.observe('mouseover', CsiQframe.imgMouseOver);
     img.observe('mouseout', CsiQframe.imgMouseOut);
   });
-  
+
   $$('a img.lock').each(function(image) {
     image.up('a').observe('click', CsiQframe.unlockTab);
   });
