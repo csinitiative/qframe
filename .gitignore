@@ -1,6 +1,4 @@
-svnlog
-svnignore
-project.tmproj
+*.tmproj
 notes
 tmp/*
 log/*.log
