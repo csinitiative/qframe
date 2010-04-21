@@ -40,8 +40,8 @@ elementFormDefault="qualified">
                   <strong><xsl:value-of select="csi:questionNumber"/><xsl:text> </xsl:text><xsl:value-of select="csi:qText"/></strong><br/>
                   <xsl:if test="./csi:responses/csi:response/*">
                     <xsl:value-of select="csi:responses/csi:response/csi:responseText"/><br/><br/>
-                    <xsl:if test="csi:question/csi:response/csi:additionalInfo">
-                      Additional Information: <xsl:value-of select="csi:question/csi:response/csi:additionalInfo"/><br/><br/>
+                    <xsl:if test="csi:responses/csi:additionalInfo">
+                      Additional Information: <xsl:value-of select="csi:responses/csi:additionalInfo"/><br/><br/>
                     </xsl:if>
                   </xsl:if>
                   <xsl:if test="count(csi:responses/csi:response) = 0">
@@ -54,8 +54,8 @@ elementFormDefault="qualified">
                   <strong><xsl:value-of select="csi:questionNumber"/><xsl:text> </xsl:text><xsl:value-of select="./csi:qText"/></strong><br/>
                   <xsl:if test="./csi:responses/csi:response/*">
                     <xsl:value-of select="csi:responses/csi:response/csi:responseText"/><br/><br/>
-                    <xsl:if test="csi:responses/csi:response/csi:additionalInfo">
-                      Additional Information: <xsl:value-of select="csi:responses/csi:response/csi:additionalInfo"/><br/><br/>
+                    <xsl:if test="csi:responses/csi:additionalInfo">
+                      Additional Information: <xsl:value-of select="csi:responses/csi:additionalInfo"/><br/><br/>
                     </xsl:if>
                   </xsl:if>
                   <xsl:if test="count(csi:responses/csi:response) = 0">
@@ -67,8 +67,8 @@ elementFormDefault="qualified">
                   <strong><xsl:value-of select="csi:questionNumber"/><xsl:text> </xsl:text><xsl:value-of select="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:qText"/></strong><br/>
                   <xsl:if test="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:response/*">
                     <xsl:value-of select="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:response/csi:responseText"/><br/><br/>
-                    <xsl:if test="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:response/csi:additionalInfo">
-                      Additional Information: <xsl:value-of select="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:response/csi:additionalInfo"/><br/><br/>
+                    <xsl:if test="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:additionalInfo">
+                      Additional Information: <xsl:value-of select="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:additionalInfo"/><br/><br/>
                     </xsl:if>
                   </xsl:if>
                   <xsl:if test="count(//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:response) = 0">
