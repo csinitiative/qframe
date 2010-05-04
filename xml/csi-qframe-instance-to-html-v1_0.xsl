@@ -3,7 +3,7 @@
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 xmlns:csi="http://www.csinitiative.com/ns/csi-qframe"
 elementFormDefault="qualified">
-<xsl:output method="html" indent="yes"/>
+<xsl:output method="xml" indent="yes"/>
 
 <xsl:template match="csi:questionnaire">
   <html>
