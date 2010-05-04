@@ -45,6 +45,5 @@ Encryption:
         %tr
           %td.label= $page->pageHeader
           %td
-            - $pageHeader = urlencode($page->pageHeader)
-            != $this->formCheckbox("pageHeader[{$pageHeader}][pdf]", true)
+            != $this->formCheckbox("pageHeader[{$page->pageHeader}][pdf]", true)
 != $this->form(null, true)
