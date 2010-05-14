@@ -211,9 +211,10 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    * @param  integer If true, exports the entire questionnaire definition (question text, etc). 
    *                 If false, only exports guid and response data.
    * @param array PageHeader strings to export.  If empty, export entire instance.
+   * @param bool SkipDisabled Do not export questions that are disabled.
    * @return string XML Document
    */
-  public function toXML($complete = 0, $pageHeaders = array()) {
+  public function toXML($complete = 0, $pageHeaders = array(), $skipDisabled = false) {
     $instanceID = $this->instanceRow->instanceID;
 
     QFrame_Db_Table::resetAll();
@@ -279,6 +280,9 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
         while ($question = $section->nextQuestion()) {
           $padding = '';
           if (count($question->children)) {
+            if ($question->disableCount > 0 && $skipDisabled) {
+              continue;
+            }
             $xml .= "            <csi:questionGroup>\n";
             if ($complete) {
               $xml .= "              <csi:qText>" . self::_xmlentities($question->qText) . "</csi:qText>\n";
@@ -327,6 +331,9 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
             $questions = array($question);
           }
           foreach ($questions as $question) {
+            if ($question->disableCount > 0 && $skipDisabled) {
+              continue;
+            }
             $xml .= "$padding            <csi:question>\n";
             if ($question->virtualQuestion) {
               $xml .= "$padding              <csi:questionGUID>" . self::_xmlentities($question->questionGUID) . "</csi:questionGUID>\n";
@@ -934,7 +941,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     error_log(print_r($pageHeaders, true));
 
     $dom = new DOMDocument();
-    $dom->loadXML($this->toXML(1));
+    $dom->loadXML($this->toXML(1, array(), true));
     $errors = libxml_get_errors();
     try {
       $logger = Zend_Registry::get('logger');
