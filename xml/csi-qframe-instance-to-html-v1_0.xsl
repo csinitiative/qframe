@@ -11,14 +11,17 @@ elementFormDefault="qualified">
   <title><xsl:value-of select="@questionnaireName"/><xsl:text> </xsl:text><xsl:value-of select="@questionnaireVersion"/>:<xsl:text> </xsl:text><xsl:value-of select="@instanceName"/></title>
   <style type="text/css">
     div.page {
-      page-break-after: always
+      page-break-after: always;
     }
     hr {
-      border: 1px solid #000
+      border: 1px solid #000;
     }
     body {
-      font-size: 10pt
-      margin: 1.25cm 1.25cm 1.25cm 1.25cm
+      font-size: 10pt;
+      margin: 1.25cm 1.25cm 1.25cm 1.25cm;
+    }
+    p {
+      white-space:normal;
     }
   </style>
   </head>
@@ -41,7 +44,7 @@ elementFormDefault="qualified">
                   <xsl:if test="./csi:responses/csi:response/*">
                     <xsl:value-of select="csi:responses/csi:response/csi:responseText"/><br/><br/>
                     <xsl:if test="csi:responses/csi:additionalInfo">
-                      Additional Information: <xsl:value-of select="csi:responses/csi:additionalInfo"/><br/><br/>
+                      Additional Information: <p><xsl:call-template name="break"><xsl:with-param name="stringIn" select="csi:responses/csi:additionalInfo"/></xsl:call-template></p><br/><br/>
                     </xsl:if>
                   </xsl:if>
                   <xsl:if test="count(csi:responses/csi:response) = 0">
@@ -55,7 +58,7 @@ elementFormDefault="qualified">
                   <xsl:if test="./csi:responses/csi:response/*">
                     <xsl:value-of select="csi:responses/csi:response/csi:responseText"/><br/><br/>
                     <xsl:if test="csi:responses/csi:additionalInfo">
-                      Additional Information: <xsl:value-of select="csi:responses/csi:additionalInfo"/><br/><br/>
+                      Additional Information: <p><xsl:call-template name="break"><xsl:with-param name="stringIn" select="csi:responses/csi:additionalInfo"/></xsl:call-template></p><br/><br/>
                     </xsl:if>
                   </xsl:if>
                   <xsl:if test="count(csi:responses/csi:response) = 0">
@@ -68,7 +71,7 @@ elementFormDefault="qualified">
                   <xsl:if test="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:response/*">
                     <xsl:value-of select="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:response/csi:responseText"/><br/><br/>
                     <xsl:if test="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:additionalInfo">
-                      Additional Information: <xsl:value-of select="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:additionalInfo"/><br/><br/>
+                      Additional Information: <p><xsl:call-template name="break"><xsl:with-param name="stringIn" select="csi:responses/csi:additionalInfo"/></xsl:call-template></p><br/><br/>
                     </xsl:if>
                   </xsl:if>
                   <xsl:if test="count(//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:response) = 0">
@@ -87,4 +90,21 @@ elementFormDefault="qualified">
   </body>
   </html>
 </xsl:template>
+
+<xsl:template name="break">
+  <xsl:param name="stringIn"/>
+  <xsl:choose>
+    <xsl:when test="contains($stringIn, '&#xa;')">
+       <xsl:value-of select="substring-before($stringIn, '&#xa;')"/>
+       <br/>
+       <xsl:call-template name="break">
+         <xsl:with-param name="stringIn" select="substring-after($stringIn, '&#xa;')"/>
+       </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$stringIn"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 </xsl:stylesheet>

@@ -363,8 +363,6 @@ class InstancedataController extends QFrame_Controller_Admin {
     $pageHeadersAll = ($this->_hasParam('pageHeader')) ? $this->_getParam('pageHeader') : array();
     $pageHeaders = array();
     while (list($key, $val) = each($pageHeadersAll)) {
-      error_log(print_r($key, true));
-      error_log(print_r($val, true));
       if (isset($val['pdf']) && $val['pdf'] == 1) { 
         $pageHeaders[] = $key;
       }

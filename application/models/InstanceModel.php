@@ -938,8 +938,6 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    * Apply an XSLT to the XML which returns XHTML
    */
   public function xml2html($pageHeaders = array()) {
-    error_log(print_r($pageHeaders, true));
-
     $dom = new DOMDocument();
     $dom->loadXML($this->toXML(1, array(), true));
     $errors = libxml_get_errors();
@@ -973,7 +971,6 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     $proc->importStyleSheet($xsl);
 
     $result = $proc->transformToXML($dom);
-    error_log(print_r($result, true));
 
     if (count($pageHeaders) > 0) {
       $domh = new DOMDocument();
@@ -984,10 +981,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
       foreach ($pages as $page) {
         $h1s = $page->getElementsByTagName('h1'); 
         foreach ($h1s as $h1) {
-          error_log(print_r($h1->nodeValue, true));
           if (array_search($h1->nodeValue, $pageHeaders) === FALSE) {
-            error_log('Removing: ' . $h1->nodeValue);
-            error_log(print_r($pageHeaders, true));
             array_push($remove, $page);
           }
         }
