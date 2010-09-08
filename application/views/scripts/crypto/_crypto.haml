@@ -21,7 +21,6 @@
   %td
     .hidden.id= $this->crypto->cryptoID
     = $this->crypto->name
-  %td.fixed= $this->crypto->cryptoKey
   %td= $this->crypto->secret
   %td.controlBox
     != $this->imageTag('ajax-loader.gif', array('class' => 'progress', 'style' => 'display: none;'))
