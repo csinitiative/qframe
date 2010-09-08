@@ -210,14 +210,14 @@ class InstancedataController extends QFrame_Controller_Admin {
       }
       $crypto = new CryptoModel(array('cryptoID' => $decryptID));
       if (preg_match('/\.zip\.enc$/i', $filename)) {
-        $decrypted = $crypto->decrypt(file_get_contents($file), false);
+        $decrypted = $crypto->decrypt(file_get_contents($file), 'instance-responses.zip');
         $tempfile = tempnam(PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp', 'zip');
         unlink($tempfile);
         file_put_contents($tempfile, $decrypted);
         $import = new ZipArchiveModel(null, array('filename' => $tempfile));
       }
       elseif (preg_match('/\.xml.enc$/i', $filename)) {
-        $decrypted = $crypto->decrypt(file_get_contents($file));
+        $decrypted = $crypto->decrypt(file_get_contents($file), 'instance-responses.xml');
         $import = $decrypted;
       }
       else {
@@ -262,7 +262,7 @@ class InstancedataController extends QFrame_Controller_Admin {
     $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
     if (isset($cryptoID) && $cryptoID != 0) {
       $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
-      $this->view->xml = $crypto->encrypt($instance->toXML());
+      $this->view->xml = $crypto->encrypt($instance->toXML(), 'instance-responses.xml');
       $this->view->cryptoID = $cryptoID;
     }
     else {
@@ -282,7 +282,7 @@ class InstancedataController extends QFrame_Controller_Admin {
     $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
     if (isset($cryptoID) && $cryptoID != 0) {
       $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
-      $this->view->archive = $crypto->encrypt($zip->getZipFileContents());
+      $this->view->archive = $crypto->encrypt($zip->getZipFileContents(), 'instance-responses.zip');
       $this->view->cryptoID = $cryptoID;
     }
     else {
@@ -310,7 +310,7 @@ class InstancedataController extends QFrame_Controller_Admin {
       $xml = '';
       if (isset($cryptoID) && $cryptoID != 0) {
         $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
-        $xml = $crypto->encrypt($instance->toXML(1));
+        $xml = $crypto->encrypt($instance->toXML(1), 'instance-responses.xml');
         $this->view->cryptoID = $cryptoID;
       }
       else {
@@ -344,7 +344,7 @@ class InstancedataController extends QFrame_Controller_Admin {
       $archive = '';
       if (isset($cryptoID) && $cryptoID != 0) {
         $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
-        $archive = $crypto->encrypt($zip->getZipFileContents());
+        $archive = $crypto->encrypt($zip->getZipFileContents(), 'instance-responses.zip');
         $this->view->cryptoID = $cryptoID;
       }
       else {
@@ -385,7 +385,7 @@ class InstancedataController extends QFrame_Controller_Admin {
       $pdf = $dompdf->output();
       if (isset($cryptoID) && $cryptoID != 0) {
         $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
-        $pdf = $crypto->encrypt($pdf);
+        $pdf = $crypto->encrypt($pdf, 'instance-responses.pdf');
         $this->view->cryptoID = $cryptoID;
       }
       $tempFile = tempnam(PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp', 'exp');

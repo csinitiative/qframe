@@ -117,14 +117,14 @@ class QuestionnaireDataController extends QFrame_Controller_Admin {
       }
       $crypto = new CryptoModel(array('cryptoID' => $decryptID));
       if (preg_match('/\.zip\.enc$/i', $filename)) {
-        $decrypted = $crypto->decrypt(file_get_contents($file));
+        $decrypted = $crypto->decrypt(file_get_contents($file), 'questionnaire-definition.zip');
         $tempfile = tempnam(PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp', 'zip');
         unlink($tempfile);
         file_put_contents($tempfile, $decrypted);
         $import = new ZipArchiveModel(null, array('filename' => $tempfile));
       }
       elseif (preg_match('/\.xml\.enc$/i', $filename)) {
-        $decrypted = $crypto->decrypt(file_get_contents($file));
+        $decrypted = $crypto->decrypt(file_get_contents($file), 'questionnaire-definition.xml');
         $import = $decrypted;
       }
       else {
@@ -158,7 +158,7 @@ class QuestionnaireDataController extends QFrame_Controller_Admin {
     $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
     if (isset($cryptoID) && $cryptoID != 0) {
       $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
-      $this->view->xml = $crypto->encrypt($questionnaire->fetchQuestionnaireDefinition());
+      $this->view->xml = $crypto->encrypt($questionnaire->fetchQuestionnaireDefinition(), 'questionnaire-definition.xml');
       $this->view->cryptoID = $cryptoID;
     }
     else {
@@ -174,7 +174,7 @@ class QuestionnaireDataController extends QFrame_Controller_Admin {
     $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
     if (isset($cryptoID) && $cryptoID != 0) {
       $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
-      $this->view->xml = $crypto->encrypt($questionnaire->fetchResponseSchema());
+      $this->view->xml = $crypto->encrypt($questionnaire->fetchResponseSchema(), 'responses-schema.xml');
       $this->view->cryptoID = $cryptoID;
     }
     else {
@@ -190,7 +190,7 @@ class QuestionnaireDataController extends QFrame_Controller_Admin {
     $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
     if (isset($cryptoID) && $cryptoID != 0) {
       $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
-      $this->view->xml = $crypto->encrypt($questionnaire->fetchCompletedResponseSchema());
+      $this->view->xml = $crypto->encrypt($questionnaire->fetchCompletedResponseSchema(), 'questionnaire-definition.xml');
       $this->view->cryptoID = $cryptoID;
     }
     else {

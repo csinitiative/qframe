@@ -91,14 +91,33 @@ class CryptoModel extends QFrame_Db_SerializableTransaction implements QFrame_Pa
    * @param string Content to be decrypted
    * @return string Encrypted content
    */
-  public function encrypt($string) {
-    $key = base64_decode($this->cryptoRow->cryptoKey);
-    $cipher = mcrypt_module_open(MCRYPT_RIJNDAEL_256, '', 'cfb', '');
-    $iv = substr(md5($key), 0, mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB));
-    mcrypt_generic_init($cipher, $key, $iv);
-    $encrypted = mcrypt_generic($cipher, $string);
-    mcrypt_generic_deinit($cipher);
+  public function encrypt($string, $base_file) {
+    $secret = $this->cryptoRow->secret;
+    $file = PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . date("d-m-Y-His", time()) . "-{$base_file}";
+    $whandle = fopen($file, "w");
+    fwrite($whandle, $string);
+    fclose($whandle);
+    exec("7z a -tzip -mem=aes256 -p" . escapeshellarg($secret) . " {$file}.zip {$file}");
+    $rhandle = fopen("{$file}.zip", "r");
+    $encrypted = fread($rhandle, filesize($file));
+    fclose($rhandle);
     return $encrypted;
+  }
+
+  private function pkcs5_pad($text, $block_size) {
+    $pad = $block_size - (strlen($text) % $block_size);
+    return $text . str_repeat(chr($pad), $pad);
+  }
+
+  private function salted_key_and_iv($key_len, $iv_len, $pass, $salt) {
+    $desired_len = $key_len + $iv_len;
+    $data = "";
+    $dx   = "";
+    while ( strlen($data) < $desired_len ) {
+        $dx = md5($dx . $pass . $salt, true);
+        $data .= $dx;
+    }
+    return array(substr($data,0,$key_len), substr($data,$key_len,$iv_len));
   }
   
   /**
@@ -107,13 +126,17 @@ class CryptoModel extends QFrame_Db_SerializableTransaction implements QFrame_Pa
    * @param string Content to be decrypted
    * @return string Decrypted content
    */
-  public function decrypt($string) {
-    $key = base64_decode($this->cryptoRow->cryptoKey);
-    $cipher = mcrypt_module_open(MCRYPT_RIJNDAEL_256, '', 'cfb', '');
-    $iv = substr(md5($key), 0, mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB));
-    mcrypt_generic_init($cipher, $key, $iv);
-    $decrypted = mdecrypt_generic($cipher, rtrim($string));
-    mcrypt_generic_deinit($cipher);
+  public function decrypt($string, $fetch_file) {
+    $secret = $this->cryptoRow->secret;
+    $file = tempnam(PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp', 'dat');
+    $fetch_file = tempnam(PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $fetch_file);
+    $whandle = fopen($file, "w");
+    fwrite($whandle, $string);
+    fclose($whandle);
+    exec("7z e -tzip -mem=aes256 -p" . escapeshellarg($secret) . " {$file}.zip");
+    $rhandle = fopen($fetch_file, "r");
+    $decrypted = fread($rhandle, filesize($file));
+    fclose($rhandle);
     return $decrypted;
   }
   
