@@ -37,25 +37,20 @@
 %table#cryptoTable.pageContainer
   %tr.header
     %th Profile Name
-    %th Secret
+    %th Secret Key
   != $this->renderPartial('crypto', $this->pager->current(), true)
 
 != $this->pagination($this->pager, 'index', 'page', array('q' => $this->q))
 
 != $this->renderPartial('form', null, false)
-!= $this->renderPartial('import', null, false)
 %p
-  * You must send your key to the intended recipient(s).  The recipient will then import the key.
-  For maximum security, it is recommended that you do not specify a secret and send the entire key
-  through a secure transmission.  Secure delivery may be an existing trusted electronic
-  transmission (e.g., sftp, scp, ssl) or physical delivery on an external storage device (e.g.,
-  flash drive, cd, dvd, etc).
+  * You must send your secret key to the intended recipient(s).  Recipients can then add the secret key 
+  to their CSI SIG portal or use a Zip tool that supports AES256 encryption such as <a href="http://www.7-zip.org" target="_new">7-Zip</a>.
+  Secure delivery may be an existing trusted electronic transmission (e.g., sftp, scp, ssl) or
+  physical delivery on an external storage device (e.g., flash drive, cd, dvd, etc).
 %p
-  ** If secure delivery of the key is not possible, you can still achieve moderate security by
-  specifying a secret.  When a secret is specified, the key is generated based on the secret.  This
-  allows you to tell the recipient via telephone.  Specifying more words and uncommon phrases
-  increases security.
+  ** Specifying more words and uncommon phrases for the secret key increases security.
 %p
-  *** It is not recommended that you send your key insecurely.  For example, email is normally
-  insecure.  You may, however, send subsequent data encrypted with the key through insecure
-  transmissions since only those that have the key can decrypt it. 
+  *** It is highly recommended that you send your secret key securely.  Email, for example, is normally
+  not secure.  You may, however, send subsequent data encrypted with the secret key through insecure
+  transmissions since only those that have the secret key can decrypt it. 
