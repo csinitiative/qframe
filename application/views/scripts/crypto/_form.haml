@@ -17,7 +17,7 @@
   @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
-- $label = ((isset($this->label)) ? $this->label : 'create') . ' key'
+- $label = ((isset($this->label)) ? $this->label : 'add') . ' secret key'
 
 .cryptoForm
   != $this->form(array('action' => (isset($this->action)) ? $this->action : 'create'), false, 'post')
@@ -30,7 +30,7 @@
       != $this->formLabel('name', 'Profile Name')
       != $this->formText('name', ($this->form !== null) ? $this->h($this->form->name) : null, array('size' => 50))
     %li
-      != $this->formLabel('secret', 'Secret (optional)**')
+      != $this->formLabel('secret', 'Secret Key')
       != $this->formText('secret', ($this->form !== null) ? $this->h($this->form->secret) : null, array('size' => 50))
     %li
       != $this->formSubmit('submitButton', $label)

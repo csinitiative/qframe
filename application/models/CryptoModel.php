@@ -88,12 +88,14 @@ class CryptoModel extends QFrame_Db_SerializableTransaction implements QFrame_Pa
   /**
    * Encrypt a string
    * 
-   * @param string Content to be decrypted
+   * @param string Content to be zip AES256 encrypted
    * @return string Encrypted content
    */
   public function encrypt($string, $base_file) {
     $secret = $this->cryptoRow->secret;
-    $file = PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . date("d-m-Y-His", time()) . "-{$base_file}";
+    $temp_dir = PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . date("d-m-Y-His", time());
+    mkdir($temp_dir);
+    $file = $temp_dir . DIRECTORY_SEPARATOR . $base_file;
     $whandle = fopen($file, "w");
     fwrite($whandle, $string);
     fclose($whandle);
@@ -104,38 +106,24 @@ class CryptoModel extends QFrame_Db_SerializableTransaction implements QFrame_Pa
     return $encrypted;
   }
 
-  private function pkcs5_pad($text, $block_size) {
-    $pad = $block_size - (strlen($text) % $block_size);
-    return $text . str_repeat(chr($pad), $pad);
-  }
-
-  private function salted_key_and_iv($key_len, $iv_len, $pass, $salt) {
-    $desired_len = $key_len + $iv_len;
-    $data = "";
-    $dx   = "";
-    while ( strlen($data) < $desired_len ) {
-        $dx = md5($dx . $pass . $salt, true);
-        $data .= $dx;
-    }
-    return array(substr($data,0,$key_len), substr($data,$key_len,$iv_len));
-  }
-  
   /**
    * Decrypt a string
    * 
-   * @param string Content to be decrypted
+   * @param string Content to be zip AES256 decrypted
    * @return string Decrypted content
    */
   public function decrypt($string, $fetch_file) {
     $secret = $this->cryptoRow->secret;
+    $temp_dir = PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . date("d-m-Y-His", time());
+    mkdir($temp_dir);
     $file = tempnam(PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp', 'dat');
-    $fetch_file = tempnam(PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $fetch_file);
+    $fetch_file = $temp_dir . DIRECTORY_SEPARATOR . $fetch_file;
     $whandle = fopen($file, "w");
     fwrite($whandle, $string);
     fclose($whandle);
-    exec("7z e -tzip -mem=aes256 -p" . escapeshellarg($secret) . " {$file}.zip");
+    exec("7z e -tzip -mem=aes256 -o" . escapeshellarg($temp_dir) . " -p" . escapeshellarg($secret) . " {$file}");
     $rhandle = fopen($fetch_file, "r");
-    $decrypted = fread($rhandle, filesize($file));
+    $decrypted = fread($rhandle, filesize($fetch_file));
     fclose($rhandle);
     return $decrypted;
   }

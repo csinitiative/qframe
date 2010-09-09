@@ -51,10 +51,10 @@ An exported Responses XML document is required to import an instance into
   %tr
     - if ($this->importResponsesRadioButton === 'importInstanceResponses')
       %td
-        <input type="radio" name="importResponsesRadioButton" value="importInstanceResponses" class="importResponsesRadioButton" checked="1"/>Import Instance Responses
+        <input type="radio" name="importResponsesRadioButton" value="importInstanceResponses" class="importResponsesRadioButton" checked="1"/>Import XML Responses & Merge Responses From an Existing Instance
     - else
       %td
-        <input type="radio" name="importResponsesRadioButton" value="importInstanceResponses" class="importResponsesRadioButton" />Import Instance Responses
+        <input type="radio" name="importResponsesRadioButton" value="importInstanceResponses" class="importResponsesRadioButton"/>Import XML Responses & Merge Responses From an Existing Instance
   %tr
     %td
       #disableImportResponses{ 'style' => 'display: none;' }

@@ -111,21 +111,21 @@ class QuestionnaireDataController extends QFrame_Controller_Admin {
     $file = $_FILES['questionnaireFile']['tmp_name'];
     $filename = $_FILES['questionnaireFile']['name'];
     
-    if (preg_match('/\.enc$/i', $filename)) {
+    if (preg_match('/\.enc\.zip$/i', $filename)) {
       if (!isset($decryptID) || $decryptID == 0) {
         throw new Exception('Key not specified for encrypted file');
       }
       $crypto = new CryptoModel(array('cryptoID' => $decryptID));
-      if (preg_match('/\.zip\.enc$/i', $filename)) {
+      if (preg_match('/\.xml\.enc\.zip$/i', $filename)) {
+        $decrypted = $crypto->decrypt(file_get_contents($file), 'questionnaire-definition.xml');
+        $import = $decrypted;
+      }
+      elseif (preg_match('/\.enc\.zip$/i', $filename)) {
         $decrypted = $crypto->decrypt(file_get_contents($file), 'questionnaire-definition.zip');
         $tempfile = tempnam(PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp', 'zip');
         unlink($tempfile);
         file_put_contents($tempfile, $decrypted);
         $import = new ZipArchiveModel(null, array('filename' => $tempfile));
-      }
-      elseif (preg_match('/\.xml\.enc$/i', $filename)) {
-        $decrypted = $crypto->decrypt(file_get_contents($file), 'questionnaire-definition.xml');
-        $import = $decrypted;
       }
       else {
         throw new Exception('Unrecognized file extension [' . $filename . ']');
