@@ -30,6 +30,7 @@ This PDF document contains both question and response information and is the hum
 Encryption:
 != $this->cryptoSelect($this->cryptoID)
 != $this->linkTo('#PDFDownload', $this->formButton('PDFDownload', 'PDF'), array('class' => 'dataButton'))
+%br/
 - if(isset($this->dataInstance))
   #pageHeaders
     %table
@@ -47,4 +48,8 @@ Encryption:
           %td
             - $pageHeader = urlencode($page->pageHeader)
             != $this->formCheckbox("pageHeader[{$pageHeader}][pdf]", true)
+  %p= 'Set a footer that will appear on every page (optional)'
+  != 'Footer line 1: ' . $this->formText('footer1', '', array('size' => 100))
+  %br/
+  != 'Footer line 2: ' . $this->formText('footer2', '', array('size' => 100))
 != $this->form(null, true)

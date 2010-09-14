@@ -13,12 +13,14 @@ elementFormDefault="qualified">
     div.page {
       page-break-after: always;
     }
-    hr {
-      border: 1px solid #000;
+    h1 {
+      color: #00653a;
+      background-color: #ccc;
+      border-bottom: thick solid #00653a;
     }
     body {
       font-size: 10pt;
-      margin: 1.25cm 1.25cm 1.25cm 1.25cm;
+      margin: 1.25cm 1.25cm 2.50cm 1.25cm;
     }
     p {
       white-space:normal;
@@ -28,12 +30,11 @@ elementFormDefault="qualified">
   <body>
   <xsl:for-each select="csi:pages/csi:page">
     <div class='page'>
-    <h1><xsl:value-of select="csi:pageHeader"/></h1><br/>
-    <hr/>
-    <pre><xsl:value-of select="csi:headerText"/></pre><br/>
+    <h1><xsl:value-of select="csi:pageHeader"/></h1>
+    <pre><xsl:value-of select="csi:headerText"/></pre>
     <xsl:if test="csi:sections/*">
       <xsl:for-each select="csi:sections/csi:section">
-        <h3><xsl:value-of select="csi:sectionHeader"/></h3><br/><br/>
+        <h3><xsl:value-of select="csi:sectionHeader"/></h3>
         <xsl:if test="csi:questions/*">
           <xsl:for-each select="csi:questions/csi:question | csi:questions/csi:questionGroup">
             <xsl:choose>
@@ -48,7 +49,7 @@ elementFormDefault="qualified">
                     </xsl:if>
                   </xsl:if>
                   <xsl:if test="count(csi:responses/csi:response) = 0">
-                    No response<br/><br/>
+                    <i>No response</i><br/><br/>
                   </xsl:if>
                 </xsl:for-each>
               </xsl:when>
@@ -62,7 +63,7 @@ elementFormDefault="qualified">
                     </xsl:if>
                   </xsl:if>
                   <xsl:if test="count(csi:responses/csi:response) = 0">
-                    No response<br/><br/>
+                    <i>No response</i><br/><br/>
                   </xsl:if>
                 </xsl:if>
                 <xsl:if test="csi:questionType = 'V'">
@@ -75,7 +76,7 @@ elementFormDefault="qualified">
                     </xsl:if>
                   </xsl:if>
                   <xsl:if test="count(//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:response) = 0">
-                    No response<br/><br/>
+                    <i>No response</i><br/><br/>
                   </xsl:if>
                 </xsl:if>
               </xsl:otherwise>
