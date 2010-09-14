@@ -162,7 +162,7 @@ function package($appName, $version) {
 
   // Include COPY_EXTENDED_ATTRIBUTES_DISABLE=true for packaging on Mac OS X
   $command = 'COPY_EXTENDED_ATTRIBUTES_DISABLE=true COPYFILE_DISABLE=true ' .
-      "tar {$exclusionFlags} -cjvf {$appName}{$version}.tar.bz2 {$appName}";
+      "tar {$exclusionFlags} -czvf {$appName}{$version}.tar.gz {$appName}";
   chdir('tmp');
   exec($command, $output, $return);
   chdir('..');

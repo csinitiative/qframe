@@ -378,9 +378,57 @@ class InstancedataController extends QFrame_Controller_Admin {
     else {
       $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
                                           'depth' => 'instance'));
+      if ($this->_hasParam('footer1')) {
+        $footer1 = $this->_getParam('footer1');
+      }
+      if ($this->_hasParam('footer2')) {
+        $footer2 = $this->_getParam('footer2');
+      }
+
       $html = $instance->xml2html($pageHeaders);
+
+      $html = str_replace('<body>', '<body>
+      <script type="text/php">
+      if (isset($pdf)) {
+        $font = Font_Metrics::get_font("verdana");;
+        $size = 8;
+        $color = array(0,0,0);
+        $text_height = Font_Metrics::get_font_height($font, $size);
+
+        $foot = $pdf->open_object();
+
+        $w = $pdf->get_width();
+        $h = $pdf->get_height();
+
+        // Draw a line along the bottom
+        $y = $h - 2 * $text_height - 24;
+        $pdf->line(16, $y, $w - 16, $y, $color, 1);
+
+        $y += $text_height;
+
+        // Add the date to the left
+        $text = date("m/d/Y");;
+        $pdf->text(16, $y, $text, $font, $size, $color);
+
+        $pdf->close_object();
+        $pdf->add_object($foot, "all");
+
+        // Add the custom text to the center, if set.
+        $width1 = Font_Metrics::get_text_width("'.$footer1.'", $font, $size);
+        $pdf->page_text($w / 2 - $width1 / 2, $y, "'.$footer1.'", $font, $size, $color);
+        $width2 = Font_Metrics::get_text_width("'.$footer2.'", $font, $size);
+        $pdf->page_text($w / 2 - $width2 / 2, $y + $text_height, "'.$footer2.'", $font, $size, $color);
+
+        // Add the page number to the right
+        $text = "Page {PAGE_NUM} of {PAGE_COUNT}";
+        $pdf->page_text($w - 70, $y, $text, $font, $size, $color);
+
+      }
+      </script>', $html);
+
       $dompdf = new DOMPDF();
       $dompdf->load_html($html);
+      error_log($html);
       $dompdf->render();
       $pdf = $dompdf->output();
       if (isset($cryptoID) && $cryptoID != 0) {
