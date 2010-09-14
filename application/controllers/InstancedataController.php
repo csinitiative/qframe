@@ -378,6 +378,42 @@ class InstancedataController extends QFrame_Controller_Admin {
     else {
       $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
                                           'depth' => 'instance'));
+
+      $html = $instance->xml2html($pageHeaders);
+
+      if (isset($_FILES['pdfCoverImage'])) {
+        $uploadErrors = array(
+          UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini.',
+          UPLOAD_ERR_FORM_SIZE => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',
+          UPLOAD_ERR_PARTIAL => 'The uploaded file was only partially uploaded.',
+          UPLOAD_ERR_NO_FILE => 'No file was uploaded.',
+          UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder.',
+          UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk.',
+          UPLOAD_ERR_EXTENSION => 'File upload stopped by extension.',
+        );
+   
+        $errorCode = $_FILES['pdfCoverImage']['error'];
+        if ($errorCode !== UPLOAD_ERR_OK) {
+          if (isset($uploadErrors[$errorCode]))
+            throw new Exception($uploadErrors[$errorCode]);
+          else
+            throw new Exception("Unknown error uploading file.");
+        }
+
+        $pdfFile = $_FILES['pdfCoverImage']['tmp_name'];
+        $pdfFilename = $_FILES['pdfCoverImage']['name'];
+        $pdfExtension = preg_replace('/.+\./', '', $pdfFilename);
+        move_uploaded_file($pdfFile, "{$pdfFile}.$pdfExtension");
+        $pdfFile = "{$pdfFile}.$pdfExtension";
+        $imageSize = getimagesize($pdfFile);
+        $margin = floor((792 / 2) - ($imageSize[1] / 2));
+
+        $html = str_replace('<body>', '<body>
+        <div class="page">
+          <div align="center"><img src="'.$pdfFile.'" style="margin-top: '.$margin.'px"/></div>
+        </div>', $html);
+      }
+
       if ($this->_hasParam('footer1')) {
         $footer1 = $this->_getParam('footer1');
       }
@@ -385,12 +421,10 @@ class InstancedataController extends QFrame_Controller_Admin {
         $footer2 = $this->_getParam('footer2');
       }
 
-      $html = $instance->xml2html($pageHeaders);
-
       $html = str_replace('<body>', '<body>
       <script type="text/php">
       if (isset($pdf)) {
-        $font = Font_Metrics::get_font("verdana");;
+        $font = Font_Metrics::get_font("verdana");
         $size = 8;
         $color = array(0,0,0);
         $text_height = Font_Metrics::get_font_height($font, $size);
@@ -407,7 +441,7 @@ class InstancedataController extends QFrame_Controller_Admin {
         $y += $text_height;
 
         // Add the date to the left
-        $text = date("m/d/Y");;
+        $text = date("m/d/Y");
         $pdf->text(16, $y, $text, $font, $size, $color);
 
         $pdf->close_object();
@@ -428,7 +462,6 @@ class InstancedataController extends QFrame_Controller_Admin {
 
       $dompdf = new DOMPDF();
       $dompdf->load_html($html);
-      error_log($html);
       $dompdf->render();
       $pdf = $dompdf->output();
       if (isset($cryptoID) && $cryptoID != 0) {

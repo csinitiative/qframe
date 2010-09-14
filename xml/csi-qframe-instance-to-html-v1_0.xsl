@@ -12,6 +12,7 @@ elementFormDefault="qualified">
   <style type="text/css">
     div.page {
       page-break-after: always;
+      height: 685px;
     }
     h1 {
       color: #00653a;
