@@ -357,7 +357,7 @@ class InstancedataController extends QFrame_Controller_Admin {
     $this->view->setRenderLayout(false);
   }
 
-  public function PdfDownloadAction() {
+  public function PdfExportAction() {
     $session = new Zend_Session_Namespace('login');
     $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
     $pageHeadersAll = ($this->_hasParam('pageHeader')) ? $this->_getParam('pageHeader') : array();
@@ -381,37 +381,50 @@ class InstancedataController extends QFrame_Controller_Admin {
 
       $html = $instance->xml2html($pageHeaders);
 
-      if (isset($_FILES['pdfCoverImage'])) {
-        $uploadErrors = array(
-          UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini.',
-          UPLOAD_ERR_FORM_SIZE => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',
-          UPLOAD_ERR_PARTIAL => 'The uploaded file was only partially uploaded.',
-          UPLOAD_ERR_NO_FILE => 'No file was uploaded.',
-          UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder.',
-          UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk.',
-          UPLOAD_ERR_EXTENSION => 'File upload stopped by extension.',
-        );
+      $uploadErrors = array(
+        UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini.',
+        UPLOAD_ERR_FORM_SIZE => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',
+        UPLOAD_ERR_PARTIAL => 'The uploaded file was only partially uploaded.',
+        UPLOAD_ERR_NO_FILE => 'No file was uploaded.',
+        UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder.',
+        UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk.',
+        UPLOAD_ERR_EXTENSION => 'File upload stopped by extension.',
+      );
+
+      if (isset($_FILES['pdfCoverImage']) || $this->_hasParam('coverText')) {
    
         $errorCode = $_FILES['pdfCoverImage']['error'];
-        if ($errorCode !== UPLOAD_ERR_OK) {
+        if ($errorCode == UPLOAD_ERR_NO_FILE) {
+          $margin = floor(685 / 2);
+        }
+        elseif ($errorCode !== UPLOAD_ERR_OK) {
           if (isset($uploadErrors[$errorCode]))
             throw new Exception($uploadErrors[$errorCode]);
           else
             throw new Exception("Unknown error uploading file.");
         }
+        else {
+          $pdfFile = $_FILES['pdfCoverImage']['tmp_name'];
+          $pdfFilename = $_FILES['pdfCoverImage']['name'];
+          $pdfExtension = preg_replace('/.+\./', '', $pdfFilename);
+          move_uploaded_file($pdfFile, "{$pdfFile}.$pdfExtension");
+          $pdfFile = "{$pdfFile}.$pdfExtension";
+          $imageSize = getimagesize($pdfFile);
+          $margin = floor((792 / 2) - ($imageSize[1] / 2));
+          $imgHtml = '<p><img src="'.$pdfFile.'"/></p>';
+        }
 
-        $pdfFile = $_FILES['pdfCoverImage']['tmp_name'];
-        $pdfFilename = $_FILES['pdfCoverImage']['name'];
-        $pdfExtension = preg_replace('/.+\./', '', $pdfFilename);
-        move_uploaded_file($pdfFile, "{$pdfFile}.$pdfExtension");
-        $pdfFile = "{$pdfFile}.$pdfExtension";
-        $imageSize = getimagesize($pdfFile);
-        $margin = floor((792 / 2) - ($imageSize[1] / 2));
+        $coverText = $this->_getParam('coverText');
 
-        $html = str_replace('<body>', '<body>
-        <div class="page">
-          <div align="center"><img src="'.$pdfFile.'" style="margin-top: '.$margin.'px"/></div>
-        </div>', $html);
+        if ($imgHtml || $coverText) {
+          $html = str_replace('<body>', '<body>
+          <div class="page">
+            <div align="center" style="margin-top: '.$margin.'px">
+              '.$imgHtml.'
+              <h2>'.$coverText.'</h2>
+            </div>
+          </div>', $html);
+        }
       }
 
       if ($this->_hasParam('footer1')) {

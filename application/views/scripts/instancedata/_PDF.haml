@@ -26,10 +26,10 @@
 This PDF document contains both question and response information and is the human-readable version of the instance.  Select the pages to be included in the PDF.
 %br/
 %br/
-!= $this->form(array('action' => 'PDFDownload'), false, 'post', array('class' => 'PDFDownload', 'enctype' => 'multipart/form-data'))
+!= $this->form(array('action' => 'PDFExport'), false, 'post', array('class' => 'PDFExport', 'enctype' => 'multipart/form-data'))
 Encryption:
 != $this->cryptoSelect($this->cryptoID)
-!= $this->linkTo('#PDFDownload', $this->formButton('PDFDownload', 'Download PDF'), array('class' => 'dataButton'))
+!= $this->linkTo('#PDFExport', $this->formButton('PDFExport', 'Download PDF'), array('class' => 'dataButton'))
 %br/
 - if(isset($this->dataInstance))
   #pageHeaders
@@ -46,18 +46,20 @@ Encryption:
         %tr
           %td.label= $page->pageHeader
           %td
-            - $pageHeader = urlencode($page->pageHeader)
-            != $this->formCheckbox("pageHeader[{$pageHeader}][pdf]", true)
+            != $this->formCheckbox("pageHeader[{$page->pageHeader}][pdf]", true)
 
   %p
-    %strong= 'Select an image for the PDF cover page (optional)'
-  != $this->formFile('pdfCoverImage')
-  %br/
+    %strong= 'Select an image and text for the PDF cover page (optional)'
+  %p
+    != 'Image (JPG, GIF, PNG): ' . $this->formFile('pdfCoverImage')
+  %p
+    != 'Text: ' . $this->formText('coverText', '', array('size' => 100))
   %br/
 
   %p
     %strong= 'Set a footer that will appear on every page (optional)'
-  != 'Footer line 1: ' . $this->formText('footer1', '', array('size' => 100))
-  %br/
-  != 'Footer line 2: ' . $this->formText('footer2', '', array('size' => 100))
+  %p
+    != 'Footer line 1: ' . $this->formText('footer1', '', array('size' => 100))
+  %p
+    != 'Footer line 2: ' . $this->formText('footer2', '', array('size' => 100))
 != $this->form(null, true)
