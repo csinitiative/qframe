@@ -55,12 +55,12 @@ var Data = {
   },
 
   /**
-   * Handles a click on the "PDFDownload" button
+   * Handles a click on the "PDFExport" button
    *
-   * @param Event click event for the "PDFDownload" button
+   * @param Event click event for the "PDFExport" button
    */
-  PDFDownloadHandler: function(event) {
-    _handle(event, 'PDFDownload', 'PDFDownload');
+  PDFExportHandler: function(event) {
+    _handle(event, 'PDFExport', 'PDFExport');
   },
 
   /**

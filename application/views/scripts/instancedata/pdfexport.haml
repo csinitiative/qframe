@@ -31,7 +31,6 @@
     %head
       <script type="text/javascript">
         function initialize() {
-          parent.setTimeout(" forms = $$('form'); for (f = 0; f < forms.length; f++) { inputs = forms[f].getElements(); for (i = 0; i < inputs.length; i++) { e = inputs[i]; if (e.type == 'select-one') { Effect.Appear(e, { duration: 0.15, to: 0.90 }); } } } Effect.Fade('disableOverlay', { duration: 0.01, to: 0.00 }); ", 1);
           document.forms[0].submit();
         }
       </script>
@@ -41,3 +40,6 @@
       - if (isset($this->cryptoID))
         != $this->formHidden('cryptoID', $this->cryptoID)
       != $this->form(null, true)
+      %p
+        Your download will begin shortly.
+      != $this->linkTo(array('action' => 'index'), $this->formButton('BackButton', 'Return to Instance Administration'), array('class' => 'dataButton'))
