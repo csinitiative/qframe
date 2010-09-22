@@ -3,3 +3,4 @@ data_path: data
 base_url: ""
 application_name: CSI SIG
 help_url: http://csinitiative.com/products/sig/learnmore
+application_url: http://csinitiative.com/products/sig
