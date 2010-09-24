@@ -12,32 +12,30 @@
  * obtain it through the world-wide-web, please send an email
  * to license@zend.com so we can send you a copy immediately.
  *
- * @category   Zend
- * @package    Zend_Measure
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
- * @version    $Id: Temperature.php 5786 2007-07-19 18:34:23Z thomas $
- * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @category  Zend
+ * @package   Zend_Measure
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd     New BSD License
+ * @version   $Id: Temperature.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
-
 
 /**
  * Implement needed classes
  */
-require_once 'Zend/Measure/Exception.php';
 require_once 'Zend/Measure/Abstract.php';
 require_once 'Zend/Locale.php';
 
-
 /**
+ * Class for handling temperature conversions
+ *
  * @category   Zend
  * @package    Zend_Measure
  * @subpackage Zend_Measure_Temperature
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Measure_Temperature extends Zend_Measure_Abstract
 {
-    // Temperature definitions
     const STANDARD = 'KELVIN';
 
     const CELSIUS    = 'CELSIUS';
@@ -46,11 +44,16 @@ class Zend_Measure_Temperature extends Zend_Measure_Abstract
     const REAUMUR    = 'REAUMUR';
     const KELVIN     = 'KELVIN';
 
-    protected $_UNITS = array(
-        'CELSIUS'    => array(array('' => 1, '+' => 273.15),'°C'),
-        'FAHRENHEIT' => array(array('' => 1, '+' => 459.67, '/' => 1.8),'°F'),
-        'RANKINE'    => array(array('' => 1, '/' => 1.8),'°R'),
-        'REAUMUR'    => array(array('' => 1, '*' => 1.25, '+' => 273.15),'°r'),
+    /**
+     * Calculations for all temperature units
+     *
+     * @var array
+     */
+    protected $_units = array(
+        'CELSIUS'    => array(array('' => '1', '+' => '273.15'),'°C'),
+        'FAHRENHEIT' => array(array('' => '1', '-' => '32', '/' => '1.8', '+' => '273.15'),'°F'),
+        'RANKINE'    => array(array('' => '1', '/' => '1.8'),'°R'),
+        'REAUMUR'    => array(array('' => '1', '*' => '1.25', '+' => '273.15'),'°r'),
         'KELVIN'     => array(1,'°K'),
         'STANDARD'   => 'KELVIN'
     );

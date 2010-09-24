@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Zend Framework
  *
@@ -15,22 +14,20 @@
  *
  * @category   Zend
  * @package    Zend_Validate
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Validate.php 4974 2007-05-25 21:11:56Z bkarwin $
+ * @version    $Id: Validate.php 21340 2010-03-05 15:33:49Z thomas $
  */
-
 
 /**
  * @see Zend_Validate_Interface
  */
 require_once 'Zend/Validate/Interface.php';
 
-
 /**
  * @category   Zend
  * @package    Zend_Validate
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Validate implements Zend_Validate_Interface
@@ -50,9 +47,17 @@ class Zend_Validate implements Zend_Validate_Interface
     protected $_messages = array();
 
     /**
-     * Array of validation failure messages
+     * Default Namespaces
      *
      * @var array
+     */
+    protected static $_defaultNamespaces = array();
+
+    /**
+     * Array of validation failure message codes
+     *
+     * @var array
+     * @deprecated Since 1.5.0
      */
     protected $_errors = array();
 
@@ -68,7 +73,10 @@ class Zend_Validate implements Zend_Validate_Interface
      */
     public function addValidator(Zend_Validate_Interface $validator, $breakChainOnFailure = false)
     {
-        $this->_validators[] = array('instance' => $validator, 'breakChainOnFailure' => $breakChainOnFailure);
+        $this->_validators[] = array(
+            'instance' => $validator,
+            'breakChainOnFailure' => (boolean) $breakChainOnFailure
+            );
         return $this;
     }
 
@@ -91,8 +99,9 @@ class Zend_Validate implements Zend_Validate_Interface
                 continue;
             }
             $result = false;
-            $this->_messages = array_merge($this->_messages, $validator->getMessages());
-            $this->_errors   = array_merge($this->_errors,   $validator->getErrors());
+            $messages = $validator->getMessages();
+            $this->_messages = array_merge($this->_messages, $messages);
+            $this->_errors   = array_merge($this->_errors,   array_keys($messages));
             if ($element['breakChainOnFailure']) {
                 break;
             }
@@ -115,9 +124,10 @@ class Zend_Validate implements Zend_Validate_Interface
     /**
      * Defined by Zend_Validate_Interface
      *
-     * Returns array of validation failure messages
+     * Returns array of validation failure message codes
      *
      * @return array
+     * @deprecated Since 1.5.0
      */
     public function getErrors()
     {
@@ -125,36 +135,156 @@ class Zend_Validate implements Zend_Validate_Interface
     }
 
     /**
-     * @param mixed    $value
-     * @param string   $classBaseName
-     * @param array    $args          OPTIONAL
-     * @param mixed    $namespaces    OPTIONAL
+     * Returns the set default namespaces
+     *
+     * @return array
+     */
+    public static function getDefaultNamespaces()
+    {
+        return self::$_defaultNamespaces;
+    }
+
+    /**
+     * Sets new default namespaces
+     *
+     * @param array|string $namespace
+     * @return null
+     */
+    public static function setDefaultNamespaces($namespace)
+    {
+        if (!is_array($namespace)) {
+            $namespace = array((string) $namespace);
+        }
+
+        self::$_defaultNamespaces = $namespace;
+    }
+
+    /**
+     * Adds a new default namespace
+     *
+     * @param array|string $namespace
+     * @return null
+     */
+    public static function addDefaultNamespaces($namespace)
+    {
+        if (!is_array($namespace)) {
+            $namespace = array((string) $namespace);
+        }
+
+        self::$_defaultNamespaces = array_unique(array_merge(self::$_defaultNamespaces, $namespace));
+    }
+
+    /**
+     * Returns true when defaultNamespaces are set
+     *
+     * @return boolean
+     */
+    public static function hasDefaultNamespaces()
+    {
+        return (!empty(self::$_defaultNamespaces));
+    }
+
+    /**
+     * @param  mixed    $value
+     * @param  string   $classBaseName
+     * @param  array    $args          OPTIONAL
+     * @param  mixed    $namespaces    OPTIONAL
      * @return boolean
      * @throws Zend_Validate_Exception
      */
     public static function is($value, $classBaseName, array $args = array(), $namespaces = array())
     {
-        $namespaces = array_merge(array('Zend_Validate'), (array) $namespaces);
-        foreach ($namespaces as $namespace) {
-            $className = $namespace . '_' . ucfirst($classBaseName);
-            try {
+        $namespaces = array_merge((array) $namespaces, self::$_defaultNamespaces, array('Zend_Validate'));
+        $className  = ucfirst($classBaseName);
+        try {
+            if (!class_exists($className, false)) {
                 require_once 'Zend/Loader.php';
-                Zend_Loader::loadClass($className);
-                $class = new ReflectionClass($className);
-                if ($class->implementsInterface('Zend_Validate_Interface')) {
-                    if ($class->hasMethod('__construct')) {
+                foreach($namespaces as $namespace) {
+                    $class = $namespace . '_' . $className;
+                    $file  = str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
+                    if (Zend_Loader::isReadable($file)) {
+                        Zend_Loader::loadClass($class);
+                        $className = $class;
+                        break;
+                    }
+                }
+            }
+
+            $class = new ReflectionClass($className);
+            if ($class->implementsInterface('Zend_Validate_Interface')) {
+                if ($class->hasMethod('__construct')) {
+                    $keys    = array_keys($args);
+                    $numeric = false;
+                    foreach($keys as $key) {
+                        if (is_numeric($key)) {
+                            $numeric = true;
+                            break;
+                        }
+                    }
+
+                    if ($numeric) {
                         $object = $class->newInstanceArgs($args);
                     } else {
-                        $object = $class->newInstance();
+                        $object = $class->newInstance($args);
                     }
-                    return $object->isValid($value);
+                } else {
+                    $object = $class->newInstance();
                 }
-            } catch (Zend_Exception $ze) {
-                // fallthrough and continue
+
+                return $object->isValid($value);
             }
+        } catch (Zend_Validate_Exception $ze) {
+            // if there is an exception while validating throw it
+            throw $ze;
+        } catch (Exception $e) {
+            // fallthrough and continue for missing validation classes
         }
+
         require_once 'Zend/Validate/Exception.php';
         throw new Zend_Validate_Exception("Validate class not found from basename '$classBaseName'");
     }
 
+    /**
+     * Returns the maximum allowed message length
+     *
+     * @return integer
+     */
+    public static function getMessageLength()
+    {
+        require_once 'Zend/Validate/Abstract.php';
+        return Zend_Validate_Abstract::getMessageLength();
+    }
+
+    /**
+     * Sets the maximum allowed message length
+     *
+     * @param integer $length
+     */
+    public static function setMessageLength($length = -1)
+    {
+        require_once 'Zend/Validate/Abstract.php';
+        Zend_Validate_Abstract::setMessageLength($length);
+    }
+
+    /**
+     * Returns the default translation object
+     *
+     * @return Zend_Translate_Adapter|null
+     */
+    public static function getDefaultTranslator($translator = null)
+    {
+        require_once 'Zend/Validate/Abstract.php';
+        return Zend_Validate_Abstract::getDefaultTranslator();
+    }
+
+    /**
+     * Sets a default translation object for all validation objects
+     *
+     * @param Zend_Translate|Zend_Translate_Adapter|null $translator
+     */
+    public static function setDefaultTranslator($translator = null)
+    {
+        require_once 'Zend/Validate/Abstract.php';
+        Zend_Validate_Abstract::setDefaultTranslator($translator);
+    }
 }

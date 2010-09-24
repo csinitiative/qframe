@@ -14,8 +14,8 @@
  *
  * @category   Zend
  * @package    Zend_Locale
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
- * @version    $Id: Exception.php 3827 2007-03-08 18:26:49Z darby $
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @version    $Id: Exception.php 20096 2010-01-06 02:05:09Z bkarwin $
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
@@ -23,16 +23,16 @@
 /**
  * Zend_Exception
  */
-require_once 'Zend/Exception.php';
+require_once 'Zend/Locale/Exception.php';
 
 
 /**
  * @category   Zend
  * @package    Zend_Locale
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Locale_Math_Exception extends Zend_Exception
+class Zend_Locale_Math_Exception extends Zend_Locale_Exception
 {
     protected $op1 = null;
     protected $op2 = null;
@@ -48,6 +48,6 @@ class Zend_Locale_Math_Exception extends Zend_Exception
 
     public function getResults()
     {
-        return array($this->op1 = $op1, $this->op2 = $op2, $this->result = $result);
+        return array($this->op1, $this->op2, $this->result);
     }
 }

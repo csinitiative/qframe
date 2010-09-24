@@ -15,15 +15,11 @@
  * @category   Zend
  * @package    Zend_Service
  * @subpackage StrikeIron
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id: StrikeIron.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
-/** Zend_Loader */
-require_once 'Zend/Loader.php';
-
-/** Zend_Service_StrikeIron_Exception */
-require_once 'Zend/Service/StrikeIron/Exception.php';
 
 /**
  * This class allows StrikeIron authentication credentials to be specified
@@ -33,7 +29,7 @@ require_once 'Zend/Service/StrikeIron/Exception.php';
  * @category   Zend
  * @package    Zend_Service
  * @subpackage StrikeIron
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Service_StrikeIron
@@ -59,7 +55,8 @@ class Zend_Service_StrikeIron
      * instance.
      *
      * @param  null|string  $options  Service options
-     * @return object                 Zend_Service_StrikeIron_* instance
+     * @return object       Zend_Service_StrikeIron_* instance
+     * @throws Zend_Service_StrikeIron_Exception
      */
     public function getService($options = array())
     {
@@ -71,10 +68,20 @@ class Zend_Service_StrikeIron
         }
 
         try {
-            Zend_Loader::loadClass($class);
+            if (!class_exists($class)) {
+                require_once 'Zend/Loader.php';
+                @Zend_Loader::loadClass($class);
+            }
+            if (!class_exists($class, false)) {
+                throw new Exception('Class file not found');
+            }
         } catch (Exception $e) {
             $msg = "Service '$class' could not be loaded: " . $e->getMessage();
-            throw new Zend_Service_StrikeIron_Exception($msg, $e->getCode());
+            /**
+             * @see Zend_Service_StrikeIron_Exception
+             */
+            require_once 'Zend/Service/StrikeIron/Exception.php';
+            throw new Zend_Service_StrikeIron_Exception($msg, $e->getCode(), $e);
         }
 
         // instantiate and return the service

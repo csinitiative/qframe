@@ -15,19 +15,17 @@
  * @category   Zend
  * @package    Zend_Mail
  * @subpackage Transport
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id: Abstract.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
-/**
- * Zend_Mail_Transport_Exception
- */
-require_once 'Zend/Mail/Transport/Exception.php';
 
 /**
- * Zend_Mime
+ * @see Zend_Mime
  */
 require_once 'Zend/Mime.php';
+
 
 /**
  * Abstract for sending eMails through different
@@ -36,10 +34,11 @@ require_once 'Zend/Mime.php';
  * @category   Zend
  * @package    Zend_Mail
  * @subpackage Transport
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-abstract class Zend_Mail_Transport_Abstract {
+abstract class Zend_Mail_Transport_Abstract
+{
     /**
      * Mail body
      * @var string
@@ -141,14 +140,14 @@ abstract class Zend_Mail_Transport_Abstract {
             }
 
             $this->_headers['Content-Type'] = array(
-                $type . '; charset="' . $this->_mail->getCharset() . '";'
+                $type . ';'
                 . $this->EOL
                 . " " . 'boundary="' . $boundary . '"'
             );
-            $this->_headers['MIME-Version'] = array('1.0');
-
             $this->boundary = $boundary;
         }
+
+        $this->_headers['MIME-Version'] = array('1.0');
 
         return $this->_headers;
     }
@@ -182,6 +181,10 @@ abstract class Zend_Mail_Transport_Abstract {
     protected function _prepareHeaders($headers)
     {
         if (!$this->_mail) {
+            /**
+             * @see Zend_Mail_Transport_Exception
+             */
+            require_once 'Zend/Mail/Transport/Exception.php';
             throw new Zend_Mail_Transport_Exception('Missing Zend_Mail object in _mail property');
         }
 
@@ -207,6 +210,10 @@ abstract class Zend_Mail_Transport_Abstract {
             }
         }
         if (!$sane) {
+            /**
+             * @see Zend_Mail_Transport_Exception
+             */
+            require_once 'Zend/Mail/Transport/Exception.php';
             throw new Zend_Mail_Exception('At least one mail header line is too long');
         }
     }
@@ -239,12 +246,12 @@ abstract class Zend_Mail_Transport_Abstract {
             $body = $boundaryLine
                   . $text->getHeaders($this->EOL)
                   . $this->EOL
-                  . $text->getContent()
+                  . $text->getContent($this->EOL)
                   . $this->EOL
                   . $boundaryLine
                   . $html->getHeaders($this->EOL)
                   . $this->EOL
-                  . $html->getContent()
+                  . $html->getContent($this->EOL)
                   . $this->EOL
                   . $boundaryEnd;
 
@@ -270,6 +277,10 @@ abstract class Zend_Mail_Transport_Abstract {
         }
 
         if (!$body) {
+            /**
+             * @see Zend_Mail_Transport_Exception
+             */
+            require_once 'Zend/Mail/Transport/Exception.php';
             throw new Zend_Mail_Transport_Exception('No body specified');
         }
 
@@ -286,7 +297,7 @@ abstract class Zend_Mail_Transport_Abstract {
     /**
      * Send a mail using this transport
      *
-     * @param Zend_Mail $mail
+     * @param  Zend_Mail $mail
      * @access public
      * @return void
      * @throws Zend_Mail_Transport_Exception if mail is empty
@@ -305,6 +316,10 @@ abstract class Zend_Mail_Transport_Abstract {
         $count    = count($this->_parts);
         $boundary = null;
         if ($count < 1) {
+            /**
+             * @see Zend_Mail_Transport_Exception
+             */
+            require_once 'Zend/Mail/Transport/Exception.php';
             throw new Zend_Mail_Transport_Exception('Empty mail cannot be sent');
         }
 

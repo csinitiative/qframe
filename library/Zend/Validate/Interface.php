@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Zend Framework
  *
@@ -15,16 +14,15 @@
  *
  * @category   Zend
  * @package    Zend_Validate
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Interface.php 4974 2007-05-25 21:11:56Z bkarwin $
+ * @version    $Id: Interface.php 20358 2010-01-17 19:03:49Z thomas $
  */
-
 
 /**
  * @category   Zend
  * @package    Zend_Validate
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 interface Zend_Validate_Interface
@@ -33,7 +31,7 @@ interface Zend_Validate_Interface
      * Returns true if and only if $value meets the validation requirements
      *
      * If $value fails validation, then this method returns false, and
-     * $messages will contain an array of messages that explain why the
+     * getMessages() will return an array of messages that explain why the
      * validation failed.
      *
      * @param  mixed $value
@@ -43,8 +41,9 @@ interface Zend_Validate_Interface
     public function isValid($value);
 
     /**
-     * Returns an array of messages that explain why a previous isValid()
-     * call returned false.
+     * Returns an array of messages that explain why the most recent isValid()
+     * call returned false. The array keys are validation failure message identifiers,
+     * and the array values are the corresponding human-readable message strings.
      *
      * If isValid() was never called or if the most recent isValid() call
      * returned true, then this method returns an empty array.
@@ -52,16 +51,4 @@ interface Zend_Validate_Interface
      * @return array
      */
     public function getMessages();
-
-    /**
-     * Returns an array of errors that explain why a previous isValid() call
-     * returned false.
-     *
-     * If isValid() was never called or if the most recent isValid() call
-     * returned true, then this method returns an empty array.
-     *
-     * @return array
-     */
-    public function getErrors();
-
 }

@@ -104,7 +104,8 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
     foreach ($tableNames as $tableName) {
       $class = self::tableToClass($tableName);
       $table = new $class(null, true);
-      foreach ($table->_metadata as $field => $data) {
+      $info = $table->info();
+      foreach ($info['metadata'] as $field => $data) {
         if ($data['PRIMARY'] === true) {
           self::$primaryKeysFieldTable[$field][$tableName] = true;
           self::$primaryKeysTableField[$tableName][$field] = true;
@@ -114,7 +115,8 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
     foreach ($tableNames as $tableName) {
       $class = self::tableToClass($tableName);
       $table = new $class(null, true);
-      foreach ($table->_metadata as $field => $data) {
+      $info = $table->info();
+      foreach ($info['metadata'] as $field => $data) {
         if (isset(self::$primaryKeysFieldTable[$field]) || isset(self::$forceForeignKeys[$field])) {
           self::$foreignKeysFieldTable[$field][$tableName] = true;
           self::$foreignKeysTableField[$tableName][$field] = true;
@@ -125,7 +127,8 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
       $class = self::tableToClass($tableName);
       $table = new $class(null, true);
       self::$tablesReferenceMap[$tableName] = array();
-      foreach ($table->_metadata as $field => $data) {
+      $info = $table->info();
+      foreach ($info['metadata'] as $field => $data) {
         if (isset(self::$foreignKeysFieldTable[$field])) {
           foreach (self::$foreignKeysFieldTable[$field] as $foreignTableName => $data) {
             $relationshipName = "{$foreignTableName}_{$tableName}"; 
@@ -228,7 +231,8 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
   }
   
   public function getTableName() {
-    foreach ($this->_metadata as $field => $data) {
+    $info = $this->info();
+    foreach ($info['metadata'] as $field => $data) {
       return $data['TABLE_NAME'];
     }
   }
@@ -246,7 +250,8 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
     $id = intVal($array['instanceID'] . str_pad(self::$bulkID, 5, "0", STR_PAD_LEFT)); 
     
     $values = array();
-    foreach ($this->_metadata as $field => $data) {
+    $info = $this->info();
+    foreach ($info['metadata'] as $field => $data) {
       if ($data['PRIMARY'] === true && !isset($array[$field])) {
         $values[] = $id;
       }
@@ -268,8 +273,9 @@ class QFrame_Db_Table extends Zend_Db_Table_Abstract {
     if ($this->locked === true) {
       $this->locked = false;
       fclose($this->bulkFileHandle);
+      $info = $this->info();
       $statement = "LOAD DATA LOCAL INFILE '" . $this->bulkFileName . "' INTO TABLE " . $this->_name . " FIELDS TERMINATED BY ',' "
-                 . '(' . join(',', array_keys($this->_metadata)) . ')';
+                 . '(' . join(',', array_keys($info['metadata'])) . ')';
       $adapter->query($statement);
       unlink($this->bulkFileName);
     }

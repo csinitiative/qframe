@@ -15,8 +15,9 @@
  * @category   Zend
  * @package    Zend_XmlRpc
  * @subpackage Value
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id: Base64.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
 
@@ -30,7 +31,7 @@ require_once 'Zend/XmlRpc/Value/Scalar.php';
  * @category   Zend
  * @package    Zend_XmlRpc
  * @subpackage Value
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_XmlRpc_Value_Base64 extends Zend_XmlRpc_Value_Scalar
@@ -43,12 +44,12 @@ class Zend_XmlRpc_Value_Base64 extends Zend_XmlRpc_Value_Scalar
      * @param string $value
      * @param bool $already_encoded If set, it means that the given string is already base64 encoded
      */
-    public function __construct($value, $already_encoded=false)
+    public function __construct($value, $alreadyEncoded = false)
     {
         $this->_type = self::XMLRPC_TYPE_BASE64;
 
         $value = (string)$value;    // Make sure this value is string
-        if (!$already_encoded) {
+        if (!$alreadyEncoded) {
             $value = base64_encode($value);     // We encode it in base64
         }
         $this->_value = $value;
@@ -64,6 +65,4 @@ class Zend_XmlRpc_Value_Base64 extends Zend_XmlRpc_Value_Scalar
     {
         return base64_decode($this->_value);
     }
-
 }
-

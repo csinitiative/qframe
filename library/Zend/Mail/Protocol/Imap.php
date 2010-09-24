@@ -4,31 +4,37 @@
  *
  * LICENSE
  *
- * This source file is subject to version 1.0 of the Zend Framework
- * license, that is bundled with this package in the file LICENSE, and
- * is available through the world-wide-web at the following URL:
- * http://www.zend.com/license/framework/1_0.txt. If you did not receive
- * a copy of the Zend Framework license and are unable to obtain it
- * through the world-wide-web, please send a note to license@zend.com
- * so we can mail you a copy immediately.
+ * This source file is subject to the new BSD license that is bundled
+ * with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://framework.zend.com/license/new-bsd
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@zend.com so we can send you a copy immediately.
  *
+ * @category   Zend
  * @package    Zend_Mail
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
- * @license    http://www.zend.com/license/framework/1_0.txt Zend Framework License version 1.0
+ * @subpackage Protocol
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id: Imap.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
-/**
- * Zend_Mail_Protocol_Exception
- */
-require_once 'Zend/Mail/Protocol/Exception.php';
 
 /**
+ * @category   Zend
  * @package    Zend_Mail
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
- * @license    http://www.zend.com/license/framework/1_0.txt Zend Framework License version 1.0
+ * @subpackage Protocol
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Mail_Protocol_Imap
 {
+    /**
+     * Default timeout in seconds for initiating session
+     */
+    const TIMEOUT_CONNECTION = 30;
+
     /**
      * socket to imap server
      * @var resource|null
@@ -41,11 +47,10 @@ class Zend_Mail_Protocol_Imap
      */
     protected $_tagCount = 0;
 
-
     /**
      * Public constructor
      *
-     * @param  string   $host  hostname of IP address of IMAP server, if given connect() is called
+     * @param  string   $host  hostname or IP address of IMAP server, if given connect() is called
      * @param  int|null $port  port of IMAP server, null for default (143 or 993 for ssl)
      * @param  bool     $ssl   use ssl? 'SSL', 'TLS' or false
      * @throws Zend_Mail_Protocol_Exception
@@ -66,9 +71,9 @@ class Zend_Mail_Protocol_Imap
     }
 
     /**
-     * Open connection to POP3 server
+     * Open connection to IMAP server
      *
-     * @param  string      $host  hostname of IP address of POP3 server
+     * @param  string      $host  hostname or IP address of IMAP server
      * @param  int|null    $port  of IMAP server, default is 143 (993 for ssl)
      * @param  string|bool $ssl   use 'SSL', 'TLS' or false
      * @return string welcome message
@@ -84,12 +89,23 @@ class Zend_Mail_Protocol_Imap
             $port = $ssl === 'SSL' ? 993 : 143;
         }
 
-        $this->_socket = @fsockopen($host, $port);
+        $errno  =  0;
+        $errstr = '';
+        $this->_socket = @fsockopen($host, $port, $errno, $errstr, self::TIMEOUT_CONNECTION);
         if (!$this->_socket) {
-            throw new Zend_Mail_Protocol_Exception('cannot connect to host');
+            /**
+             * @see Zend_Mail_Protocol_Exception
+             */
+            require_once 'Zend/Mail/Protocol/Exception.php';
+            throw new Zend_Mail_Protocol_Exception('cannot connect to host; error = ' . $errstr .
+                                                   ' (errno = ' . $errno . ' )');
         }
 
         if (!$this->_assumedNextLine('* OK')) {
+            /**
+             * @see Zend_Mail_Protocol_Exception
+             */
+            require_once 'Zend/Mail/Protocol/Exception.php';
             throw new Zend_Mail_Protocol_Exception('host doesn\'t allow connection');
         }
 
@@ -97,6 +113,10 @@ class Zend_Mail_Protocol_Imap
             $result = $this->requestAndResponse('STARTTLS');
             $result = $result && stream_socket_enable_crypto($this->_socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
             if (!$result) {
+                /**
+                 * @see Zend_Mail_Protocol_Exception
+                 */
+                require_once 'Zend/Mail/Protocol/Exception.php';
                 throw new Zend_Mail_Protocol_Exception('cannot enable TLS');
             }
         }
@@ -112,6 +132,10 @@ class Zend_Mail_Protocol_Imap
     {
         $line = @fgets($this->_socket);
         if ($line === false) {
+            /**
+             * @see Zend_Mail_Protocol_Exception
+             */
+            require_once 'Zend/Mail/Protocol/Exception.php';
             throw new Zend_Mail_Protocol_Exception('cannot read - connection closed?');
         }
 
@@ -172,7 +196,7 @@ class Zend_Mail_Protocol_Imap
                 "foo" baz {3}<NL>bar ("f\\\"oo" bar)
             would be returned as:
                 array('foo', 'baz', 'bar', array('f\\\"oo', 'bar'));
-            
+
             // TODO: add handling of '[' and ']' to parser for easier handling of response text
         */
         //  replace any trailling <NL> including spaces with a single space
@@ -185,7 +209,7 @@ class Zend_Mail_Protocol_Imap
                 $token = substr($token, 1);
             }
             if ($token[0] == '"') {
-                if (preg_match('%^"((.|\\\\|\\")*?)" *%', $line, $matches)) {
+                if (preg_match('%^\(*"((.|\\\\|\\")*?)" *%', $line, $matches)) {
                     $tokens[] = $matches[1];
                     $line = substr($line, strlen($matches[0]));
                     continue;
@@ -218,8 +242,8 @@ class Zend_Mail_Protocol_Imap
                 // only count braces if more than one
                 $braces -= strlen($token) + 1;
                 // only add if token had more than just closing braces
-                if ($token) {
-                    $tokens[] = $token;
+                if (rtrim($token) != '') {
+                    $tokens[] = rtrim($token);
                 }
                 $token = $tokens;
                 $tokens = array_pop($stack);
@@ -321,9 +345,17 @@ class Zend_Mail_Protocol_Imap
         foreach ($tokens as $token) {
             if (is_array($token)) {
                 if (@fputs($this->_socket, $line . ' ' . $token[0] . "\r\n") === false) {
+                    /**
+                     * @see Zend_Mail_Protocol_Exception
+                     */
+                    require_once 'Zend/Mail/Protocol/Exception.php';
                     throw new Zend_Mail_Protocol_Exception('cannot write - connection closed?');
                 }
-                if (!$this->_assumedNextLine('+ OK')) {
+                if (!$this->_assumedNextLine('+ ')) {
+                    /**
+                     * @see Zend_Mail_Protocol_Exception
+                     */
+                    require_once 'Zend/Mail/Protocol/Exception.php';
                     throw new Zend_Mail_Protocol_Exception('cannot send literal string');
                 }
                 $line = $token[1];
@@ -333,6 +365,10 @@ class Zend_Mail_Protocol_Imap
         }
 
         if (@fputs($this->_socket, $line . "\r\n") === false) {
+            /**
+             * @see Zend_Mail_Protocol_Exception
+             */
+            require_once 'Zend/Mail/Protocol/Exception.php';
             throw new Zend_Mail_Protocol_Exception('cannot write - connection closed?');
         }
     }
@@ -590,6 +626,10 @@ class Zend_Mail_Protocol_Imap
         }
 
         if ($to === null && !is_array($from)) {
+            /**
+             * @see Zend_Mail_Protocol_Exception
+             */
+            require_once 'Zend/Mail/Protocol/Exception.php';
             throw new Zend_Mail_Protocol_Exception('the single id was not found in response');
         }
 
@@ -610,7 +650,7 @@ class Zend_Mail_Protocol_Imap
     {
         $result = array();
         $list = $this->requestAndResponse('LIST', $this->escapeString($reference, $mailbox));
-        if (!$list) {
+        if (!$list || $list === true) {
             return $result;
         }
 
@@ -702,7 +742,7 @@ class Zend_Mail_Protocol_Imap
      * @param int|null $to     if null only one message ($from) is fetched, else it's the
      *                         last message, INF means last message avaible
      * @return bool success
-     * @throw Zend_Mail_Protocol_Exception
+     * @throws Zend_Mail_Protocol_Exception
      */
     public function copy($folder, $from, $to = null)
     {
@@ -769,4 +809,30 @@ class Zend_Mail_Protocol_Imap
         // TODO: parse response
         return $this->requestAndResponse('NOOP');
     }
+
+    /**
+     * do a search request
+     *
+     * This method is currently marked as internal as the API might change and is not
+     * safe if you don't take precautions.
+     *
+     * @internal
+     * @return array message ids
+     */
+    public function search(array $params)
+    {
+        $response = $this->requestAndResponse('SEARCH', $params);
+        if (!$response) {
+            return $response;
+        }
+
+        foreach ($response as $ids) {
+            if ($ids[0] == 'SEARCH') {
+                array_shift($ids);
+                return $ids;
+            }
+        }
+        return array();
+    }
+
 }

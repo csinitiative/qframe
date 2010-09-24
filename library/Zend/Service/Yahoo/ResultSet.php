@@ -16,9 +16,9 @@
  * @category   Zend
  * @package    Zend_Service
  * @subpackage Yahoo
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: ResultSet.php 4462 2007-04-11 04:10:16Z darby $
+ * @version    $Id: ResultSet.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
 
@@ -26,7 +26,7 @@
  * @category   Zend
  * @package    Zend_Service
  * @subpackage Yahoo
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Service_Yahoo_ResultSet implements SeekableIterator
@@ -169,8 +169,8 @@ class Zend_Service_Yahoo_ResultSet implements SeekableIterator
      * Implement SeekableIterator::seek()
      *
      * @param  int $index
-     * @throws Zend_Service_Exception
-     * @return Zend_Service_Yahoo_Result
+     * @return void
+     * @throws OutOfBoundsException
      */
     public function seek($index)
     {

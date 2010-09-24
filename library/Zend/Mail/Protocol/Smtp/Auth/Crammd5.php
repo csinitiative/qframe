@@ -15,14 +15,14 @@
  * @category   Zend
  * @package    Zend_Mail
  * @subpackage Protocol
- * @version    $Id$
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id: Crammd5.php 22655 2010-07-22 18:47:20Z mabe $
  */
 
 
 /**
- * Zend_Mail_Protocol_Smtp
+ * @see Zend_Mail_Protocol_Smtp
  */
 require_once 'Zend/Mail/Protocol/Smtp.php';
 
@@ -33,7 +33,7 @@ require_once 'Zend/Mail/Protocol/Smtp.php';
  * @category   Zend
  * @package    Zend_Mail
  * @subpackage Protocol
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Mail_Protocol_Smtp_Auth_Crammd5 extends Zend_Mail_Protocol_Smtp
@@ -94,7 +94,7 @@ class Zend_Mail_Protocol_Smtp_Auth_Crammd5 extends Zend_Mail_Protocol_Smtp
         if (strlen($key) > 64) {
             $key = pack('H32', md5($key));
         } elseif (strlen($key) < 64) {
-            $key = str_pad($key, $block, chr(0));
+            $key = str_pad($key, $block, "\0");
         }
 
         $k_ipad = substr($key, 0, 64) ^ str_repeat(chr(0x36), 64);

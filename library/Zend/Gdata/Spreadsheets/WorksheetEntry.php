@@ -13,10 +13,12 @@
  * obtain it through the world-wide-web, please send an email
  * to license@zend.com so we can send you a copy immediately.
  *
- * @category     Zend
- * @package      Zend_Gdata
- * @copyright    Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
- * @license      http://framework.zend.com/license/new-bsd         New BSD License
+ * @category   Zend
+ * @package    Zend_Gdata
+ * @subpackage Spreadsheets
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id: WorksheetEntry.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
 /**
@@ -37,10 +39,11 @@ require_once 'Zend/Gdata/Spreadsheets/Extension/ColCount.php';
 /**
  * Concrete class for working with Worksheet entries.
  *
- * @category     Zend
- * @package        Zend_Gdata
- * @copyright    Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
- * @license        http://framework.zend.com/license/new-bsd         New BSD License
+ * @category   Zend
+ * @package    Zend_Gdata
+ * @subpackage Spreadsheets
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Spreadsheets_WorksheetEntry extends Zend_Gdata_Entry
 {
@@ -52,19 +55,28 @@ class Zend_Gdata_Spreadsheets_WorksheetEntry extends Zend_Gdata_Entry
 
     /**
      * Constructs a new Zend_Gdata_Spreadsheets_WorksheetEntry object.
+     *
      * @param DOMElement $element (optional) The DOMElement on which to base this object.
      */
     public function __construct($element = null)
     {
-        foreach (Zend_Gdata_Spreadsheets::$namespaces as $nsPrefix => $nsUri) {
-            $this->registerNamespace($nsPrefix, $nsUri);
-        }
+        $this->registerAllNamespaces(Zend_Gdata_Spreadsheets::$namespaces);
         parent::__construct($element);
     }
 
-    public function getDOM($doc = null)
+    /**
+     * Retrieves a DOMElement which corresponds to this element and all
+     * child properties.  This is used to build an entry back into a DOM
+     * and eventually XML text for sending to the server upon updates, or
+     * for application storage/persistence.
+     *
+     * @param DOMDocument $doc The DOMDocument used to construct DOMElements
+     * @return DOMElement The DOMElement representing this element and all
+     * child properties.
+     */
+    public function getDOM($doc = null, $majorVersion = 1, $minorVersion = null)
     {
-        $element = parent::getDOM($doc);
+        $element = parent::getDOM($doc, $majorVersion, $minorVersion);
         if ($this->_rowCount != null) {
             $element->appendChild($this->_rowCount->getDOM($element->ownerDocument));
         }
@@ -74,6 +86,12 @@ class Zend_Gdata_Spreadsheets_WorksheetEntry extends Zend_Gdata_Entry
         return $element;
     }
 
+    /**
+     * Creates individual Entry objects of the appropriate type and
+     * stores them in the $_entry array based upon DOM data.
+     *
+     * @param DOMNode $child The DOMNode to process
+     */
     protected function takeChildFromDOM($child)
     {
         $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
@@ -97,6 +115,7 @@ class Zend_Gdata_Spreadsheets_WorksheetEntry extends Zend_Gdata_Entry
 
     /**
      * Gets the row count for this entry.
+     *
      * @return string The row count for the entry.
      */
     public function getRowCount()
@@ -106,6 +125,7 @@ class Zend_Gdata_Spreadsheets_WorksheetEntry extends Zend_Gdata_Entry
 
     /**
      * Gets the column count for this entry.
+     *
      * @return string The column count for the entry.
      */
     public function getColumnCount()
@@ -115,6 +135,7 @@ class Zend_Gdata_Spreadsheets_WorksheetEntry extends Zend_Gdata_Entry
 
     /**
      * Sets the row count for this entry.
+     *
      * @param string $rowCount The new row count for the entry.
      */
     public function setRowCount($rowCount)
@@ -125,12 +146,42 @@ class Zend_Gdata_Spreadsheets_WorksheetEntry extends Zend_Gdata_Entry
 
     /**
      * Sets the column count for this entry.
+     *
      * @param string $colCount The new column count for the entry.
      */
     public function setColumnCount($colCount)
     {
         $this->_colCount = $colCount;
         return $this;
+    }
+
+    /**
+     * Returns the content of all rows as an associative array
+     *
+     * @return array An array of rows.  Each element of the array is an associative array of data
+     */
+    public function getContentsAsRows()
+    {
+        $service = new Zend_Gdata_Spreadsheets($this->getHttpClient());
+        return $service->getSpreadsheetListFeedContents($this);
+    }
+
+    /**
+     * Returns the content of all cells as an associative array, indexed
+     * off the cell location  (ie 'A1', 'D4', etc).  Each element of
+     * the array is an associative array with a 'value' and a 'function'.
+     * Only non-empty cells are returned by default.  'range' is the
+     * value of the 'range' query parameter specified at:
+     * http://code.google.com/apis/spreadsheets/reference.html#cells_Parameters
+     *
+     * @param string $range The range of cells to retrieve
+     * @param boolean $empty Whether to retrieve empty cells
+     * @return array An associative array of cells
+     */
+    public function getContentsAsCells($range = null, $empty = false)
+    {
+        $service = new Zend_Gdata_Spreadsheets($this->getHttpClient());
+        return $service->getSpreadsheetCellFeedContents($this, $range, $empty);
     }
 
 }

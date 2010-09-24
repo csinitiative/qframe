@@ -15,9 +15,9 @@
  *
  * @category   Zend
  * @package    Zend_Feed
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Abstract.php 3941 2007-03-14 21:36:13Z darby $
+ * @version    $Id: Abstract.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
 
@@ -37,10 +37,10 @@ require_once 'Zend/Feed/Element.php';
  *
  * @category   Zend
  * @package    Zend_Feed
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-abstract class Zend_Feed_Abstract extends Zend_Feed_Element implements Iterator
+abstract class Zend_Feed_Abstract extends Zend_Feed_Element implements Iterator, Countable
 {
     /**
      * Current index on the collection of feed entries for the
@@ -63,12 +63,11 @@ abstract class Zend_Feed_Abstract extends Zend_Feed_Element implements Iterator
      * The Zend_Feed_Abstract constructor takes the URI of a feed or a
      * feed represented as a string and loads it as XML.
      *
-     * @throws Zend_Feed_Exception If loading the feed failed.
-     *
      * @param  string $uri The full URI of the feed to load, or NULL if not retrieved via HTTP or as an array.
      * @param  string $string The feed as a string, or NULL if retrieved via HTTP or as an array.
      * @param  Zend_Feed_Builder_Interface $builder The feed as a builder instance or NULL if retrieved as a string or via HTTP.
      * @return void
+     * @throws Zend_Feed_Exception If loading the feed failed.
      */
     public function __construct($uri = null, $string = null, Zend_Feed_Builder_Interface $builder = null)
     {
@@ -78,6 +77,10 @@ abstract class Zend_Feed_Abstract extends Zend_Feed_Element implements Iterator
             $client->setUri($uri);
             $response = $client->request('GET');
             if ($response->getStatus() !== 200) {
+                /**
+                 * @see Zend_Feed_Exception
+                 */
+                require_once 'Zend/Feed/Exception.php';
                 throw new Zend_Feed_Exception('Feed failed to load, got response code ' . $response->getStatus());
             }
             $this->_element = $response->getBody();
@@ -102,15 +105,29 @@ abstract class Zend_Feed_Abstract extends Zend_Feed_Element implements Iterator
      * Load the feed as an XML DOMDocument object
      *
      * @return void
+     * @throws Zend_Feed_Exception
      */
     public function __wakeup()
     {
         @ini_set('track_errors', 1);
-        $doc = new DOMDocument();
-        $success = @$doc->loadXML($this->_element);
+        $doc = new DOMDocument;
+        $status = @$doc->loadXML($this->_element);
         @ini_restore('track_errors');
 
-        if (!$success) {
+        if (!$status) {
+            // prevent the class to generate an undefined variable notice (ZF-2590)
+            if (!isset($php_errormsg)) {
+                if (function_exists('xdebug_is_enabled')) {
+                    $php_errormsg = '(error message not available, when XDebug is running)';
+                } else {
+                    $php_errormsg = '(error message not available)';
+                }
+            }
+
+            /**
+             * @see Zend_Feed_Exception
+             */
+            require_once 'Zend/Feed/Exception.php';
             throw new Zend_Feed_Exception("DOMDocument cannot parse XML: $php_errormsg");
         }
 

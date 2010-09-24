@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Zend Framework
  *
@@ -15,9 +14,9 @@
  *
  * @category   Zend
  * @package    Zend_Filter
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Input.php 5344 2007-06-15 17:53:11Z bkarwin $
+ * @version    $Id: Input.php 22473 2010-06-20 08:30:04Z thomas $
  */
 
 /**
@@ -38,29 +37,33 @@ require_once 'Zend/Validate.php';
 /**
  * @category   Zend
  * @package    Zend_Filter
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Filter_Input
 {
 
-    const ALLOW_EMPTY       = 'allowEmpty';
-    const BREAK_CHAIN       = 'breakChainOnFailure';
-    const DEFAULT_VALUE     = 'default';
-    const MESSAGES          = 'messages';
-    const ESCAPE_FILTER     = 'escapeFilter';
-    const FIELDS            = 'fields';
-    const FILTER_CHAIN      = 'filterChain';
-    const MISSING_MESSAGE   = 'missingMessage';
-    const NAMESPACE         = 'namespace';
-    const NOT_EMPTY_MESSAGE = 'notEmptyMessage';
-    const PRESENCE          = 'presence';
-    const PRESENCE_OPTIONAL = 'optional';
-    const PRESENCE_REQUIRED = 'required';
-    const RULE              = 'rule';
-    const RULE_WILDCARD     = '*';
-    const VALIDATOR         = 'validator';
-    const VALIDATOR_CHAIN   = 'validatorChain';
+    const ALLOW_EMPTY           = 'allowEmpty';
+    const BREAK_CHAIN           = 'breakChainOnFailure';
+    const DEFAULT_VALUE         = 'default';
+    const MESSAGES              = 'messages';
+    const ESCAPE_FILTER         = 'escapeFilter';
+    const FIELDS                = 'fields';
+    const FILTER                = 'filter';
+    const FILTER_CHAIN          = 'filterChain';
+    const MISSING_MESSAGE       = 'missingMessage';
+    const INPUT_NAMESPACE       = 'inputNamespace';
+    const VALIDATOR_NAMESPACE   = 'validatorNamespace';
+    const FILTER_NAMESPACE      = 'filterNamespace';
+    const NOT_EMPTY_MESSAGE     = 'notEmptyMessage';
+    const PRESENCE              = 'presence';
+    const PRESENCE_OPTIONAL     = 'optional';
+    const PRESENCE_REQUIRED     = 'required';
+    const RULE                  = 'rule';
+    const RULE_WILDCARD         = '*';
+    const VALIDATE              = 'validate';
+    const VALIDATOR             = 'validator';
+    const VALIDATOR_CHAIN       = 'validatorChain';
     const VALIDATOR_CHAIN_COUNT = 'validatorChainCount';
 
     /**
@@ -112,20 +115,16 @@ class Zend_Filter_Input
     protected $_unknownFields = array();
 
     /**
-     * @var array Default namespaces, to search after user-defined namespaces.
-     */
-    protected $_namespaces = array('Zend_Filter', 'Zend_Validate');
-
-    /**
-     * @var array User-defined namespaces, to search before $_namespaces.
-     */
-    protected $_userNamespaces = array();
-
-    /**
      * @var Zend_Filter_Interface The filter object that is run on values
      * returned by the getEscaped() method.
      */
     protected $_defaultEscapeFilter = null;
+
+    /**
+     * Plugin loaders
+     * @var array
+     */
+    protected $_loaders = array();
 
     /**
      * @var array Default values to use when processing filters and validators.
@@ -146,8 +145,20 @@ class Zend_Filter_Input
     protected $_processed = false;
 
     /**
-     * @param array $filters
-     * @param array $validators
+     * Translation object
+     * @var Zend_Translate
+     */
+    protected $_translator;
+
+    /**
+     * Is translation disabled?
+     * @var Boolean
+     */
+    protected $_translatorDisabled = false;
+
+    /**
+     * @param array $filterRules
+     * @param array $validatorRules
      * @param array $data       OPTIONAL
      * @param array $options    OPTIONAL
      */
@@ -167,17 +178,116 @@ class Zend_Filter_Input
 
     /**
      * @param mixed $namespaces
-     * @return void
+     * @return Zend_Filter_Input
+     * @deprecated since 1.5.0RC1 - use addFilterPrefixPath() or addValidatorPrefixPath instead.
      */
     public function addNamespace($namespaces)
     {
-        foreach((array) $namespaces as $namespace) {
-            $this->_userNamespaces[] = $namespace;
+        if (!is_array($namespaces)) {
+            $namespaces = array($namespaces);
         }
-        $this->_namespaces = array_merge(
-            $this->_userNamespaces,
-            array('Zend_Filter', 'Zend_Validate')
-        );
+
+        foreach ($namespaces as $namespace) {
+            $prefix = $namespace;
+            $path = str_replace('_', DIRECTORY_SEPARATOR, $prefix);
+            $this->addFilterPrefixPath($prefix, $path);
+            $this->addValidatorPrefixPath($prefix, $path);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add prefix path for all elements
+     *
+     * @param  string $prefix
+     * @param  string $path
+     * @return Zend_Filter_Input
+     */
+    public function addFilterPrefixPath($prefix, $path)
+    {
+        $this->getPluginLoader(self::FILTER)->addPrefixPath($prefix, $path);
+
+        return $this;
+    }
+
+    /**
+     * Add prefix path for all elements
+     *
+     * @param  string $prefix
+     * @param  string $path
+     * @return Zend_Filter_Input
+     */
+    public function addValidatorPrefixPath($prefix, $path)
+    {
+        $this->getPluginLoader(self::VALIDATE)->addPrefixPath($prefix, $path);
+
+        return $this;
+    }
+
+    /**
+     * Set plugin loaders for use with decorators and elements
+     *
+     * @param  Zend_Loader_PluginLoader_Interface $loader
+     * @param  string $type 'filter' or 'validate'
+     * @return Zend_Filter_Input
+     * @throws Zend_Filter_Exception on invalid type
+     */
+    public function setPluginLoader(Zend_Loader_PluginLoader_Interface $loader, $type)
+    {
+        $type = strtolower($type);
+        switch ($type) {
+            case self::FILTER:
+            case self::VALIDATE:
+                $this->_loaders[$type] = $loader;
+                return $this;
+            default:
+                require_once 'Zend/Filter/Exception.php';
+                throw new Zend_Filter_Exception(sprintf('Invalid type "%s" provided to setPluginLoader()', $type));
+        }
+
+        return $this;
+    }
+
+    /**
+     * Retrieve plugin loader for given type
+     *
+     * $type may be one of:
+     * - filter
+     * - validator
+     *
+     * If a plugin loader does not exist for the given type, defaults are
+     * created.
+     *
+     * @param  string $type 'filter' or 'validate'
+     * @return Zend_Loader_PluginLoader_Interface
+     * @throws Zend_Filter_Exception on invalid type
+     */
+    public function getPluginLoader($type)
+    {
+        $type = strtolower($type);
+        if (!isset($this->_loaders[$type])) {
+            switch ($type) {
+                case self::FILTER:
+                    $prefixSegment = 'Zend_Filter_';
+                    $pathSegment   = 'Zend/Filter/';
+                    break;
+                case self::VALIDATE:
+                    $prefixSegment = 'Zend_Validate_';
+                    $pathSegment   = 'Zend/Validate/';
+                    break;
+                default:
+                    require_once 'Zend/Filter/Exception.php';
+                    throw new Zend_Filter_Exception(sprintf('Invalid type "%s" provided to getPluginLoader()', $type));
+            }
+
+            require_once 'Zend/Loader/PluginLoader.php';
+            $this->_loaders[$type] = new Zend_Loader_PluginLoader(
+                array($prefixSegment => $pathSegment)
+            );
+        }
+
+        return $this->_loaders[$type];
     }
 
     /**
@@ -232,7 +342,7 @@ class Zend_Filter_Input
     public function getEscaped($fieldName = null)
     {
         $this->_process();
-        $escapeFilter = $this->_getDefaultEscapeFilter();
+        $this->_getDefaultEscapeFilter();
 
         if ($fieldName === null) {
             return $this->_escapeRecursive($this->_validFields);
@@ -249,6 +359,10 @@ class Zend_Filter_Input
      */
     protected function _escapeRecursive($data)
     {
+        if($data === null) {
+            return $data;
+        }
+
         if (!is_array($data)) {
             return $this->_getDefaultEscapeFilter()->filter($data);
         }
@@ -343,8 +457,8 @@ class Zend_Filter_Input
     }
 
     /**
-     * @return void
-     * @throw Zend_Filter_Exception
+     * @return Zend_Filter_Input
+     * @throws Zend_Filter_Exception
      */
     public function process()
     {
@@ -357,11 +471,13 @@ class Zend_Filter_Input
             require_once 'Zend/Filter/Exception.php';
             throw new Zend_Filter_Exception("Input has missing fields");
         }
+
+        return $this;
     }
 
     /**
      * @param array $data
-     * @return void
+     * @return Zend_Filter_Input
      */
     public function setData(array $data)
     {
@@ -377,11 +493,13 @@ class Zend_Filter_Input
         $this->_unknownFields = array();
 
         $this->_processed = false;
+
+        return $this;
     }
 
     /**
      * @param mixed $escapeFilter
-     * @return void
+     * @return Zend_Filter_Interface
      */
     public function setDefaultEscapeFilter($escapeFilter)
     {
@@ -398,7 +516,7 @@ class Zend_Filter_Input
 
     /**
      * @param array $options
-     * @return void
+     * @return Zend_Filter_Input
      * @throws Zend_Filter_Exception if an unknown option is given
      */
     public function setOptions(array $options)
@@ -408,8 +526,32 @@ class Zend_Filter_Input
                 case self::ESCAPE_FILTER:
                     $this->setDefaultEscapeFilter($value);
                     break;
-                case self::NAMESPACE:
+                case self::INPUT_NAMESPACE:
                     $this->addNamespace($value);
+                    break;
+                case self::VALIDATOR_NAMESPACE:
+                    if(is_string($value)) {
+                        $value = array($value);
+                    }
+
+                    foreach($value AS $prefix) {
+                        $this->addValidatorPrefixPath(
+                                $prefix,
+                                str_replace('_', DIRECTORY_SEPARATOR, $prefix)
+                        );
+                    }
+                    break;
+                case self::FILTER_NAMESPACE:
+                    if(is_string($value)) {
+                        $value = array($value);
+                    }
+
+                    foreach($value AS $prefix) {
+                        $this->addFilterPrefixPath(
+                                $prefix,
+                                str_replace('_', DIRECTORY_SEPARATOR, $prefix)
+                        );
+                    }
                     break;
                 case self::ALLOW_EMPTY:
                 case self::BREAK_CHAIN:
@@ -424,6 +566,76 @@ class Zend_Filter_Input
                     break;
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Set translation object
+     *
+     * @param  Zend_Translate|Zend_Translate_Adapter|null $translator
+     * @return Zend_Filter_Input
+     */
+    public function setTranslator($translator = null)
+    {
+        if ((null === $translator) || ($translator instanceof Zend_Translate_Adapter)) {
+            $this->_translator = $translator;
+        } elseif ($translator instanceof Zend_Translate) {
+            $this->_translator = $translator->getAdapter();
+        } else {
+            require_once 'Zend/Validate/Exception.php';
+            throw new Zend_Validate_Exception('Invalid translator specified');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Return translation object
+     *
+     * @return Zend_Translate_Adapter|null
+     */
+    public function getTranslator()
+    {
+        if ($this->translatorIsDisabled()) {
+            return null;
+        }
+
+        if ($this->_translator === null) {
+            require_once 'Zend/Registry.php';
+            if (Zend_Registry::isRegistered('Zend_Translate')) {
+                $translator = Zend_Registry::get('Zend_Translate');
+                if ($translator instanceof Zend_Translate_Adapter) {
+                    return $translator;
+                } elseif ($translator instanceof Zend_Translate) {
+                    return $translator->getAdapter();
+                }
+            }
+        }
+
+        return $this->_translator;
+    }
+
+    /**
+     * Indicate whether or not translation should be disabled
+     *
+     * @param  bool $flag
+     * @return Zend_Filter_Input
+     */
+    public function setDisableTranslator($flag)
+    {
+        $this->_translatorDisabled = (bool) $flag;
+        return $this;
+    }
+
+    /**
+     * Is translation disabled?
+     *
+     * @return bool
+     */
+    public function translatorIsDisabled()
+    {
+        return $this->_translatorDisabled;
     }
 
     /*
@@ -530,6 +742,15 @@ class Zend_Filter_Input
     protected function _getMissingMessage($rule, $field)
     {
         $message = $this->_defaults[self::MISSING_MESSAGE];
+
+        if (null !== ($translator = $this->getTranslator())) {
+            if ($translator->isTranslated(self::MISSING_MESSAGE)) {
+                $message = $translator->translate(self::MISSING_MESSAGE);
+            } else {
+                $message = $translator->translate($message);
+            }
+        }
+
         $message = str_replace('%rule%', $rule, $message);
         $message = str_replace('%field%', $field, $message);
         return $message;
@@ -541,6 +762,15 @@ class Zend_Filter_Input
     protected function _getNotEmptyMessage($rule, $field)
     {
         $message = $this->_defaults[self::NOT_EMPTY_MESSAGE];
+
+        if (null !== ($translator = $this->getTranslator())) {
+            if ($translator->isTranslated(self::NOT_EMPTY_MESSAGE)) {
+                $message = $translator->translate(self::NOT_EMPTY_MESSAGE);
+            } else {
+                $message = $translator->translate($message);
+            }
+        }
+
         $message = str_replace('%rule%', $rule, $message);
         $message = str_replace('%field%', $field, $message);
         return $message;
@@ -588,7 +818,7 @@ class Zend_Filter_Input
             $validatorList = array();
             foreach ($validatorRule as $key => $value) {
                 if (is_int($key)) {
-                    $validatorList[] = $value;
+                    $validatorList[$key] = $value;
                 }
             }
 
@@ -608,12 +838,22 @@ class Zend_Filter_Input
             if (!isset($validatorRule[self::ALLOW_EMPTY])) {
                 $validatorRule[self::ALLOW_EMPTY] = $this->_defaults[self::ALLOW_EMPTY];
             }
+
             if (!isset($validatorRule[self::MESSAGES])) {
                 $validatorRule[self::MESSAGES] = array();
             } else if (!is_array($validatorRule[self::MESSAGES])) {
                 $validatorRule[self::MESSAGES] = array($validatorRule[self::MESSAGES]);
-            } else if (!array_intersect_key($validatorList, $validatorRule[self::MESSAGES])) {
-                $validatorRule[self::MESSAGES] = array($validatorRule[self::MESSAGES]);
+            } else if (array_intersect_key($validatorList, $validatorRule[self::MESSAGES])) {
+                // There are now corresponding numeric keys in the validation rule messages array
+                // Treat it as a named messages list for all rule validators
+                $unifiedMessages = $validatorRule[self::MESSAGES];
+                $validatorRule[self::MESSAGES] = array();
+
+                foreach ($validatorList as $key => $validator) {
+                    if (array_key_exists($key, $unifiedMessages)) {
+                        $validatorRule[self::MESSAGES][$key] = $unifiedMessages[$key];
+                    }
+                }
             }
 
             /**
@@ -621,25 +861,28 @@ class Zend_Filter_Input
              */
             if (!isset($validatorRule[self::VALIDATOR_CHAIN])) {
                 $validatorRule[self::VALIDATOR_CHAIN] = new Zend_Validate();
-                $i = 0;
-                foreach ($validatorList as $validator) {
 
+                foreach ($validatorList as $key => $validator) {
                     if (is_string($validator) || is_array($validator)) {
                         $validator = $this->_getValidator($validator);
                     }
-                    if (isset($validatorRule[self::MESSAGES][$i])) {
-                        $value = $validatorRule[self::MESSAGES][$i];
+
+                    if (isset($validatorRule[self::MESSAGES][$key])) {
+                        $value = $validatorRule[self::MESSAGES][$key];
                         if (is_array($value)) {
                             $validator->setMessages($value);
                         } else {
                             $validator->setMessage($value);
                         }
+
+                        if ($validator instanceof Zend_Validate_NotEmpty) {
+                            $this->_defaults[self::NOT_EMPTY_MESSAGE] = $value;
+                        }
                     }
 
                     $validatorRule[self::VALIDATOR_CHAIN]->addValidator($validator, $validatorRule[self::BREAK_CHAIN]);
-                    ++$i;
                 }
-                $validatorRule[self::VALIDATOR_CHAIN_COUNT] = $i;
+                $validatorRule[self::VALIDATOR_CHAIN_COUNT] = count($validatorList);
             }
 
             /**
@@ -687,21 +930,26 @@ class Zend_Filter_Input
          * Apply defaults if fields are missing.
          */
         $data = array();
-        foreach ((array) $validatorRule[self::FIELDS] as $field) {
+        foreach ((array) $validatorRule[self::FIELDS] as $key => $field) {
             if (array_key_exists($field, $this->_data)) {
                 $data[$field] = $this->_data[$field];
-            } else
-            if (array_key_exists(self::DEFAULT_VALUE, $validatorRule)) {
-                if (is_array($validatorRule[self::DEFAULT_VALUE])) {
-                    $key = array_search($field, $validatorRule[self::FIELDS]);
-                    if (array_key_exists($key, $validatorRule[self::DEFAULT_VALUE])) {
-                        $data[$field] = $validatorRule[self::DEFAULT_VALUE][$key];
-                    }
-                } else {
+            } else if (isset($validatorRule[self::DEFAULT_VALUE])) {
+                /** @todo according to this code default value can't be an array. It has to be reviewed */
+                if (!is_array($validatorRule[self::DEFAULT_VALUE])) {
+                    // Default value is a scalar
                     $data[$field] = $validatorRule[self::DEFAULT_VALUE];
+                } else {
+                    // Default value is an array. Search for corresponding key
+                    if (isset($validatorRule[self::DEFAULT_VALUE][$key])) {
+                        $data[$field] = $validatorRule[self::DEFAULT_VALUE][$key];
+                    } else if ($validatorRule[self::PRESENCE] == self::PRESENCE_REQUIRED) {
+                        // Default value array is provided, but it doesn't have an entry for current field
+                        // and presence is required
+                        $this->_missingFields[$validatorRule[self::RULE]][] =
+                           $this->_getMissingMessage($validatorRule[self::RULE], $field);
+                    }
                 }
-            } else
-            if ($validatorRule[self::PRESENCE] == self::PRESENCE_REQUIRED) {
+            } else if ($validatorRule[self::PRESENCE] == self::PRESENCE_REQUIRED) {
                 $this->_missingFields[$validatorRule[self::RULE]][] =
                     $this->_getMissingMessage($validatorRule[self::RULE], $field);
             }
@@ -718,44 +966,99 @@ class Zend_Filter_Input
          * Evaluate the inputs against the validator chain.
          */
         if (count((array) $validatorRule[self::FIELDS]) > 1) {
+            if (!$validatorRule[self::ALLOW_EMPTY]) {
+                $emptyFieldsFound = false;
+                $errorsList       = array();
+                $messages         = array();
+
+                foreach ($data as $fieldKey => $field) {
+                    $notEmptyValidator = $this->_getValidator('NotEmpty');
+                    $notEmptyValidator->setMessage($this->_getNotEmptyMessage($validatorRule[self::RULE], $fieldKey));
+
+                    if (!$notEmptyValidator->isValid($field)) {
+                        foreach ($notEmptyValidator->getMessages() as $messageKey => $message) {
+                            if (!isset($messages[$messageKey])) {
+                                $messages[$messageKey] = $message;
+                            } else {
+                                $messages[] = $message;
+                            }
+                        }
+                        $errorsList[] = $notEmptyValidator->getErrors();
+                        $emptyFieldsFound = true;
+                    }
+                }
+
+                if ($emptyFieldsFound) {
+                    $this->_invalidMessages[$validatorRule[self::RULE]] = $messages;
+                    $this->_invalidErrors[$validatorRule[self::RULE]]   = array_unique(call_user_func_array('array_merge', $errorsList));
+                    return;
+                }
+            }
+
             if (!$validatorRule[self::VALIDATOR_CHAIN]->isValid($data)) {
                 $this->_invalidMessages[$validatorRule[self::RULE]] = $validatorRule[self::VALIDATOR_CHAIN]->getMessages();
                 $this->_invalidErrors[$validatorRule[self::RULE]] = $validatorRule[self::VALIDATOR_CHAIN]->getErrors();
                 return;
             }
-        }
+        } else if (count($data) > 0) {
+            // $data is actually a one element array
+            $fieldNames = array_keys($data);
+            $fieldName = reset($fieldNames);
+            $field     = reset($data);
 
-        $failed = false;
-        foreach ($data as $fieldKey => $field) {
+            $failed = false;
             if (!is_array($field)) {
                 $field = array($field);
             }
+
+            $notEmptyValidator = $this->_getValidator('NotEmpty');
+            $notEmptyValidator->setMessage($this->_getNotEmptyMessage($validatorRule[self::RULE], $fieldName));
+            if ($validatorRule[self::ALLOW_EMPTY]) {
+                $validatorChain = $validatorRule[self::VALIDATOR_CHAIN];
+            } else {
+                $validatorChain = new Zend_Validate();
+                $validatorChain->addValidator($notEmptyValidator, true /* Always break on failure */);
+                $validatorChain->addValidator($validatorRule[self::VALIDATOR_CHAIN]);
+            }
+
             foreach ($field as $value) {
-                if (empty($value)) {
-                    if ($validatorRule[self::ALLOW_EMPTY] == true) {
-                        continue;
-                    }
-                    if ($validatorRule[self::VALIDATOR_CHAIN_COUNT] == 0) {
-                        $notEmptyValidator = $this->_getValidator('NotEmpty');
-                        $notEmptyValidator->setMessage($this->_getNotEmptyMessage($validatorRule[self::RULE], $fieldKey));
-                        $validatorRule[self::VALIDATOR_CHAIN]->addValidator($notEmptyValidator);
-                    }
+                if ($validatorRule[self::ALLOW_EMPTY]  &&  !$notEmptyValidator->isValid($value)) {
+                    // Field is empty AND it's allowed. Do nothing.
+                    continue;
                 }
-                if (!$validatorRule[self::VALIDATOR_CHAIN]->isValid($value)) {
-                    $this->_invalidMessages[$validatorRule[self::RULE]] =
-                        $validatorRule[self::VALIDATOR_CHAIN]->getMessages();
-                    $this->_invalidErrors[$validatorRule[self::RULE]] =
-                        $validatorRule[self::VALIDATOR_CHAIN]->getErrors();
-                    unset($this->_validFields[$fieldKey]);
+
+                if (!$validatorChain->isValid($value)) {
+                    if (isset($this->_invalidMessages[$validatorRule[self::RULE]])) {
+                        $collectedMessages = $this->_invalidMessages[$validatorRule[self::RULE]];
+                    } else {
+                        $collectedMessages = array();
+                    }
+
+                    foreach ($validatorChain->getMessages() as $messageKey => $message) {
+                        if (!isset($collectedMessages[$messageKey])) {
+                            $collectedMessages[$messageKey] = $message;
+                        } else {
+                            $collectedMessages[] = $message;
+                        }
+                    }
+
+                    $this->_invalidMessages[$validatorRule[self::RULE]] = $collectedMessages;
+                    if (isset($this->_invalidErrors[$validatorRule[self::RULE]])) {
+                        $this->_invalidErrors[$validatorRule[self::RULE]] = array_merge($this->_invalidErrors[$validatorRule[self::RULE]],
+                                                                                        $validatorChain->getErrors());
+                    } else {
+                        $this->_invalidErrors[$validatorRule[self::RULE]] = $validatorChain->getErrors();
+                    }
+                    unset($this->_validFields[$fieldName]);
                     $failed = true;
                     if ($validatorRule[self::BREAK_CHAIN]) {
                         return;
                     }
                 }
             }
-        }
-        if ($failed) {
-            return;
+            if ($failed) {
+                return;
+            }
         }
 
         /**
@@ -774,7 +1077,7 @@ class Zend_Filter_Input
      */
     protected function _getFilter($classBaseName)
     {
-        return $this->_getFilterOrValidator('Zend_Filter_Interface', $classBaseName);
+        return $this->_getFilterOrValidator(self::FILTER, $classBaseName);
     }
 
     /**
@@ -783,51 +1086,41 @@ class Zend_Filter_Input
      */
     protected function _getValidator($classBaseName)
     {
-        return $this->_getFilterOrValidator('Zend_Validate_Interface', $classBaseName);
+        return $this->_getFilterOrValidator(self::VALIDATE, $classBaseName);
     }
 
     /**
-     * @param string $interface
+     * @param string $type
      * @param mixed $classBaseName
-     * @return mixed object implementing Zend_Filter_Interface or Zend_Validate_Interface
+     * @return Zend_Filter_Interface|Zend_Validate_Interface
      * @throws Zend_Filter_Exception
      */
-    protected function _getFilterOrValidator($interface, $classBaseName)
+    protected function _getFilterOrValidator($type, $classBaseName)
     {
         $args = array();
+
         if (is_array($classBaseName)) {
             $args = $classBaseName;
             $classBaseName = array_shift($args);
         }
-        foreach ($this->_namespaces as $namespace) {
-            $className = $namespace . '_' . ucfirst($classBaseName);
-            try {
-                Zend_Loader::loadClass($className);
-                $class = new ReflectionClass($className);
-                if ($class->implementsInterface((string) $interface)) {
-                    if ($class->hasMethod('__construct')) {
-                        $object = $class->newInstanceArgs($args);
-                    } else {
-                        $object = $class->newInstance();
-                    }
-                    return $object;
-                }
-            } catch (Zend_Exception $e) {
-                // fallthrough and continue
-            }
+
+        $interfaceName = 'Zend_' . ucfirst($type) . '_Interface';
+        $className = $this->getPluginLoader($type)->load(ucfirst($classBaseName));
+
+        $class = new ReflectionClass($className);
+
+        if (!$class->implementsInterface($interfaceName)) {
+            require_once 'Zend/Filter/Exception.php';
+            throw new Zend_Filter_Exception("Class '$className' based on basename '$classBaseName' must implement the '$interfaceName' interface");
         }
 
-        if (!class_exists($className, false)) {
-            $msg = "Unable to find the implementation of the '$classBaseName' class";
+        if ($class->hasMethod('__construct')) {
+            $object = $class->newInstanceArgs($args);
         } else {
-            $msg = "Class based on basename '$classBaseName' must implement the '$interface' interface";
+            $object = $class->newInstance();
         }
 
-        /**
-         * @see Zend_Filter_Exception
-         */
-        require_once 'Zend/Filter/Exception.php';
-        throw new Zend_Filter_Exception($msg);
+        return $object;
     }
 
 }

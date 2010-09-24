@@ -1,91 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE ldml SYSTEM "http://www.unicode.org/cldr/dtd/1.4/ldml.dtd">
 <ldml>
-    <identity>
-        <version number="$Revision: 1.45 $"/>
-        <generation date="$Date: 2006/06/27 23:30:53 $"/>
-        <language type="bn"/>
-        <territory type="IN"/>
-    </identity>
-    <dates>
-        <calendars>
-            <calendar type="gregorian">
-                <dateFormats>
-                    <dateFormatLength type="full">
-                        <dateFormat>
-                            <pattern>EEEE d MMMM yyyy</pattern>
-                        </dateFormat>
-                    </dateFormatLength>
-                    <dateFormatLength type="long">
-                        <dateFormat>
-                            <pattern>d MMMM yyyy</pattern>
-                        </dateFormat>
-                    </dateFormatLength>
-                    <dateFormatLength type="medium">
-                        <dateFormat>
-                            <pattern>dd-MM-yyyy</pattern>
-                        </dateFormat>
-                    </dateFormatLength>
-                    <dateFormatLength type="short">
-                        <dateFormat>
-                            <pattern>d-M-yy</pattern>
-                        </dateFormat>
-                    </dateFormatLength>
-                </dateFormats>
-                <timeFormats>
-                    <timeFormatLength type="full">
-                        <timeFormat>
-                            <pattern>h:mm:ss a z</pattern>
-                        </timeFormat>
-                    </timeFormatLength>
-                    <timeFormatLength type="long">
-                        <timeFormat>
-                            <pattern>h:mm:ss a z</pattern>
-                        </timeFormat>
-                    </timeFormatLength>
-                    <timeFormatLength type="medium">
-                        <timeFormat>
-                            <pattern>h:mm:ss a</pattern>
-                        </timeFormat>
-                    </timeFormatLength>
-                    <timeFormatLength type="short">
-                        <timeFormat>
-                            <pattern>h:mm a</pattern>
-                        </timeFormat>
-                    </timeFormatLength>
-                </timeFormats>
-                <dateTimeFormats>
-                    <availableFormats>
-                        <dateFormatItem id="MMMMd" draft="provisional">d MMMM</dateFormatItem>
-                        <dateFormatItem id="MMdd" draft="provisional">dd-MM</dateFormatItem>
-                        <dateFormatItem id="yyyyMM" draft="provisional">MM-yyyy</dateFormatItem>
-                        <dateFormatItem id="yyyyMMMM" draft="provisional">MMMM yyyy</dateFormatItem>
-                    </availableFormats>
-                </dateTimeFormats>
-            </calendar>
-        </calendars>
-    </dates>
-    <numbers>
-        <decimalFormats>
-            <decimalFormatLength>
-                <decimalFormat>
-                    <pattern>#,##,##0.###</pattern>
-                </decimalFormat>
-            </decimalFormatLength>
-        </decimalFormats>
-        <percentFormats>
-            <percentFormatLength>
-                <percentFormat>
-                    <pattern>#,##,##0%</pattern>
-                </percentFormat>
-            </percentFormatLength>
-        </percentFormats>
-        <currencyFormats>
-            <currencyFormatLength>
-                <currencyFormat>
-                    <pattern>¤ #,##,##0.00</pattern>
-                </currencyFormat>
-            </currencyFormatLength>
-        </currencyFormats>
-    </numbers>
+	<identity>
+		<version number="$Revision: 1.61 $"/>
+		<generation date="$Date: 2009/05/05 23:06:34 $"/>
+		<language type="bn"/>
+		<territory type="IN"/>
+	</identity>
+	<localeDisplayNames>
+		<languages>
+			<language type="ab">আবখাজিয়ান</language>
+			<language type="ace">অ্যাচাইনিজ</language>
+			<language type="ach">আকোলি</language>
+			<language type="afa">আফ্রো-এশিয়াটিক ভাষা</language>
+			<language type="alg">আলগোনকিউয়ান ভাষা</language>
+			<language type="anp">আঙ্গিকা</language>
+			<language type="ch">চামোরো</language>
+			<language type="chn">চিনুক জার্গন</language>
+			<language type="cho">চকটোও</language>
+			<language type="chp">চিপেওয়াইয়ান</language>
+			<language type="chy">চেয়েনি</language>
+			<language type="cu">চার্চ স্লাভিক</language>
+			<language type="de_AT">অস্ট্রিয়ান জারমান</language>
+			<language type="doi">ডোগরি</language>
+			<language type="en_AU">অস্ট্রেলিয়ান ইংরাজী</language>
+			<language type="en_CA">ক্যানাডিয়ান ইংরেজি</language>
+			<language type="en_GB">ব্রিটিশ ইংরেজী</language>
+			<language type="fr_CA">ক্যানাডিয়ান ফরাসী</language>
+			<language type="map">অস্ট্রোনেসিয়ান</language>
+			<language type="rup">আরমেনিয়ান</language>
+			<language type="tut">আলটাইক</language>
+			<language type="zbl">ব্লিসসিম্বলস</language>
+		</languages>
+	</localeDisplayNames>
 </ldml>
