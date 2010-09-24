@@ -66,7 +66,7 @@ class QuestionnaireDataController extends QFrame_Controller_Admin {
   /**
    * Action for deleting an instance
    */
-  public function deleteQuestionnaireAction() {
+  public function deletequestionnaireAction() {
     $session = new Zend_Session_Namespace('login');
     $questionnaireID = $session->dataQuestionnaireID;
     
@@ -86,7 +86,7 @@ class QuestionnaireDataController extends QFrame_Controller_Admin {
   /**
    * Action for importing an questionnaire
    */
-  public function importQuestionnaireAction() {
+  public function importquestionnaireAction() {
 
     $uploadErrors = array(
       UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini.',
@@ -151,7 +151,7 @@ class QuestionnaireDataController extends QFrame_Controller_Admin {
    * Export actions
    */
    
-  public function QuestionnaireDefinitionXMLDownloadAction() {
+  public function questionnairedefinitionxmldownloadAction() {
     $session = new Zend_Session_Namespace('login');
     $questionnaire = new QuestionnaireModel(array('questionnaireID' => $session->dataQuestionnaireID,
                                             'depth' => 'questionnaire'));
@@ -167,7 +167,7 @@ class QuestionnaireDataController extends QFrame_Controller_Admin {
     $this->view->setRenderLayout(false);      
   }
    
-  public function ResponsesXMLSchemaDownloadAction() {
+  public function responsesxmlschemadownloadAction() {
     $session = new Zend_Session_Namespace('login');
     $questionnaire = new QuestionnaireModel(array('questionnaireID' => $session->dataQuestionnaireID,
                                             'depth' => 'questionnaire'));
@@ -183,7 +183,7 @@ class QuestionnaireDataController extends QFrame_Controller_Admin {
     $this->view->setRenderLayout(false);
   }
    
-  public function CompletedResponsesXMLSchemaDownloadAction() {
+  public function completedresponsesxmlschemadownloadAction() {
     $session = new Zend_Session_Namespace('login');
     $questionnaire = new QuestionnaireModel(array('questionnaireID' => $session->dataQuestionnaireID,
                                             'depth' => 'questionnaire'));

@@ -16,9 +16,9 @@
  * @category   Zend
  * @package    Zend_Service
  * @subpackage Delicious
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Delicious.php 5791 2007-07-19 20:07:45Z ghacek $
+ * @version    $Id: Delicious.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
 
@@ -54,7 +54,7 @@ require_once 'Zend/Service/Delicious/PostList.php';
  * @category   Zend
  * @package    Zend_Service
  * @subpackage Delicious
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Service_Delicious
@@ -426,10 +426,10 @@ class Zend_Service_Delicious
         $path = sprintf(self::JSON_FANS, $user);
         return $this->makeRequest($path, array(), 'json');
     }
-    
+
     /**
      * Get details on a particular bookmarked URL
-     * 
+     *
      * Returned array contains four elements:
      *  - hash - md5 hash of URL
      *  - top_tags - array of tags and their respective usage counts
@@ -439,27 +439,29 @@ class Zend_Service_Delicious
      * If URL hasen't been bookmarked null is returned.
      *
      * @param  string $url URL for which to get details
-     * @return array 
+     * @return array
      */
-    public function getUrlDetails($url) {
-	    $parms = array('hash' => md5($url));
-	    
-	    $res = $this->makeRequest(self::JSON_URL, $parms, 'json');
-	    
-	    if(isset($res[0])) {
-		    return $res[0];
-	    } else {
-		    return null;
-    	}
+    public function getUrlDetails($url)
+    {
+        $parms = array('hash' => md5($url));
+
+        $res = $this->makeRequest(self::JSON_URL, $parms, 'json');
+
+        if(isset($res[0])) {
+            return $res[0];
+        } else {
+            return null;
+        }
     }
 
     /**
      * Handles all GET requests to a web service
      *
-     * @param  string $path  Path
-     * @param  array  $parms Array of GET parameters
-     * @param  string $type  Type of a request ("xml"|"json")
-     * @return mixed  decoded response from web service
+     * @param   string $path  Path
+     * @param   array  $parms Array of GET parameters
+     * @param   string $type  Type of a request ("xml"|"json")
+     * @return  mixed  decoded response from web service
+     * @throws  Zend_Service_Delicious_Exception
      */
     public function makeRequest($path, array $parms = array(), $type = 'xml')
     {
@@ -522,12 +524,13 @@ class Zend_Service_Delicious
     /**
      * Transform XML string to array
      *
-     * @param  DOMDocument $response
-     * @param  string      $root     Name of root tag
-     * @param  string      $child    Name of children tags
-     * @param  string      $attKey   Attribute of child tag to be used as a key
-     * @param  string      $attValue Attribute of child tag to be used as a value
-     * @return array
+     * @param   DOMDocument $response
+     * @param   string      $root     Name of root tag
+     * @param   string      $child    Name of children tags
+     * @param   string      $attKey   Attribute of child tag to be used as a key
+     * @param   string      $attValue Attribute of child tag to be used as a value
+     * @return  array
+     * @throws  Zend_Service_Delicious_Exception
      */
     private static function _xmlResponseToArray(DOMDocument $response, $root, $child, $attKey, $attValue)
     {
@@ -557,8 +560,9 @@ class Zend_Service_Delicious
     /**
      * Constructs Zend_Service_Delicious_PostList from XML response
      *
-     * @param  DOMDocument $response
-     * @return Zend_Service_Delicious_PostList
+     * @param   DOMDocument $response
+     * @return  Zend_Service_Delicious_PostList
+     * @throws  Zend_Service_Delicious_Exception
      */
     private function _parseXmlPostList(DOMDocument $response)
     {
@@ -578,8 +582,9 @@ class Zend_Service_Delicious
     /**
      * Evaluates XML response
      *
-     * @param  DOMDocument $response
-     * @return void
+     * @param   DOMDocument $response
+     * @return  void
+     * @throws  Zend_Service_Delicious_Exception
      */
     private static function _evalXmlResult(DOMDocument $response)
     {

@@ -15,8 +15,10 @@
  *
  * @category   Zend
  * @package    Zend_Gdata
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @subpackage Calendar
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id: Calendar.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
 /**
@@ -50,7 +52,8 @@ require_once 'Zend/Gdata/Calendar/ListEntry.php';
  *
  * @category   Zend
  * @package    Zend_Gdata
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @subpackage Calendar
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Calendar extends Zend_Gdata
@@ -62,17 +65,27 @@ class Zend_Gdata_Calendar extends Zend_Gdata
 
     protected $_defaultPostUri = self::CALENDAR_EVENT_FEED_URI;
 
+    /**
+     * Namespaces used for Zend_Gdata_Calendar
+     *
+     * @var array
+     */
     public static $namespaces = array(
-            'gCal' => 'http://schemas.google.com/gCal/2005');
+        array('gCal', 'http://schemas.google.com/gCal/2005', 1, 0)
+    );
 
     /**
      * Create Gdata_Calendar object
+     *
+     * @param Zend_Http_Client $client (optional) The HTTP client to use when
+     *          when communicating with the Google servers.
+     * @param string $applicationId The identity of the app in the form of Company-AppName-Version
      */
-    public function __construct($client = null)
+    public function __construct($client = null, $applicationId = 'MyCompany-MyApp-1.0')
     {
         $this->registerPackage('Zend_Gdata_Calendar');
         $this->registerPackage('Zend_Gdata_Calendar_Extension');
-        parent::__construct($client);
+        parent::__construct($client, $applicationId);
         $this->_httpClient->setParameterPost('service', self::AUTH_SERVICE_NAME);
     }
 

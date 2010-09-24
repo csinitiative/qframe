@@ -4,32 +4,37 @@
  *
  * LICENSE
  *
- * This source file is subject to version 1.0 of the Zend Framework
- * license, that is bundled with this package in the file LICENSE, and
- * is available through the world-wide-web at the following URL:
- * http://www.zend.com/license/framework/1_0.txt. If you did not receive
- * a copy of the Zend Framework license and are unable to obtain it
- * through the world-wide-web, please send a note to license@zend.com
- * so we can mail you a copy immediately.
+ * This source file is subject to the new BSD license that is bundled
+ * with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://framework.zend.com/license/new-bsd
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@zend.com so we can send you a copy immediately.
  *
+ * @category   Zend
  * @package    Zend_Mail
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
- * @license    http://www.zend.com/license/framework/1_0.txt Zend Framework License version 1.0
+ * @subpackage Protocol
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id: Pop3.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
-
-/**
- * Zend_Mail_Protocol_Exception
- */
-require_once 'Zend/Mail/Protocol/Exception.php';
 
 
 /**
+ * @category   Zend
  * @package    Zend_Mail
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
- * @license    http://www.zend.com/license/framework/1_0.txt Zend Framework License version 1.0
+ * @subpackage Protocol
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Mail_Protocol_Pop3
 {
+    /**
+     * Default timeout in seconds for initiating session
+     */
+    const TIMEOUT_CONNECTION = 30;
+
     /**
      * saves if server supports top
      * @var null|bool
@@ -52,7 +57,7 @@ class Zend_Mail_Protocol_Pop3
     /**
      * Public constructor
      *
-     * @param  string      $host  hostname of IP address of POP3 server, if given connect() is called
+     * @param  string      $host  hostname or IP address of POP3 server, if given connect() is called
      * @param  int|null    $port  port of POP3 server, null for default (110 or 995 for ssl)
      * @param  bool|string $ssl   use ssl? 'SSL', 'TLS' or false
      * @throws Zend_Mail_Protocol_Exception
@@ -77,7 +82,7 @@ class Zend_Mail_Protocol_Pop3
     /**
      * Open connection to POP3 server
      *
-     * @param  string      $host  hostname of IP address of POP3 server
+     * @param  string      $host  hostname or IP address of POP3 server
      * @param  int|null    $port  of POP3 server, default is 110 (995 for ssl)
      * @param  string|bool $ssl   use 'SSL', 'TLS' or false
      * @return string welcome message
@@ -93,9 +98,16 @@ class Zend_Mail_Protocol_Pop3
             $port = $ssl == 'SSL' ? 995 : 110;
         }
 
-        $this->_socket = @fsockopen($host, $port);
+        $errno  =  0;
+        $errstr = '';
+        $this->_socket = @fsockopen($host, $port, $errno, $errstr, self::TIMEOUT_CONNECTION);
         if (!$this->_socket) {
-            throw new Zend_Mail_Protocol_Exception('cannot connect to host');
+            /**
+             * @see Zend_Mail_Protocol_Exception
+             */
+            require_once 'Zend/Mail/Protocol/Exception.php';
+            throw new Zend_Mail_Protocol_Exception('cannot connect to host; error = ' . $errstr .
+                                                   ' (errno = ' . $errno . ' )');
         }
 
         $welcome = $this->readResponse();
@@ -112,6 +124,10 @@ class Zend_Mail_Protocol_Pop3
             $this->request('STLS');
             $result = stream_socket_enable_crypto($this->_socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
             if (!$result) {
+                /**
+                 * @see Zend_Mail_Protocol_Exception
+                 */
+                require_once 'Zend/Mail/Protocol/Exception.php';
                 throw new Zend_Mail_Protocol_Exception('cannot enable TLS');
             }
         }
@@ -129,8 +145,12 @@ class Zend_Mail_Protocol_Pop3
      */
     public function sendRequest($request)
     {
-        $result = @fputs($this->_socket, $request."\n");
+        $result = @fputs($this->_socket, $request . "\r\n");
         if (!$result) {
+            /**
+             * @see Zend_Mail_Protocol_Exception
+             */
+            require_once 'Zend/Mail/Protocol/Exception.php';
             throw new Zend_Mail_Protocol_Exception('send failed - connection closed?');
         }
     }
@@ -147,6 +167,10 @@ class Zend_Mail_Protocol_Pop3
     {
         $result = @fgets($this->_socket);
         if (!is_string($result)) {
+            /**
+             * @see Zend_Mail_Protocol_Exception
+             */
+            require_once 'Zend/Mail/Protocol/Exception.php';
             throw new Zend_Mail_Protocol_Exception('read failed - connection closed?');
         }
 
@@ -159,13 +183,20 @@ class Zend_Mail_Protocol_Pop3
         }
 
         if ($status != '+OK') {
+            /**
+             * @see Zend_Mail_Protocol_Exception
+             */
+            require_once 'Zend/Mail/Protocol/Exception.php';
             throw new Zend_Mail_Protocol_Exception('last request failed');
         }
 
         if ($multiline) {
             $message = '';
             $line = fgets($this->_socket);
-            while ($line && trim($line) != '.') {
+            while ($line && rtrim($line, "\r\n") != '.') {
+                if ($line[0] == '.') {
+                    $line = substr($line, 1);
+                }
                 $message .= $line;
                 $line = fgets($this->_socket);
             };
@@ -349,8 +380,12 @@ class Zend_Mail_Protocol_Pop3
     {
         if ($this->hasTop === false) {
             if ($fallback) {
-                return $this->retrive($msgno);
+                return $this->retrieve($msgno);
             } else {
+                /**
+                 * @see Zend_Mail_Protocol_Exception
+                 */
+                require_once 'Zend/Mail/Protocol/Exception.php';
                 throw new Zend_Mail_Protocol_Exception('top not supported and no fallback wanted');
             }
         }
@@ -363,7 +398,7 @@ class Zend_Mail_Protocol_Pop3
         } catch (Zend_Mail_Protocol_Exception $e) {
             $this->hasTop = false;
             if ($fallback) {
-                $result = $this->retrive($msgno);
+                $result = $this->retrieve($msgno);
             } else {
                 throw $e;
             }
@@ -376,16 +411,29 @@ class Zend_Mail_Protocol_Pop3
     /**
      * Make a RETR call for retrieving a full message with headers and body
      *
+     * @deprecated since 1.1.0; this method has a typo - please use retrieve()
      * @param  int $msgno  message number
      * @return string message
      * @throws Zend_Mail_Protocol_Exception
      */
     public function retrive($msgno)
     {
+        return $this->retrieve($msgno);
+    }
+
+
+    /**
+     * Make a RETR call for retrieving a full message with headers and body
+     *
+     * @param  int $msgno  message number
+     * @return string message
+     * @throws Zend_Mail_Protocol_Exception
+     */
+    public function retrieve($msgno)
+    {
         $result = $this->request("RETR $msgno", true);
         return $result;
     }
-
 
     /**
      * Make a NOOP call, maybe needed for keeping the server happy

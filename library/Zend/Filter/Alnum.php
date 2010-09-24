@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Zend Framework
  *
@@ -15,22 +14,24 @@
  *
  * @category   Zend
  * @package    Zend_Filter
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Alnum.php 5470 2007-06-28 17:05:56Z andries $
+ * @version    $Id: Alnum.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
-
 
 /**
  * @see Zend_Filter_Interface
  */
 require_once 'Zend/Filter/Interface.php';
-
+/**
+ * @see Zend_Locale
+ */
+require_once 'Zend/Locale.php';
 
 /**
  * @category   Zend
  * @package    Zend_Filter
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Filter_Alnum implements Zend_Filter_Interface
@@ -39,6 +40,7 @@ class Zend_Filter_Alnum implements Zend_Filter_Interface
      * Whether to allow white space characters; off by default
      *
      * @var boolean
+     * @deprecated
      */
     public $allowWhiteSpace;
 
@@ -50,6 +52,20 @@ class Zend_Filter_Alnum implements Zend_Filter_Interface
     protected static $_unicodeEnabled;
 
     /**
+     * Locale in browser.
+     *
+     * @var Zend_Locale object
+     */
+    protected $_locale;
+
+    /**
+     * The Alphabet means english alphabet.
+     *
+     * @var boolean
+     */
+    protected static $_meansEnglishAlphabet;
+
+    /**
      * Sets default option values for this instance
      *
      * @param  boolean $allowWhiteSpace
@@ -57,10 +73,50 @@ class Zend_Filter_Alnum implements Zend_Filter_Interface
      */
     public function __construct($allowWhiteSpace = false)
     {
+        if ($allowWhiteSpace instanceof Zend_Config) {
+            $allowWhiteSpace = $allowWhiteSpace->toArray();
+        } else if (is_array($allowWhiteSpace)) {
+            if (array_key_exists('allowwhitespace', $allowWhiteSpace)) {
+                $allowWhiteSpace = $allowWhiteSpace['allowwhitespace'];
+            } else {
+                $allowWhiteSpace = false;
+            }
+        }
+
         $this->allowWhiteSpace = (boolean) $allowWhiteSpace;
         if (null === self::$_unicodeEnabled) {
             self::$_unicodeEnabled = (@preg_match('/\pL/u', 'a')) ? true : false;
         }
+
+        if (null === self::$_meansEnglishAlphabet) {
+            $this->_locale = new Zend_Locale('auto');
+            self::$_meansEnglishAlphabet = in_array($this->_locale->getLanguage(),
+                                                    array('ja', 'ko', 'zh')
+                                                    );
+        }
+
+    }
+
+    /**
+     * Returns the allowWhiteSpace option
+     *
+     * @return boolean
+     */
+    public function getAllowWhiteSpace()
+    {
+        return $this->allowWhiteSpace;
+    }
+
+    /**
+     * Sets the allowWhiteSpace option
+     *
+     * @param boolean $allowWhiteSpace
+     * @return Zend_Filter_Alnum Provides a fluent interface
+     */
+    public function setAllowWhiteSpace($allowWhiteSpace)
+    {
+        $this->allowWhiteSpace = (boolean) $allowWhiteSpace;
+        return $this;
     }
 
     /**
@@ -77,8 +133,11 @@ class Zend_Filter_Alnum implements Zend_Filter_Interface
         if (!self::$_unicodeEnabled) {
             // POSIX named classes are not supported, use alternative a-zA-Z0-9 match
             $pattern = '/[^a-zA-Z0-9' . $whiteSpace . ']/';
+        } else if (self::$_meansEnglishAlphabet) {
+            //The Alphabet means english alphabet.
+            $pattern = '/[^a-zA-Z0-9'  . $whiteSpace . ']/u';
         } else {
-            // Unicode safe filter for the value
+            //The Alphabet means each language's alphabet.
             $pattern = '/[^\p{L}\p{N}' . $whiteSpace . ']/u';
         }
 

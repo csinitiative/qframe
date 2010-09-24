@@ -15,8 +15,9 @@
  * @category   Zend
  * @package    Zend_Search_Lucene
  * @subpackage Storage
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id: Directory.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
 
@@ -24,7 +25,7 @@
  * @category   Zend
  * @package    Zend_Search_Lucene
  * @subpackage Storage
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Search_Lucene_Storage_Directory
@@ -61,6 +62,15 @@ abstract class Zend_Search_Lucene_Storage_Directory
      */
     abstract public function deleteFile($filename);
 
+    /**
+     * Purge file if it's cached by directory object
+     *
+     * Method is used to prevent 'too many open files' error
+     *
+     * @param string $filename
+     * @return void
+     */
+    abstract public function purgeFile($filename);
 
     /**
      * Returns true if a file with the given $filename exists.

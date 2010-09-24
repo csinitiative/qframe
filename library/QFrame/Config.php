@@ -70,7 +70,7 @@ class QFrame_Config {
    */
   public function __get($property) {
     if(!isset($this->$property))
-      throw new Exception('Non-existent configuration option requested');
+      throw new Exception('Non-existent configuration option requested: ' . $property);
     
     if(!isset($GLOBALS['qframe_env']) || !isset($GLOBALS['qframe_env'][$property]))
       return $this->defaults[$property];

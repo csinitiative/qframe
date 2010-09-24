@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Zend Framework
  *
@@ -15,9 +14,10 @@
  *
  * @category   Zend
  * @package    Zend_Auth
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @subpackage Storage
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id:$
+ * @version    $Id: NonPersistent.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
 
@@ -36,7 +36,8 @@ require_once 'Zend/Auth/Storage/Interface.php';
  *
  * @category   Zend
  * @package    Zend_Auth
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @subpackage Storage
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Auth_Storage_NonPersistent implements Zend_Auth_Storage_Interface
@@ -45,7 +46,6 @@ class Zend_Auth_Storage_NonPersistent implements Zend_Auth_Storage_Interface
      * Holds the actual auth data
      */
     protected $_data;
-
 
     /**
      * Returns true if and only if storage is empty
@@ -60,7 +60,6 @@ class Zend_Auth_Storage_NonPersistent implements Zend_Auth_Storage_Interface
 
     /**
      * Returns the contents of storage
-     *
      * Behavior is undefined when storage is empty.
      *
      * @throws Zend_Auth_Storage_Exception If reading contents from storage is impossible

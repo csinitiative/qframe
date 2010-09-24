@@ -16,9 +16,9 @@
  * @category   Zend
  * @package    Zend_Service
  * @subpackage Simpy
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: WatchlistFilterSet.php 3794 2007-03-07 17:11:25Z darby $
+ * @version    $Id: WatchlistFilterSet.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
 
@@ -32,7 +32,7 @@ require_once 'Zend/Service/Simpy/WatchlistFilter.php';
  * @category   Zend
  * @package    Zend_Service
  * @subpackage Simpy
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Service_Simpy_WatchlistFilterSet implements IteratorAggregate
@@ -58,12 +58,11 @@ class Zend_Service_Simpy_WatchlistFilterSet implements IteratorAggregate
     /**
      * Returns an iterator for the watchlist filter set
      *
-     * @return IteratorIterator
+     * @return ArrayIterator
      */
     public function getIterator()
     {
-        $array = new ArrayObject($this->_filters);
-        return $array->getIterator();
+        return new ArrayIterator($this->_filters);
     }
 
     /**

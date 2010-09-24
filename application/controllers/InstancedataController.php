@@ -98,7 +98,7 @@ class InstancedataController extends QFrame_Controller_Admin {
   /**
    * Action for copying an instance
    */
-  public function copyInstanceAction() {
+  public function copyinstanceAction() {
     $session = new Zend_Session_Namespace('login');
     $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
                                         'depth' => 'instance'));
@@ -120,7 +120,7 @@ class InstancedataController extends QFrame_Controller_Admin {
   /**
    * Action for creating a new instance from an existing questionnaire
    */
-  public function newInstanceAction() {
+  public function newinstanceAction() {
     $session = new Zend_Session_Namespace('login');
     $instanceID = $session->newInstanceResponsesInstanceID;
     
@@ -152,7 +152,7 @@ class InstancedataController extends QFrame_Controller_Admin {
   /**
    * Action for deleting an instance
    */
-  public function deleteInstanceAction() {
+  public function deleteinstanceAction() {
     $session = new Zend_Session_Namespace('login');
     $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
                                         'depth' => 'instance'));
@@ -168,7 +168,7 @@ class InstancedataController extends QFrame_Controller_Admin {
   /**
    * Action for importing an instance
    */
-  public function importInstanceAction() {
+  public function importinstanceAction() {
     $session = new Zend_Session_Namespace('login');
     $instanceID = $session->importResponsesInstanceID;
     
@@ -255,7 +255,7 @@ class InstancedataController extends QFrame_Controller_Admin {
    * Export actions
    */
    
-  public function ResponsesOnlyXMLDownloadAction() {
+  public function responsesonlyxmldownloadAction() {
     $session = new Zend_Session_Namespace('login');
     $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
                                         'depth' => 'instance'));
@@ -271,7 +271,7 @@ class InstancedataController extends QFrame_Controller_Admin {
     $this->view->setRenderLayout(false);
   }
   
-  public function ResponsesOnlyXMLArchiveAction() {
+  public function responsesonlyxmlarchiveAction() {
     $session = new Zend_Session_Namespace('login');
     $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
                                         'depth' => 'instance'));
@@ -292,7 +292,7 @@ class InstancedataController extends QFrame_Controller_Admin {
     $this->view->setRenderLayout(false);
   }
    
-  public function ResponsesFullXMLDownloadAction() {
+  public function responsesfullxmldownloadAction() {
     $session = new Zend_Session_Namespace('login');
     $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
     if ($this->_hasParam('download') && isset($session->tempFile)) {
@@ -322,7 +322,7 @@ class InstancedataController extends QFrame_Controller_Admin {
     $this->view->setRenderLayout(false);
   }
   
-  public function ResponsesFullXMLArchiveAction() {
+  public function responsesfullxmlarchiveAction() {
     $session = new Zend_Session_Namespace('login');
     $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
     if ($this->_hasParam('download') && isset($session->tempFile)) {
@@ -357,7 +357,7 @@ class InstancedataController extends QFrame_Controller_Admin {
     $this->view->setRenderLayout(false);
   }
 
-  public function PdfExportAction() {
+  public function pdfexportAction() {
     $session = new Zend_Session_Namespace('login');
     $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
     $pageHeadersAll = ($this->_hasParam('pageHeader')) ? $this->_getParam('pageHeader') : array();

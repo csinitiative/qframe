@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Zend Framework
  *
@@ -15,14 +14,14 @@
  *
  * @category   Zend
  * @package    Zend_Acl
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Resource.php 2797 2007-01-16 01:35:30Z bkarwin $
+ * @version    $Id: Resource.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
 
 /**
- * Zend_Acl_Resource_Interface
+ * @see Zend_Acl_Resource_Interface
  */
 require_once 'Zend/Acl/Resource/Interface.php';
 
@@ -30,7 +29,7 @@ require_once 'Zend/Acl/Resource/Interface.php';
 /**
  * @category   Zend
  * @package    Zend_Acl
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Acl_Resource implements Zend_Acl_Resource_Interface
@@ -45,7 +44,7 @@ class Zend_Acl_Resource implements Zend_Acl_Resource_Interface
     /**
      * Sets the Resource identifier
      *
-     * @param  string $id
+     * @param  string $resourceId
      * @return void
      */
     public function __construct($resourceId)
@@ -63,4 +62,14 @@ class Zend_Acl_Resource implements Zend_Acl_Resource_Interface
         return $this->_resourceId;
     }
 
+    /**
+     * Defined by Zend_Acl_Resource_Interface; returns the Resource identifier
+     * Proxies to getResourceId()
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getResourceId();
+    }
 }

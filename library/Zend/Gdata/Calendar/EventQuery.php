@@ -15,8 +15,10 @@
  *
  * @category   Zend
  * @package    Zend_Gdata
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @subpackage Calendar
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id: EventQuery.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
 /**
@@ -36,7 +38,8 @@ require_once('Zend/Gdata/Query.php');
  *
  * @category   Zend
  * @package    Zend_Gdata
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @subpackage Calendar
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Calendar_EventQuery extends Zend_Gdata_Query
@@ -44,22 +47,68 @@ class Zend_Gdata_Calendar_EventQuery extends Zend_Gdata_Query
 
     const CALENDAR_FEED_URI = 'http://www.google.com/calendar/feeds';
 
+    /**
+     * The default URI used for feeds.
+     */
     protected $_defaultFeedUri = self::CALENDAR_FEED_URI;
+
+    /**
+     * The comment ID to retrieve. If null, no specific comment will be
+     * retrieved unless already included in the query URI. The event ID
+     * ($_event) must be set, otherwise this property is ignored.
+     */
     protected $_comments = null;
-    protected $_user = null;
-    protected $_visibility = null;
-    protected $_projection = null;
+
+    /**
+     * The calendar address to be requested by queries. This may be an email
+     * address if requesting the primary calendar for a user. Defaults to
+     * "default" (the currently authenticated user). A null value should be
+     * used when the calendar address has already been set as part of the
+     * query URI.
+     */
+    protected $_user = 'default';
+
+    /*
+     * The visibility to be requested by queries. Defaults to "public". A
+     * null value should be used when the calendar address has already been
+     * set as part of the query URI.
+     */
+    protected $_visibility = 'public';
+
+    /**
+     * Projection to be requested by queries. Defaults to "full". A null value
+     * should be used when the calendar address has already been set as part
+     * of the query URI.
+     */
+    protected $_projection = 'full';
+
+    /**
+     * The event ID to retrieve. If null, no specific event will be retrieved
+     * unless already included in the query URI.
+     */
     protected $_event = null;
 
     /**
-     * Create Gdata_Calendar_EventQuery object
+     * Create Gdata_Calendar_EventQuery object.  If a URL is provided,
+     * it becomes the base URL, and additional URL components may be
+     * appended.  For instance, if $url is 'http://www.google.com/calendar',
+     * the default URL constructed will be
+     * 'http://www.google.com/calendar/default/public/full'.
+     *
+     * If the URL already contains a calendar ID, projection, visibility,
+     * event ID, or comment ID, you will need to set these fields to null
+     * to prevent them from being inserted. See this class's properties for
+     * more information.
+     *
+     * @param string $url The URL to use as the base path for requests
      */
-    public function __construct()
+    public function __construct($url = null)
     {
-        parent::__construct();
+        parent::__construct($url);
     }
 
     /**
+     * @see $_comments
      * @param string $value
      * @return Zend_Gdata_Calendar_EventQuery Provides a fluent interface
      */
@@ -70,6 +119,7 @@ class Zend_Gdata_Calendar_EventQuery extends Zend_Gdata_Query
     }
 
     /**
+     * @see $_event
      * @param string $value
      * @return Zend_Gdata_Calendar_EventQuery Provides a fluent interface
      */
@@ -80,6 +130,7 @@ class Zend_Gdata_Calendar_EventQuery extends Zend_Gdata_Query
     }
 
     /**
+     * @see $_projection
      * @param string $value
      * @return Zend_Gdata_Calendar_EventQuery Provides a fluent interface
      */
@@ -90,6 +141,7 @@ class Zend_Gdata_Calendar_EventQuery extends Zend_Gdata_Query
     }
 
     /**
+     * @see $_user
      * @param string $value
      * @return Zend_Gdata_Calendar_EventQuery Provides a fluent interface
      */
@@ -100,6 +152,7 @@ class Zend_Gdata_Calendar_EventQuery extends Zend_Gdata_Query
     }
 
     /**
+     * @see $_visibility
      * @param bool $value
      * @return Zend_Gdata_Calendar_EventQuery Provides a fluent interface
      */
@@ -110,6 +163,7 @@ class Zend_Gdata_Calendar_EventQuery extends Zend_Gdata_Query
     }
 
     /**
+     * @see $_comments;
      * @return string comments
      */
     public function getComments()
@@ -118,6 +172,7 @@ class Zend_Gdata_Calendar_EventQuery extends Zend_Gdata_Query
     }
 
     /**
+     * @see $_event;
      * @return string event
      */
     public function getEvent()
@@ -126,6 +181,7 @@ class Zend_Gdata_Calendar_EventQuery extends Zend_Gdata_Query
     }
 
     /**
+     * @see $_projection
      * @return string projection
      */
     public function getProjection()
@@ -134,6 +190,7 @@ class Zend_Gdata_Calendar_EventQuery extends Zend_Gdata_Query
     }
 
     /**
+     * @see $_user
      * @return string user
      */
     public function getUser()
@@ -142,6 +199,7 @@ class Zend_Gdata_Calendar_EventQuery extends Zend_Gdata_Query
     }
 
     /**
+     * @see $_visibility
      * @return string visibility
      */
     public function getVisibility()
@@ -335,7 +393,7 @@ class Zend_Gdata_Calendar_EventQuery extends Zend_Gdata_Query
      */
     public function setSingleEvents($value)
     {
-        if (!is_null($value)) {
+        if ($value !== null) {
             if (is_bool($value)) {
                 $this->_params['singleevents'] = ($value?'true':'false');
             } elseif ($value == 'true' | $value == 'false') {
@@ -384,7 +442,7 @@ class Zend_Gdata_Calendar_EventQuery extends Zend_Gdata_Query
      */
     public function setFutureEvents($value)
     {
-        if (!is_null($value)) {
+        if ($value !== null) {
             if (is_bool($value)) {
                 $this->_params['futureevents'] = ($value?'true':'false');
             } elseif ($value == 'true' | $value == 'false') {
@@ -406,23 +464,19 @@ class Zend_Gdata_Calendar_EventQuery extends Zend_Gdata_Query
      */
     public function getQueryUrl()
     {
-        if (!isset($uri)) {
+        if (isset($this->_url)) {
+            $uri = $this->_url;
+        } else {
             $uri = $this->_defaultFeedUri;
         }
         if ($this->getUser() != null) {
             $uri .= '/' . $this->getUser();
-        } else {
-            $uri .= '/default';
         }
         if ($this->getVisibility() != null) {
             $uri .= '/' . $this->getVisibility();
-        } else {
-            $uri .= '/public';
         }
         if ($this->getProjection() != null) {
             $uri .= '/' . $this->getProjection();
-        } else {
-            $uri .= '/full';
         }
         if ($this->getEvent() != null) {
             $uri .= '/' . $this->getEvent();

@@ -15,8 +15,10 @@
  *
  * @category   Zend
  * @package    Zend_Gdata
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @subpackage Gdata
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id: Query.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
 /**
@@ -25,13 +27,14 @@
 require_once 'Zend/Gdata/App/Util.php';
 
 /**
- * Provides a mechanism to build a query URL for GData services.
- * Queries are not defined for APP, but are provided by GData services
+ * Provides a mechanism to build a query URL for Gdata services.
+ * Queries are not defined for APP, but are provided by Gdata services
  * as an extension.
  *
  * @category   Zend
  * @package    Zend_Gdata
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @subpackage Gdata
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Query
@@ -60,6 +63,13 @@ class Zend_Gdata_Query
     protected $_url = null;
 
     /**
+     * Category for the query
+     *
+     * @var string
+     */
+    protected $_category = null;
+
+    /**
      * Create Gdata_Query object
      */
     public function __construct($url = null)
@@ -70,7 +80,7 @@ class Zend_Gdata_Query
     /**
      * @return string querystring
      */
-    protected function getQueryString()
+    public function getQueryString()
     {
         $queryArray = array();
         foreach ($this->_params as $name => $value) {
@@ -103,6 +113,9 @@ class Zend_Gdata_Query
             $url = $this->_defaultFeedUri;
         } else {
             $url = $this->_url;
+        }
+        if ($this->getCategory() !== null) {
+            $url .= '/-/' . $this->getCategory();
         }
         $url .= $this->getQueryString();
         return $url;
@@ -360,6 +373,25 @@ class Zend_Gdata_Query
             return null;
         }
     }
+
+    /**
+     * @param string $value
+     * @return Zend_Gdata_Query Provides a fluent interface
+     */
+    public function setCategory($value)
+    {
+        $this->_category = $value;
+        return $this;
+    }
+
+    /*
+     * @return string id
+     */
+    public function getCategory()
+    {
+        return $this->_category;
+    }
+
 
     public function __get($name)
     {
