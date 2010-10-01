@@ -117,7 +117,7 @@ class UserController extends QFrame_Controller_Admin {
   /**
    * Add role action.  Adds the requested role to the current user.
    */
-  public function addRoleAction() {
+  public function addroleAction() {
     $user = new DbUserModel(array('dbUserID' => $this->_getParam('id')));
     $role = RoleModel::find($this->_getParam('role'));
     $user->addRole($role);
@@ -127,7 +127,7 @@ class UserController extends QFrame_Controller_Admin {
   /**
    * Remove role action.  Removes the requested role from the current user.
    */
-  public function removeRoleAction() {
+  public function removeroleAction() {
     $user = new DbUserModel(array('dbUserID' => $this->_getParam('id')));
     $role = RoleModel::find($this->_getParam('role'));
     $user->removeRole($role);

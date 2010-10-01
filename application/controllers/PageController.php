@@ -216,7 +216,7 @@ class PageController extends QFrame_Controller_Action {
     $this->view->page = $page;
   }
 
-  public function approveSaveAction() {
+  public function approvesaveAction() {
     try {
       if ($this->_hasParam('approvals')) {
         $page = new PageModel(array('pageID' => $this->_getParam('id'), 'depth' => 'response'));
