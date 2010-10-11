@@ -5,4 +5,5 @@ php_value post_max_size 32M
 
 RewriteEngine   on
 RewriteRule     \.css$ sass.php [L]
+RewriteCond     %{REQUEST_URI} !^.+server-status
 RewriteRule     !\.(js|ico|gif|jpg|png|css|php|html)$ route.php
