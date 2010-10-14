@@ -32,7 +32,7 @@
       - foreach(array('view', 'edit', 'approve', 'compare', 'administer') as $permission)
         %li
           = $permission
-          != $this->formCheckbox("global[{$permission}]", $this->role->hasAccess($permission))
+          != $this->formCheckbox("global[{$permission}]", 1, array('checked' => $this->role->hasAccess($permission)))
   #page_permissions
     %h2 page permissions
     Select a questionnaire and instance to set per-page permissions.
@@ -67,11 +67,11 @@
           %tr
             %td.label= $page->pageHeader
             %td
-              != $this->formCheckbox("page[{$page->pageID}][view]", $this->role->hasAccess('view', $page))
+              != $this->formCheckbox("page[{$page->pageID}][view]", 1, array('checked' => $this->role->hasAccess('view', $page)))
             %td
-              != $this->formCheckbox("page[{$page->pageID}][edit]", $this->role->hasAccess('edit', $page))
+              != $this->formCheckbox("page[{$page->pageID}][edit]", 1, array('checked' => $this->role->hasAccess('edit', $page)))
             %td
-              != $this->formCheckbox("page[{$page->pageID}][approve]", $this->role->hasAccess('approve', $page))
+              != $this->formCheckbox("page[{$page->pageID}][approve]", 1, array('checked' => $this->role->hasAccess('approve', $page)))
   #options
     != $this->formSubmit('submitButton', 'save')
     != $this->formButton('cancelButton', 'cancel')
