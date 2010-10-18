@@ -204,6 +204,63 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
   public function getLastPage() {
     return current(array_slice($this->pages, -1, 1));
   }
+
+  /**
+   * Exports an Instance PDF Document
+   *
+   * @param array PageHeader strings to export.  If empty, export entire instance.
+   * @param string Footer1.  First line of footer (optional).
+   * @param string Footer2.  Second line of footer (optional).
+   * @param string CoverImage. Path to an image storied on disk (optional).
+   * @param string CoverText.  Text for cover page (optional).
+   * @return string PDF
+   */
+  public function toPDF($pageHeaders = array(), $footer1, $footer2, $coverText, $coverImage) {
+    // pisa is normally installed in /usr/local/bin
+    putenv("PATH=/usr/local/bin:$PATH");
+
+    // check that pisa (xhtml2pdf) is installed
+    exec("pisa", $output, $return_code);
+    if ($return_code != 2) {
+      throw new Exception("Unable to find pisa executable. Return code: {$return_code}");
+    }
+
+    $xml = $this->toXHTML($pageHeaders);
+
+    // add footer lines
+    if ($footer1 || $footer2) {
+      $xml = str_replace('FOOTER1', $footer1, $xml);
+      $xml = str_replace('FOOTER2', $footer2, $xml);
+    }
+
+    // add date
+    $xml = str_replace('CSI-SIG-DATE', date('m/d/Y'), $xml);
+
+    // add cover page
+    $margin = 950 / 2;
+    $imgHtml = '';
+    if ($coverImage) {
+      $imageSize = getimagesize($coverImage);
+      $margin = floor((950 / 2) - ($imageSize[1] / 2));
+      $imgHtml = '<p><img src="'.$coverImage.'"/></p>';
+    }
+    if ($coverText || $coverImage) {
+      $xml = str_replace('<body>', '<body>
+      <div class="page">
+        <h2 style="display: none">'.$coverText.'</h2>
+        <div align="center" style="padding-top: '.$margin.'px">
+          '.$imgHtml.'
+          <p style="padding: 0; margin: 0;"><strong>'.$coverText.'</strong></p>
+        </div>
+      </div>', $xml);
+    }
+
+    $tempfile = tempnam(PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp', 'xhtml');
+    file_put_contents($tempfile, $xml);
+    exec("pisa --xhtml $tempfile", $out);
+    $pdf = file_get_contents($tempfile . '.pdf');
+    return $pdf;
+  }
   
   /**
    * Exports an Instance XML Document
@@ -937,7 +994,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
   /**
    * Apply an XSLT to the XML which returns XHTML
    */
-  public function xml2html($pageHeaders = array()) {
+  public function toXHTML($pageHeaders = array()) {
     $dom = new DOMDocument();
     $dom->loadXML($this->toXML(1, array(), true));
     $errors = libxml_get_errors();
