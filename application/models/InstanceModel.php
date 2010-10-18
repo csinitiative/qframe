@@ -235,20 +235,21 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     $xml = str_replace('CSI-SIG-DATE', date('m/d/Y'), $xml);
 
     // add cover page
-    $margin = 950 / 2;
+    $padding = 950 / 2;
     $imgHtml = '';
     if ($coverImage) {
       $imageSize = getimagesize($coverImage);
-      $margin = floor((950 / 2) - ($imageSize[1] / 2));
-      $imgHtml = '<p><img src="'.$coverImage.'"/></p>';
+      $padding = floor((950 / 2) - ($imageSize[1] / 2));
+      $imgHtml = '<p style="padding-top:'.$padding.'px"><img src="'.$coverImage.'"/></p>';
+      $padding = 0; // don't pad again for cover text
     }
     if ($coverText || $coverImage) {
       $xml = str_replace('<body>', '<body>
       <div class="page">
         <h2 style="display: none">'.$coverText.'</h2>
-        <div align="center" style="padding-top: '.$margin.'px">
+        <div align="center">
           '.$imgHtml.'
-          <p style="padding: 0; margin: 0;"><strong>'.$coverText.'</strong></p>
+          <p style="padding-top:'.$padding.'px"><strong>'.$coverText.'</strong></p>
         </div>
       </div>', $xml);
     }
