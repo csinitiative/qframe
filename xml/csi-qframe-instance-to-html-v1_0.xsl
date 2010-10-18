@@ -83,7 +83,7 @@ elementFormDefault="qualified">
                   <p><strong><xsl:value-of select="csi:questionNumber"/><xsl:text> </xsl:text><xsl:value-of select="csi:qText"/></strong></p>
                   <xsl:if test="./csi:responses/csi:response/*">
                     <p><xsl:value-of select="csi:responses/csi:response/csi:responseText"/></p>
-                    <xsl:if test="csi:responses/csi:additionalInfo">
+                    <xsl:if test="csi:responses/csi:additionalInfo/text()">
                       Additional Information: <p><xsl:call-template name="break"><xsl:with-param name="stringIn" select="csi:responses/csi:additionalInfo"/></xsl:call-template></p>
                     </xsl:if>
                   </xsl:if>
@@ -97,7 +97,7 @@ elementFormDefault="qualified">
                   <p><strong><xsl:value-of select="csi:questionNumber"/><xsl:text> </xsl:text><xsl:value-of select="./csi:qText"/></strong></p>
                   <xsl:if test="./csi:responses/csi:response/*">
                     <p><xsl:value-of select="csi:responses/csi:response/csi:responseText"/></p>
-                    <xsl:if test="csi:responses/csi:additionalInfo">
+                    <xsl:if test="csi:responses/csi:additionalInfo/text()">
                       Additional Information: <p><xsl:call-template name="break"><xsl:with-param name="stringIn" select="csi:responses/csi:additionalInfo"/></xsl:call-template></p>
                     </xsl:if>
                   </xsl:if>
@@ -110,7 +110,7 @@ elementFormDefault="qualified">
                   <p><strong><xsl:value-of select="csi:questionNumber"/><xsl:text> </xsl:text><xsl:value-of select="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:qText"/></strong></p>
                   <xsl:if test="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:response/*">
                     <p><xsl:value-of select="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:response/csi:responseText"/></p>
-                    <xsl:if test="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:additionalInfo">
+                    <xsl:if test="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:additionalInfo/text()">
                       Additional Information: <p><xsl:call-template name="break"><xsl:with-param name="stringIn" select="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:additionalInfo"/></xsl:call-template></p>
                     </xsl:if>
                   </xsl:if>
