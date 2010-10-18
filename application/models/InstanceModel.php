@@ -215,7 +215,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    * @param string CoverText.  Text for cover page (optional).
    * @return string PDF
    */
-  public function toPDF($pageHeaders = array(), $footer1, $footer2, $coverText, $coverImage) {
+  public function toPDF($pageHeaders = array(), $footer1 = '', $footer2 = '', $coverText = '', $coverImage) {
     // pisa is normally installed in /usr/local/bin
     putenv("PATH=/usr/local/bin:$PATH");
 
@@ -228,10 +228,8 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     $xml = $this->toXHTML($pageHeaders);
 
     // add footer lines
-    if ($footer1 || $footer2) {
-      $xml = str_replace('FOOTER1', $footer1, $xml);
-      $xml = str_replace('FOOTER2', $footer2, $xml);
-    }
+    $xml = str_replace('FOOTER1', $footer1, $xml);
+    $xml = str_replace('FOOTER2', $footer2, $xml);
 
     // add date
     $xml = str_replace('CSI-SIG-DATE', date('m/d/Y'), $xml);
