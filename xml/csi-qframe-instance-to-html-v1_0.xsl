@@ -82,13 +82,13 @@ elementFormDefault="qualified">
                 <xsl:for-each select="./csi:question">
                   <p><strong><xsl:value-of select="csi:questionNumber"/><xsl:text> </xsl:text><xsl:value-of select="csi:qText"/></strong></p>
                   <xsl:if test="./csi:responses/csi:response/*">
-                    <p><xsl:value-of select="csi:responses/csi:response/csi:responseText"/></p><br/>
+                    <p><xsl:value-of select="csi:responses/csi:response/csi:responseText"/></p>
                     <xsl:if test="csi:responses/csi:additionalInfo">
-                      Additional Information: <p><xsl:call-template name="break"><xsl:with-param name="stringIn" select="csi:responses/csi:additionalInfo"/></xsl:call-template></p><br/>
+                      Additional Information: <p><xsl:call-template name="break"><xsl:with-param name="stringIn" select="csi:responses/csi:additionalInfo"/></xsl:call-template></p>
                     </xsl:if>
                   </xsl:if>
                   <xsl:if test="count(csi:responses/csi:response) = 0">
-                    <i>No response</i><br/>
+                    <p><i>No response</i></p>
                   </xsl:if>
                 </xsl:for-each>
               </xsl:when>
@@ -96,26 +96,26 @@ elementFormDefault="qualified">
                 <xsl:if test="csi:questionType != 'V'">
                   <p><strong><xsl:value-of select="csi:questionNumber"/><xsl:text> </xsl:text><xsl:value-of select="./csi:qText"/></strong></p>
                   <xsl:if test="./csi:responses/csi:response/*">
-                    <p><xsl:value-of select="csi:responses/csi:response/csi:responseText"/></p><br/>
+                    <p><xsl:value-of select="csi:responses/csi:response/csi:responseText"/></p>
                     <xsl:if test="csi:responses/csi:additionalInfo">
-                      Additional Information: <p><xsl:call-template name="break"><xsl:with-param name="stringIn" select="csi:responses/csi:additionalInfo"/></xsl:call-template></p><br/>
+                      Additional Information: <p><xsl:call-template name="break"><xsl:with-param name="stringIn" select="csi:responses/csi:additionalInfo"/></xsl:call-template></p>
                     </xsl:if>
                   </xsl:if>
                   <xsl:if test="count(csi:responses/csi:response) = 0">
-                    <i>No response</i><br/>
+                    <p><i>No response</i></p>
                   </xsl:if>
                 </xsl:if>
                 <xsl:if test="csi:questionType = 'V'">
                   <xsl:variable name="questionGUID" select="csi:questionGUID/text()"/>
                   <p><strong><xsl:value-of select="csi:questionNumber"/><xsl:text> </xsl:text><xsl:value-of select="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:qText"/></strong></p>
                   <xsl:if test="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:response/*">
-                    <p><xsl:value-of select="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:response/csi:responseText"/></p><br/>
+                    <p><xsl:value-of select="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:response/csi:responseText"/></p>
                     <xsl:if test="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:additionalInfo">
-                      Additional Information: <p><xsl:call-template name="break"><xsl:with-param name="stringIn" select="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:additionalInfo"/></xsl:call-template></p><br/>
+                      Additional Information: <p><xsl:call-template name="break"><xsl:with-param name="stringIn" select="//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:additionalInfo"/></xsl:call-template></p>
                     </xsl:if>
                   </xsl:if>
                   <xsl:if test="count(//csi:question[csi:questionGUID = $questionGUID and csi:questionType != 'V']/csi:responses/csi:response) = 0">
-                    <i>No response</i><br/>
+                    <p><i>No response</i></p>
                   </xsl:if>
                 </xsl:if>
               </xsl:otherwise>
@@ -124,7 +124,6 @@ elementFormDefault="qualified">
         </xsl:if>
       </xsl:for-each>
     </xsl:if>
-    <pre><xsl:value-of select="csi:footerText"/></pre><br/>
     </div>
   </xsl:for-each>
   <div class="footer" id="leftFooterContent" style="border-top: thin solid black;">
