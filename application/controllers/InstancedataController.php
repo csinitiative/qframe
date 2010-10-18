@@ -379,7 +379,8 @@ class InstancedataController extends QFrame_Controller_Admin {
       $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
                                           'depth' => 'instance'));
 
-      $html = $instance->xml2html($pageHeaders);
+     
+      $footer1 = $footer2 = $coverText = $coverImage = null;
 
       $uploadErrors = array(
         UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini.',
@@ -391,92 +392,33 @@ class InstancedataController extends QFrame_Controller_Admin {
         UPLOAD_ERR_EXTENSION => 'File upload stopped by extension.',
       );
 
-      if (isset($_FILES['pdfCoverImage']) || $this->_hasParam('coverText')) {
-   
-        $errorCode = $_FILES['pdfCoverImage']['error'];
-        if ($errorCode == UPLOAD_ERR_NO_FILE) {
-          $margin = floor(685 / 2);
-        }
-        elseif ($errorCode !== UPLOAD_ERR_OK) {
-          if (isset($uploadErrors[$errorCode]))
-            throw new Exception($uploadErrors[$errorCode]);
-          else
-            throw new Exception("Unknown error uploading file.");
-        }
-        else {
-          $pdfFile = $_FILES['pdfCoverImage']['tmp_name'];
-          $pdfFilename = $_FILES['pdfCoverImage']['name'];
-          $pdfExtension = preg_replace('/.+\./', '', $pdfFilename);
-          move_uploaded_file($pdfFile, "{$pdfFile}.$pdfExtension");
-          $pdfFile = "{$pdfFile}.$pdfExtension";
-          $imageSize = getimagesize($pdfFile);
-          $margin = floor((792 / 2) - ($imageSize[1] / 2));
-          $imgHtml = '<p><img src="'.$pdfFile.'"/></p>';
-        }
-
-        $coverText = $this->_getParam('coverText');
-
-        if ($imgHtml || $coverText) {
-          $html = str_replace('<body>', '<body>
-          <div class="page">
-            <div align="center" style="margin-top: '.$margin.'px">
-              '.$imgHtml.'
-              <h2>'.$coverText.'</h2>
-            </div>
-          </div>', $html);
-        }
-      }
-
       if ($this->_hasParam('footer1')) {
         $footer1 = $this->_getParam('footer1');
       }
       if ($this->_hasParam('footer2')) {
         $footer2 = $this->_getParam('footer2');
       }
-
-      $html = str_replace('<body>', '<body>
-      <script type="text/php">
-      if (isset($pdf)) {
-        $font = Font_Metrics::get_font("verdana");
-        $size = 8;
-        $color = array(0,0,0);
-        $text_height = Font_Metrics::get_font_height($font, $size);
-
-        $foot = $pdf->open_object();
-
-        $w = $pdf->get_width();
-        $h = $pdf->get_height();
-
-        // Draw a line along the bottom
-        $y = $h - 2 * $text_height - 24;
-        $pdf->line(16, $y, $w - 16, $y, $color, 1);
-
-        $y += $text_height;
-
-        // Add the date to the left
-        $text = date("m/d/Y");
-        $pdf->text(16, $y, $text, $font, $size, $color);
-
-        $pdf->close_object();
-        $pdf->add_object($foot, "all");
-
-        // Add the custom text to the center, if set.
-        $width1 = Font_Metrics::get_text_width("'.$footer1.'", $font, $size);
-        $pdf->page_text($w / 2 - $width1 / 2, $y, "'.$footer1.'", $font, $size, $color);
-        $width2 = Font_Metrics::get_text_width("'.$footer2.'", $font, $size);
-        $pdf->page_text($w / 2 - $width2 / 2, $y + $text_height, "'.$footer2.'", $font, $size, $color);
-
-        // Add the page number to the right
-        $text = "Page {PAGE_NUM} of {PAGE_COUNT}";
-        $pdf->page_text($w - 70, $y, $text, $font, $size, $color);
-
+      if ($this->_hasParam('coverText')) {
+        $coverText = $this->_getParam('coverText');
       }
-      </script>', $html);
+      if (isset($_FILES['pdfCoverImage'])) {
+        $errorCode = $_FILES['pdfCoverImage']['error'];
+        if ($errorCode !== UPLOAD_ERR_NO_FILE && $errorCode !== UPLOAD_ERR_OK) {
+          if (isset($uploadErrors[$errorCode]))
+            throw new Exception($uploadErrors[$errorCode]);
+          else
+            throw new Exception("Error uploading image file");
+        }
+        if ($errorCode == UPLOAD_ERR_OK) {
+          $imgFile = $_FILES['pdfCoverImage']['tmp_name'];
+          $imgFilename = $_FILES['pdfCoverImage']['name'];
+          $imgExtension = preg_replace('/.+\./', '', $imgFilename);
+          $coverImage = "{$imgFile}.{$imgExtension}";
+          move_uploaded_file($imgFile, $coverImage); 
+        }
+      }
 
-      $dompdf = new DOMPDF();
-      $dompdf->load_html($html);
-      $dompdf->render();
-      $pdf = $dompdf->output();
+      $pdf = $instance->toPDF($pageHeaders, $footer1, $footer2, $coverText, $coverImage);
       if (isset($cryptoID) && $cryptoID != 0) {
         $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
         $pdf = $crypto->encrypt($pdf, 'instance-responses.pdf');
