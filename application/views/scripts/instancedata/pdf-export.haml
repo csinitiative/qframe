@@ -36,10 +36,14 @@
       </script>
     %body{ 'onload' => 'initialize();' }
       != $this->form(array(), false, 'get')
-      != $this->formHidden('download', '1')
-      - if (isset($this->cryptoID))
-        != $this->formHidden('cryptoID', $this->cryptoID)
+        != $this->formHidden('download', '1')
+        - if (isset($this->cryptoID))
+          != $this->formHidden('cryptoID', $this->cryptoID)
       != $this->form(null, true)
-      %p
-        Your download will begin shortly.
-      != $this->linkTo(array('action' => 'index'), $this->formButton('BackButton', 'Return to Instance Administration'), array('class' => 'dataButton'))
+
+      != $this->form(array('action' => 'index'), false, 'get')
+        %p
+          Your download will begin shortly.
+        %p
+          != $this->formSubmit('submitButton', 'Return to Instance Administration')
+      != $this->form(null, true)
