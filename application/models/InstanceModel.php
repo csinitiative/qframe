@@ -217,7 +217,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    */
   public function toPDF($pageHeaders = array(), $footer1 = '', $footer2 = '', $coverText = '', $coverImage) {
     // pisa is normally installed in /usr/local/bin
-    putenv("PATH=/usr/local/bin:$PATH");
+    putenv('PATH=/usr/local/bin:' . getenv('PATH'));
 
     // check that pisa (xhtml2pdf) is installed
     exec("pisa", $output, $return_code);
