@@ -458,8 +458,8 @@ class QFrame_View_Helper_PageHelpers {
     $complete = "complete: <strong>{$page->numComplete}</strong> of " .
         "<strong>{$page->numQuestions}</strong> ({$completePcnt})";
     $availableQuestions = $page->numQuestions - $disabledNum;
-    $approvedPcnt = round(($page->numApproved / $availableQuestions) * 100, 2) . '%';
     if ($availableQuestions > 0) {
+      $approvedPcnt = round(($page->numApproved / $availableQuestions) * 100, 2) . '%';
       $approved = "approved: <strong>{$page->numApproved}</strong> of " .
                   "<strong>{$availableQuestions}</strong> ({$approvedPcnt})";
       if ($disabledNum > 0)
