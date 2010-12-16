@@ -11,8 +11,8 @@ var Dashboard = {
     container.down('select').hide();
     container.down('input[type=text]').show();
     container.down('input[name=create]').show();
-    container.down('input[name=cancel]').show();
-    container.down('input[type=button][name=new]').hide();
+    container.down('button[name=cancel]').show();
+    container.down('button[name=new]').hide();
     container.up('form').action += '/create';
     container.up('form').method = 'post';
   },
@@ -29,8 +29,8 @@ var Dashboard = {
     container.down('input[type=text]').hide();
     container.down('input[type=text]').value = '';
     container.down('input[name=create]').hide();
-    container.down('input[name=cancel]').hide();
-    container.down('input[type=button][name=new]').show();
+    container.down('button[name=cancel]').hide();
+    container.down('button[name=new]').show();
     container.up('form').action = container.up('form').action.replace(/\/create$/, '');
     container.up('form').method = 'get';
   },
@@ -95,7 +95,7 @@ var Dashboard = {
     $$('.option').each(function(option) {
       if(!option.hasClassName('instances')) {
         option.childElements().each(function(element) {
-          if(element.disable) element.disable();
+          if(element.disable) element.disabled=true;
         });
       }
     });
@@ -114,7 +114,7 @@ var Dashboard = {
     $$('.option').each(function(option) {
       if(!option.hasClassName('instances')) {
         option.childElements().each(function(element) {
-          if(element.enable) element.enable();
+          if(element.enable) element.disabled=false;
         });
       }
     });
@@ -129,14 +129,14 @@ var Dashboard = {
   modelSelected: function(event) {
     var form = Event.element(event).up('form');
     if($F('model') != 0) {
-      form.down('input[type=button][name=compare]').enable();
-      form.down('input[type=button][name=edit]').enable();
-      form.down('input[type=button][name=delete]').enable();
+      form.down('button[name=compare]').disabled = false;
+      form.down('button[name=edit]').disabled = false;
+      form.down('button[name=delete]').disabled = false;
     }
     else {
-      form.down('input[type=button][name=compare]').disable();
-      form.down('input[type=button][name=edit]').disable();
-      form.down('input[type=button][name=delete]').disable();
+      form.down('button[name=compare]').disabled = true;
+      form.down('button[name=edit]').disabled = true;
+      form.down('button[name=delete]').disabled = true;
     }
   },
   
@@ -148,10 +148,10 @@ var Dashboard = {
   instanceSelected: function(event) {
     var form = Event.element(event).up('form');
     if($F('instance') != 0) {
-      form.down('input[type=button][name=doCompare]').enable();
+      form.down('button[name=doCompare]').disabled = false;
     }
     else {
-      form.down('input[type=button][name=doCompare]').disable();
+      form.down('button[name=doCompare]').disabled = false;
     }
   },
   
@@ -172,26 +172,26 @@ var Dashboard = {
     if(instance) instance.observe('change', Dashboard.instanceSelected);
     
     // fire the appropriate function when the new model button is clicked
-    $$('input[type=button][name=new]').first().observe('click', Dashboard.createNew);
+    $$('button[name=new]').first().observe('click', Dashboard.createNew);
     
     // fire the appropriate function when the cancel creation of new model button is clicked
-    $$('input[name=cancel]').first().observe('click', Dashboard.cancelNew);
+    $$('button[name=cancel]').first().observe('click', Dashboard.cancelNew);
     
     // fire the appropriate function when the edit model button is clicked
-    $$('input[type=button][name=edit]').first().observe('click', Dashboard.editModel);
+    $$('button[name=edit]').first().observe('click', Dashboard.editModel);
     
     // fire the appropriate function when the edit model button is clicked
-    $$('input[type=button][name=delete]').first().observe('click', Dashboard.deleteModel);
+    $$('button[name=delete]').first().observe('click', Dashboard.deleteModel);
     
     // fire the appropriate function when the compare button is clicked
-    $$('input[type=button][name=compare]').first().observe('click', Dashboard.performComparison);
+    $$('button[name=compare]').first().observe('click', Dashboard.performComparison);
 
     // fire the appropriate function when the cancel creation of new model button is clicked
-    var compareCancel = $$('input[name=compareCancel]').first();
+    var compareCancel = $$('button[name=compareCancel]').first();
     if(compareCancel) compareCancel.observe('click', Dashboard.cancelCompare);
 
     // fire the appropriate function when the cancel creation of new model button is clicked
-    var doCompare = $$('input[name=doCompare]').first();
+    var doCompare = $$('button[name=doCompare]').first();
     if(doCompare) doCompare.observe('click', Dashboard.doComparison);
   }
 }
