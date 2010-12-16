@@ -148,7 +148,9 @@ class CompareController extends QFrame_Controller_Action {
         if($response['noinclude']) $question->createModelResponse('no preference', '-');
         else {
           if($response['target']) $this->setModelResponse($question, $response['target']);
-          if($response['remediationInfoMod'] == 1) $question->createModelResponse('remediation info', -1, $response['remediationInfo']);
+          if($response['remediationInfoMod'] == 1) {
+            $question->createModelResponse('remediation info', -1, $response['remediationInfo']);
+          }
           if($response['requireAttachment'] == 1) $question->createModelResponse('require attachment', -1);
         }
       }

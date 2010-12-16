@@ -175,7 +175,7 @@ class QFrame_View_Helper_CompareHelpers {
     foreach($question->prompts as $prompt) {
       $name = "response[{$question->questionID}][target][{$prompt['promptID']}]";
       $value = ($question->hasModelResponse($prompt['promptID'])) ? 1 : 0;
-      $rendered .= $this->view->formCheckbox($name, $value);
+      $rendered .= $this->view->formCheckbox($name, 1, array('checked' => $value));
       $rendered .= $this->view->formLabel($name, $prompt['value']);
     }
     return $rendered;
@@ -215,15 +215,18 @@ class QFrame_View_Helper_CompareHelpers {
     $name = "response[$question->questionID][requireAttachment]";
     $result .= $this->view->formCheckbox(
       $name,
-      $question->hasAttachmentRequirement(),
-      array('class' => 'requireAttachment')
+      1,
+      array('checked' => $question->hasAttachmentRequirement(),
+            'class' => 'requireAttachment')
     );
     $result .= $this->view->formLabel($name, 'Require Attachment');
         $name = "response[$question->questionID][noinclude]";
+
     $result .= $this->view->formCheckbox(
       $name,
-      $question->hasNoPreference(),
-      array('class' => 'noinclude')
+      1,
+      array('checked' => $question->hasNoPreference(),
+            'class' => 'noinclude')
     );
     $result .= $this->view->formLabel($name, 'Do not include');
 
