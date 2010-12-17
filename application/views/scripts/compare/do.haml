@@ -54,7 +54,7 @@
           != implode("<br />", $failure['messages'])
       - if ($failure['remediation_info'])
         %tr{ 'class' => (($rowNum %2) ? 'odd' : 'even') }
-          %td{ 'colspan' => 4 }
+          %td{ 'colspan' => 6 }
             %b Remediation:
             = $failure['remediation_info']
 
@@ -80,7 +80,7 @@
         %td= $failure['question']->getResponse()->additionalInfo
       - if ($failure['remediation_info'])
         %tr{ 'class' => (($rowNum %2) ? 'odd' : 'even') }
-          %td{ 'colspan' => 3 }
+          %td{ 'colspan' => 5 }
             %b Remediation:
             = $failure['remediation_info']
 

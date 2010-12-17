@@ -102,7 +102,7 @@ var CsiQframe = {
       e.addClassName('hasContent');
       base = e.name;
       base = base.replace(/]$/, '');
-      $(base + 'Mod]').value = 1;
+      document.getElementsByName(base + 'Mod]')[0].value = 1;
     }
   },
 
@@ -118,7 +118,7 @@ var CsiQframe = {
       e.removeClassName('hasContent');
       base = e.name;
       base = base.replace(/]$/, '');
-      $(base + 'Mod]').value = 0;
+      document.getElementsByName(base + 'Mod]')[0].value = 0;
     }
   },
 
