@@ -65,7 +65,7 @@ var Dashboard = {
   deleteModel: function(event) {
     if (confirm('This action cannot be undone.  Are you sure?')) {
       var deletePath = $F('deletePath') + '/' + $F('model');
-      window.location = deletePath + '?questionnaire=' + $F('model[questionnaireID]');
+      window.location = deletePath + '?questionnaire=' + $('model-questionnaireID').value;
     }
   },
   
