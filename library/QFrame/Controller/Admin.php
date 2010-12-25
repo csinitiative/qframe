@@ -43,6 +43,12 @@ class QFrame_Controller_Admin extends QFrame_Controller_Action {
     $controller = Zend_Controller_Front::getInstance()->getRequest()->getControllerName();
     $this->view->menuItems = array(
       array(
+        'label'   => 'Domain Management',
+        'url'     => $this->view->url(array('controller' => 'domain'), null, true),
+        'current' => $controller == 'domain',
+        'locked'  => false
+      ),
+      array(
         'label'   => 'Questionnaire Management',
         'url'     => $this->view->url(array('controller' => 'questionnairedata'), null, true),
         'current' => $controller == 'questionnairedata',

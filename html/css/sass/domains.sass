@@ -1,0 +1,64 @@
+!page_bg = #fff
+!header_border = #00653a
+!menu_link_fg = #00653a
+!menu_link_bg = #ddd
+!menu_current_border = #fe0
+!footer_bg = #001922
+
+#domainForm
+  label
+    :display block
+  ul
+    :background-color #dfd
+    :margin 0
+    :padding 10px 0 0 0
+    :border = 1px solid !page_bg
+    li
+      :list-style none
+      :margin 0
+      :padding 0 10px 10px 10px
+      
+#questionnaires
+  :width 300px
+  ul
+    :margin 0 0 25px 0
+    :padding 0
+    li
+      :position relative
+      :list-style none
+      :padding 5px
+      :margin 2px
+      :background-color = !menu_link_bg
+      input
+        :display block
+        :position absolute
+        :top 4px
+        :right 4px
+        :z-index 100
+  .option
+    :margin-bottom 10px
+  table
+    :margin 0 0 25px 0
+    :padding 0
+    :border-spacing 0
+    th, td
+      :margin 0
+      :padding 0
+    th
+      :text-align center
+    th.left
+      :text-align left
+    td
+      :text-align left
+      :list-style none
+      :padding 0 5px
+      :margin 2px
+      :background-color = !menu_link_bg
+      :border-bottom = 2px solid !page_bg
+      &.label
+        :padding 5px 50px 5px 5px
+  #options
+    :clear both
+    :background-color = !menu_link_bg + #030
+    :padding 10px
+    :margin 2px
