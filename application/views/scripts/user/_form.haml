@@ -30,6 +30,9 @@
   %h2= $label
   %ul
     %li
+      != $this->formLabel('userDomain', 'Domain')
+      != $this->domainSelect($this->userDomain, 'userDomain')
+    %li
       != $this->formLabel('user[dbUserFullName]', 'Full Name')
       != $this->formText('user[dbUserFullName]', $this->h($userFullName), array('size' => 30))
     %li
@@ -43,10 +46,10 @@
       != $this->formPassword('dbUserPWConf', null, array('size' => 20))
     %li
       != $this->formLabel('user[dbUserActive]', 'Active', array('class' => 'inline'))
-      != $this->formCheckbox('user[dbUserActive]', $this->form === null || $this->form->dbUserActive === 'Y', null, array('Y', 'N'))
+      != $this->formCheckbox('user[dbUserActive]', 1, array('checked' => $this->form === null || $this->form->dbUserActive === 'Y'), array('Y', 'N'))
     %li
       != $this->formLabel('user[dbUserPWChange]', 'Force Password Change On Next Logon', array('class' => 'inline'))
-      != $this->formCheckbox('user[dbUserPWChange]', $this->form->dbUserPWChange === 'Y', null, array('Y', 'N'))
+      != $this->formCheckbox('user[dbUserPWChange]', 1, array('checked' => $this->form->dbUserPWChange === 'Y'), array('Y', 'N'))
     %li
       != $this->formSubmit('submitButton', $label)
       - if(isset($this->action) && $this->action === 'edit')

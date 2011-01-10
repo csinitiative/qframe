@@ -126,11 +126,24 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     if (isset($this->instanceRow->$key)) {
       return $this->instanceRow->$key;
     }
+    elseif ($key === 'domain') {
+      return $this->domain();
+    }
     elseif ($key === 'depth') {
       return $this->depth;
     }
  
     return $this->parent->$key;
+  }
+
+  /**
+   * Get the domain of the instance
+   *
+   * @return DomainModel
+   */
+  public function domain() {
+    $domain = DomainModel::find($this->instanceRow->domainID);
+    return $domain;
   }
   
   /**
@@ -762,10 +775,11 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
    *
    * @param mixed $import maybe a string xml document, DOMDocument object, or ZipArchiveModel object
    * @param string $instanceName is the name of the new instance
-   * @param array $options contains a mix of options for import sources and validation 
+   * @param array $options contains a mix of options for import sources and validation
+   * @param integer domainID
    * @return integer instanceID
    */
-  public static function importXML(&$import, $instanceName, $options = array()) {
+  public static function importXML(&$import, $instanceName, $options = array(), $domainID) {
     $options = array_merge(array(
       'pageClones'   => 0,
       'sectionClones' => 0,
@@ -776,6 +790,11 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
 
     if (!isset($instanceName) || strlen($instanceName) == 0) {
       throw new InvalidArgumentException('Missing instanceName argument');
+    }
+
+    if (!isset($domainID)) {
+      throw new InvalidArgumentException('Missing domainID argument');
+      $domain = DomainModel::find($domainID);
     }
     
     libxml_use_internal_errors(true);
@@ -889,7 +908,8 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     $instanceID = self::$instanceTable->insert(array(
       'questionnaireID' => $questionnaireID,
       'instanceName'    => $instanceName,
-      'hidden'          => $options['hidden']
+      'hidden'          => $options['hidden'],
+      'domainID'        => $domainID
     ));
                                                      
     $pages = $questionnaire->getElementsByTagName('page');
@@ -982,6 +1002,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
     
     $instance = new InstanceModel(array('instanceID' => $instanceID,
                                         'depth' => 'page'));
+    $instance->domainID = $domain->domainID;
     $instance->save();
     
     self::dbCommit($transactionNumber);
@@ -1574,7 +1595,10 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
       $page = new PageModel(array('pageID' => $tRow->pageID,
                                   'depth' => $this->depth
       ));
-      if($user->hasAnyAccess($page)) $this->pages[] = $page;
+      if($user->hasAnyAccess($page) ||
+         $user->hasAnyAccess($page->parent->domain)) {
+        $this->pages[] = $page;
+      }
     }
     
     $this->pagesIndex = 0;

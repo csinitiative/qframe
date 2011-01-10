@@ -49,7 +49,8 @@ class QuestionnaireDataController extends QFrame_Controller_Admin {
     foreach($questionnaires as $questionnaire) {
       while($instance = $questionnaire->nextInstance()) {
         while($page = $instance->nextPage()) {
-          if($this->_user->hasAnyAccess($page)) {
+          if($this->_user->hasAnyAccess($page) ||
+             $this->_user->hasAnyAccess($page->parent->domain)) {
             $allowedInstances[] = $instance;
             break;
           }

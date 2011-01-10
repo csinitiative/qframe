@@ -5,10 +5,11 @@ var Roles = {
    *
    * @param Event change event
    */
-  selectChange: function(event) {
+  questionnaireSelectChange: function(event) {
     var url = $F('selectURL') + '?' + $('questionnaire').serialize() + '&' + $('instance').serialize();
     window.location = url;
   },
+
   
   /**
    * Setup tasks.
@@ -24,8 +25,9 @@ var Roles = {
     }
     
     $$('#permissions #page_permissions .option select').each(function(select) {
-      select.observe('change', Roles.selectChange);
+      select.observe('change', Roles.questionnaireSelectChange);
     });
+
   }
 }
 

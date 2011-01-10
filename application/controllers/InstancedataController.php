@@ -32,8 +32,17 @@ class InstancedataController extends QFrame_Controller_Admin {
    */
   public function indexAction() {
     $session = new Zend_Session_Namespace('login');
+    $domainID = ($this->_hasParam('domain')) ? $this->_getParam('domain') : $session->dataDomainID;
     $questionnaireID = ($this->_hasParam('questionnaire')) ? $this->_getParam('questionnaire') : $session->dataQuestionnaireID;
     $instanceID = ($this->_hasParam('instance')) ? $this->_getParam('instance') : $session->dataInstanceID;
+
+
+    if (is_numeric($domainID) && $domainID > 0) {
+      $this->view->dataDomain = DomainModel::find($domainID);
+    }
+    else {
+      $instanceID = null;
+    }
 
     if (is_numeric($questionnaireID) && $questionnaireID > 0) {
       $this->view->dataQuestionnaire = new QuestionnaireModel(array('questionnaireID' => $questionnaireID,
@@ -51,8 +60,10 @@ class InstancedataController extends QFrame_Controller_Admin {
       $instanceID = null;
     }
 
+    $session->dataDomainID = $domainID;
     $session->dataQuestionnaireID = $questionnaireID;
     $session->dataInstanceID = $instanceID;
+    $this->view->dataDomainID = $session->dataDomainID;
     $this->view->dataQuestionnaireID = $session->dataQuestionnaireID;
     $this->view->dataInstanceID = $session->dataInstanceID;
 
@@ -61,7 +72,8 @@ class InstancedataController extends QFrame_Controller_Admin {
     foreach($questionnaires as $questionnaire) {
       while($instance = $questionnaire->nextInstance()) {
         while($page = $instance->nextPage()) {
-          if($this->_user->hasAnyAccess($page)) {
+          if($this->_user->hasAnyAccess($page) ||
+             $this->_user->hasAnyAccess($page->parent->domain)) {
             $allowedInstances[] = $instance;
             break;
           }
@@ -73,20 +85,26 @@ class InstancedataController extends QFrame_Controller_Admin {
     // import xml import responses
     $radioButton = $this->_getParam('importResponsesRadioButton');
     $this->view->importResponsesRadioButton = $radioButton;
+    $domainID = ($this->_hasParam('importResponsesDomainSelect')) ? $this->_getParam('importResponsesDomainSelect') : $session->importResponsesDomainID;
     $instanceID = ($this->_hasParam('importResponsesInstanceSelect')) ? $this->_getParam('importResponsesInstanceSelect') : $session->importResponsesInstanceID;
     $questionnaireID = ($this->_hasParam('importResponsesQuestionnaireSelect')) ? $this->_getParam('importResponsesQuestionnaireSelect') : $session->importResponsesQuestionnaireID;
+    $session->importResponsesDomainID = $domainID;
     $session->importResponsesQuestionnaireID = $questionnaireID;
     $session->importResponsesInstanceID = $instanceID;
+    $this->view->importResponsesDomainID = $domainID;
     $this->view->importResponsesInstanceID = $instanceID;
     $this->view->importResponsesQuestionnaireID = $questionnaireID;
     
     // new instance import responses
     $radioButton = $this->_getParam('newInstanceImportResponsesRadioButton');
     $this->view->newInstanceImportResponsesRadioButton = $radioButton;
+    $domainID = ($this->_hasParam('newInstanceResponsesDomainSelect')) ? $this->_getParam('newInstanceResponsesDomainSelect') : $session->newInstanceResponsesDomainID;
     $instanceID = ($this->_hasParam('newInstanceResponsesInstanceSelect')) ? $this->_getParam('newInstanceResponsesInstanceSelect') : $session->newInstanceResponsesInstanceID;
     $questionnaireID = ($this->_hasParam('newInstanceResponsesQuestionnaireSelect')) ? $this->_getParam('newInstanceResponsesQuestionnaireSelect') : $session->newInstanceResponsesQuestionnaireID;
+    $session->newInstanceResponsesDomainID = $domainID;
     $session->newInstanceResponsesQuestionnaireID = $questionnaireID;
     $session->newInstanceResponsesInstanceID = $instanceID;
+    $this->view->newInstanceResponsesDomainID = $domainID;
     $this->view->newInstanceResponsesInstanceID = $instanceID;
     $this->view->newInstanceResponsesQuestionnaireID = $questionnaireID;
     
@@ -126,6 +144,7 @@ class InstancedataController extends QFrame_Controller_Admin {
     
     $instanceName = $this->_getParam('instanceName');
     $importResponses = $this->_getParam('newInstanceImportResponsesRadioButton');
+    $domainID = $session->dataDomainID;
     
     if(is_numeric($instanceID)) {
       $session->newInstanceResponsesInstanceID = intVal($instanceID);
@@ -136,13 +155,13 @@ class InstancedataController extends QFrame_Controller_Admin {
     
     $questionnaire = new QuestionnaireModel(array('questionnaireID' => $session->dataQuestionnaireID,
                                             'depth' => 'questionnaire'));
-    
-    if ($importResponses === 'newInstanceImportInstanceResponses') { 
+
+    if ($importResponses === 'newInstanceImportInstanceResponses') {
       $importResponsesInstanceID = $this->_getParam('newInstanceResponsesInstanceSelect');
-      InstanceModel::importXML($questionnaire->fetchQuestionnaireDefinition(), $instanceName, array('instanceID' => $importResponsesInstanceID));
+      InstanceModel::importXML($questionnaire->fetchQuestionnaireDefinition(), $instanceName, array('instanceID' => $importResponsesInstanceID), $domainID);
     }
     else {
-      InstanceModel::importXML($questionnaire->fetchQuestionnaireDefinition(), $instanceName);
+      InstanceModel::importXML($questionnaire->fetchQuestionnaireDefinition(), $instanceName, array(), $domainID);
     }
     
     $this->flash('notice', 'New Instance Created');

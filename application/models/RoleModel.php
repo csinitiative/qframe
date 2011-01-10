@@ -98,7 +98,18 @@ class RoleModel implements QFrame_Paginable {
    */
   public function __get($name) {
     if($name === 'acl') return $this->acl;
+    if($name === 'domain') return $this->domain();
     return $this->row->$name;
+  }
+
+  /**
+   * Get the domain of the user
+   *
+   * @return DomainModel
+   */
+  public function domain() {
+    $domain = DomainModel::find($this->row->domainID);
+    return $domain;
   }
   
   /**

@@ -45,13 +45,13 @@ class QFrame_View_Helper_InstancedataHelpers {
     $this->view = $view;
   }
   
- /**
-  * Generates a drop down box listing all questionnaires
-  *
-  * @param  integer current questionnaire (or null if no current questionnaire)
-  * @param string element name
-  * @return string
-  */
+  /**
+   * Generates a drop down box listing all questionnaires
+   *
+   * @param  integer current questionnaire (or null if no current questionnaire)
+   * @param string element name
+   * @return string
+   */
   public function questionnaireSelect($questionnaireID = null, $name = 'questionnaire') {
     if($questionnaireID === null) $options[0] = ' ';
     $questionnaires = QuestionnaireModel::getAllQuestionnaires();
@@ -67,6 +67,25 @@ class QFrame_View_Helper_InstancedataHelpers {
       }
     }
     return $this->view->formSelect($name, $questionnaireID, null, $options);
+  }
+
+  /**
+   * Generates a drop down box listing all domains
+   *
+   * @param  integer current domain (or null if no current domain)
+   * @param string element name
+   * @return string
+   */
+  public function domainSelect($domainID = null, $name = 'domain') {
+    if($domainID === null) $options[0] = ' ';
+    $domains = DomainModel::getAllDomains();
+    foreach($domains as $domain) {
+      $domainDescription = $this->view->h($domain->domainDescription);
+      if(!isset($options[$domain->domainID])) {
+        $options[$domain->domainID] = $domainDescription;
+      }
+    }
+    return $this->view->formSelect($name, $domainID, null, $options);
   }
   
   /**

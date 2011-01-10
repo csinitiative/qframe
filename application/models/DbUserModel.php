@@ -202,12 +202,25 @@ class DbUserModel implements QFrame_Paginable {
       if($this->roles === null) $this->loadRoles();
       return $this->roles;
     }
+    elseif($key === 'domain') {
+	  return $this->domain();
+	}
     elseif(isset($this->dbUserRow->$key)) {
       return $this->dbUserRow->$key;
     }
     else {
       throw new Exception("Attribute not found [$key]");
     }
+  }
+ 
+  /**
+   * Get the domain of the user
+   *
+   * @return DomainModel
+   */
+  public function domain() {
+    $domain = DomainModel::find($this->dbUserRow->domainID);
+    return $domain;
   }
 
   public function __set ($key, $value) {

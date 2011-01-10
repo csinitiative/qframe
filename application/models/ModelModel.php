@@ -336,7 +336,10 @@ class ModelModel {
                                             'depth' => $this->depth,
                                             'instance' => $this->compareInstance
       ));
-      if($user->hasAnyAccess($page)) $this->modelPages[] = $modelPage;
+      if($user->hasAnyAccess($page) ||
+         $user->hasAnyAccess($page->parent->domain)) {
+        $this->modelPages[] = $modelPage;
+      }
     }
   }
   

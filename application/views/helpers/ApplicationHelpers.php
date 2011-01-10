@@ -137,7 +137,10 @@ class QFrame_View_Helper_ApplicationHelpers {
     if($menu['locked']) {
       $user = new DbUserModel(array('dbUserID' => $menu['locked'], 'depth' => 'dbUser'));
       $title = "Currently locked by '{$this->h($user->dbUserFullName)}'.";
-      if($user->hasAccess('edit', $menu['page']) || $user->hasAccess('approve', $menu['page'])) {
+      if($user->hasAccess('edit', $menu['page']) ||
+         $user->hasAccess('approve', $menu['page']) ||
+         $user->hasAccess('edit', $menu['page']->parent->domain) ||
+         $user->hasAccess('approve', $menu['page']->parent->domain)) {
         $title .= ' Click to unlock.';
         $html = $this->view->linkTo('#', $this->view->imageTag('icons/ffffff/lock_small.png', array(
           'id'    => $this->view->url(array('action' => 'unlock', 'id' => $menu['page']->pageID)),

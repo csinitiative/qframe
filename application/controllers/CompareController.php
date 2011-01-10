@@ -76,7 +76,8 @@ class CompareController extends QFrame_Controller_Action {
       $this->view->models = ModelModel::getAllModels($questionnaire);
       while($instance = $questionnaire->nextInstance()) {
         while($page = $instance->nextPage()) {
-          if($this->_user->hasAnyAccess($page)) {
+          if($this->_user->hasAnyAccess($page) ||
+             $this->_user->hasAnyAccess($page->parent->domain)) {
             $allowedInstances[] = $instance;
             break;
           }

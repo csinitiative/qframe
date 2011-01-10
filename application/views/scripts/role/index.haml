@@ -25,7 +25,7 @@
   != $this->linkTo('#', $this->imageTag('x.gif'), array('class' => 'closeButton', 'style' => 'display: none;'))
   != $this->formHidden('baseUrl', $this->url(array('action' => 'index')))
 %h2.padded
-  roles 
+  roles
   - if (RoleModel::count())
     - if ($this->pager->last())
       %em= "({$this->pager->first()} - {$this->pager->last()} of " . RoleModel::count() . ")"

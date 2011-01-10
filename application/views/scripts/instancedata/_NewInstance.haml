@@ -46,11 +46,12 @@
     %td
       #disableNewInstanceImportResponses{ 'style' => 'display: none;' }
         .option
-          != $this->formLabel('questionnaire', 'Questionnaire:')
-          != $this->questionnaireSelect($this->newInstanceResponsesQuestionnaireID, 'newInstanceResponsesQuestionnaireSelect')
-        .option
-          != $this->formLabel('instance', 'Instance:')
-          != $this->instanceSelect($this->dataInstances, $this->newInstanceResponsesQuestionnaireID, 'newInstanceResponsesInstanceSelect', $this->newInstanceResponsesInstanceID)          
+          != $this->formLabel('questionnaire', 'Instance:')
+          != $this->domainSelect($this->newInstanceResponsesDomainID, 'newInstanceResponsesDomainSelect')
+          - if (isset($this->newInstanceResponsesDomainID))
+            != $this->questionnaireSelect($this->newInstanceResponsesQuestionnaireID, 'newInstanceResponsesQuestionnaireSelect')
+            - if (isset($this->newInstanceResponsesQuestionnaireID))
+              != $this->instanceSelect($this->dataInstances, $this->newInstanceResponsesQuestionnaireID, 'newInstanceResponsesInstanceSelect', $this->newInstanceResponsesInstanceID)          
 %br/          
 != $this->linkTo('#NewInstance', $this->formButton('NewInstance', 'Submit'), array('class' => 'dataButton'))
 != $this->form(null, true)

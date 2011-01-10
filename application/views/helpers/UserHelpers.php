@@ -28,7 +28,7 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class QFrame_View_Helper_RoleHelpers {
+class QFrame_View_Helper_UserHelpers {
 
   /**
    * Stores the associated view for persistence
@@ -46,30 +46,6 @@ class QFrame_View_Helper_RoleHelpers {
   }
   
   /**
-   * Generates a drop down box listing all questionnaires
-   *
-   * @param  integer current questionnaire (or null if no current questionnaire)
-   * @param string element name
-   * @return string
-   */
-  public function questionnaireSelect($questionnaireID = null, $name = 'questionnaire') {
-    if($questionnaireID === null) $options[0] = ' ';
-    $questionnaires = QuestionnaireModel::getAllQuestionnaires();
-    foreach($questionnaires as $questionnaire) {
-      $questionnaireName = $this->view->h($questionnaire->questionnaireName);
-      $questionnaireVersion = $this->view->h($questionnaire->questionnaireVersion);
-      $revision = $this->view->h($questionnaire->revision);
-      if(!isset($options[$questionnaire->questionnaireID])) {
-        $options[$questionnaire->questionnaireID] = "{$questionnaireName} {$questionnaireVersion}";
-        if ($revision != 1) {
-          $options[$questionnaire->questionnaireID] .= " r. {$revision}";
-        }
-      }
-    }
-    return $this->view->formSelect($name, $questionnaireID, null, $options);
-  }
-
-  /**
    * Generates a drop down box listing all allowed domains
    *
    * @param  integer current domain (or null if no current domain)
@@ -85,32 +61,6 @@ class QFrame_View_Helper_RoleHelpers {
       }
     }
     return $this->view->formSelect($name, $domainID, null, $options);
-  }
-
-  /**
-   * Generates a drop down box listing all instances that belong to the chosen instance
-   *
-   * @param  Array   list of all instances to which this user has access
-   * @param  integer id of questionnaire that has been selected
-   * @return string
-   */
-  public function instanceSelect($instances, $questionnaire, $name = 'instance', $instanceID = null) {
-
-    if($questionnaire === null) {
-      $options[0] = 'Select a questionnaire';
-    }
-    else {
-      $options[0] = ' ';
-      foreach($instances as $instance) {
-        $questionnaireName = $this->view->h($instance->questionnaireName);
-        $instanceName = $this->view->h($instance->instanceName);
-        if($instance->questionnaireID == $questionnaire) {
-          $options[$instance->instanceID] = $instanceName;
-        }
-      }
-    }
-
-    return $this->view->formSelect($name, $instanceID, null, $options);
   }
 
 }

@@ -418,7 +418,8 @@ class QFrame_View_Helper_PageHelpers {
     $actions = "<li class=\"current\">{$current}</li>";
     //TODO need to relocate this list of available actions somewhere more appropriate
     foreach(array('view', 'edit', 'approve') as $action) {
-      if($action !== $current && $user->hasAccess($action, $page)) {
+      if($action !== $current &&
+         ($user->hasAccess($action, $page) || $user->hasAccess($action, $page->parent->domain))) {
         $links[] = $this->view->linkTo($this->view->url(array('action' => $action, 'id' => $page->pageID)) . "?sp={$spNum}", $action);
       }
     }

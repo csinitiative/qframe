@@ -59,11 +59,12 @@ An exported Responses XML document is required to import an instance into
     %td
       #disableImportResponses{ 'style' => 'display: none;' }
         .option
-          != $this->formLabel('questionnaire', 'Questionnaire:')
-          != $this->questionnaireSelect($this->importResponsesQuestionnaireID, 'importResponsesQuestionnaireSelect')
-        .option
           != $this->formLabel('instance', 'Instance:')
-          != $this->instanceSelect($this->dataInstances, $this->importResponsesQuestionnaireID, 'importResponsesInstanceSelect', $this->importResponsesInstanceID)
+          != $this->domainSelect($this->importResponsesDomainID, 'importResponsesDomainSelect')
+          - if (isset($this->importResponsesDomainID))
+            != $this->questionnaireSelect($this->importResponsesQuestionnaireID, 'importResponsesQuestionnaireSelect')
+            - if (isset($this->importResponsesQuestionnaireID))
+              != $this->instanceSelect($this->dataInstances, $this->importResponsesQuestionnaireID, 'importResponsesInstanceSelect', $this->importResponsesInstanceID)
 %br/
 != $this->linkTo('#ImportInstance', $this->formButton('ImportInstance', 'Submit'), array('class' => 'dataButton'))
 != $this->form(null, true)

@@ -41,7 +41,8 @@ class RoleController extends QFrame_Controller_Admin {
    */
   public function createAction() {
     RoleModel::create(array(
-      'roleDescription' => $this->_getParam('roleDescription')
+      'roleDescription' => $this->_getParam('roleDescription'),
+      'domainID' => $this->_getParam('roleDomain')
     ))->save();
     $this->flash('notice', 'Role successfully created');
     $this->_redirector->gotoRoute(array('action' => 'index'));
@@ -69,7 +70,8 @@ class RoleController extends QFrame_Controller_Admin {
   public function modifyAction() {
     $role = RoleModel::find($this->_getParam('id'));
     $role->setAttributes(array(
-      'roleDescription'   => $this->_getParam('roleDescription')
+      'roleDescription'   => $this->_getParam('roleDescription'),
+      'domainID' => $this->_getParam('roleDomain')
     ));
     $role->save();
     $this->flash('notice', 'Role successfully modified');
@@ -83,7 +85,10 @@ class RoleController extends QFrame_Controller_Admin {
   public function permissionsAction() {
     // if this is a post request, just go ahead and update permissions
     if($this->getRequest()->isPost()) $this->updatePermissions();
-    
+
+    $role = RoleModel::find($this->_getParam('id'));
+    $this->view->domain = DomainModel::find($role->domain->domainID);
+
     $session = new Zend_Session_Namespace('login');
     $origQuestionnaireID = $session->questionnaireID;
     $origInstanceID = $session->instanceID;
@@ -106,7 +111,8 @@ class RoleController extends QFrame_Controller_Admin {
     foreach($questionnaires as $questionnaire) {
       while($instance = $questionnaire->nextInstance()) {
         while($page = $instance->nextPage()) {
-          if($this->_user->hasAnyAccess($page)) {
+          if($this->_user->hasAnyAccess($page) ||
+             $this->_user->hasAnyAccess($page->parent->domain)) {
             $allowedInstances[] = $instance;
             break;
           }
@@ -127,6 +133,7 @@ class RoleController extends QFrame_Controller_Admin {
    */
   private function updatePermissions() {
     $globals = $this->_getParam('global');
+    $domainPermissions = $this->_getParam('domain');
     $pages = $this->_getParam('page');
     $role = RoleModel::find($this->_getParam('id'));
     
@@ -139,6 +146,13 @@ class RoleController extends QFrame_Controller_Admin {
       foreach($permissions as $permission => $value) {
         if($value) $role->grant($permission, $page);
         else $role->deny($permission, $page);
+      }
+    }
+    foreach($domainPermissions as $id => $permissions) {
+      $domain = DomainModel::find($id);
+      foreach($permissions as $permission => $value) {
+        if($value) $role->grant($permission, $domain);
+        else $role->deny($permission, $domain);
       }
     }
     $role->save();

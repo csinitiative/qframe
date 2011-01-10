@@ -53,8 +53,11 @@ class PageController extends QFrame_Controller_Action {
     // get a PageModel object for the current page
     $this->view->page = new PageModel(array('pageID' => $this->view->currentPageID));
     
-    if(!$this->_user->hasAccess('edit', $this->view->page)) $this->denyAccess();
-    
+    if(!$this->_user->hasAccess('edit', $this->view->page) &&
+       !$this->_user->hasAccess('edit', $this->view->page->parent->domain)) {
+      $this->denyAccess();
+    }
+
     // get a lock on this page (if possible)
     $auth = Zend_Auth::getInstance();
     $user = DbUserModel::findByUsername($auth->getIdentity());
@@ -87,7 +90,10 @@ class PageController extends QFrame_Controller_Action {
     }
 
     $this->view->page = new PageModel(array('pageID' => $pageID));
-    if(!$this->_user->hasAccess('view', $this->view->page)) $this->denyAccess();
+    if(!$this->_user->hasAccess('view', $this->view->page) &&
+       !$this->_user->hasAccess('view', $this->view->page->parent->domain)) {
+      $this->denyAccess();
+    }
     $this->view->currentPageID = $pageID;
   }
   
@@ -98,7 +104,8 @@ class PageController extends QFrame_Controller_Action {
   public function showAction() {
     $page = new PageModel(array('pageID' => $this->_getParam('id')));
     foreach(array('view', 'edit', 'approve') as $a) {
-      if($this->_user->hasAccess($a, $page)) {
+      if($this->_user->hasAccess($a, $page) ||
+         $this->_user->hasAccess($a, $page->parent->domain)) {
         $action = $a;
         break;
       }
@@ -303,7 +310,10 @@ class PageController extends QFrame_Controller_Action {
    */
   public function unlockAction() {
     $page = new PageModel(array('pageID' => $this->_getParam('id'), 'depth' => 'page'));
-    if($this->_user->hasAccess('edit', $page) || $this->_user->hasAccess('approve', $page)) {
+    if($this->_user->hasAccess('edit', $page) ||
+       $this->_user->hasAccess('approve', $page) ||
+       $this->_user->hasAccess('edit', $page->parent->domain) ||
+       $this->_user->hasAccess('approve', $page->parent->domain)) {
       LockModel::releaseAll($page);
     }
     else {
@@ -329,7 +339,8 @@ class PageController extends QFrame_Controller_Action {
           'ensure you have access and try again later.');
       $this->_redirector->gotoRouteAndExit(array('action' => 'view', 'id' => $page->pageID));
     }
-    elseif(!$this->_user->hasAccess($action, $page)) $this->denyAccess();
+    elseif(!$this->_user->hasAccess($action, $page) &&
+           !$this->_user->hasAccess($action, $page->parent->domain)) $this->denyAccess();
     return $lock;
   }
 }

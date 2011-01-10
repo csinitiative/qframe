@@ -51,6 +51,10 @@ class DashboardController extends QFrame_Controller_Action {
     $allowedInstances = array();
     foreach($questionnaires as $questionnaire) {
       while($instance = $questionnaire->nextInstance()) {
+        if($this->_user->hasAnyAccess($instance->domain)) {
+          $allowedInstances[] = $instance;
+          break;
+        }
         while($page = $instance->nextPage()) {
           if($this->_user->hasAnyAccess($page)) {
             $allowedInstances[] = $instance;

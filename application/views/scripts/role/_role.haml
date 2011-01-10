@@ -20,6 +20,7 @@
 .paged
   .hidden.id= $this->role->roleID
   .title.roleDescription= $this->role->roleDescription
+  .subtitle.domainDescription= "Domain: " . $this->role->domain->domainDescription
   != $this->imageTag('ajax-loader.gif', array('class' => 'progress', 'style' => 'display: none;'))
   .controls{ 'style' => 'display: none;' }
     != $this->linkTo((array('action' => 'edit', 'id' => $this->role->roleID)), $this->imageTag('icons/ddffdd/group_edit.png', array('class' => 'inline tooltip', 'tooltip' => 'modify role')))

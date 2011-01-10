@@ -23,7 +23,7 @@
  * @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
-class DomainModel implements QFrame_Paginable {
+class DomainModel implements QFrame_Paginable, QFrame_Permissible {
 
   /**
    * Table object that members of this class will use to perform
@@ -317,5 +317,37 @@ class DomainModel implements QFrame_Paginable {
 	
     self::$domainQuestionnaireTable->delete($where);
   }
+
+  /**
+   * Return all available domains
+   *
+   * @return array DomainModel
+   */
+  public static function getAllDomains() {
+    $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
+    $select = $adapter->select()
+        ->from(array('domain' => 'domain'), array('domain.domainID'))
+        ->order(array('domainDescription ASC'));
+    $stmt = $adapter->query($select);
+    $result = $stmt->fetchAll();
+    $domains = array();
+    while (list($key, $val) = each($result)) {
+      array_push($domains, DomainModel::find($val['domainID']));
+    }
+    return $domains;
+  }
+
+  /**
+   * Return an ID that is unique to this page on this domain
+   *
+   * @return string
+   */
+  public function getPermissionID() {
+    $id = get_class($this) . '_';
+    $id .= "$this->domainID";
+
+    return $id;
+  }
+
 
 }

@@ -42,6 +42,8 @@ class UserController extends QFrame_Controller_Admin {
   public function createAction() {
     $userParams = $this->_getParam('user');
     $pw = $this->_getParam('dbUserPW');
+    $domainID = $this->_getParam('userDomain');
+    $this->view->userDomain = $domainID;
     $user = new DbUserModel(array(
       'dbUserName'  => $userParams['dbUserName'],
       'dbUserPW'    => $pw
@@ -53,6 +55,7 @@ class UserController extends QFrame_Controller_Admin {
       return;
     }
     $user->dbUserPW = $pw;
+    $user->domainID = $domainID;
     $user->save();
     $this->flash('notice', 'User successfully created');
     $this->_redirector->gotoRoute(array('action' => 'index'));
@@ -74,8 +77,10 @@ class UserController extends QFrame_Controller_Admin {
    */
   public function editAction() {
     $user = new DbUserModel(array('dbUserID' => $this->_getParam('id')));
+    $this->view->userDomain = $user->domainID;
     if($this->getRequest()->isPost()) {
       foreach($this->_getParam('user') as $field => $value) $user->$field = $value;
+      $user->domainID = $this->_getParam('userDomain');
       $pw = $this->_getParam('dbUserPW');
       $pwConf = $this->_getParam('dbUserPWConf');
       if($pw !== '' && $pw === $pwConf) $user->dbUserPW = $pw;

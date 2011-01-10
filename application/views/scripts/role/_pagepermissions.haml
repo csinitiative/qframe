@@ -1,0 +1,65 @@
+-#
+  This file is part of the CSI QFrame.
+  
+  The CSI QFrame is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+  
+  The CSI QFrame is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  
+  @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
+  @license    http://www.gnu.org/licenses/   GNU General Public License v3
+
+!= $this->form(array(), false, 'post')
+!= $this->formHidden('indexUrl', $this->url(array('action' => 'index', 'id' => null)))
+#permissions
+  #page_permissions
+    %h2 page permissions
+    Select a questionnaire and instance to set per-page permissions.
+    %br/
+    %br/
+    != $this->formHidden('selectURL', $this->url(array()))
+    .option
+      != $this->formLabel('questionnaire', 'Questionnaire:')
+      != $this->questionnaireSelect($this->questionnaire)
+    .option
+      != $this->formLabel('instance', 'Instance:')
+      != $this->instanceSelect($this->instances, $this->questionnaire, 'instance', $this->instance)
+    - if(isset($this->currentInstance))
+      %table
+        %tr
+          %th.left
+          %th
+            != $this->imageTag('icons/ffffff/magnifier.png', array('class' => 'inline tooltip', 'tooltip' => 'view'))
+          %th
+            != $this->imageTag('icons/ffffff/pencil.png', array('class' => 'inline tooltip', 'tooltip' => 'edit'))
+          %th
+            != $this->imageTag('icons/ffffff/accept.png', array('class' => 'inline tooltip', 'tooltip' => 'approve'))
+        %tr
+          %th &nbsp;
+          %th
+            != $this->formCheckbox("checkall_][view]", false)
+          %th
+            != $this->formCheckbox("checkall_][edit]", false)
+          %th
+            != $this->formCheckbox("checkall_][approve]", false)
+        - while($page = $this->currentInstance->nextPage())
+          %tr
+            %td.label= $page->pageHeader
+            %td
+              != $this->formCheckbox("page[{$page->pageID}][view]", 1, array('checked' => $this->role->hasAccess('view', $page)))
+            %td
+              != $this->formCheckbox("page[{$page->pageID}][edit]", 1, array('checked' => $this->role->hasAccess('edit', $page)))
+            %td
+              != $this->formCheckbox("page[{$page->pageID}][approve]", 1, array('checked' => $this->role->hasAccess('approve', $page)))
+  #options
+    != $this->formSubmit('submitButton', 'save')
+    != $this->formButton('cancelButton', 'cancel')
+!= $this->form(null, true)

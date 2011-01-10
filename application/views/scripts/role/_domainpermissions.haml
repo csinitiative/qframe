@@ -17,13 +17,17 @@
   @copyright  Copyright (c) 2007 Collaborative Software Initiative (CSI)
   @license    http://www.gnu.org/licenses/   GNU General Public License v3
 
-- $localStylesheets = array('roles')
-- $localJavascript = array('roles', 'checkboxes')
-
-%h1
-  Permissions for role
-  %em= $this->role->roleDescription
-!= $this->renderPartial('globalpermissions', null, false)
-!= $this->renderPartial('domainpermissions', null, false)
-!= $this->renderPartial('pagepermissions', null, false)
-
+!= $this->form(array(), false, 'post')
+!= $this->formHidden('indexUrl', $this->url(array('action' => 'index', 'id' => null)))
+#permissions
+  #domain_permissions
+    %h2= "domain permissions for " . $this->h($this->domain->domainDescription)
+    %ul
+      - foreach(array('view', 'edit', 'approve', 'compare', 'administer') as $permission)
+        %li
+          = $permission
+          != $this->formCheckbox("domain[{$this->domain->domainID}][{$permission}]", 1, array('checked' => $this->role->hasAccess($permission, $this->domain)))
+  #options
+    != $this->formSubmit('submitButton', 'save')
+    != $this->formButton('cancelButton', 'cancel')
+!= $this->form(null, true)

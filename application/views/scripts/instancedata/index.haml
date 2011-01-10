@@ -32,7 +32,9 @@ Create a new instance from an existing questionnaire.  Pick a name for the new i
 != $this->form(array(), false, 'post')
 .option
   != $this->formLabel('questionnaire', 'Select Questionnaire:')
-  != $this->questionnaireSelect($this->dataQuestionnaireID)
+  != $this->domainSelect($this->dataDomainID)
+  - if (isset($this->dataDomainID))
+    != $this->questionnaireSelect($this->dataQuestionnaireID)
 != $this->form(null, true)
 - if (isset($this->dataQuestionnaireID))
   != $this->renderPartial('NewInstance', null)
@@ -45,9 +47,11 @@ Create a new instance from an existing questionnaire.  Pick a name for the new i
 != $this->form(array(), false, 'post')
 .option
   != $this->formLabel('questionnaire', 'Select Instance:')
-  != $this->questionnaireSelect($this->dataQuestionnaireID)
-  - if (isset($this->dataQuestionnaireID))
-    != $this->instanceSelect($this->dataInstances, $this->dataQuestionnaireID, 'instance', $this->dataInstanceID)
+  != $this->domainSelect($this->dataDomainID)
+  - if (isset($this->dataDomainID))
+    != $this->questionnaireSelect($this->dataQuestionnaireID)
+    - if (isset($this->dataQuestionnaireID))
+      != $this->instanceSelect($this->dataInstances, $this->dataQuestionnaireID, 'instance', $this->dataInstanceID)
 != $this->form(null, true)
 - if(isset($this->dataInstanceID))
     %br/

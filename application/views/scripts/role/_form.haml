@@ -27,6 +27,9 @@
   %h2= $label
   %ul
     %li
+      != $this->formLabel('roleDomain', 'Domain')
+      != $this->domainSelect($this->roleDomainID, 'roleDomain')
+    %li
       != $this->formLabel('roleDescripton', 'Description')
       != $this->formText('roleDescription', ($this->form !== null) ? $this->h($this->form->roleDescription) : null, array('size' => 30))
     %li

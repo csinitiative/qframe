@@ -23,7 +23,8 @@
     .title.dbUserFullName= $this->user->dbUserFullName
   - else
     .title.inactive.dbUserFullName= $this->user->dbUserFullName
-  .subtitle.dbUserName= $this->user->dbUserName
+  .subtitle.domainDescription= "domain: " . $this->user->domain->domainDescription
+  .subtitle.dbUserName= "username: " . $this->user->dbUserName
   != $this->imageTag('ajax-loader.gif', array('class' => 'progress', 'style' => 'display: none;'))
   .controls.tall{ 'style' => 'display: none;' }
     != $this->linkTo((array('action' => 'edit', 'id' => $this->user->dbUserID)), $this->imageTag('icons/ddffdd/user_edit.png', array('class' => 'inline tooltip', 'tooltip' => 'edit this user')))

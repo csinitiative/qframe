@@ -374,7 +374,7 @@ class QuestionnaireModel extends QFrame_Db_SerializableTransaction implements QF
   /**
    * Return all available questionnaires
    *
-   * @return array IntrumentModel
+   * @return array QuestionnaireModel
    */
   public static function getAllQuestionnaires($depth = 'questionnaire') {
     $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
