@@ -32,9 +32,9 @@ class UserController extends QFrame_Controller_Admin {
   public function indexAction() {
     $this->view->q = $this->_getParam('q');
     $page = ($this->_hasParam('page')) ? intval($this->_getParam('page')) : 1;
-    $search = $this->_user->isGlobalAdministrator() ? '' : "domainID = {$this->_user->domain->domainID}";
+    $domain = $this->_user->isGlobalAdministrator() ? null : $this->_user->domain;
     $this->view->pager =
-        new QFrame_Paginator('DbUserModel', 20, $page, 'dbUserFullName ASC', $this->view->q, $search);
+        new QFrame_Paginator('DbUserModel', 20, $page, 'dbUserFullName ASC', $this->view->q, $domain);
   }
   
   /**
@@ -123,6 +123,7 @@ class UserController extends QFrame_Controller_Admin {
     $allRoles = RoleModel::find('all');
     $roles = array();
     foreach($allRoles as $role) {
+      if (!$this->_user->hasAccess('administer', $role->domain)) continue;
       $granted = false;
       foreach($this->view->user->roles as $userRole) {
         if($role->roleID === $userRole['roleID']) {
@@ -144,6 +145,9 @@ class UserController extends QFrame_Controller_Admin {
     if(!$this->_user->hasAccess('administer', $user->domain)) $this->denyAccess();
 
     $role = RoleModel::find($this->_getParam('role'));
+
+    if(!$this->_user->hasAccess('administer', $role->domain)) $this->denyAccess();
+
     $user->addRole($role);
     $this->_redirector->gotoRoute(array('action' => 'roles', 'id' => $user->dbUserID));
   }
@@ -157,6 +161,9 @@ class UserController extends QFrame_Controller_Admin {
     if(!$this->_user->hasAccess('administer', $user->domain)) $this->denyAccess();
     
     $role = RoleModel::find($this->_getParam('role'));
+
+    if(!$this->_user->hasAccess('administer', $role->domain)) $this->denyAccess();
+    
     $user->removeRole($role);
     $this->_redirector->gotoRoute(array('action' => 'roles', 'id' => $user->dbUserID));
   }

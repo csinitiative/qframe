@@ -448,7 +448,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
                     foreach ($prompt['rules'] as $rule) {
                       $type = $rule->type;
                       if ($type === $t) {
-                        $xml .= "$padding                <csi:$type>" . self::_xmlentities($rule->targetGUID) . "</csi:$type>\n";
+                        $xml .= "$padding                <csi:".$type.">" . self::_xmlentities($rule->targetGUID) . "</csi:".$type.">\n";
                       }
                     }
                   }
@@ -1404,7 +1404,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
           if ($name === 'enableQuestion') {
             $questionID = $questionGuidMap[$targetGUID];
             if (!isset($questionID)) {
-              throw new Exception("questionGUID referenced in XML Questionnaire Definition does not exist: $targetID");
+              throw new Exception("questionGUID referenced in XML Questionnaire Definition does not exist: $targetGUID");
             }
             $ruleID = self::$ruleTable->insertBulk(array('questionnaireID' => $questionnaireID,
                                                          'instanceID' => $instanceID,
@@ -1417,7 +1417,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
           elseif ($name === 'enableSection') {
             $sectionID = $sectionGuidMap[$targetGUID];
             if (!isset($sectionID)) {
-              throw new Exception("sectionGUID referenced in XML Questionnaire Definition does not exist: $targetID");
+              throw new Exception("sectionGUID referenced in XML Questionnaire Definition does not exist: $targetGUID");
             }
             $ruleID = self::$ruleTable->insertBulk(array('questionnaireID' => $questionnaireID,
                                                          'instanceID' => $instanceID,
@@ -1430,7 +1430,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
           elseif ($name === 'enablePage') {
             $pageID = $pageGuidMap[$targetGUID];
             if (!isset($pageID)) {
-              throw new Exception("pageGUID referenced in XML Questionnaire Definition does not exist: $targetID");
+              throw new Exception("pageGUID referenced in XML Questionnaire Definition does not exist: $targetGUID");
             }
             $ruleID = self::$ruleTable->insertBulk(array('questionnaireID' => $questionnaireID,
                                                          'instanceID' => $instanceID,
@@ -1443,7 +1443,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
           elseif ($name === 'disableQuestion') {
             $questionID = $questionGuidMap[$targetGUID];
             if (!isset($questionID)) {
-              throw new Exception("questionGUID referenced in XML Questionnaire Definition does not exist: $targetID");
+              throw new Exception("questionGUID referenced in XML Questionnaire Definition does not exist: $targetGUID");
             }
             $ruleID = self::$ruleTable->insertBulk(array('questionnaireID' => $questionnaireID,
                                                          'instanceID' => $instanceID,
@@ -1456,7 +1456,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
           elseif ($name === 'disableSection') {
             $sectionID = $sectionGuidMap[$targetGUID];
             if (!isset($sectionID)) {
-              throw new Exception("sectionGUID referenced in XML Questionnaire Definition does not exist: $targetID");
+              throw new Exception("sectionGUID referenced in XML Questionnaire Definition does not exist: $targetGUID");
             }
             $ruleID = self::$ruleTable->insertBulk(array('questionnaireID' => $questionnaireID,
                                                          'instanceID' => $instanceID,
@@ -1469,7 +1469,7 @@ class InstanceModel extends QFrame_Db_SerializableTransaction implements QFrame_
           elseif ($name === 'disablePage') {
             $pageID = $pageGuidMap[$targetGUID];
             if (!isset($pageID)) {
-              throw new Exception("pageGUID referenced in XML Questionnaire Definition does not exist: $targetID");
+              throw new Exception("pageGUID referenced in XML Questionnaire Definition does not exist: $targetGUID");
             }
             $ruleID = self::$ruleTable->insertBulk(array('questionnaireID' => $questionnaireID,
                                                          'instanceID' => $instanceID,

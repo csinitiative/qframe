@@ -30,6 +30,11 @@ class AdminController extends QFrame_Controller_Admin {
    * Action for the main administrative screen
    */
   public function indexAction() {
-    $this->_redirector->gotoRoute(array('controller' => 'questionnairedata'));
+    if ($this->_user->isGlobalAdministrator()) {
+      $this->_redirector->gotoRoute(array('controller' => 'questionnairedata'));
+    }
+    else {
+      $this->_redirector->gotoRoute(array('controller' => 'instancedata'));
+    }
   }
 }

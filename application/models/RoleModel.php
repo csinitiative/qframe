@@ -299,10 +299,15 @@ class RoleModel implements QFrame_Paginable {
    * @param  integer offset from the beginning of the result set
    * @param  string  (optional) order clause to apply to the result set
    * @param  string  (optional) search term to apply to the result set
+   * @param  DomainModel (optional) limit the search to this domain
    * @return Array
    */
-  public static function getPage($num, $offset, $order = null, $search = null) {
+  public static function getPage($num, $offset, $order = null, $search = null, $domain = null) {
     $where = ($search === null) ? null : self::searchWhere($search);
+    if ($domain) {
+      $where .= $where ? ' AND ' : '';
+      $where .= "domainID = {$domain->domainID}";
+    }
     return self::_find(array(
       'where'   => $where,
       'order'   => $order,
@@ -315,14 +320,19 @@ class RoleModel implements QFrame_Paginable {
    * Returns the count of roles that match a given search criteria
    *
    * @param  string (optional) search term to apply
+   * @param  DomainModel (optional) limit the search to this domain
    * @return integer
    */
-  public static function count($search = null) {
-    if($search !== null) $search = self::searchWhere($search);
-    else $search = '1';
+  public static function count($search = null, $domain = null) {
+    if($search !== null) $where = self::searchWhere($search);
+    else $where = '1';
+
+    if ($domain) {
+      $where .= " AND domainID = {$domain->domainID}";
+    }
     
     $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
-    return(intval($adapter->fetchOne("SELECT COUNT(*) FROM `role` WHERE {$search}")));
+    return(intval($adapter->fetchOne("SELECT COUNT(*) FROM `role` WHERE {$where}")));
   }
   
   /**
@@ -337,6 +347,6 @@ class RoleModel implements QFrame_Paginable {
     foreach(array('roleDescription') as $column) {
       $whereParts[] = $adapter->quoteInto("{$column} LIKE ?", "%{$search}%");
     }
-    return implode(' OR ', $whereParts);
+    return "(" . implode(' OR ', $whereParts) . ")";
   }
 }

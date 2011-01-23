@@ -32,9 +32,8 @@ class RoleController extends QFrame_Controller_Admin {
   public function indexAction() {
     $this->view->q = $this->_getParam('q');
     $page = ($this->_hasParam('page')) ? intval($this->_getParam('page')) : 1;
-    $search = $this->_user->isGlobalAdministrator() ? '' : "domainID = {$this->_user->domain->domainID}";
-    $this->view->pager =
-        new QFrame_Paginator('RoleModel', 20, $page, 'roleDescription ASC', $this->view->q, $search);
+    $domain = $this->_user->isGlobalAdministrator() ? null : $this->_user->domain;
+    $this->view->pager = new QFrame_Paginator('RoleModel', 20, $page, 'roleDescription ASC', $this->view->q, $domain);
   }
   
   /**

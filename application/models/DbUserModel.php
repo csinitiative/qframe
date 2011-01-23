@@ -41,6 +41,35 @@ class DbUserModel implements QFrame_Paginable {
    * @var boolean
    */
   private $admin = false;
+
+  /**
+   * Returns a DbUserModel or DbUserModels that match the given criteria
+   *
+   * @param  integer the ID of the user being looked for (or one of the strings 'first' or 'all')
+   * for the more involved find() syntax)
+   * @param  Array   (optional) in the more advanced form of find() this is where additional
+   * options are specified.
+   * @return DbUserModel
+   */
+  public static function find($id, $args = array()) {
+    if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('db_user');
+
+    // if the first argument is numeric, treat it as an ID
+    if(is_numeric($id))
+      return new DbUserModel(array('dbUserID' => $id));
+
+    // if we have been asked to retrieve just the first matching element
+    if($id === 'first') {
+      $args['limit'] = 1;
+      $users = self::_find($args);
+      return $users[0];
+    }
+    elseif($id === 'all') {
+      return self::_find($args);
+    }
+    else
+      throw new Exception('First argument must be an integer or the string \'first\' or \'all\'.');
+  }
   
   /**
    * Find and return a user by username
@@ -71,52 +100,26 @@ class DbUserModel implements QFrame_Paginable {
     foreach(array('dbUserName', 'dbUserFullName') as $column) {
       $whereParts[] = $adapter->quoteInto("{$column} LIKE ?", "%{$search}%");
     }
-    return implode(' OR ', $whereParts);
-  }
-  
-  /**
-   * Return all users in the system (or limit results to specified numbers)
-   *
-   * @param  Array arguments to this method (such as limit, offset, etc)
-   * @return Array
-   */
-  public static function fetchAll($args = array()) {
-    $args = array_merge(array(
-      'limit'   => null,
-      'offset'  => 0,
-      'order'   => 'dbUserFullName ASC',
-      'search'  => null
-    ), $args);
-    
-    // process search terms into a where clause if any exist
-    if($args['search'] !== null) $args['search'] = self::searchWhere($args['search']);
-    
-    if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('db_user');
-    $users = array();
-    $dbUsers = self::$dbUserTable->fetchAll(
-      $args['search'],
-      $args['order'],
-      $args['limit'],
-      $args['offset']
-    );    
-    foreach($dbUsers as $user) {
-      $users[] = new DbUserModel(array('dbRow' => $user));
-    }
-    return $users;
+    return "(" . implode(' OR ', $whereParts) . ")";
   }
   
   /**
    * Returns the total number of rows in the dbUser table
    *
    * @param  string  (optional) search string to apply to this count
+   * @param  DomainModel (optional) limit the search to this domain
    * @return integer
    */
-  public static function count($search = null) {
-    if($search !== null) $search = self::searchWhere($search);
-    else $search = '1';
+  public static function count($search = null, $domain = null) {
+    if($search !== null) $where = self::searchWhere($search);
+    else $where = '1';
+
+    if ($domain) {
+      $where .= " AND domainID = {$domain->domainID}";
+    }
     
     $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
-    return(intval($adapter->fetchOne("SELECT COUNT(*) FROM `db_user` WHERE {$search}")));
+    return(intval($adapter->fetchOne("SELECT COUNT(*) FROM `db_user` WHERE {$where}")));
   }
   
   /**
@@ -126,14 +129,20 @@ class DbUserModel implements QFrame_Paginable {
    * @param  integer offset (starting record)
    * @param  string  (optional) order clause to apply to results
    * @param  string  (optional) search term
+   * @param  DomainModel (optional) limit the search to this domain
    * @return Array
    */
-  public static function getPage($num, $offset, $order = null, $search = null) {
-    return self::fetchAll(array(
-      'limit'   => $num,
-      'offset'  => $offset,
+  public static function getPage($num, $offset, $order = null, $search = null, $domain = null) {
+    $where = ($search === null) ? null : self::searchWhere($search);
+    if ($domain) {
+      $where .= $where ? ' AND ' : '';
+      $where .= "domainID = {$domain->domainID}";
+    }
+    return self::_find(array(
+      'where'   => $where,
       'order'   => $order,
-      'search'  => $search
+      'limit'   => $num,
+      'offset'  => $offset
     ));
   }
   
@@ -383,6 +392,31 @@ class DbUserModel implements QFrame_Paginable {
 
     if ($this->dbUserPWChange == 'Y') return true;
     return false;
+  }
+
+  /**
+   * Returns an array of DbUserModel objects matching the given criteria
+   *
+   * @param  Array (optional) various parameters to use when querying (recognized keys are
+   * where, order, limit, and offset)
+   * @return Array
+   */
+  public static function _find($args = array()) {
+    if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('db_user');
+
+    // set up default values for all of the allowed arguments
+    $args = array_merge(array(
+      'where'   => null,
+      'order'   => null,
+      'limit'   => null,
+      'offset'  => null
+    ), $args);
+
+    $users = array();
+    $userRows =
+        self::$dbUserTable->fetchAll($args['where'], $args['order'], $args['limit'], $args['offset']);
+    foreach($userRows as $row) $users[] = new DbUserModel(array('dbUserID' => $row->dbUserID));
+    return $users;
   }
   
 }

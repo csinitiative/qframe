@@ -59,12 +59,13 @@ class QFrame_Paginator {
    * @var string
    */
   private $search;
-  
+
   /**
-   * Cached total number of objects
-   * @var integer
+   * Restrict searches to this domain
+   * @var DomainModel
    */
-  private $total = null;
+  private $domain;
+  
 
   /**
    * Construct a new paginator
@@ -74,8 +75,9 @@ class QFrame_Paginator {
    * @param  integer current page
    * @param  string  (optional) order by clause to use when fetching objects
    * @param  string  (optional) search term to apply
+   * @param  DomainModel (optional) restrict search to this domain
    */
-  function __construct($className, $pageSize, $current, $order = null, $search = null) {
+  function __construct($className, $pageSize, $current, $order = null, $search = null, $domain = null) {
     if(class_exists($className)) {
       $class = new ReflectionClass($className);
       if(!$class->implementsInterface('QFrame_Paginable'))
@@ -88,6 +90,7 @@ class QFrame_Paginator {
     $this->current = $current;
     $this->order = $order;
     $this->search = $search;
+    $this->domain = $domain;
   }
   
   /**
@@ -103,7 +106,8 @@ class QFrame_Paginator {
       $this->pageSize,
       $offset,
       $this->order,
-      $this->search
+      $this->search,
+      $this->domain
     );
   }
   
@@ -165,13 +169,11 @@ class QFrame_Paginator {
   }
   
   /**
-   * Returns the total number of objects
+   * Returns the total number of objects for the search
    *
    * @return integer
    */
   public function total() {
-    if($this->total === null)
-      $this->total = call_user_func(array($this->className, 'count'), $this->search);
-    return $this->total;
+    return call_user_func_array(array($this->className, 'count'), array($this->search, $this->domain));
   }
 }

@@ -29,9 +29,9 @@
   users 
   - if (DbUserModel::count())
     - if ($this->pager->last())
-      %em= "({$this->pager->first()} - {$this->pager->last()} of " . DbUserModel::count() . ")"
+      %em= "({$this->pager->first()} - {$this->pager->last()} of " . $this->pager->total() . ")"
     - else
-      %em= "(0 of " . DbUserModel::count() . ")"
+      %em= "(0 of " . $this->pager->total() . ")"
   - else 
     %em (none exist)
 

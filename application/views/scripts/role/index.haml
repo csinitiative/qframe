@@ -28,9 +28,9 @@
   roles
   - if (RoleModel::count())
     - if ($this->pager->last())
-      %em= "({$this->pager->first()} - {$this->pager->last()} of " . RoleModel::count() . ")"
+      %em= "({$this->pager->first()} - {$this->pager->last()} of " . $this->pager->total() . ")"
     - else
-      %em= "(0 of " . RoleModel::count() . ")"
+      %em= "(0 of " . $this->pager->total() . ")"
   - else
     %em= "(none exist)"
 
