@@ -6,10 +6,15 @@ class CreateInitialQuestionnaireAndInstance6 extends Migration {
     QFrame_Db_Table::scanDb();
     QFrame_Db_Table::resetAll();
 
+    // If the questionnaire already exists, don't run the migration
+    $adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
+    $rows = $adapter->select()->from('questionnaire')->where('questionnaireName = ? AND questionnaireVersion = ?', 'CSI SIG', '6.0')->query()->fetchall();
+    if (count($rows) > 0) return true;
+
     $this->auth();
     $xml = file_get_contents(_path(PROJECT_PATH, 'xml', 'sig-6-0-questionnaire-definition.xml'));
     QuestionnaireModel::importXML($xml);
-    InstanceModel::importXML($xml, 'Sample SIG 6 Instance');
+    InstanceModel::importXML($xml, 'Sample SIG 6 Instance', array(), 1);
   }
 
   public function down() {

@@ -184,4 +184,101 @@ class QFrame_View_Helper_ApplicationHelpers {
     }
     return $attrString;
   }  
+
+  /**
+   * Generates a drop down box listing all instances that belong to the chosen questionnaire
+   *
+   * @param integer id of questionnaire that has been selected
+   * @param string element name
+   * @param integer id of instance that should be selected
+   * @param DbUserModel
+   * @return string
+   */
+  public function instanceSelect($questionnaireID, $name = 'instance', $instanceID = null, $user, $permissions = array('edit', 'view', 'approve')) {
+
+    if ($questionnaireID) {
+        $questionnaire = New QuestionnaireModel(array('questionnaireID' => $questionnaireID,
+                                                      'depth' => 'instance'));
+    }
+
+    if($questionnaireID === null) {
+      $options[0] = 'Select a questionnaire';
+    }
+    else {
+      $options[0] = ' ';
+      while ($instance = $questionnaire->nextInstance()) {
+        foreach ($permissions as $permission) {
+          if ($user->hasAccess($permission) || $user->hasAccess($permission, $instance->domain)) {
+            $questionnaireName = $this->view->h($instance->questionnaireName);
+            $instanceName = $this->view->h($instance->instanceName);
+            if($instance->questionnaireID == $questionnaireID) {
+              $options[$instance->instanceID] = $instanceName;
+            }
+          }
+        }
+      }
+    }
+
+    return $this->view->formSelect($name, $instanceID, null, $options);
+  }
+
+  /**
+   * Generates a drop down box listing all questionnaires
+   *
+   * @param integer current questionnaire (or null if no current questionnaire)
+   * @param string element name
+   * @param DbUserModel
+   * @return string
+   */
+  public function questionnaireSelect($questionnaireID = null, $name = 'questionnaire', $user) {
+    if($questionnaireID === null) $options[0] = ' ';
+
+    if($user->hasAccess('administer')) {
+      $questionnaires = QuestionnaireModel::getAllQuestionnaires();
+    }
+    elseif($user->isDomainAdministrator()) {
+      $questionnaires = $user->domain->getQuestionnaires();
+    }
+    else {
+      $questionnaires = array();
+    }
+
+    foreach($questionnaires as $questionnaire) {
+      $questionnaireName = $this->view->h($questionnaire->questionnaireName);
+      $questionnaireVersion = $this->view->h($questionnaire->questionnaireVersion);
+      $revision = $this->view->h($questionnaire->revision);
+      if(!isset($options[$questionnaire->questionnaireID])) {
+        $options[$questionnaire->questionnaireID] = "{$questionnaireName} {$questionnaireVersion}";
+        if ($revision != 1) {
+          $options[$questionnaire->questionnaireID] .= " (rev. {$revision})";
+        }
+      }
+    }
+    return $this->view->formSelect($name, $questionnaireID, null, $options);
+  }
+
+  /**
+   * Generates a drop down box listing all domains to which the user has permission
+   *
+   * @param integer current domain (or null if no current domain)
+   * @param string element name
+   * @param DbUserModel
+   * @return string
+   */
+  public function domainSelect($domainID = null, $name = 'domain', $user, $permissions = array('edit', 'view', 'approve')) {
+    if($domainID === null) $options[0] = ' ';
+    $domains = DomainModel::getAllDomains();
+    foreach($domains as $domain) {
+      foreach ($permissions as $permission) {
+        if ($user->hasAccess($permission) || $user->hasAccess($permission, $domain)) {
+          $domainDescription = $this->view->h($domain->domainDescription);
+          if(!isset($options[$domain->domainID])) {
+            $options[$domain->domainID] = $domainDescription;
+          }
+        }
+      }
+    }
+    return $this->view->formSelect($name, $domainID, null, $options);
+  }
+
 }

@@ -27,6 +27,14 @@
 class QuestionnaireDataController extends QFrame_Controller_Admin {
 
   /**
+   * Method to execute before dispatching takes place
+   */
+  public function preDispatch() {
+    parent::preDispatch();
+    if(!$this->_user->isGlobalAdministrator()) $this->denyAccess();
+  }
+
+  /**
    * Index action.  Presents the Questionnaire Management page to the user.
    */
   public function indexAction() {

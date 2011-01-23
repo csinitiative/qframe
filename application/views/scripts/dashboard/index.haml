@@ -31,9 +31,9 @@
 
 .option
   != $this->formLabel('questionnaire', 'Questionnaire:')
-  != $this->questionnaireSelect($this->instances, $this->questionnaire)
+  != $this->questionnaireSelect($this->questionnaire, 'questionnaire', $this->_user)
 .option
   != $this->formLabel('instance', 'Instance:')
-  != $this->instanceSelect($this->instances, $this->questionnaire)
+  != $this->instanceSelect($this->questionnaire, 'instance', null, $this->_user)
 
 != $this->form(null, true)

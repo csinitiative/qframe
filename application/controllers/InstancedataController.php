@@ -67,17 +67,11 @@ class InstancedataController extends QFrame_Controller_Admin {
     $this->view->dataQuestionnaireID = $session->dataQuestionnaireID;
     $this->view->dataInstanceID = $session->dataInstanceID;
 
-    $questionnaires = QuestionnaireModel::getAllQuestionnaires('page');
+    $questionnaires = QuestionnaireModel::getAllQuestionnaires('instance');
     $allowedInstances = array();
     foreach($questionnaires as $questionnaire) {
       while($instance = $questionnaire->nextInstance()) {
-        while($page = $instance->nextPage()) {
-          if($this->_user->hasAnyAccess($page) ||
-             $this->_user->hasAnyAccess($page->parent->domain)) {
-            $allowedInstances[] = $instance;
-            break;
-          }
-        }
+        if ($this->_user->hasAccess('administer', $instance->domain)) $allowedInstances[] = $instance;
       }
     }
     $this->view->dataInstances = $allowedInstances;
@@ -120,6 +114,9 @@ class InstancedataController extends QFrame_Controller_Admin {
     $session = new Zend_Session_Namespace('login');
     $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
                                         'depth' => 'instance'));
+
+    if(!$this->_user->hasAccess('administer', $instance->domain)) $this->denyAccess();
+
     $instanceName = $this->_getParam('instanceName');
     
     $zip = new ZipArchiveModel($instance, array('new' => '1'));
@@ -175,6 +172,9 @@ class InstancedataController extends QFrame_Controller_Admin {
     $session = new Zend_Session_Namespace('login');
     $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
                                         'depth' => 'instance'));
+
+    if(!$this->_user->hasAccess('administer', $instance->domain)) $this->denyAccess();
+    
     $instance->delete();
     if ($session->instanceID == $session->dataInstanceID) {
       unset($session->instanceID);
@@ -278,6 +278,9 @@ class InstancedataController extends QFrame_Controller_Admin {
     $session = new Zend_Session_Namespace('login');
     $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
                                         'depth' => 'instance'));
+
+    if(!$this->_user->hasAccess('administer', $instance->domain)) $this->denyAccess();
+
     $cryptoID = ($this->_hasParam('cryptoID')) ? $this->_getParam('cryptoID') : null;
     if (isset($cryptoID) && $cryptoID != 0) {
       $crypto = new CryptoModel(array('cryptoID' => $cryptoID));
@@ -294,6 +297,9 @@ class InstancedataController extends QFrame_Controller_Admin {
     $session = new Zend_Session_Namespace('login');
     $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
                                         'depth' => 'instance'));
+
+    if(!$this->_user->hasAccess('administer', $instance->domain)) $this->denyAccess();
+
     $zip = new ZipArchiveModel($instance, array('new' => 1));
     $zip->addInstanceResponsesXMLDocument();
     $zip->addAttachments();
@@ -325,6 +331,9 @@ class InstancedataController extends QFrame_Controller_Admin {
     else {
       $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
                                           'depth' => 'instance'));
+
+      if(!$this->_user->hasAccess('administer', $instance->domain)) $this->denyAccess();
+
       $tempFile = tempnam(PROJECT_PATH . DIRECTORY_SEPARATOR . 'tmp', 'exp');
       $xml = '';
       if (isset($cryptoID) && $cryptoID != 0) {
@@ -355,6 +364,9 @@ class InstancedataController extends QFrame_Controller_Admin {
     else {
       $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
                                           'depth' => 'instance'));
+
+      if(!$this->_user->hasAccess('administer', $instance->domain)) $this->denyAccess();
+
       $zip = new ZipArchiveModel($instance, array('new' => 1));
       $zip->addInstanceFullResponsesXMLDocument();
       $zip->addAttachments();
@@ -386,6 +398,7 @@ class InstancedataController extends QFrame_Controller_Admin {
         $pageHeaders[] = $key;
       }
     }
+
     if ($this->_hasParam('download') && isset($session->tempFile)) {
       if (isset($cryptoID) && $cryptoID != 0) {
         $this->view->cryptoID = $cryptoID;
@@ -398,6 +411,7 @@ class InstancedataController extends QFrame_Controller_Admin {
       $instance = new InstanceModel(array('instanceID' => $session->dataInstanceID,
                                           'depth' => 'instance'));
 
+      if(!$this->_user->hasAccess('administer', $instance->domain)) $this->denyAccess();
      
       $footer1 = $footer2 = $coverText = $coverImage = null;
 

@@ -28,10 +28,10 @@
     != $this->formHidden('selectURL', $this->url(array()))
     .option
       != $this->formLabel('questionnaire', 'Questionnaire:')
-      != $this->questionnaireSelect($this->questionnaire)
+      != $this->questionnaireSelect($this->questionnaire, 'questionnaire', $this->_user)
     .option
       != $this->formLabel('instance', 'Instance:')
-      != $this->instanceSelect($this->instances, $this->questionnaire, 'instance', $this->instance)
+      != $this->instanceSelect($this->questionnaire, 'instance', $this->instance, $this->_user, array('administer'))
     - if(isset($this->currentInstance))
       %table
         %tr

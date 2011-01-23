@@ -45,22 +45,4 @@ class QFrame_View_Helper_UserHelpers {
     $this->view = $view;
   }
   
-  /**
-   * Generates a drop down box listing all allowed domains
-   *
-   * @param  integer current domain (or null if no current domain)
-   * @param string element name
-   * @return string
-   */
-  public function domainSelect($domainID = null, $name = 'domain') {
-    $domains = DomainModel::getAllDomains();
-    foreach($domains as $domain) {
-      $domainDescription = $this->view->h($domain->domainDescription);
-      if(!isset($options[$domain->domainID])) {
-        $options[$domain->domainID] = $domainDescription;
-      }
-    }
-    return $this->view->formSelect($name, $domainID, null, $options);
-  }
-
 }

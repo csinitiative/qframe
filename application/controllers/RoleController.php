@@ -32,18 +32,23 @@ class RoleController extends QFrame_Controller_Admin {
   public function indexAction() {
     $this->view->q = $this->_getParam('q');
     $page = ($this->_hasParam('page')) ? intval($this->_getParam('page')) : 1;
+    $search = $this->_user->isGlobalAdministrator() ? '' : "domainID = {$this->_user->domain->domainID}";
     $this->view->pager =
-        new QFrame_Paginator('RoleModel', 20, $page, 'roleDescription ASC', $this->view->q);
+        new QFrame_Paginator('RoleModel', 20, $page, 'roleDescription ASC', $this->view->q, $search);
   }
   
   /**
    * Create action.  Creates a role and redirects back to the index action.
    */
   public function createAction() {
-    RoleModel::create(array(
+    $role = RoleModel::create(array(
       'roleDescription' => $this->_getParam('roleDescription'),
       'domainID' => $this->_getParam('roleDomain')
-    ))->save();
+    ));
+
+    if(!$this->_user->hasAccess('administer', $role->domain)) $this->denyAccess();
+
+    $role->save();
     $this->flash('notice', 'Role successfully created');
     $this->_redirector->gotoRoute(array('action' => 'index'));
   }
@@ -52,7 +57,11 @@ class RoleController extends QFrame_Controller_Admin {
    * Delete action.  Removes the specified role.
    */
   public function deleteAction() {
-    RoleModel::find($this->_getParam('id'))->delete();
+    $role = RoleModel::find($this->_getParam('id'));
+
+    if(!$this->_user->hasAccess('administer', $role->domain)) $this->denyAccess();
+
+    $role->delete();
     $this->flash('notice', 'Role successfully deleted');
     $this->_redirector->gotoRoute(array('action' => 'index', 'id' => null));
   }
@@ -61,7 +70,11 @@ class RoleController extends QFrame_Controller_Admin {
    * Edit action.  Sets a role up to be modified.
    */
   public function editAction() {
-    $this->view->role = RoleModel::find($this->_getParam('id'));
+    $role = RoleModel::find($this->_getParam('id'));
+
+    if(!$this->_user->hasAccess('administer', $role->domain)) $this->denyAccess();
+    
+    $this->view->role = $role;
   }
   
   /**
@@ -69,6 +82,9 @@ class RoleController extends QFrame_Controller_Admin {
    */
   public function modifyAction() {
     $role = RoleModel::find($this->_getParam('id'));
+
+    if(!$this->_user->hasAccess('administer', $role->domain)) $this->denyAccess();
+    
     $role->setAttributes(array(
       'roleDescription'   => $this->_getParam('roleDescription'),
       'domainID' => $this->_getParam('roleDomain')
@@ -87,6 +103,9 @@ class RoleController extends QFrame_Controller_Admin {
     if($this->getRequest()->isPost()) $this->updatePermissions();
 
     $role = RoleModel::find($this->_getParam('id'));
+
+    if(!$this->_user->hasAccess('administer', $role->domain)) $this->denyAccess();
+
     $this->view->domain = DomainModel::find($role->domain->domainID);
 
     $session = new Zend_Session_Namespace('login');
@@ -136,6 +155,8 @@ class RoleController extends QFrame_Controller_Admin {
     $domainPermissions = $this->_getParam('domain');
     $pages = $this->_getParam('page');
     $role = RoleModel::find($this->_getParam('id'));
+
+    if(!$this->_user->hasAccess('administer', $role->domain)) $this->denyAccess();
     
     foreach($globals as $permission => $value) {
       if($value) $role->grant($permission);

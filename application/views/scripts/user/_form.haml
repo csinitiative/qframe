@@ -31,7 +31,7 @@
   %ul
     %li
       != $this->formLabel('userDomain', 'Domain')
-      != $this->domainSelect($this->userDomain, 'userDomain')
+      != $this->domainSelect($this->userDomain, 'userDomain', $this->_user, array('administer'))
     %li
       != $this->formLabel('user[dbUserFullName]', 'Full Name')
       != $this->formText('user[dbUserFullName]', $this->h($userFullName), array('size' => 30))

@@ -34,7 +34,7 @@ Upload a Questionnaire Definition XML Document.  A Responses XML Document may be
 != $this->form(array(), false, 'post')
 .option
   != $this->formLabel('questionnaire', 'Select Questionnaire:')
-  != $this->questionnaireSelect($this->dataQuestionnaireID)
+  != $this->questionnaireSelect($this->dataQuestionnaireID, 'questionnaire', $this->_user)
 != $this->form(null, true)
 - if(isset($this->dataQuestionnaireID))
   %br/

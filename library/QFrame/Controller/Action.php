@@ -95,6 +95,8 @@ class QFrame_Controller_Action extends Zend_Controller_Action {
       );
     }
     
+    $this->view->_user = $this->_user;
+
     $this->view->headerPages = $this->buildPages();
   }
   
@@ -210,7 +212,7 @@ class QFrame_Controller_Action extends Zend_Controller_Action {
                       $this instanceof CompareController),
       'external' => false,
     );
-    if($this->_user !== null && $this->_user->hasAccess('administer')) $pages[] = array(
+    if($this->_user !== null && ($this->_user->hasAccess('administer') || $this->_user->isDomainAdministrator())) $pages[] = array(
       'label'    => 'Administration',
       'url'      => $this->view->url(array('controller' => 'admin'), null, true),
       'current'  => ($this instanceof QFrame_Controller_Admin),

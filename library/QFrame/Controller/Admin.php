@@ -31,7 +31,7 @@ class QFrame_Controller_Admin extends QFrame_Controller_Action {
    */
   public function preDispatch() {
     $this->sanityChecks();
-    if(!$this->_user->hasAccess('administer')) $this->denyAccess();
+    if(!$this->_user->isAnyAdministrator()) $this->denyAccess();
     $this->buildMenu();
     $this->loadInstance(false);
   }
@@ -41,44 +41,56 @@ class QFrame_Controller_Admin extends QFrame_Controller_Action {
    */
   protected function buildMenu() {
     $controller = Zend_Controller_Front::getInstance()->getRequest()->getControllerName();
-    $this->view->menuItems = array(
+    $this->view->menuItems = array();
+
+    if($this->_user->hasAccess('administer')) {
+      $this->view->menuItems = array_merge($this->view->menuItems,
+        array(
+          array(
+            'label'   => 'Domain Management',
+            'url'     => $this->view->url(array('controller' => 'domain'), null, true),
+            'current' => $controller == 'domain',
+            'locked'  => false
+          ),
+          array(
+            'label'   => 'Questionnaire Management',
+            'url'     => $this->view->url(array('controller' => 'questionnairedata'), null, true),
+            'current' => $controller == 'questionnairedata',
+            'locked'  => false
+          )
+        )
+      );
+    }
+
+    $this->view->menuItems = array_merge($this->view->menuItems,
       array(
-        'label'   => 'Domain Management',
-        'url'     => $this->view->url(array('controller' => 'domain'), null, true),
-        'current' => $controller == 'domain',
-        'locked'  => false
-      ),
-      array(
-        'label'   => 'Questionnaire Management',
-        'url'     => $this->view->url(array('controller' => 'questionnairedata'), null, true),
-        'current' => $controller == 'questionnairedata',
-        'locked'  => false
-      ),
-      array(
-        'label'   => 'Instance Management',
-        'url'     => $this->view->url(array('controller' => 'instancedata'), null, true),
-        'current' => $controller == 'instancedata',
-        'locked'  => false
-      ),
-      array(
-        'label'   => 'Encryption Management',
-        'url'     => $this->view->url(array('controller' => 'crypto'), null, true),
-        'current' => $controller == 'crypto',
-        'locked'  => false
-      ),
-      array(
-        'label'   => 'User Management',
-        'url'     => $this->view->url(array('controller' => 'user'), null, true),
-        'current' => $controller == 'user',
-        'locked'  => false
-      ),
-      array(
-        'label'   => 'Role Management',
-        'url'     => $this->view->url(array('controller' => 'role'), null, true),
-        'current' => $controller == 'role',
-        'locked'  => false
+        array(
+          'label'   => 'Instance Management',
+          'url'     => $this->view->url(array('controller' => 'instancedata'), null, true),
+          'current' => $controller == 'instancedata',
+          'locked'  => false
+        ),
+        array(
+          'label'   => 'Encryption Management',
+          'url'     => $this->view->url(array('controller' => 'crypto'), null, true),
+          'current' => $controller == 'crypto',
+          'locked'  => false
+        ),
+        array(
+          'label'   => 'User Management',
+          'url'     => $this->view->url(array('controller' => 'user'), null, true),
+          'current' => $controller == 'user',
+          'locked'  => false
+        ),
+        array(
+          'label'   => 'Role Management',
+          'url'     => $this->view->url(array('controller' => 'role'), null, true),
+          'current' => $controller == 'role',
+          'locked'  => false
+        )
       )
     );
+
     $this->view->menuTitle = 'options';
   }
 }

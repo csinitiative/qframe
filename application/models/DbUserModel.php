@@ -346,6 +346,33 @@ class DbUserModel implements QFrame_Paginable {
   }
 
   /**
+   * Determine whether or not this user has the administer privilege of the user's domain
+   *
+   * @return boolean
+   */
+  public function isDomainAdministrator() {
+    return $this->hasAccess('administer', $this->domain);
+  }
+
+  /**
+   * Determine whether or not this user has the global administer privilege
+   *
+   * @return boolean
+   */
+  public function isGlobalAdministrator() {
+    return $this->hasAccess('administer');
+  }
+
+  /**
+   * Determine whether or not this user is a global OR domain administrator
+   *
+   * @return boolean
+   */
+  public function isAnyAdministrator() {
+    return ($this->isDomainAdministrator() || $this->isGlobalAdministrator());
+  }
+
+  /**
    * Determine whether or not this user must change password
    *
    * @return boolean

@@ -33,7 +33,7 @@
 
 .option
   != $this->formLabel('questionnaire', 'Questionnaire:')
-  != $this->questionnaireSelect($this->questionnaires, $this->selected)
+  != $this->questionnaireSelect($this->questionnaires, $this->selected, $this->_user, array('compare'))
 .option
   != $this->formLabel('model', 'Model:')
   != $this->modelSelect($this->models)
@@ -48,7 +48,7 @@
 - if(isset($this->instances))
   .option.instances{ 'style' => 'display: none;' }
     != $this->formLabel('instance', 'Instance:')
-    != $this->instanceSelect($this->instances)
+    != $this->instanceSelect(null, null, null, $this->_user, array('compare'))
     != $this->formButton('doCompare', 'compare', array('disabled' => 'disabled'))
     != $this->formButton('compareCancel', 'cancel')
     %br/

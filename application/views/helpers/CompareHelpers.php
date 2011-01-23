@@ -46,29 +46,6 @@ class QFrame_View_Helper_CompareHelpers {
   }
   
   /**
-   * Generates a drop down box listing all questionnaires
-   *
-   * @param  Array   list of all questionnaires
-   * @param  integer (optional) currently selected questionnaire
-   * @return string
-   */
-  public function questionnaireSelect($questionnaires, $selected = null) {
-    if($selected === null) $options[0] = ' ';
-    foreach($questionnaires as $questionnaire) {
-      $questionnaireName = $this->view->h($questionnaire->questionnaireName);
-      $questionnaireVersion = $this->view->h($questionnaire->questionnaireVersion);
-      $revision = $this->view->h($questionnaire->revision);
-      if(!isset($options[$questionnaire->questionnaireID])) {
-        $options[$questionnaire->questionnaireID] = "{$questionnaireName} {$questionnaireVersion}";
-        if ($revision != 1) {
-          $options[$questionnaire->questionnaireID] .= " (rev. {$revision})";
-        }
-      }
-    }
-    return $this->view->formSelect('questionnaire', $selected, null, $options);
-  }
-
-  /**
    * Generates a drop down box listing all models (or just a message to select a questionnaire)
    *
    * @param  Array   list of all models
@@ -231,21 +208,6 @@ class QFrame_View_Helper_CompareHelpers {
     $result .= $this->view->formLabel($name, 'Do not include');
 
     return $result;
-  }
-  
-  /**
-   * Generates a drop down box listing all instances that belong to the chosen instance
-   *
-   * @param  Array   list of all instances to which this user has access
-   * @return string
-   */
-  public function instanceSelect($instances) {
-    $options[0] = ' ';
-    foreach($instances as $instance) {
-      $options[$instance->instanceID] = $this->view->h($instance->instanceName);
-    }
-    
-    return $this->view->formSelect('instance', null, null, $options);
   }
   
   /**

@@ -45,37 +45,13 @@ class QFrame_View_Helper_QuestionnairedataHelpers {
     $this->view = $view;
   }
   
- /**
-  * Generates a drop down box listing all questionnaires
-  *
-  * @param  integer current questionnaire (or null if no current questionnaire)
-  * @param string element name
-  * @return string
-  */
-  public function questionnaireSelect($questionnaireID, $name = 'questionnaire') {
-    if($questionnaireID === null) $options[0] = ' ';
-    $questionnaires = QuestionnaireModel::getAllQuestionnaires();
-    foreach($questionnaires as $questionnaire) {
-      $questionnaireName = $this->view->h($questionnaire->questionnaireName);
-      $questionnaireVersion = $this->view->h($questionnaire->questionnaireVersion);
-      $revision = $this->view->h($questionnaire->revision);
-      if(!isset($options[$questionnaire->questionnaireID])) {
-        $options[$questionnaire->questionnaireID] = "{$questionnaireName} {$questionnaireVersion}";
-        if ($revision != 1) {
-          $options[$questionnaire->questionnaireID] .= " r. {$revision}";
-        }
-      }
-    }
-    return $this->view->formSelect($name, $questionnaireID, null, $options);
-  }
-  
- /**
-  * Generates a drop down box listing all crypto profiles
-  *
-  * @param  integer current crypto profile (or null if no current profile)
-  * @param string element name
-  * @return string
-  */
+  /**
+   * Generates a drop down box listing all crypto profiles
+   *
+   * @param  integer current crypto profile (or null if no current profile)
+   * @param string element name
+   * @return string
+   */
   public function cryptoSelect($cryptoID, $name = 'cryptoID') {
     $options[0] = 'none';
     $cryptos = CryptoModel::getAllProfiles();

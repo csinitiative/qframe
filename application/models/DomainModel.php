@@ -273,6 +273,24 @@ class DomainModel implements QFrame_Paginable, QFrame_Permissible {
   }
 
   /**
+   * Get all users associated with this domain
+   *
+   * @return array DbUserModel
+   */
+  public function getUsers() {
+	if (!isset(self::$dbUserTable)) self::$dbUserTable = QFrame_Db_Table::getTable('db_user');
+
+	$users = array();
+	$where = Zend_Db_Table_Abstract::getDefaultAdapter()->quoteInto('domainID = ?', $this->domainID);
+    $dbUserRows = self::$dbUserTable->fetchall($where, 'dbUserID');
+    foreach ($dbUserRows as $row) {
+	  $users[] = DbUserModel::find($row->dbUserID);
+    }
+
+    return $users;
+  }
+
+  /**
    * Get allowed questionnaires for this domain
    *
    * @return QuestionnaireModel

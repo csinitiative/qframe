@@ -25,7 +25,15 @@
  * @license    http://www.gnu.org/licenses/   GNU General Public License v3
  */
 class DomainController extends QFrame_Controller_Admin {
-  
+
+  /**
+   * Method to execute before dispatching takes place
+   */
+  public function preDispatch() {
+    parent::preDispatch();
+    if(!$this->_user->isGlobalAdministrator()) $this->denyAccess();
+  }
+
   /**
    * Index action...displays whatever search terms/pages are requested
    */

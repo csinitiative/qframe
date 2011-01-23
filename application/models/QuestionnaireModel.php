@@ -294,7 +294,7 @@ class QuestionnaireModel extends QFrame_Db_SerializableTransaction implements QF
     self::dbCommit($transactionNumber);
     
     if(!isset($options['SkipQuestionnaireExistCheck']) && !$questionnaire->getDefaultInstance()) {
-      InstanceModel::importXML($xml, '_default_', array('hidden' => 1));
+      InstanceModel::importXML($xml, '_default_', array('hidden' => 1), 1);
     }
 
     return $questionnaireID;
@@ -442,12 +442,12 @@ class QuestionnaireModel extends QFrame_Db_SerializableTransaction implements QF
    */
   public static function generateSignature($dom) {
     $questionnaireID = QuestionnaireModel::importXML($dom, array('SkipQuestionnaireExistCheck' => 1,
-                                                           'SkipFileAttachments' => 1));
-    $instanceID = InstanceModel::importXML($dom, '_generateSignature', array('questionnaireID' => $questionnaireID));
+                                                                 'SkipFileAttachments' => 1));
+    $instanceID = InstanceModel::importXML($dom, '_generateSignature', array('questionnaireID' => $questionnaireID), 1);
     $instance = new InstanceModel(array('instanceID' => $instanceID,
                                         'depth' => 'instance'));
     $questionnaire = new QuestionnaireModel(array('questionnaireID' => $questionnaireID,
-                                            'depth' => 'questionnaire'));
+                                                  'depth' => 'questionnaire'));
     $signature = md5($instance->toXML(1));
     $instance->delete();
     $questionnaire->delete();

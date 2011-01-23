@@ -32,8 +32,9 @@ class UserController extends QFrame_Controller_Admin {
   public function indexAction() {
     $this->view->q = $this->_getParam('q');
     $page = ($this->_hasParam('page')) ? intval($this->_getParam('page')) : 1;
+    $search = $this->_user->isGlobalAdministrator() ? '' : "domainID = {$this->_user->domain->domainID}";
     $this->view->pager =
-        new QFrame_Paginator('DbUserModel', 20, $page, 'dbUserFullName ASC', $this->view->q);
+        new QFrame_Paginator('DbUserModel', 20, $page, 'dbUserFullName ASC', $this->view->q, $search);
   }
   
   /**
@@ -44,10 +45,15 @@ class UserController extends QFrame_Controller_Admin {
     $pw = $this->_getParam('dbUserPW');
     $domainID = $this->_getParam('userDomain');
     $this->view->userDomain = $domainID;
+
     $user = new DbUserModel(array(
       'dbUserName'  => $userParams['dbUserName'],
       'dbUserPW'    => $pw
     ));
+    $user->domainID = $domainID;
+
+    if(!$this->_user->hasAccess('administer', $user->domain)) $this->denyAccess();
+
     foreach($userParams as $field => $value) $user->$field = $value;
     if($pw === '' || $pw !== $this->_getParam('dbUserPWConf')) {
       $this->flashNow('error', 'No passwords specified or specified passwords do not match');
@@ -66,6 +72,9 @@ class UserController extends QFrame_Controller_Admin {
    */
   public function deleteAction() {
     $user = new DbUserModel(array('dbUserID' => $this->_getParam('id')));
+
+    if(!$this->_user->hasAccess('administer', $user->domain)) $this->denyAccess();
+
     $user->delete();
     $this->flash('notice', 'User successfully deleted');
     $this->_redirector->gotoRoute(array('action' => 'index', 'id' => null));
@@ -77,6 +86,9 @@ class UserController extends QFrame_Controller_Admin {
    */
   public function editAction() {
     $user = new DbUserModel(array('dbUserID' => $this->_getParam('id')));
+
+    if(!$this->_user->hasAccess('administer', $user->domain)) $this->denyAccess();
+    
     $this->view->userDomain = $user->domainID;
     if($this->getRequest()->isPost()) {
       foreach($this->_getParam('user') as $field => $value) $user->$field = $value;
@@ -103,7 +115,11 @@ class UserController extends QFrame_Controller_Admin {
    * a user's assigned roles.
    */
   public function rolesAction() {
-    $this->view->user = new DbUserModel(array('dbUserID' => $this->_getParam('id')));
+    $user = new DbUserModel(array('dbUserID' => $this->_getParam('id')));
+
+    if(!$this->_user->hasAccess('administer', $user->domain)) $this->denyAccess();
+
+    $this->view->user = $user;
     $allRoles = RoleModel::find('all');
     $roles = array();
     foreach($allRoles as $role) {
@@ -124,6 +140,9 @@ class UserController extends QFrame_Controller_Admin {
    */
   public function addroleAction() {
     $user = new DbUserModel(array('dbUserID' => $this->_getParam('id')));
+
+    if(!$this->_user->hasAccess('administer', $user->domain)) $this->denyAccess();
+
     $role = RoleModel::find($this->_getParam('role'));
     $user->addRole($role);
     $this->_redirector->gotoRoute(array('action' => 'roles', 'id' => $user->dbUserID));
@@ -134,6 +153,9 @@ class UserController extends QFrame_Controller_Admin {
    */
   public function removeroleAction() {
     $user = new DbUserModel(array('dbUserID' => $this->_getParam('id')));
+
+    if(!$this->_user->hasAccess('administer', $user->domain)) $this->denyAccess();
+    
     $role = RoleModel::find($this->_getParam('role'));
     $user->removeRole($role);
     $this->_redirector->gotoRoute(array('action' => 'roles', 'id' => $user->dbUserID));
