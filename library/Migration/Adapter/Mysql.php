@@ -241,14 +241,17 @@ abstract class Migration_Adapter_Mysql extends Migration_Adapter {
     // merge the options we got with a default set of options
     $options = array_merge(array(
       'name'  => strtolower(implode('_', $columns)) . '_index',
+      'unique'  => false,
     ), $options);
+
+    $unique = $options['unique'] ? 'UNIQUE' : '';
     
     // quote columns as identifiers
     foreach($columns as $column) $quotedColumns[] = $this->dbAdapter->quoteIdentifier($column);
     $quotedColumns = implode(',', $quotedColumns);
     
     // build the query
-    $query = "CREATE INDEX {$this->dbAdapter->quoteIdentifier($options['name'])}\n";
+    $query = "CREATE {$unique} INDEX {$this->dbAdapter->quoteIdentifier($options['name'])}\n";
     if(isset($options['type'])) $query .= "  USING {$options['type']}\n";
     $query .= "  ON {$this->dbAdapter->quoteIdentifier($table)}({$quotedColumns})";
     

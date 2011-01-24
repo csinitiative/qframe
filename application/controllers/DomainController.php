@@ -48,9 +48,17 @@ class DomainController extends QFrame_Controller_Admin {
    * Create action.  Creates a domain and redirects back to the index action.
    */
   public function createAction() {
-    DomainModel::create(array(
-      'domainDescription' => $this->_getParam('domainDescription')
-    ))->save();
+    $domain = DomainModel::create(array(
+                                   'domainDescription' => $this->_getParam('domainDescription')
+                                 ));
+    $domain->save();
+    
+    # Create a role for administers of this domain automatically
+    $role = RoleModel::create(array('roleDescription' => "{$domain->domainDescription} Domain Administrators",
+                                    'domainID' => $domain->domainID));
+    $role->grant('administer', $domain);
+    $role->save();
+
     $this->flash('notice', 'Domain successfully created');
     $this->_redirector->gotoRoute(array('action' => 'index'));
   }

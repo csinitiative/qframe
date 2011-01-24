@@ -199,24 +199,31 @@ class QFrame_View_Helper_ApplicationHelpers {
     if ($questionnaireID) {
       $questionnaire = new QuestionnaireModel(array('questionnaireID' => $questionnaireID,
                                                     'depth' => 'page'));
+
       $options[0] = '';
       
       while ($instance = $questionnaire->nextInstance()) {
         $instanceName = $instance->instanceName;
-        if ($user->hasAnyAccess($instance->domain)) {
-          $options[$instance->instanceID] = $instanceName;
-          break;
-        }
-        while ($page = $instance->nextPage()) {
-          if ($user->hasAnyAccess($page)) {
+        foreach ($permissions as $permission) {
+          if ($user->hasAccess($permission, $instance->domain)) {
             $options[$instance->instanceID] = $instanceName;
             break 2;
           }
         }
+        while ($page = $instance->nextPage()) {
+          foreach ($permissions as $permission) {
+            if ($user->hasAccess($permission, $page)) {
+              $options[$instance->instanceID] = $instanceName;
+              break 3;
+            }
+          }
+        }
       }
+
+      $options[0] = count($options) ? '' : 'No available questionnaires';
     }
     else {
-      $options[0] = 'Select a questionnaire';
+      $options[0] = 'Choose a questionnaire';
     }
 
     return $this->view->formSelect($name, $instanceID, null, $options);
@@ -230,7 +237,7 @@ class QFrame_View_Helper_ApplicationHelpers {
    * @param DbUserModel
    * @return string
    */
-  public function questionnaireSelect($questionnaireID = null, $name = 'questionnaire', $user) {
+  public function questionnaireSelect($questionnaireID = null, $name = 'questionnaire', $user, $permissions = array('edit', 'view', 'approve')) {
     if($questionnaireID === null) $options[0] = ' ';
 
     $questionnaires = QuestionnaireModel::getAllQuestionnaires('page');
@@ -240,20 +247,24 @@ class QFrame_View_Helper_ApplicationHelpers {
       $questionnaireVersion = $this->view->h($questionnaire->questionnaireVersion);
       $revision = $this->view->h($questionnaire->revision);
       while ($instance = $questionnaire->nextInstance()) {
-        if ($user->hasAnyAccess($instance->domain)) {
-          $options[$questionnaire->questionnaireID] = "{$questionnaireName} {$questionnaireVersion}";
-          if ($revision != 1) {
-            $options[$questionnaire->questionnaireID] .= " (rev. {$revision})";
-          }
-          break;
-        }
-        while ($page = $instance->nextPage()) {
-          if ($user->hasAnyAccess($page)) {
+        foreach ($permissions as $permission) {
+          if ($user->hasAccess($permission, $instance->domain)) {
             $options[$questionnaire->questionnaireID] = "{$questionnaireName} {$questionnaireVersion}";
             if ($revision != 1) {
               $options[$questionnaire->questionnaireID] .= " (rev. {$revision})";
             }
             break 2;
+          }
+        }
+        while ($page = $instance->nextPage()) {
+          foreach ($permissions as $permission) {
+            if ($user->hasAccess($permission, $page)) {
+              $options[$questionnaire->questionnaireID] = "{$questionnaireName} {$questionnaireVersion}";
+              if ($revision != 1) {
+                $options[$questionnaire->questionnaireID] .= " (rev. {$revision})";
+              }
+              break 3;
+            }
           }
         }
       }
@@ -275,7 +286,7 @@ class QFrame_View_Helper_ApplicationHelpers {
     $domains = DomainModel::getAllDomains();
     foreach($domains as $domain) {
       foreach ($permissions as $permission) {
-        if ($user->hasAccess($permission) || $user->hasAccess($permission, $domain)) {
+        if ($user->hasAccess($permission, $domain)) {
           $domainDescription = $this->view->h($domain->domainDescription);
           if(!isset($options[$domain->domainID])) {
             $options[$domain->domainID] = $domainDescription;

@@ -8,7 +8,7 @@ class AddDomainTables extends Migration {
       array('domainID', 'integer'),
       array('domainDescription', 'string', array('limit' => 255, 'null' => false)),
     ));
-    $this->createIndex('domain', array('domainDescription'));
+    $this->createIndex('domain', array('domainDescription'), array('unique' => true));
 
     $this->createTable('domain_questionnaire', array('primary' => array('domainID', 'questionnaireID')), array(
       array('domainID', 'integer'),

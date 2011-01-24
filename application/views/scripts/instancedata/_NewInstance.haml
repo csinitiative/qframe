@@ -49,7 +49,7 @@
           != $this->formLabel('questionnaire', 'Instance:')
           != $this->domainSelect($this->newInstanceResponsesDomainID, 'newInstanceResponsesDomainSelect', $this->_user, array('administer'))
           - if (isset($this->newInstanceResponsesDomainID))
-            != $this->questionnaireSelect($this->newInstanceResponsesQuestionnaireID, 'newInstanceResponsesQuestionnaireSelect', $this->_user)
+            != $this->questionnaireSelect($this->newInstanceResponsesQuestionnaireID, 'newInstanceResponsesQuestionnaireSelect', $this->_user, array('administer'))
             - if (isset($this->newInstanceResponsesQuestionnaireID))
               != $this->instanceSelect($this->newInstanceResponsesQuestionnaireID, 'newInstanceResponsesInstanceSelect', $this->newInstanceResponsesInstanceID, $this->_user, array('administer'))
 %br/          
