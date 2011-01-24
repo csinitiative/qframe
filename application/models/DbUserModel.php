@@ -348,7 +348,7 @@ class DbUserModel implements QFrame_Paginable {
     // if this user is an auto admin, return true
     if($this->admin) return true;
 
-    foreach(array('view', 'edit', 'approve') as $permission) {
+    foreach(array('view', 'edit', 'approve', 'administer') as $permission) {
       if($this->hasAccess($permission, $permissible)) return true;
     }
     return false;

@@ -197,26 +197,26 @@ class QFrame_View_Helper_ApplicationHelpers {
   public function instanceSelect($questionnaireID, $name = 'instance', $instanceID = null, $user, $permissions = array('edit', 'view', 'approve')) {
 
     if ($questionnaireID) {
-        $questionnaire = New QuestionnaireModel(array('questionnaireID' => $questionnaireID,
-                                                      'depth' => 'instance'));
-    }
-
-    if($questionnaireID === null) {
-      $options[0] = 'Select a questionnaire';
-    }
-    else {
-      $options[0] = ' ';
+      $questionnaire = new QuestionnaireModel(array('questionnaireID' => $questionnaireID,
+                                                    'depth' => 'page'));
+      $options[0] = '';
+      
       while ($instance = $questionnaire->nextInstance()) {
-        foreach ($permissions as $permission) {
-          if ($user->hasAccess($permission) || $user->hasAccess($permission, $instance->domain)) {
-            $questionnaireName = $this->view->h($instance->questionnaireName);
-            $instanceName = $this->view->h($instance->instanceName);
-            if($instance->questionnaireID == $questionnaireID) {
-              $options[$instance->instanceID] = $instanceName;
-            }
+        $instanceName = $instance->instanceName;
+        if ($user->hasAnyAccess($instance->domain)) {
+          $options[$instance->instanceID] = $instanceName;
+          break;
+        }
+        while ($page = $instance->nextPage()) {
+          if ($user->hasAnyAccess($page)) {
+            $options[$instance->instanceID] = $instanceName;
+            break 2;
           }
         }
       }
+    }
+    else {
+      $options[0] = 'Select a questionnaire';
     }
 
     return $this->view->formSelect($name, $instanceID, null, $options);
@@ -233,27 +233,32 @@ class QFrame_View_Helper_ApplicationHelpers {
   public function questionnaireSelect($questionnaireID = null, $name = 'questionnaire', $user) {
     if($questionnaireID === null) $options[0] = ' ';
 
-    if($user->hasAccess('administer')) {
-      $questionnaires = QuestionnaireModel::getAllQuestionnaires();
-    }
-    elseif($user->isDomainAdministrator()) {
-      $questionnaires = $user->domain->getQuestionnaires();
-    }
-    else {
-      $questionnaires = array();
-    }
+    $questionnaires = QuestionnaireModel::getAllQuestionnaires('page');
 
     foreach($questionnaires as $questionnaire) {
       $questionnaireName = $this->view->h($questionnaire->questionnaireName);
       $questionnaireVersion = $this->view->h($questionnaire->questionnaireVersion);
       $revision = $this->view->h($questionnaire->revision);
-      if(!isset($options[$questionnaire->questionnaireID])) {
-        $options[$questionnaire->questionnaireID] = "{$questionnaireName} {$questionnaireVersion}";
-        if ($revision != 1) {
-          $options[$questionnaire->questionnaireID] .= " (rev. {$revision})";
+      while ($instance = $questionnaire->nextInstance()) {
+        if ($user->hasAnyAccess($instance->domain)) {
+          $options[$questionnaire->questionnaireID] = "{$questionnaireName} {$questionnaireVersion}";
+          if ($revision != 1) {
+            $options[$questionnaire->questionnaireID] .= " (rev. {$revision})";
+          }
+          break;
+        }
+        while ($page = $instance->nextPage()) {
+          if ($user->hasAnyAccess($page)) {
+            $options[$questionnaire->questionnaireID] = "{$questionnaireName} {$questionnaireVersion}";
+            if ($revision != 1) {
+              $options[$questionnaire->questionnaireID] .= " (rev. {$revision})";
+            }
+            break 2;
+          }
         }
       }
     }
+
     return $this->view->formSelect($name, $questionnaireID, null, $options);
   }
 
