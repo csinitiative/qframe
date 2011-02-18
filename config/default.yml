@@ -1,6 +1,6 @@
 cache_templates: true
 data_path: data
 base_url: ""
-application_name: CSI QFrame
+application_name: QFrame
 help_url: https://qframe.csinitiative.net/wiki
 application_url: http://www.csinitiative.com
