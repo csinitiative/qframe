@@ -260,7 +260,7 @@ class QuestionnaireModel extends QFrame_Db_SerializableTransaction implements QF
       $signature = self::generateSignature($dom);
       if (isset($questionnaireID)) {
         $prevQuestionnaire = new QuestionnaireModel(array('questionnaireID' => $questionnaireID,
-                                                    'depth' => 'questionnaire'));
+                                                          'depth' => 'questionnaire'));
     
         if ($signature === $prevQuestionnaire->signature) {
           $message = "Skipping questionnaire import since {$questionnaireName} {$questionnaireVersion} {$revision} already exists and has the same signature";
@@ -448,7 +448,8 @@ class QuestionnaireModel extends QFrame_Db_SerializableTransaction implements QF
                                         'depth' => 'instance'));
     $questionnaire = new QuestionnaireModel(array('questionnaireID' => $questionnaireID,
                                                   'depth' => 'questionnaire'));
-    $signature = md5($instance->toXML(1));
+    $xml = $instance->toXML(1);
+    $signature = md5($xml);
     $instance->delete();
     $questionnaire->delete();
     return $signature;

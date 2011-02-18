@@ -258,13 +258,13 @@ class InstancedataController extends QFrame_Controller_Admin {
 
     if ($importResponses === 'importInstanceResponses') { 
       $importResponsesInstanceID = $this->_getParam('importResponsesInstanceSelect');
-      InstanceModel::importXML($import, $instanceName, array('instanceID' => $importResponsesInstanceID));
+      InstanceModel::importXML($import, $instanceName, array('instanceID' => $importResponsesInstanceID), $this->_user->domainID);
     }
     elseif ($importResponses === 'importXMLResponses') {
-      InstanceModel::importXML($import, $instanceName, array('pageResponses' => array('all' => 1)));
+      InstanceModel::importXML($import, $instanceName, array('pageResponses' => array('all' => 1)), $this->_user->domainID);
     }
     else {
-      InstanceModel::importXML($import, $instanceName);
+      InstanceModel::importXML($import, $instanceName, array(), $this->_user->domainID);
     }
     $this->flash('notice', 'Import Complete');
     $this->_redirector->gotoRoute(array('action' => 'index'));
